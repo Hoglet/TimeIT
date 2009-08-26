@@ -1,0 +1,24 @@
+timeit (0.9.4) jaunty; urgency=low
+
+  * Bugfix: Bigger font made part of calendar outside visible area
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 26 Aug 2009 11:56:10 +0200
+
+timeit (0.9.3-2) jaunty; urgency=low
+
+  * Fixed icon in menu
+
+ -- Kent Asplund <hoglet@d630>  Wed, 19 Aug 2009 19:41:20 +0200
+
+timeit (0.9.3-1) jaunty; urgency=low
+
+  * Setting version on package to correct value
+  * Fixed problems with workspace detection
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 19 Aug 2009 17:51:23 +0200
+
+timeit (0.9.3) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 19 Aug 2009 12:02:45 +0200

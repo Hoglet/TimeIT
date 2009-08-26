@@ -1,0 +1,30 @@
+/*
+ * Utils.h
+ *
+ *  Created on: 20-Jun-08
+ *      Author: hoglet
+ */
+
+#ifndef UTILS_H_
+#define UTILS_H_
+#include <iostream>
+#include <string>
+
+namespace Utils
+{
+	std::string getImagePath();
+	time_t getTime(int year,int month,int day,int hour=0, int min=0, int sec=0);
+	time_t getBeginingOfDay(const time_t&);
+	time_t getEndOfDay(const time_t&);
+	time_t getBeginingOfWeek(const time_t&);
+	time_t getEndOfWeek(const time_t&);
+	time_t getBeginingOfMonth(const time_t&);
+	time_t getEndOfMonth(const time_t&);
+	int    getDayOfWeek(struct tm * timeInfo);
+	int    getDaysInMonth(const time_t& rawtime);
+	std::string seconds2ddhhmm(int s);
+	std::string seconds2hhmm(int s);
+	std::string createDurationString(const time_t& from,const time_t& to);
+};
+
+#endif /* UTILS_H_ */

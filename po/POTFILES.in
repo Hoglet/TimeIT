@@ -1,0 +1,14 @@
+# List of source files containing translatable strings.
+
+src/Main.cpp
+src/GUI/internal/EditTaskDialog.cpp
+src/GUI/internal/AddTime.cpp
+src/GUI/internal/Details.cpp
+src/GUI/internal/DetailsDialog.cpp
+src/GUI/internal/IdleDialog.cpp
+src/GUI/internal/MainWindow/MainWindow.cpp
+src/GUI/internal/MainWindow/Menu.cpp
+src/GUI/internal/MainWindow/TaskList.cpp
+src/GUI/internal/StatusIcon.cpp
+src/GUI/internal/TimeItAboutDialog.cpp
+src/GUI/internal/PreferenceDialog.cpp

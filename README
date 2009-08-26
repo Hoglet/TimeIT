@@ -1,0 +1,3 @@
+Q: Why are you doing observer patterns when sigc++ is there for using?
+A: I do not like sigc++.
+
