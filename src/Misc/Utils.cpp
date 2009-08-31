@@ -45,7 +45,16 @@ time_t getEndOfDay(const time_t& rawtime)
 
 int getDayOfWeek(struct tm * timeInfo)
 {
-	return timeInfo->tm_wday;
+	int dow=timeInfo->tm_wday;
+	int retVal=dow;
+	//ToDo Get start day of week from locale
+	int weekStartsOnDay = 1; //Always start on Monday for now
+	retVal = retVal - weekStartsOnDay;
+	if(retVal<0)
+	{
+		retVal= retVal + 7;
+	}
+	return retVal;
 }
 
 time_t getBeginingOfWeek(const time_t& rawtime)
