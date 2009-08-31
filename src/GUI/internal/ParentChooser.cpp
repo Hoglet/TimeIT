@@ -29,7 +29,8 @@ ParentChooser::ParentChooser(boost::shared_ptr<DB::Database>& database)
 
 	std::string baseString = "";
 	populate(baseString, 0);
-
+	parentID = 0;
+	
 	//Add the model columns to the Combo (which is a kind of view),
 	//rendering them in the default way:
 	//pack_start(m_Columns.m_col_id);
@@ -54,8 +55,14 @@ void ParentChooser::setID(int ID)
 
 void ParentChooser::setParentID(int parentID)
 {
-	this->parentID = parentID;
-
+	if(parentID>=0)
+	{
+		this->parentID = parentID;
+	}
+	else
+	{
+		this->parentID = 0;
+	}
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
 	iter = findRow(parentID);

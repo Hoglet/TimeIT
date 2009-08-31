@@ -112,7 +112,7 @@ timeit_SOURCES = \
 	Main.h \
 	GUI/internal/PreferenceDialog.cpp \
 	GUI/internal/PreferenceDialog.h \
-	DB/DefaultValues.h
+	DB/DefaultValues.h 
 
 timeit_CXXFLAGS =        \
 	-O0

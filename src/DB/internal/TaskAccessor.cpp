@@ -145,6 +145,14 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 {
 	int64_t id = 0;
 	stringstream statement;
+	if(parentID<0)
+	{
+		dbexception* e=new dbexception();
+		statement << "parenID is <0" << " in " << __FILE__<<":" <<__LINE__<<endl;
+		e->setMessage(statement.str());
+		cerr << statement.str() << endl;
+		throw e;
+	}
 	statement << "INSERT INTO tasks (name,parent) VALUES (\"" << name << "\", " << parentID << ")";
 	try
 	{
@@ -274,6 +282,7 @@ TaskAccessor::TaskAccessor(const std::string& dbname) :
 	try
 	{
 		db.exe("UPDATE tasks SET running = 0");
+		db.exe("UPDATE tasks SET parent = 0 WHERE parent < 0");
 	} catch (dbexception& e)
 	{
 		cerr << e.what() << endl;
