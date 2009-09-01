@@ -92,6 +92,39 @@ time_t getBeginingOfMonth(const time_t& rawtime)
 	timeInfo->tm_mday = 1;
 	return mktime(timeInfo);
 }
+time_t getEndOfMonth(const time_t& rawtime)
+{
+	struct tm * timeInfo = localtime(&rawtime);
+	timeInfo->tm_sec = 59;
+	timeInfo->tm_min = 59;
+	timeInfo->tm_hour = 23;
+	timeInfo->tm_mday = getDaysInMonth(rawtime);
+	return mktime(timeInfo);
+}
+
+time_t getBeginingOfYear(const time_t& rawtime)
+{
+	struct tm * timeInfo;
+	timeInfo = localtime(&rawtime);
+	timeInfo->tm_sec = 0;
+	timeInfo->tm_min = 0;
+	timeInfo->tm_hour = 0;
+	timeInfo->tm_mday = 1;
+	timeInfo->tm_mon = 1;
+	return mktime(timeInfo);
+}
+time_t getEndOfYear(const time_t& rawtime)
+{
+	struct tm * timeInfo = localtime(&rawtime);
+	timeInfo->tm_sec = 59;
+	timeInfo->tm_min = 59;
+	timeInfo->tm_hour = 23;
+	timeInfo->tm_mday = 31;
+	timeInfo->tm_mon = 11;
+	return mktime(timeInfo);
+}
+
+
 int getDaysInMonth(const time_t& rawtime)
 {
 	struct tm * timeInfo = localtime(&rawtime);
@@ -121,15 +154,6 @@ int getDaysInMonth(const time_t& rawtime)
 		break;
 	}
 	return timeInfo->tm_mday;
-}
-time_t getEndOfMonth(const time_t& rawtime)
-{
-	struct tm * timeInfo = localtime(&rawtime);
-	timeInfo->tm_sec = 59;
-	timeInfo->tm_min = 59;
-	timeInfo->tm_hour = 23;
-	timeInfo->tm_mday = getDaysInMonth(rawtime);
-	return mktime(timeInfo);
 }
 
 time_t getTime(int year, int month, int day, int hour, int min, int sec)

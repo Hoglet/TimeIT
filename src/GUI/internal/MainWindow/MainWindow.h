@@ -89,6 +89,7 @@ private:
 	DaySummary    daySummary;
 	WeekSummary    weekSummary;
 	MonthSummary   monthSummary;
+	YearSummary    yearSummary;
 	Calendar       calendar;
 	Gtk::Notebook  summaryTabs;
 
@@ -103,6 +104,9 @@ private:
 	Gtk::Label  labelWeek;
 	Gtk::ScrolledWindow  MonthSummaryContainer;
 	Gtk::Label  labelMonth;
+	Gtk::ScrolledWindow  YearSummaryContainer;
+	Gtk::Label  labelYear;
+
 	Gtk::VBox  secondaryVBox; //on right side
 	Gtk::HPaned  hPaned;
 	Gtk::Statusbar statusbar;

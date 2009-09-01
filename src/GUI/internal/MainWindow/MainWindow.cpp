@@ -48,8 +48,8 @@ MainWindow::~MainWindow()
 
 MainWindow::MainWindow(boost::shared_ptr<DB::Database>& database) :
 	taskList(database), daySummary(database), weekSummary(database),
-			monthSummary(database), labelDay(_("Day")), labelWeek(_("Week")),
-			labelMonth(_("Month"))
+			monthSummary(database),yearSummary(database), labelDay(_("Day")), labelWeek(_("Week")),
+			labelMonth(_("Month")), labelYear(_("Year"))
 {
 	taskAccessor = database->getTaskAccessor();
 	settingsAccessor = database->getSettingsAccessor();
@@ -112,6 +112,7 @@ void MainWindow::relateWidgets()
 	summaries.push_back(&daySummary);
 	summaries.push_back(&weekSummary);
 	summaries.push_back(&monthSummary);
+	summaries.push_back(&yearSummary);
 
 	std::vector<Summary*>::iterator iter;
 	for (iter = summaries.begin(); iter != summaries.end(); iter++)
@@ -142,6 +143,11 @@ void MainWindow::createLayout()
 	MonthSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
 	MonthSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC,
 			Gtk::POLICY_AUTOMATIC);
+	YearSummaryContainer.set_flags(Gtk::CAN_FOCUS);
+	YearSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
+	YearSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC,
+			Gtk::POLICY_AUTOMATIC);
+
 	hPaned.set_flags(Gtk::CAN_FOCUS);
 	summaryTabs.set_flags(Gtk::CAN_FOCUS);
 	summaryTabs.set_size_request(250, 150);
@@ -174,6 +180,7 @@ void MainWindow::emptyContainers()
 	removeChildren(DaySummaryContainer);
 	removeChildren(WeekSummaryContainer);
 	removeChildren(MonthSummaryContainer);
+	removeChildren(YearSummaryContainer);
 	removeChildren(summaryTabs);
 }
 
@@ -219,9 +226,12 @@ void MainWindow::defaultLayout()
 				DaySummaryContainer.add(daySummary);
 				WeekSummaryContainer.add(weekSummary);
 				MonthSummaryContainer.add(monthSummary);
+				YearSummaryContainer.add(yearSummary);
 				summaryTabs.append_page(DaySummaryContainer, labelDay);
 				summaryTabs.append_page(WeekSummaryContainer, labelWeek);
 				summaryTabs.append_page(MonthSummaryContainer, labelMonth);
+				summaryTabs.append_page(YearSummaryContainer, labelYear);
+
 			}
 		}
 
@@ -251,9 +261,11 @@ void MainWindow::classicLayout()
 					DaySummaryContainer.add(daySummary);
 					WeekSummaryContainer.add(weekSummary);
 					MonthSummaryContainer.add(monthSummary);
+					YearSummaryContainer.add(yearSummary);
 					summaryTabs.append_page(DaySummaryContainer, labelDay);
 					summaryTabs.append_page(WeekSummaryContainer, labelWeek);
 					summaryTabs.append_page(MonthSummaryContainer, labelMonth);
+					summaryTabs.append_page(YearSummaryContainer, labelYear);
 				}
 			}
 

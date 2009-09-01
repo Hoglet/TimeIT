@@ -80,6 +80,27 @@ private:
 	}
 };
 
+class YearSummary: public Summary
+{
+public:
+	YearSummary( boost::shared_ptr<DB::Database>& database) :
+		Summary( database)
+	{
+		init();
+	}
+	;
+	virtual ~YearSummary()
+	{
+	}
+	;
+private:
+	virtual void calculateTimeSpan()
+	{
+		startTime = Utils::getBeginingOfYear(activeDay);
+		stopTime = Utils::getEndOfYear(activeDay);
+	}
+};
+
 }
 }
 #endif /* DAYSUMMARY_H_ */
