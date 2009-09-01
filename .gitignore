@@ -40,4 +40,4 @@ test.db.lock
 timeit-*.tar.gz
 build
 configure
-
+Debug

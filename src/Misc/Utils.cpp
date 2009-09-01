@@ -13,6 +13,8 @@
 #include "OSAbstraction.h"
 #include "time.h"
 #include <iomanip>
+#include <langinfo.h>
+
 
 using namespace Glib;
 using namespace std;
@@ -47,8 +49,8 @@ int getDayOfWeek(struct tm * timeInfo)
 {
 	int dow=timeInfo->tm_wday;
 	int retVal=dow;
-	//ToDo Get start day of week from locale
-	int weekStartsOnDay = 1; //Always start on Monday for now
+
+	int weekStartsOnDay = *(nl_langinfo(_NL_TIME_FIRST_WEEKDAY)) - 1;
 	retVal = retVal - weekStartsOnDay;
 	if(retVal<0)
 	{
