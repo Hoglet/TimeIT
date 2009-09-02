@@ -51,6 +51,7 @@ private:
 	virtual void on_action_revertAndContinue();
 	virtual void on_action_revertAndStop();
 	virtual void on_action_continue();
+	virtual void on_action_stopTimers();
 
 	int mainWindow_x;
 	int mainWindow_y;

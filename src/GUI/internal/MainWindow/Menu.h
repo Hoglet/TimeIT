@@ -39,6 +39,7 @@ private:
 	void on_menu_add_time();
 	void on_menu_start();
 	void on_menu_stop();
+	void on_menu_stop_all();
 	void on_menu_edit();
 	void on_menu_preferences();
 

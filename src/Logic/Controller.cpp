@@ -149,6 +149,10 @@ void Controller::on_action_continue()
 		idleDialog.reset();
 	}
 }
+void Controller::on_action_stopTimers()
+{
+	timeKeeper->stopAll();
+}
 
 void Controller::on_action_task_selection_changed(int selectedTaskID)
 {

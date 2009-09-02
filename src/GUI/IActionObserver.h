@@ -24,6 +24,7 @@ public:
 	virtual void on_action_quit()=0;
 	virtual void on_action_preferences()=0;
 	virtual void on_action_toggleMainWindow() {};
+	virtual void on_action_stopTimers() {};
 	//Idle dialog:
 	virtual void on_action_revertAndStop() {};
 	virtual void on_action_revertAndContinue() {};

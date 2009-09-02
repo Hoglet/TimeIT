@@ -39,6 +39,8 @@ StatusIcon::StatusIcon(boost::shared_ptr<ITimeKeeper>& timekeeper): m_timekeeper
 
 		menulist.push_back( Gtk::Menu_Helpers::MenuElem(_("Toggle main window"),
 		  sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open) ) );
+		menulist.push_back( Gtk::Menu_Helpers::MenuElem(_("Stop all timers"),
+		  sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers) ) );
 		menulist.push_back( Gtk::Menu_Helpers::MenuElem(_("Quit"),
 		  sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit) ) );
 	}
@@ -85,6 +87,16 @@ void StatusIcon::on_menu_file_popup_quit()
 {
 	Gtk::Main::quit();
 }
+void StatusIcon::on_menu_stop_all_timers()
+{
+	std::list<IActionObserver*>::iterator iter;
+	for (iter = observers.begin(); iter != observers.end(); iter++)
+	{
+		IActionObserver* observer = *iter;
+		observer->on_action_stopTimers();
+	}
+}
+
 void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 {
 	m_Menu_Popup.popup(button, activate_time);

@@ -33,6 +33,7 @@ private:
 	void toggleMainWindow();
 	void on_menu_file_popup_quit();
 	void on_menu_file_popup_open();
+	void on_menu_stop_all_timers();
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_runningIcon;

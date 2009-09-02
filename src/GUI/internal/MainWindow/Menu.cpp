@@ -24,6 +24,8 @@ Menu::Menu()
 	m_taskMenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(this, &Menu::on_menu_stop)));
 	taskIDDependentMenus.push_back(&(m_taskMenu.items().back()));
 
+	m_taskMenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all"), sigc::mem_fun(this, &Menu::on_menu_stop_all)));
+
 	m_taskMenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit"), sigc::mem_fun(this, &Menu::on_menu_edit)));
 	taskIDDependentMenus.push_back(&(m_taskMenu.items().back()));
 
@@ -143,6 +145,16 @@ void Menu::on_menu_stop()
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stop_task();
+	}
+}
+
+void Menu::on_menu_stop_all()
+{
+	std::list<IActionObserver*>::iterator iter;
+	for (iter = observers.begin(); iter != observers.end(); iter++)
+	{
+		IActionObserver* observer = *iter;
+		observer->on_action_stopTimers();
 	}
 }
 
