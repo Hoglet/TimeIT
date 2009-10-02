@@ -128,7 +128,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 }
 void GUIFactory::on_mainWindow_hide()
 {
-	mainWindow.reset();
+	//mainWindow.reset();
 }
 void GUIFactory::on_addTaskDialog_hide()
 {
