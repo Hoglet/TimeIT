@@ -43,6 +43,7 @@ private:
 	Gtk::Table TimeConstantTable;
 
 	Gtk::CheckButton CompactLayoutButton;
+	Gtk::CheckButton StartMinimizedButton;
 	Gtk::Label	GzLabel;
 	Gtk::Label	GtLabel;
 	Gtk::SpinButton	GzEntry;
@@ -56,9 +57,11 @@ private:
 	int		gz;
 	int		gt;
 	bool	compactLayout;
+	bool	startMinimized;
 	int		oldGz;
 	int 	oldGt;
 	bool	oldCompactLayout;
+	bool 	oldStartMinimized;
 
 	void on_data_changed();
 

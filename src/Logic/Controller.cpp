@@ -11,13 +11,16 @@
 #include <IDetailsDialog.h>
 #include <OSAbstraction.h>
 #include <iostream>
+#include <Utils.h>
+#include <DefaultValues.h>
 //TODO Remove references to gtk
 #include <gtkmm.h>
 
 using namespace GUI;
 
-Controller::Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory, boost::shared_ptr<ITimeKeeper>& timeKeeper)
+Controller::Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory, boost::shared_ptr<ITimeKeeper>& timeKeeper, boost::shared_ptr<DB::Database>& database)
 {
+	settingsAccessor = database->getSettingsAccessor();
 	selectedTaskID = -1;
 	this->timeKeeper = timeKeeper;
 	this->guiFactory = guiFactory;
@@ -34,6 +37,12 @@ void Controller::start()
 {
 	guiFactory->getStatusIcon().show();
 	guiFactory->getStatusIcon().attach(this);
+	if(!settingsAccessor->GetBoolByName("StartMinimized",DEFAULT_START_MINIMIZED))
+	{
+		WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
+		mainWindow->attach(this);
+		mainWindow->show();
+	}
 }
 
 void Controller::on_action_quit()
@@ -70,7 +79,29 @@ void Controller::on_action_about()
 
 void Controller::on_action_help()
 {
-	OSAbstraction::showURL("http://devcorner.solit.se/wiki/TimeIT%20help%20page");
+	std::stringstream translatedHelp;
+	std::stringstream helpToUse;
+	translatedHelp<<PACKAGE_DATA_DIR<<"/doc/timeit/html/"<< Utils::get639LanguageString() <<"/index.html";
+	if(Utils::fileExists(std::string(translatedHelp.str())))
+	{
+		helpToUse<<"file://"<<translatedHelp.str();
+	}
+	else
+	{
+		std::stringstream defaultHelp;
+		defaultHelp << PACKAGE_DATA_DIR<<"/doc/timeit/html/C/index.html";
+		if(Utils::fileExists(std::string(defaultHelp.str())))
+		{
+			helpToUse<<"file://"<<defaultHelp.str();
+		}
+		else
+		{
+			std::cerr<<defaultHelp.str()<<"did not exist\n";
+			helpToUse<<"http://devcorner.solit.se/wiki/TimeIT%20help%20page";
+		}
+	}
+	const char * helpfile=helpToUse.str().c_str();
+	OSAbstraction::showURL(helpfile);
 }
 void Controller::on_action_start_task()
 {

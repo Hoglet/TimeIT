@@ -13,6 +13,8 @@
 namespace Utils
 {
 	std::string getImagePath();
+	std::string get639LanguageString();
+	bool   fileExists(const std::string&);
 	time_t getTime(int year,int month,int day,int hour=0, int min=0, int sec=0);
 	time_t getBeginingOfDay(const time_t&);
 	time_t getEndOfDay(const time_t&);

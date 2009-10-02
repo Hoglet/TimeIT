@@ -13,11 +13,13 @@
 #include <ITimeKeeper.h>
 #include <ITaskAccessor.h>
 #include <ISummary.h>
+#include <ISettingsAccessor.h>
+#include <Database.h>
 
 class Controller : public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
 {
 public:
-	Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory,boost::shared_ptr<ITimeKeeper>& timeKeeper);
+	Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory, boost::shared_ptr<ITimeKeeper>& timeKeeper, boost::shared_ptr<DB::Database>& database );
 	virtual ~Controller();
 	void start();
 private:
@@ -25,6 +27,7 @@ private:
 	boost::shared_ptr<ITimeKeeper> timeKeeper;
 	boost::shared_ptr<IIdleDialog> idleDialog;
 	boost::shared_ptr<ITaskAccessor> taskAccessor;
+	boost::shared_ptr<ISettingsAccessor> settingsAccessor;
 
 	//Action observers
 	virtual void on_action_task_selection_changed(int selectedTaskID);

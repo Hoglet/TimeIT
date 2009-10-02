@@ -19,11 +19,15 @@ PreferenceDialog::PreferenceDialog(boost::shared_ptr<DB::Database>& database) :
 {
 	settingsAccessor=database->getSettingsAccessor();
 	CompactLayoutButton.set_label(_("Compact layout"));
-	CompactLayoutButton.set_active(true);
+	StartMinimizedButton.set_label(_("Start minimized"));
+
+
 	get_vbox()->pack_start(CompactLayoutButton, Gtk::PACK_EXPAND_WIDGET, 3);
+	get_vbox()->pack_start(StartMinimizedButton, Gtk::PACK_EXPAND_WIDGET, 3);
 
 	/** Listeners **/
 	CompactLayoutButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
+	StartMinimizedButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GzEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GtEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	/******/
@@ -68,16 +72,19 @@ PreferenceDialog::~PreferenceDialog()
 void PreferenceDialog::set_values()
 {
 	oldCompactLayout = settingsAccessor->GetBoolByName("CompactLayout",DEFAULT_COMPACTLAYOUT);
+	oldStartMinimized = settingsAccessor->GetBoolByName("StartMinimized",DEFAULT_START_MINIMIZED);
 	oldGt = settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
 	oldGz = settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
 	GzEntry.set_value(oldGz);
 	GtEntry.set_value(oldGt);
 	CompactLayoutButton.set_active(oldCompactLayout);
+	StartMinimizedButton.set_active(oldStartMinimized);
 }
 
 void PreferenceDialog::get_values()
 {
 	compactLayout=CompactLayoutButton.get_active();
+	startMinimized=StartMinimizedButton.get_active();
 	gz=GzEntry.get_value_as_int();
 	gt=GtEntry.get_value_as_int();
 }
@@ -89,7 +96,8 @@ void PreferenceDialog::on_data_changed()
 	    (
 	      gz!=oldGz ||
 	      gt!=oldGt ||
-	      compactLayout!=oldCompactLayout
+	      compactLayout!=oldCompactLayout ||
+	      startMinimized!=oldStartMinimized
 	    )
 	   )
 	{
@@ -122,6 +130,10 @@ void PreferenceDialog::on_OKButton_clicked()
 	{
 		settingsAccessor->SetIntByName("Gt",gt);
 		oldGt=gt;
+	}
+	if(startMinimized!=oldStartMinimized)
+	{
+		settingsAccessor->SetBoolByName("StartMinimized",startMinimized);
 	}
 	hide();
 }

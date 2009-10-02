@@ -1,3 +1,15 @@
+timeit (0.9.6.b2) jaunty; urgency=low
+
+  * Moved the documentation into correct place and made timeit use it 
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 26 Sep 2009 21:26:46 +0200
+
+timeit (0.9.6b1) jaunty; urgency=low
+
+  * Added structure for local html-documentation 
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 26 Sep 2009 10:58:37 +0200
+
 timeit (0.9.5) jaunty; urgency=low
 
   * Feature: Stop all timers

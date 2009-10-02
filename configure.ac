@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(timeit, 0.9.5, http://devcorner.solit.se/project/timeit/)
+AC_INIT(timeit, 0.9.6b2, http://devcorner.solit.se/project/timeit/)
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -41,4 +41,8 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 po/Makefile.in
+doc/Makefile
+doc/html/Makefile
+doc/html/C/Makefile
+images/Makefile
 ])

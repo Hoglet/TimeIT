@@ -1,0 +1,3 @@
+#Mon Aug 31 21:01:32 CEST 2009
+eclipse.preferences.version=1
+environment/project/org.eclipse.linuxtools.cdt.autotools.configuration.build.686144874=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<environment append\="true" appendContributed\="true">\n<variable delimiter\=";" name\="CXXFLAGS" operation\="append" value\="-g -O0"/>\n<variable delimiter\=";" name\="CFLAGS" operation\="append" value\="-g -O0"/>\n</environment>\n

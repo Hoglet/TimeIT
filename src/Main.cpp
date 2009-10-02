@@ -105,7 +105,7 @@ int Main::run()
 			guiFactory = boost::shared_ptr<GUI::GUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
 
 			AutoTracker autotracker(timekeeper, database, timer);
-			Controller controller(guiFactory, timekeeper);
+			Controller controller(guiFactory, timekeeper,database);
 			controller.start();
 			//Then start message loop
 			guiFactory->run();

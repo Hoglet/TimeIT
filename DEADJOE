@@ -1,0 +1,73 @@
+
+*** These modified files were found in JOE when it aborted on Tue Sep 15 22:12:25 2009
+*** JOE was aborted by UNIX signal 1
+
+*** File 'Makefile.am'
+## Process this file with automake to produce Makefile.in
+## Created by Anjuta
+
+ACLOCAL_AMFLAGS = -I m4
+
+SUBDIRS = src po 
+
+timeitdocdir = ${prefix}/doc/timeit
+timeitdoc_DATA = \
+	README\
+	COPYING\
+	AUTHORS\
+	ChangeLog\
+	INSTALL\
+	NEWS 
+	
+timeiticondir = ${prefix}/share/pixmaps
+
+timeiticon_DATA = \
+	images/timeit.svg
+
+
+timeitlauncherdir = ${prefix}/share/applications
+
+timeitlauncher_DATA = \
+	timeit.desktop
+
+EXTRA_DIST = $(timeitdoc_DATA) \
+	$(images_DATA) \
+	TODO.tasks \
+	gpl-2.0.txt \
+	debian \
+	$(timeitlauncher_DATA)
+
+images_DATA = \
+	images/blank.png\
+	images/blank.svg \
+	images/icon.svg \
+	images/problem.png \
+	images/running.svg \
+	images/timeit.svg
+
+imagesdir = \
+	$(pkgdatadir)
+
+
+
+# Copy all the spec files. Of cource, only one is actually used.
+dist-hook:
+	for specfile in *.spec; do \
+		if test -f $$specfile; then \
+			cp -p $$specfile $(distdir); \
+		fi \
+	done
+
+
+*** File '(Unnamed)'
+iso_player-vlc.sh
+.gitignore
+src/Makefile.am
+debian/changelog.dch
+configure.ac
+/etc/hosts
+/etc/hosts
+/etc/hosts
+/etc/hosts
+/etc/backup2l.conf
+Makefile.am

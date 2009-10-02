@@ -11,6 +11,6 @@
 #define DEFAULT_GZ 1
 #define DEFAULT_GT 7
 #define DEFAULT_COMPACTLAYOUT true
-
+#define DEFAULT_START_MINIMIZED false
 
 #endif /* DEFAULTVALUES_H_ */

@@ -3,9 +3,10 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src po 
+SUBDIRS = src po \
+	doc  images
 
-timeitdocdir = ${prefix}/doc/timeit
+timeitdocdir = ${datadir}/doc/timeit
 timeitdoc_DATA = \
 	README\
 	COPYING\
@@ -13,13 +14,6 @@ timeitdoc_DATA = \
 	ChangeLog\
 	INSTALL\
 	NEWS
-
-
-timeiticondir = ${prefix}/share/pixmaps
-
-timeiticon_DATA = \
-	images/timeit.svg
-
 
 timeitlauncherdir = ${prefix}/share/applications
 
@@ -32,17 +26,6 @@ EXTRA_DIST = $(timeitdoc_DATA) \
 	gpl-2.0.txt \
 	debian \
 	$(timeitlauncher_DATA)
-
-images_DATA = \
-	images/blank.png\
-	images/blank.svg \
-	images/icon.svg \
-	images/problem.png \
-	images/running.svg \
-	images/timeit.svg
-
-imagesdir = \
-	$(pkgdatadir)
 
 
 

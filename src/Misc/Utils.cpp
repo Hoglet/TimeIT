@@ -14,7 +14,7 @@
 #include "time.h"
 #include <iomanip>
 #include <langinfo.h>
-
+#include <sys/stat.h>
 
 using namespace Glib;
 using namespace std;
@@ -24,6 +24,19 @@ namespace Utils
 std::string getImagePath()
 {
 	return PROGRAMNAME_DATADIR;
+}
+
+std::string get639LanguageString()
+{
+	std::string retVal=setlocale(LC_ALL,NULL);
+	retVal = retVal.substr(0,2);
+	return retVal;
+}
+
+bool fileExists(const std::string& filename)
+{
+	struct stat fileInfo;
+	return (stat(filename.c_str(),&fileInfo) == 0);
 }
 
 time_t getBeginingOfDay(const time_t& rawtime)
