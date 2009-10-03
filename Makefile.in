@@ -66,14 +66,11 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(imagesdir)" "$(DESTDIR)$(timeitdocdir)" \
-	"$(DESTDIR)$(timeiticondir)" "$(DESTDIR)$(timeitlauncherdir)"
-imagesDATA_INSTALL = $(INSTALL_DATA)
+am__installdirs = "$(DESTDIR)$(timeitdocdir)" \
+	"$(DESTDIR)$(timeitlauncherdir)"
 timeitdocDATA_INSTALL = $(INSTALL_DATA)
-timeiticonDATA_INSTALL = $(INSTALL_DATA)
 timeitlauncherDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(images_DATA) $(timeitdoc_DATA) $(timeiticon_DATA) \
-	$(timeitlauncher_DATA)
+DATA = $(timeitdoc_DATA) $(timeitlauncher_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -236,8 +233,10 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src po 
-timeitdocdir = ${prefix}/doc/timeit
+SUBDIRS = src po \
+	doc  images
+
+timeitdocdir = ${datadir}/doc/timeit
 timeitdoc_DATA = \
 	README\
 	COPYING\
@@ -245,10 +244,6 @@ timeitdoc_DATA = \
 	ChangeLog\
 	INSTALL\
 	NEWS
-
-timeiticondir = ${prefix}/share/pixmaps
-timeiticon_DATA = \
-	images/timeit.svg
 
 timeitlauncherdir = ${prefix}/share/applications
 timeitlauncher_DATA = \
@@ -260,17 +255,6 @@ EXTRA_DIST = $(timeitdoc_DATA) \
 	gpl-2.0.txt \
 	debian \
 	$(timeitlauncher_DATA)
-
-images_DATA = \
-	images/blank.png\
-	images/blank.svg \
-	images/icon.svg \
-	images/problem.png \
-	images/running.svg \
-	images/timeit.svg
-
-imagesdir = \
-	$(pkgdatadir)
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -335,23 +319,6 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool config.lt
-install-imagesDATA: $(images_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(imagesdir)" || $(MKDIR_P) "$(DESTDIR)$(imagesdir)"
-	@list='$(images_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(imagesDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(imagesdir)/$$f'"; \
-	  $(imagesDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(imagesdir)/$$f"; \
-	done
-
-uninstall-imagesDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(images_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(imagesdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(imagesdir)/$$f"; \
-	done
 install-timeitdocDATA: $(timeitdoc_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(timeitdocdir)" || $(MKDIR_P) "$(DESTDIR)$(timeitdocdir)"
@@ -368,23 +335,6 @@ uninstall-timeitdocDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(timeitdocdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(timeitdocdir)/$$f"; \
-	done
-install-timeiticonDATA: $(timeiticon_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(timeiticondir)" || $(MKDIR_P) "$(DESTDIR)$(timeiticondir)"
-	@list='$(timeiticon_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(timeiticonDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(timeiticondir)/$$f'"; \
-	  $(timeiticonDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(timeiticondir)/$$f"; \
-	done
-
-uninstall-timeiticonDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(timeiticon_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(timeiticondir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(timeiticondir)/$$f"; \
 	done
 install-timeitlauncherDATA: $(timeitlauncher_DATA)
 	@$(NORMAL_INSTALL)
@@ -690,7 +640,7 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(imagesdir)" "$(DESTDIR)$(timeitdocdir)" "$(DESTDIR)$(timeiticondir)" "$(DESTDIR)$(timeitlauncherdir)"; do \
+	for dir in "$(DESTDIR)$(timeitdocdir)" "$(DESTDIR)$(timeitlauncherdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -737,8 +687,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-imagesDATA install-timeitdocDATA \
-	install-timeiticonDATA install-timeitlauncherDATA
+install-data-am: install-timeitdocDATA install-timeitlauncherDATA
 
 install-dvi: install-dvi-recursive
 
@@ -774,8 +723,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-imagesDATA uninstall-timeitdocDATA \
-	uninstall-timeiticonDATA uninstall-timeitlauncherDATA
+uninstall-am: uninstall-timeitdocDATA uninstall-timeitlauncherDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) install-am \
 	install-strip
@@ -789,16 +737,14 @@ uninstall-am: uninstall-imagesDATA uninstall-timeitdocDATA \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-imagesDATA install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip install-timeitdocDATA \
-	install-timeiticonDATA install-timeitlauncherDATA installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-imagesDATA \
-	uninstall-timeitdocDATA uninstall-timeiticonDATA \
-	uninstall-timeitlauncherDATA
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip install-timeitdocDATA install-timeitlauncherDATA \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-timeitdocDATA uninstall-timeitlauncherDATA
 
 
 # Copy all the spec files. Of cource, only one is actually used.

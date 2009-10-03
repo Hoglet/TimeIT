@@ -62,6 +62,8 @@ private:
 	time_t  oldStopTime;
 	time_t  startTime;
 	time_t  stopTime;
+	time_t  rangeStart;
+	time_t  rangeStop;
 	int64_t id;
 	int64_t timeEntryID;
 	boost::weak_ptr<DetailsDialog> weak_this_ptr;

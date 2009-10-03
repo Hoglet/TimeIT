@@ -14,7 +14,8 @@ namespace GUI
 {
 namespace Internal
 {
-boost::shared_ptr<DetailsDialog> DetailsDialog::create(boost::shared_ptr<DB::Database>& database)
+boost::shared_ptr<DetailsDialog> DetailsDialog::create(boost::shared_ptr<
+		DB::Database>& database)
 {
 	boost::shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
 	retVal->weak_this_ptr = boost::weak_ptr<DetailsDialog>(retVal);
@@ -22,8 +23,10 @@ boost::shared_ptr<DetailsDialog> DetailsDialog::create(boost::shared_ptr<DB::Dat
 }
 
 DetailsDialog::DetailsDialog(boost::shared_ptr<DB::Database>& database) :
-	detailList(*this, database), table(4, 4), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
-			"gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply"))
+	detailList(*this, database), table(4, 4), startTimeLabel(_("Start time")),
+			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
+					"gtk-revert-to-saved")),
+			OKButton(Gtk::StockID("gtk-apply"))
 {
 	timeAccessor = database->getTimeAccessor();
 	startTimeHour.set_range(0, 23);
@@ -60,12 +63,18 @@ DetailsDialog::DetailsDialog(boost::shared_ptr<DB::Database>& database) :
 	show_all_children();
 
 	//Connect signals
-	OKButton.signal_clicked().connect(sigc::mem_fun(this, &DetailsDialog::on_OKButton_clicked));
-	CancelButton.signal_clicked().connect(sigc::mem_fun(this, &DetailsDialog::on_CancelButton_clicked));
-	startTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	startTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	stopTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
+	OKButton.signal_clicked().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_OKButton_clicked));
+	CancelButton.signal_clicked().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_CancelButton_clicked));
+	startTimeHour.signal_value_changed().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_change));
+	startTimeMinute.signal_value_changed().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_change));
+	stopTimeHour.signal_value_changed().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_change));
+	stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this,
+			&DetailsDialog::on_change));
 
 	detailList.attach(this);
 
@@ -92,7 +101,7 @@ void DetailsDialog::on_OKButton_clicked()
 	{
 		timeAccessor->changeEndTime(timeEntryID, stopTime);
 	}
-	detailList.set(id, startTime, stopTime);
+	detailList.set(id, rangeStart, rangeStop);
 	checkForChanges();
 }
 void DetailsDialog::on_CancelButton_clicked()
@@ -127,14 +136,19 @@ void DetailsDialog::setValues()
 	stopTimeHour.set_value(stopTimeInfo.tm_hour);
 	stopTimeMinute.set_value(stopTimeInfo.tm_min);
 }
-void DetailsDialog::on_selection_changed(int64_t ID, time_t startTime, time_t stopTime)
+
+void DetailsDialog::on_selection_changed(int64_t ID, time_t startTime,
+		time_t stopTime)
 {
 	set(ID, startTime, stopTime);
 }
 void DetailsDialog::set(int64_t ID, time_t startTime, time_t stopTime)
 {
 	timeEntryID = 0;
-	detailList.set(ID, startTime, stopTime);
+	id = ID;
+	rangeStart = startTime;
+	rangeStop = stopTime;
+	detailList.set(ID, rangeStart, rangeStop);
 	checkForChanges();
 }
 
@@ -171,7 +185,8 @@ void DetailsDialog::setTimeEntryID(int64_t id)
 
 void DetailsDialog::checkForChanges()
 {
-	if (timeEntryID > 0 && (oldStartTime != startTime || oldStopTime != stopTime))
+	if (timeEntryID > 0 && (oldStartTime != startTime || oldStopTime
+			!= stopTime))
 	{
 		OKButton.set_sensitive(true);
 		CancelButton.set_sensitive(true);
