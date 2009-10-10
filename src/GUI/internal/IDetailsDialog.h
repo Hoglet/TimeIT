@@ -16,7 +16,6 @@ class IDetailsDialog
 public:
 	virtual void setTimeEntryID(int64_t id) = 0;
 	virtual void set(int64_t ID,time_t startTime,time_t stopTime) = 0;
-	virtual void observe(ISummary* weak_this_ptr) = 0;
 	virtual void  show() = 0;
 };
 

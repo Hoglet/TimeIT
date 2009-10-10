@@ -86,11 +86,6 @@ DetailsDialog::~DetailsDialog()
 {
 }
 
-void DetailsDialog::observe(ISummary* summary)
-{
-	summary->attach(this);
-}
-
 void DetailsDialog::on_OKButton_clicked()
 {
 	if (startTime != oldStartTime)
@@ -102,6 +97,8 @@ void DetailsDialog::on_OKButton_clicked()
 		timeAccessor->changeEndTime(timeEntryID, stopTime);
 	}
 	detailList.set(id, rangeStart, rangeStop);
+	oldStartTime = startTime;
+	oldStopTime = stopTime;
 	checkForChanges();
 }
 void DetailsDialog::on_CancelButton_clicked()

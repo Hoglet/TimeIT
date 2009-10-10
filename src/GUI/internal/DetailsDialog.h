@@ -27,7 +27,6 @@ public:
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
-	void observe(ISummary*);
 
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }

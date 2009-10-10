@@ -210,7 +210,6 @@ void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t 
 	boost::shared_ptr<IDetailsDialog> detailsDialog = boost::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
 	if(detailsDialog)
 	{
-		detailsDialog->observe(summary);
 		detailsDialog->set(taskId,startTime,stopTime);
 		detailsDialog->show();
 	}
