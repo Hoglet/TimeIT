@@ -89,6 +89,7 @@ void MainWindow::detach(SummaryObserver* observer)
 
 void MainWindow::attach(IActionObserver* observer)
 {
+	detach(observer); //To avoid duplicates
 	taskList.attach(observer);
 	toolbar.attach(observer);
 	menubar.attach(observer);
@@ -104,6 +105,11 @@ void MainWindow::detach(IActionObserver* observer)
 	taskList.detach(observer);
 	toolbar.detach(observer);
 	menubar.detach(observer);
+	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*> (observer);
+	if (sObserver)
+	{
+		detach(sObserver);
+	}
 }
 
 void MainWindow::relateWidgets()
