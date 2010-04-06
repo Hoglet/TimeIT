@@ -21,11 +21,14 @@
 <folderInfo id="org.eclipse.linuxtools.cdt.autotools.configuration.build.686144874." name="/" resourcePath="">
 <toolChain errorParsers="" id="org.eclipse.linuxtools.cdt.autotools.toolChain.1161425034" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.toolChain">
 <targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF" id="org.eclipse.linuxtools.cdt.autotools.toolchain.targetPlatform.246466507" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.toolchain.targetPlatform"/>
-<builder buildPath="${workspace_loc:/timeit/build}" enableAutoBuild="true" enableCleanBuild="false" id="org.eclipse.linuxtools.cdt.autotools.toolchain.builder.306953186" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Autotools Makefile Generator" superClass="org.eclipse.linuxtools.cdt.autotools.toolchain.builder.306953186"/>
+<builder arguments="-j2" buildPath="${workspace_loc:/timeit/build}" enableAutoBuild="true" enableCleanBuild="false" id="org.eclipse.linuxtools.cdt.autotools.toolchain.builder.306953186" keepEnvironmentInBuildfile="false" name="Autotools Makefile Generator"/>
 <tool command="configure" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="" id="org.eclipse.linuxtools.cdt.autotools.gnu.toolchain.tool.configure.899891293" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.gnu.toolchain.tool.configure">
 <option id="org.eclipse.linuxtools.cdt.autotools.option.configure.enable_maintainer_mode.875068975" name="Enable maintainer mode (--enable-maintainer-mode)" superClass="org.eclipse.linuxtools.cdt.autotools.option.configure.enable_maintainer_mode" value="false" valueType="boolean"/>
 <option id="org.eclipse.linuxtools.cdt.autotools.option.configure.user.360063381" name="User-specified configuration options" superClass="org.eclipse.linuxtools.cdt.autotools.option.configure.user" value="--prefix=/usr/" valueType="string"/>
 <option id="org.eclipse.linuxtools.cdt.autotools.option.program_suffix.1934797119" name="Installed program suffix (--program-suffix)" superClass="org.eclipse.linuxtools.cdt.autotools.option.program_suffix" value="-debug" valueType="string"/>
+<option id="org.eclipse.linuxtools.cdt.autotools.option.configure.includes.1214994156" name="includes" superClass="org.eclipse.linuxtools.cdt.autotools.option.configure.includes" valueType="includePath">
+<listOptionValue builtIn="false" value="/usr/include/gtkmm-2.4"/>
+</option>
 <inputType id="org.eclipse.linuxtools.cdt.autotools.inputType.configure.625175076" superClass="org.eclipse.linuxtools.cdt.autotools.inputType.configure"/>
 <inputType id="org.eclipse.linuxtools.cdt.autotools.inputType.configure1.1848536531" superClass="org.eclipse.linuxtools.cdt.autotools.inputType.configure1"/>
 </tool>
@@ -332,6 +335,14 @@
 <buildCommand>make</buildCommand>
 <buildArguments/>
 <buildTarget>dist-tarZ</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+<runAllBuilders>false</runAllBuilders>
+</target>
+<target name="dist-xz" path="" targetID="org.eclipse.linuxtools.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments/>
+<buildTarget>dist-xz</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 <runAllBuilders>false</runAllBuilders>

@@ -9,7 +9,6 @@ SUBDIRS = src po \
 timeitdocdir = ${datadir}/doc/timeit
 timeitdoc_DATA = \
 	README\
-	COPYING\
 	AUTHORS\
 	ChangeLog\
 	INSTALL\
