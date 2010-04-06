@@ -5,10 +5,12 @@
 #include <string>
 #include <vector>
 #include "DataCell.h"
+#include <stdint.h>
 
 
 namespace DBAbstraction
 {
+
 class CSQL
 {
 public:

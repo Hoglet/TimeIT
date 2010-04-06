@@ -32,15 +32,13 @@ void dbexception::setReturnCode(int op1)
 	returnCode=op1;
 }
 
-const char* dbexception::rc2string() const
+std::string dbexception::rc2string() const
 {
-	static char tmp[10];
-	static const char* retVal="";
+	stringstream str;
 	switch(returnCode)
 	{
 	default:
-		sprintf(tmp,"Error %d",returnCode);
-		retVal=tmp;
+		str<<"Error "<<returnCode;
 	}
-	return retVal;
+	return str.str();
 }

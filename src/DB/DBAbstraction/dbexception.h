@@ -15,7 +15,7 @@ public:
 private:
 	std::string message;
 	int returnCode;
-	const char* rc2string() const;
+	std::string rc2string() const;
 };
 
 #endif /*DBEXCEPTION_H_*/

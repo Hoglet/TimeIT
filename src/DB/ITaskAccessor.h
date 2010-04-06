@@ -10,6 +10,7 @@
 
 #include <Task.h>
 #include <vector>
+#include <stdint.h>
 
 class TaskAccessorObserver
 {
