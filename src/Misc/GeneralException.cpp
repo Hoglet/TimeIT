@@ -1,0 +1,29 @@
+/*
+ * GeneralException.cpp
+ *
+ *  Created on: May 15, 2010
+ *      Author: hoglet
+ */
+
+#include "GeneralException.h"
+
+GeneralException::GeneralException()
+{
+	// TODO Auto-generated constructor stub
+	message = 0;
+}
+GeneralException::GeneralException(const char* op1)
+{
+	message = op1;
+}
+
+const char* GeneralException::what() const throw()
+{
+	return message;
+}
+
+
+GeneralException::~GeneralException() throw()
+{
+	// TODO Auto-generated destructor stub
+}

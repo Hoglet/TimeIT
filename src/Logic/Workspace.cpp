@@ -7,56 +7,16 @@
 
 
 #include "Workspace.h"
-#include <libwnck/workspace.h>
 #include <iostream>
-#include <gtkmm.h>
+#include <string.h>
 #include <string>
-//#include <vector>
 
-namespace
-{
-WnckWorkspace* getRightMostWorkspace()
-{
-	WnckScreen* wnckScreen = wnck_screen_get_default();
-	WnckWorkspace* pointer = wnck_screen_get_workspace(wnckScreen, 0);
-	WnckWorkspace* result=pointer;
-	while(pointer)
-	{
-		result=pointer;
-		pointer=wnck_workspace_get_neighbor(pointer, WNCK_MOTION_RIGHT);
-	}
-	return result;
-}
-WnckWorkspace* getLowestWorkspace()
-{
-	WnckScreen* wnckScreen = wnck_screen_get_default();
-	WnckWorkspace* pointer = wnck_screen_get_workspace(wnckScreen, 0);
-	WnckWorkspace* result=pointer;
-	while(pointer)
-	{
-		result=pointer;
-		pointer=wnck_workspace_get_neighbor(pointer, WNCK_MOTION_DOWN);
-	}
-	return result;
-}
-}
 
+using std::vector;
+using std::string;
 
 Workspace::Workspace()
 {
-	WnckScreen* wnckScreen = wnck_screen_get_default();
-	WnckWorkspace* wnckWorkspace=getLowestWorkspace();
-
-	numWorkspaces = wnck_screen_get_workspace_count(wnckScreen);
-	rows = wnck_workspace_get_layout_row(wnckWorkspace) + 1;
-
-	wnckWorkspace=getRightMostWorkspace();
-	columns = wnck_workspace_get_layout_column(wnckWorkspace) + 1;
-	if(rows*columns<numWorkspaces )
-	{
-		rows = 1;
-		columns = numWorkspaces;
-	}
 }
 
 Workspace::~Workspace()
@@ -65,28 +25,60 @@ Workspace::~Workspace()
 
 int Workspace::get_active()
 {
-	WnckScreen* wnckScreen = wnck_screen_get_default();
-	Glib::RefPtr<Gdk::Display> display = Gdk::Display::get_default();
-	WnckWorkspace* wnckWorkspace = wnck_screen_get_active_workspace(wnckScreen);
-	return wnck_workspace_get_number(wnckWorkspace);
+    return x11property.get_cardinal( "_NET_CURRENT_DESKTOP", 0);
 }
 std::string Workspace::get_name(int workspaceNR)
 {
-	WnckScreen* wnckScreen = wnck_screen_get_default();
-	WnckWorkspace* wnckWorkspace = wnck_screen_get_workspace(wnckScreen, workspaceNR);
-	std::string retVal=wnck_workspace_get_name(wnckWorkspace);
+	vector<string> names = x11property.get_strings ( "_NET_DESKTOP_NAMES");
+
+	std::string retVal;
+	if(names.size()>=workspaceNR)
+	{
+		retVal=names[workspaceNR];
+	}
 	return retVal;
 }
 int Workspace::get_numberOfColumns()
 {
-	return columns;
+	int columns = 0;
+	/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
+    columns = x11property.get_cardinal( "_NET_DESKTOP_LAYOUT", 1);
+    if(columns == 0)
+    {
+    	int rows = x11property.get_cardinal( "_NET_DESKTOP_LAYOUT", 2);
+    	if(rows!=0)
+    	{
+    		columns = (x11property.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0)+1)/rows;
+    	}
+    	else
+    	{
+    		columns=1;
+    	}
+    }
+    return columns;
+
 }
 int Workspace::get_numberOfRows()
 {
+	int rows = 1;
+    rows = x11property.get_cardinal( "_NET_DESKTOP_LAYOUT", 2);
+    if(rows == 0)
+    {
+    	int columns = x11property.get_cardinal( "_NET_DESKTOP_LAYOUT", 1);
+    	if(columns!=0)
+    	{
+    		rows= (x11property.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0)+1)/columns;
+    	}
+    	else
+    	{
+    		rows=1;
+    	}
+    }
 	return rows;
 }
 int Workspace::get_numberOfWorkspaces()
 {
-	return numWorkspaces;
+	return x11property.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0);
 }
+
 

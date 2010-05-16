@@ -10,34 +10,20 @@
 #include <Timer.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <X11/extensions/scrnsaver.h>
+#include <vector>
 
 namespace
 {
 const int secsPerMinute=60;
-Display* display = 0;
-XScreenSaverInfo* XInfo = 0;
 }
 
+using std::vector;
 
 
 IdleDetector::IdleDetector(const boost::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
-	int event_base, error_base;
-	if (display == 0)
-	{
-		display = XOpenDisplay(0);
-	}
-	if(XInfo==0)
-	{
-		XInfo = XScreenSaverAllocInfo();
-	}
-	IdleDetectionPossible = false;
-	if (XScreenSaverQueryExtension(display, &event_base, &error_base))
-	{
-		IdleDetectionPossible = true;
-	}
+	timeAdjuster = time(NULL) - getTimestamp();
 	idleSeconds = 0;
 	m_timer->attach(this);
 }
@@ -45,23 +31,21 @@ IdleDetector::IdleDetector(const boost::shared_ptr<Timer>& timer)
 IdleDetector::~IdleDetector()
 {
 	m_timer->detach(this);
-	if (XInfo)
-	{
-		//TODO safer allocation/dealocation!
-		XFree(XInfo);
-	}
 }
 void IdleDetector::on_signal_10_seconds()
 {
 	pollStatus();
 }
+
+long IdleDetector::getTimestamp()
+{
+	return x11property.get_cardinal( "_NET_WM_USER_TIME",0);
+}
 void IdleDetector::pollStatus()
 {
-	if (IdleDetectionPossible)
-	{
-		XScreenSaverQueryInfo(display, XRootWindow(display,0), XInfo);
-		idleSeconds = (XInfo->idle / 1000);
-	}
+    long now=time(NULL);
+    long lastAction = timeAdjuster + getTimestamp();
+	idleSeconds = now-lastAction;
 }
 
 int IdleDetector::minutesIdle()

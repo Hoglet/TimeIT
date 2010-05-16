@@ -8,6 +8,7 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 #include <string>
+#include <X11Property.h>
 
 class Workspace
 {
@@ -22,8 +23,7 @@ public:
 	int get_numberOfWorkspaces();
 private:
 	int numWorkspaces;
-	int rows;
-	int columns;
+	X11Property x11property;
 };
 
 #endif /* WORKSPACE_H_ */

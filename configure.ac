@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(timeit, 0.9.6b2, http://devcorner.solit.se/project/timeit/)
+AC_INIT(timeit, 0.9.6b3, http://devcorner.solit.se/project/timeit/)
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -29,12 +29,12 @@ AM_PROG_LIBTOOL
 
 
 
-PKG_CHECK_MODULES(TIMEIT, [gtkmm-2.4 >= 2.8 libwnck-1.0 sqlite3 xscrnsaver])
+PKG_CHECK_MODULES(TIMEIT, [gtkmm-2.4 >= 2.8 sqlite3])
 AC_SUBST(TIMEIT_CFLAGS)
 AC_SUBST(TIMEIT_LIBS)
 
 AC_CONFIG_MACRO_DIR([m4])
-AX_BOOST_BASE([1.34])
+AX_BOOST_BASE([1.33])
 
 
 AC_OUTPUT([

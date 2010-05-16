@@ -42,6 +42,10 @@ timeit_SOURCES = \
 	Misc/Timer.h \
 	Misc/Utils.cpp \
 	Misc/Utils.h \
+	Misc/X11Property.cpp \
+	Misc/X11Property.h \
+	Misc/GeneralException.cpp \
+	Misc/GeneralException.h \
 	Logic/IdleDetector.cpp \
 	Logic/IdleDetector.h \
 	Logic/Workspace.cpp \
