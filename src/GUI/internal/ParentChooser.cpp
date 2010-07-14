@@ -121,7 +121,6 @@ void ParentChooser::populate(std::string& baseString, int parentID)
 
 ParentChooser::~ParentChooser()
 {
-	// TODO Auto-generated destructor stub
 }
 
 void ParentChooser::on_combo_changed()

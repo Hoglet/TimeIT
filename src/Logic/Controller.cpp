@@ -13,8 +13,7 @@
 #include <iostream>
 #include <Utils.h>
 #include <DefaultValues.h>
-//TODO Remove references to gtk
-#include <gtkmm.h>
+#include <GUIFactory.h>
 
 using namespace GUI;
 
@@ -47,14 +46,13 @@ void Controller::start()
 
 void Controller::on_action_quit()
 {
-	//TODO move to GUIFactory or something better
-	Gtk::Main::quit();
+	GUI::GUIFactory::quit();
 }
 
 void Controller::on_action_toggleMainWindow()
 {
 	static bool firstTime = true;
-	boost::shared_ptr<Gtk::Window> mainWindow(boost::dynamic_pointer_cast<Gtk::Window>(guiFactory->getWidget(MAIN_WINDOW)));
+	WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
 	if (mainWindow->is_visible())
 	{
 		mainWindow->get_position(mainWindow_x, mainWindow_y);

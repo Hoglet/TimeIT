@@ -56,7 +56,6 @@ Menu::Menu()
 
 Menu::~Menu()
 {
-	// TODO Auto-generated destructor stub
 }
 
 void Menu::setTaskIsSelected(bool show)

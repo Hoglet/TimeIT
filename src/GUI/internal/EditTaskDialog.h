@@ -26,8 +26,13 @@ public:
 	void on_data_changed();
 	virtual void setTaskID(int64_t);
 	virtual void setParent(int ID);
+
+	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
+	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
+	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
 	void createLayout();
 	void check4changes();

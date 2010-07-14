@@ -9,7 +9,6 @@
 
 GeneralException::GeneralException()
 {
-	// TODO Auto-generated constructor stub
 	message = 0;
 }
 GeneralException::GeneralException(const char* op1)
@@ -25,5 +24,5 @@ const char* GeneralException::what() const throw()
 
 GeneralException::~GeneralException() throw()
 {
-	// TODO Auto-generated destructor stub
+
 }

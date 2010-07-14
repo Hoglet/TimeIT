@@ -15,6 +15,10 @@ class IWidget
 public:
 	virtual void show() = 0;
 	virtual void hide() = 0;
+	virtual void move(int x, int y) = 0;
+	virtual bool is_visible() = 0;
+	virtual void get_position(int& Window_x, int& Window_y) = 0;
+
 	virtual void attach(IActionObserver*) {};
 	virtual void detach(IActionObserver*) {};
 };

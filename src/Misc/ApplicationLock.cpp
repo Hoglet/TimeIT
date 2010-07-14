@@ -7,7 +7,6 @@
 
 #include "ApplicationLock.h"
 #include "OSAbstraction.h"
-#include <gtkmm.h>
 #include <string>
 #include <iostream>
 #include <stdio.h>

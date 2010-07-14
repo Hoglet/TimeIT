@@ -27,14 +27,13 @@ class PreferenceDialog: public Gtk::Dialog, public IWidget
 public:
 	PreferenceDialog(boost::shared_ptr<DB::Database>& database);
 	virtual ~PreferenceDialog();
-	virtual void show()
-	{
-		Gtk::Dialog::show();
-	}
-	virtual void hide()
-	{
-		Gtk::Dialog::hide();
-	}
+
+	// IWidget interface
+	virtual void show() { Gtk::Dialog::show(); }
+	virtual void hide() { Gtk::Dialog::hide(); }
+	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
+	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
 	PreferenceDialog() {};
 	void on_CancelButton_clicked();
