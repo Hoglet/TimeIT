@@ -236,7 +236,7 @@ void TaskAccessor::setParentID(int64_t taskID, int parentID)
 
 void TaskAccessor::removeTask(int64_t taskID)
 {
-	//TODO Column running should be taken from time into v_tasks. (Avoid duplicate data)
+	//ENHANCEMENT Column running should be taken from time into v_tasks. (Avoid duplicate data)
 	Task task = getTask(taskID);
 	stringstream statement;
 	statement << "UPDATE tasks SET deleted = " << true;
@@ -260,7 +260,7 @@ void TaskAccessor::removeTask(int64_t taskID)
 
 void TaskAccessor::setTaskRunning(int64_t taskID, bool running)
 {
-	//TODO Column running should be taken from time into v_tasks. (Avoid duplicate data)
+	//ENHANCEMENT Column running should be taken from time into v_tasks. (Avoid duplicate data)
 	stringstream statement;
 	statement << "UPDATE tasks SET running = " << running;
 	statement << " WHERE id=" << taskID;

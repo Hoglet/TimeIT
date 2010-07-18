@@ -134,7 +134,7 @@ void Controller::on_action_add_time()
 
 void Controller::on_action_remove_task()
 {
-	//TODO Move code from main window (or?)
+	//ENHANCEMENT Move code from main window (or?)
 }
 
 void Controller::on_idleDetected()

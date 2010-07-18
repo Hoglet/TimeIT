@@ -241,7 +241,7 @@ void TimeAccessor::setRunning(int64_t timeID, bool running)
 	try
 	{
 		db.exe(statement.str());
-		//TODO filter short times!
+		//ENHANCEMENT filter short times!
 		m_taskAccesor->setTaskRunning(te.taskID, running);
 	} catch (dbexception& e)
 	{

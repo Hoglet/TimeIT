@@ -5,6 +5,13 @@
  *      Author: hoglet
  */
 
+// List of things to do
+//TODO: Show running tasks with current + todays total time on hover
+//TODO: Start recent
+//TODO: Show hierarchy in Day/week/month/year/summary
+
+
+
 #include "Main.h"
 
 #ifdef ENABLE_NLS
@@ -128,4 +135,3 @@ int main(int argc, char *argv[])
 	Main program(argc,argv);
 	return program.run();
 }
-
