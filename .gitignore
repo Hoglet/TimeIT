@@ -44,3 +44,5 @@ Debug
 Profiling
 .anjuta/associations
 *~
+.cproject
+.metadata
