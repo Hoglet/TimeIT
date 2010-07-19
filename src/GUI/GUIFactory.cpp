@@ -167,7 +167,10 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon* statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper));
+		boost::shared_ptr<ITaskAccessor> taskaccessor=database->getTaskAccessor();
+		boost::shared_ptr<ITimeAccessor> timeaccessor=database->getTimeAccessor();
+
+		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor ));
 	}
 	return *statusIcon;
 }

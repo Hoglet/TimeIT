@@ -37,6 +37,21 @@ vector<Task> TaskAccessor::getTasks(int64_t parentID)
 	}
 	return tasks;
 }
+
+vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
+{
+	vector<Task> tasks = _getTasks(parentID, true);
+	std::vector<Task>::iterator iter;
+	for (iter = tasks.begin(); iter != tasks.end(); iter++)
+	{
+		int totalTime = iter->getTime();
+		totalTime += getTotalChildTime(iter->getID());
+		iter->setTotalTime(totalTime);
+	}
+	return tasks;
+}
+
+
 int TaskAccessor::getTotalChildTime(int64_t id)
 {
 	vector<Task> tasks = _getTasks(id);
@@ -50,13 +65,22 @@ int TaskAccessor::getTotalChildTime(int64_t id)
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t parentID)
+vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning)
 {
 	vector<Task> retVal;
 	int totalTime = 0;
 	stringstream statement;
-	statement << "SELECT id,parent,name,expanded,running,autotrack,time FROM v_tasks where parent=" << parentID;
-	statement << " AND deleted='false'";
+
+	statement << "SELECT id,parent,name,expanded,running,autotrack,time FROM v_tasks where deleted='false'";
+
+	if(onlyRunning)
+	{
+		statement << " AND running=1";
+	}
+	else
+	{
+		statement << " AND parent=" << parentID;
+	}
 	try
 	{
 		db.exe(statement.str());
