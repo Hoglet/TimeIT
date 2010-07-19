@@ -46,6 +46,10 @@ void IdleDetector::pollStatus()
     long now=time(NULL);
     long lastAction = timeAdjuster + getTimestamp();
 	idleSeconds = now-lastAction;
+	if(idleSeconds < 0)
+	{
+		idleSeconds = 0;
+	}
 }
 
 int IdleDetector::minutesIdle()
