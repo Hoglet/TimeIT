@@ -7,6 +7,8 @@
 using namespace std;
 //using namespace nsIdleDialog;
 
+//TODO Autostart on movement (if autotracker and supressed dialog)
+
 Timekeeper::Timekeeper(const boost::shared_ptr<DB::Database>& database, const boost::shared_ptr<Timer>& timer): m_idleDetector(timer)
 {
 	m_timer = timer;

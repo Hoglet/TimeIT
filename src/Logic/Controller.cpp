@@ -94,7 +94,7 @@ void Controller::on_action_help()
 		}
 		else
 		{
-			std::cerr<<defaultHelp.str()<<"did not exist\n";
+			std::cerr<<defaultHelp.str()<<" did not exist\n";
 			helpToUse<<"http://devcorner.solit.se/wiki/TimeIT%20help%20page";
 		}
 	}
@@ -142,6 +142,7 @@ void Controller::on_idleDetected()
 	timeKeeper->enable(false);
 	time_t now = time(0);
 	time_t idleStartTime = now - timeKeeper->timeIdle();
+	//TODO Automatic off without dialog
 	idleDialog = boost::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
 	idleDialog->attach(this);
 	idleDialog->setIdleStartTime(idleStartTime);

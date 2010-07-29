@@ -1,3 +1,17 @@
+timeit (0.9.7) lucid; urgency=low
+
+  * Bugfix: Timeit crasched. (https://bugs.launchpad.net/timeit/+bug/610173)
+
+ -- Kent Asplund <hoglet@solit.se>  Tue, 27 Jul 2010 18:21:53 +0200
+
+timeit (0.9.6) lucid; urgency=low
+
+  * Feature: Showing current running tasks as tooltip on status icon.
+  * Feature: Removed dependencies on libwnck and libxscrensaver. 
+             (Should be possible to build on Maemo and possibly even on win32)
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 23 Jul 2010 23:00:02 +0200
+
 timeit (0.9.6.b2) jaunty; urgency=low
 
   * Moved the documentation into correct place and made timeit use it 

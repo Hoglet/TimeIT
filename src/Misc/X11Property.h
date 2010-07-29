@@ -10,17 +10,19 @@
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
+#include <GeneralException.h>
 
 class X11Property
 {
 public:
 	X11Property();
 	virtual ~X11Property();
-	long get_cardinal ( const char *prop_name, int index);
-	std::vector<std::string> get_strings ( const char *prop_name);
+	long get_cardinal ( const char *prop_name, int index) throw(GeneralException);
+	std::vector<std::string> get_strings ( const char *prop_name) throw(GeneralException);
 private:
 	Display* display;
 	Window rootWindow;
+	GeneralException e;
 };
 
 #endif /* X11PROPERTY_H_ */

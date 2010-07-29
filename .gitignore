@@ -48,3 +48,7 @@ Profiling
 .metadata
 .settings
 .autotools
+.cproject
+.project
+.bzrignore
+.bzr

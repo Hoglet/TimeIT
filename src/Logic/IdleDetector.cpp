@@ -14,11 +14,10 @@
 
 namespace
 {
-const int secsPerMinute=60;
+const int secsPerMinute = 60;
 }
 
 using std::vector;
-
 
 IdleDetector::IdleDetector(const boost::shared_ptr<Timer>& timer)
 {
@@ -39,14 +38,21 @@ void IdleDetector::on_signal_10_seconds()
 
 long IdleDetector::getTimestamp()
 {
-	return x11property.get_cardinal( "_NET_WM_USER_TIME",0);
+	long timestamp = 0;
+	try
+	{
+		timestamp = x11property.get_cardinal("_NET_WM_USER_TIME", 0);
+	} catch (const GeneralException& e)
+	{
+		std::cerr << e.what();
+	}
 }
 void IdleDetector::pollStatus()
 {
-    long now=time(NULL);
-    long lastAction = timeAdjuster + getTimestamp();
-	idleSeconds = now-lastAction;
-	if(idleSeconds < 0)
+	long now = time(NULL);
+	long lastAction = timeAdjuster + getTimestamp();
+	idleSeconds = now - lastAction;
+	if (idleSeconds < 0)
 	{
 		idleSeconds = 0;
 	}
@@ -54,7 +60,7 @@ void IdleDetector::pollStatus()
 
 int IdleDetector::minutesIdle()
 {
-	return idleSeconds/ secsPerMinute;
+	return idleSeconds / secsPerMinute;
 }
 
 time_t IdleDetector::timeIdle()

@@ -14,7 +14,7 @@ class GeneralException: public std::exception
 {
 public:
 	GeneralException();
-	GeneralException(const char* message);
+	void set_message(const char* message);
 	virtual ~GeneralException() throw();
 	virtual const char* what() const throw();
 private:

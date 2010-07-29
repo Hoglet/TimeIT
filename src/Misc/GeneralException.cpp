@@ -11,7 +11,8 @@ GeneralException::GeneralException()
 {
 	message = 0;
 }
-GeneralException::GeneralException(const char* op1)
+
+void GeneralException::set_message(const char* op1)
 {
 	message = op1;
 }

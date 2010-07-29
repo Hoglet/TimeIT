@@ -9,7 +9,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/cursorfont.h>
-#include <GeneralException.h>
+
 
 X11Property::X11Property()
 {
@@ -23,7 +23,7 @@ X11Property::~X11Property()
 	XCloseDisplay(display);
 }
 
-long X11Property::get_cardinal(const char *name, int offset)
+long X11Property::get_cardinal(const char *name, int offset) throw(GeneralException)
 {
 	Atom propertyName = XInternAtom(display, name, False);
 	Atom propertyType = XA_CARDINAL;
@@ -47,17 +47,19 @@ long X11Property::get_cardinal(const char *name, int offset)
 		else
 		{
 			XFree(returnedData);
-			throw new GeneralException("get_cardinal failed: Unexpected data");
+			e.set_message("get_cardinal failed: Unexpected data");
+			throw e;
 		}
 	}
 	else
 	{
-		throw new GeneralException("get_cardinal failed: XGetWindowProperty failed");
+		e.set_message("get_cardinal failed: XGetWindowProperty failed");
+		throw e;
 	}
 	return returnValue;
 }
 
-std::vector<std::string> X11Property::get_strings(const char *name)
+std::vector<std::string> X11Property::get_strings(const char *name) throw(GeneralException)
 {
 	Atom propertyName = XInternAtom(display, name, False);
 	Atom propertyType = XInternAtom(display, "UTF8_STRING", False);
@@ -73,9 +75,9 @@ std::vector<std::string> X11Property::get_strings(const char *name)
 			&returnedFormat, &numberOfItems, &bytes_after_return, &returnedData) == Success)
 	{
 
-		if (returnedType != propertyType && numberOfItems > 0)
+		if (returnedType == propertyType && numberOfItems > 0)
 		{
-			int pos = 0;
+			unsigned int pos = 0;
 			while (pos < numberOfItems)
 			{
 				std::string str = (char*) (&returnedData[pos]);
@@ -87,12 +89,14 @@ std::vector<std::string> X11Property::get_strings(const char *name)
 		else
 		{
 			XFree(returnedData);
-			throw new GeneralException("get_strings failed: Unexpected data");
+			e.set_message("get_strings failed: Unexpected data");
+			throw e;
 		}
 	}
 	else
 	{
-		throw new GeneralException("get_cardinal failed: XGetWindowProperty failed");
+		e.set_message("get_cardinal failed: XGetWindowProperty failed");
+		throw e;
 	}
 	return returnValues;
 }
