@@ -35,8 +35,8 @@ POTFILES
 install
 Makefile.in
 Makefile.am.bak
-test.db
-test.db.lock
+*.db
+*.db.lock
 timeit-*.tar.gz
 build
 configure
@@ -52,3 +52,4 @@ Profiling
 .project
 .bzrignore
 .bzr
+.anjuta
