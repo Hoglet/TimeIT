@@ -100,7 +100,7 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 	Gtk::CheckButton* workspaceCheckButton;
 	std::vector<int> workspaces;
 
-	for(int i = 0; i< checkbutton.size(); i++)
+	for(unsigned int i = 0; i< checkbutton.size(); i++)
 	{
 		try
 		{
