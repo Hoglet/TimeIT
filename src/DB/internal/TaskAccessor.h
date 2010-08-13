@@ -37,7 +37,7 @@ public:
 	void attach(TaskAccessorObserver*);
 	void detach(TaskAccessorObserver*);
 
-	virtual std::vector<Task> getTasks(int64_t parentID = 0);
+	virtual std::vector<Task> getTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
 	virtual std::vector<Task> getRunningTasks(int64_t parentID = 0);
 	virtual Task getTask(int64_t taskID );
 	virtual int64_t newTask(std::string name, int64_t parentID);
@@ -55,7 +55,7 @@ private:
 	void taskParentChanged(int64_t taskID);
 
 	void taskAutotrackChanged(int64_t taskID, bool autotrack);
-	std::vector<Task> _getTasks(int64_t parentID = 0, bool onlyRunning = false);
+	std::vector<Task> _getTasks(int64_t parentID = 0, bool onlyRunning = false, time_t start = 0, time_t stop = 0);
 	int getTotalChildTime(int64_t id);
 	DBAbstraction::CSQL db;
 	std::list<TaskAccessorObserver*> observers;

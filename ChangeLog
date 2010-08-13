@@ -1,11 +1,14 @@
+0.9.8
+* Bugfix: Idle detection did not work. Reverting to use of libxss
+* Feature: Hierarchic viewing in summaries
+* Change: Project homepage moved (temporarily?) to freshmeat. Searching for bugtracker
 0.9.7
-* Bugfix: 
+* Bugfix: TimeIt was crashing 
 0.9.6
 * Feature: Showing current running tasks as tooltip on status icon.
 * Feature: Removed dependencies on libwnck and libxscrensaver. 
            (Should be possible to build on Maemo and possibly even on win32)
 * Feature: Local help.
-
 0.9.5
 * Feature: Stop all timers in status-icon menu
 * Bugfix: "Week always starts on Sunday".  http://devcorner.solit.se/node/49

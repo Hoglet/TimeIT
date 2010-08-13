@@ -22,7 +22,7 @@ Summary::Summary(boost::shared_ptr<DB::Database>& database)
 {
 	timeAccessor = database->getTimeAccessor();
 	taskAccessor = database->getTaskAccessor();
-	treeModel = ListStore::create(columns);
+	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column("Name", columns.col_name);
 	append_column("Time", columns.col_time);
@@ -161,27 +161,55 @@ void Summary::empty()
 /*
  * Populate is filling the list, updating existing and adding elements not in list
  */
-void Summary::populate()
+void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 {
-	std::map<int64_t, TaskTime> timeList = timeAccessor->getTimeList(startTime, stopTime);
-	//for (int i=0; i < (int)tasks.size(); i++)
-	std::map<int64_t, TaskTime>::iterator iter;
-	for (iter = timeList.begin(); iter != timeList.end(); iter++)
-	{
-		int64_t id = iter->first;
-		TaskTime taskTime = iter->second;
+	//	std::map<int64_t, TaskTime> timeList = timeAccessor->getTimeList(startTime, stopTime);
+	vector<Task> tasks = taskAccessor->getTasks(parentID, startTime, stopTime);
 
-		Gtk::TreeIter treeIter = findRow(id);
-		if (treeIter == treeModel->children().end())
+	for (int i = 0; i < (int) tasks.size(); i++)
+	{
+		Task task = tasks.at(i);
+		if (task.getTotalTime() > 0)
 		{
-			treeIter = treeModel->append();
+			TreeModel::Row row;
+			TreeModel::iterator iter;
+			if (parent)
+			{
+				iter = treeModel->append(parent->children());
+			}
+			else
+			{
+				iter = treeModel->append();
+			}
+			row = *iter;
+			//assignValuesToRow
+			row[columns.col_id] = task.getID();
+			row[columns.col_name] = task.getName();
+			row[columns.col_time] = Utils::seconds2hhmm(task.getTotalTime());
+			//
+			populate(&row, task.getID());
+			TreeModel::Path path(iter);
+			this->expand_row(path, false);
 		}
-		TreeModel::Row row;
-		row = *treeIter;
-		row[columns.col_id] = id;
-		row[columns.col_name] = taskTime.name;
-		row[columns.col_time] = Utils::seconds2hhmm(taskTime.duration);
 	}
+	//for (int i=0; i < (int)tasks.size(); i++)
+	/*std::map<int64_t, TaskTime>::iterator iter;
+	 for (iter = timeList.begin(); iter != timeList.end(); iter++)
+	 {
+	 int64_t id = iter->first;
+	 TaskTime taskTime = iter->second;
+
+	 Gtk::TreeIter treeIter = findRow(id);
+	 if (treeIter == treeModel->children().end())
+	 {
+	 treeIter = treeModel->append();
+	 }
+	 TreeModel::Row row;
+	 row = *treeIter;
+	 row[columns.col_id] = id;
+	 row[columns.col_name] = taskTime.name;
+	 row[columns.col_time] = Utils::seconds2hhmm(taskTime.duration);
+	 }*/
 }
 
 }

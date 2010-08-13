@@ -37,7 +37,7 @@ Database::Database(const std::string& dbname)
 
 	//Do upgrade if necessary
 	int DBVersion = 0;
-	const int expectedDBVersion = 3;
+	const int expectedDBVersion = 4;
 	try
 	{
 		db.exe(statement.str());
@@ -59,6 +59,9 @@ Database::Database(const std::string& dbname)
 			case 2:
 				//Fall through
 			case 3:
+				db.exe("DROP VIEW v_timesSummary;");
+				db.exe("DROP VIEW v_tasks;");
+			case 4:
 				//Fall through
 			default:
 				break;
@@ -70,22 +73,10 @@ Database::Database(const std::string& dbname)
 			statement << " WHERE id = \"dbversion\";";
 			db.exe(statement.str());
 		}
-		db.exe("DROP VIEW v_timesSummary;");
-		db.exe("DROP VIEW v_tasks;");
 	} catch (dbexception& e)
 	{
 		cerr << statement.str() << " caused: " << endl;
 		cerr << e.what() << endl;
-	}
-	//Always update views
-	try
-	{
-		db.exe("CREATE VIEW v_timesSummary AS SELECT taskID, SUM(stop-start) AS time FROM times GROUP BY taskID;");
-		db.exe(	"CREATE VIEW v_tasks AS SELECT  tasks.id as id, tasks.parent as parent,tasks.running as running, tasks.name as name, tasks.expanded as expanded, v_timesSummary.time as time , tasks.autotrack as autotrack, tasks.deleted as deleted FROM tasks LEFT JOIN v_timesSummary ON tasks.id=v_timesSummary.taskID;");
-	}
-	catch(...)
-	{
-
 	}
 
 	try
@@ -97,7 +88,7 @@ Database::Database(const std::string& dbname)
 		m_settingsAccessor = boost::shared_ptr<SettingsAccessor>(new SettingsAccessor(dbname));
 	} catch (dbexception& e)
 	{
-		cerr << "Initing DB with " << dbname << " caused: " << e.what() << endl;
+		cerr << "Initiating DB with " << dbname << " caused: " << e.what() << endl;
 		throw e;
 	}
 

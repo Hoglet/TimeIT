@@ -2,12 +2,12 @@ Source: timeit
 Section: utils
 Priority: optional
 Maintainer: Kent Asplund <hoglet@solit.se>
-Build-Depends: debhelper (>= 7), autotools-dev, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libboost-dev (>=1.33), libxssl-dev
+Build-Depends: debhelper (>= 7), autotools-dev, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libboost-dev (>=1.33), libxss-dev
 Standards-Version: 3.8.0
 Homepage: http://devcorner.solit.se/project/timeit/
 
 Package: timeit
 Architecture: any
-Depends: libgtkmm-2.4-1c2a (>= 2.8), libsqlite3-0, libxssl
+Depends: libgtkmm-2.4-1c2a (>= 2.8), libsqlite3-0, libxss1
 Description: TimeIT, the unobtrusive time tracker
  TimeIT is a time tracker somewhat similar to ktimetracker and gnotime written in C++ using gtkmm. It aims to be unobtrusive and simple to use.  It has Workspace tracking, Idle detection, hierarchical tasks and can show summaries over day/week/month

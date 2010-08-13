@@ -55,11 +55,11 @@ protected:
 	virtual void on_taskUpdated(const Task&);
 	virtual void on_taskRemoved(int64_t);
 	void init();
-	void populate();
+	void populate(Gtk::TreeModel::Row* parent=0, int parentID=0);
 	void empty();
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
-	Glib::RefPtr<Gtk::ListStore> treeModel;
+	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:

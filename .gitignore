@@ -27,7 +27,6 @@ Profiling/src/.deps
 Profiling/po
 *.mo
 *.gmo
-*.pot
 stamp-it
 stamp-h1
 config.h
