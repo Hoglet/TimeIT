@@ -25,9 +25,9 @@
 using namespace std;
 using namespace DBAbstraction;
 
-vector<Task> TaskAccessor::getTasks(int64_t parentID)
+vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start , time_t stop )
 {
-	vector<Task> tasks = _getTasks(parentID);
+	vector<Task> tasks = _getTasks(parentID, false , start, stop);
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
 	{
@@ -65,13 +65,43 @@ int TaskAccessor::getTotalChildTime(int64_t id)
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning)
+vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t start , time_t stop )
 {
 	vector<Task> retVal;
 	int totalTime = 0;
 	stringstream statement;
 
-	statement << "SELECT id,parent,name,expanded,running,autotrack,time FROM v_tasks where deleted='false'";
+	statement <<
+			"SELECT id, parent, name, expanded, running, autotrack, time "
+			"  FROM "
+			"    ("
+			"      SELECT"
+			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
+			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
+			"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+			"      FROM"
+			"        tasks "
+			"      LEFT JOIN "
+			"        ("
+			"          SELECT"
+			"            taskID as times_taskID, SUM(stop-start) AS times_time "
+			"          FROM "
+			"            times";
+	if(stop>0)
+	{
+		statement <<
+				"      WHERE"
+				"        start >=" << start <<
+				"      AND"
+				"        stop <= " << stop;
+	}
+	statement <<
+			"          GROUP BY "
+			"            taskID"
+			"        )"
+			"      ON tasks.id=times_taskID"
+			"    )"
+			"WHERE deleted='false'";
 
 	if(onlyRunning)
 	{
@@ -124,8 +154,30 @@ Task TaskAccessor::getTask(int64_t taskID)
 	int totalTime = 0;
 	bool autotrack = false;
 	stringstream statement;
-	statement << "SELECT id,parent,name,expanded,running,autotrack,time FROM v_tasks WHERE id=" << taskID;
-	statement << " AND deleted='false'";
+	statement <<
+			"SELECT "
+			"    id,parent,name,expanded,running,autotrack,time "
+			"  FROM "
+			"    ("
+			"      SELECT"
+			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
+			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
+			"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+			"      FROM"
+			"        tasks "
+			"      LEFT JOIN "
+			"        ("
+			"          SELECT"
+			"            taskID as times_taskID, SUM(stop-start) AS times_time "
+			"          FROM "
+			"            times"
+			"          GROUP BY "
+			"            taskID"
+			"        )"
+			"      ON tasks.id=times_taskID"
+			"    )"
+			"  WHERE id=" << taskID <<
+			"  AND deleted='false'";
 	try
 	{
 		db.exe(statement.str());

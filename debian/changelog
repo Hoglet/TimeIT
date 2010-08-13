@@ -1,3 +1,11 @@
+timeit (0.9.8) lucid; urgency=low
+
+  * Bugfix: Idle detection did not work. Reverting to use of libxss
+  * Feature: Hierarchic viewing in summaries
+  * Change: Project homepage moved (temporarily?) to freshmeat. Searching for bugtracker
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Aug 2010 20:36:38 +0200
+
 timeit (0.9.7) lucid; urgency=low
 
   * Bugfix: Timeit crasched. (https://bugs.launchpad.net/timeit/+bug/610173)
