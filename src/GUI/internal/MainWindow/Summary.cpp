@@ -113,33 +113,27 @@ void Summary::connectSignals()
 	calendar->signal_prev_year().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
 }
 
-Gtk::TreeModel::iterator Summary::findRow(int id)
-{
-	TreeModel::Children children = treeModel->children();
-	TreeIter iter;
-	for (iter = children.begin(); iter != children.end(); iter++)
-	{
-		if (((*iter)[columns.col_id] == id))
-		{
-			break;
-		}
-	}
-	return iter;
-}
-
 void Summary::calculateTimeSpan()
 {
 }
 
-void Summary::on_taskUpdated(const Task&)
+void Summary::on_taskUpdated(const Task& task)
 {
-	populate();
+	Gtk::TreeIter iter = findRow(task.getID());
+	if (iter != treeModel->children().end())
+	{
+		TreeModel::Row row = *iter;
+		assignValuesToRow(row, task);
+	}
 }
 
-void Summary::on_taskRemoved(int64_t)
+void Summary::on_taskRemoved(int64_t taskID)
 {
-	empty();
-	populate();
+	Gtk::TreeIter iter = findRow(taskID);
+	if (iter != treeModel->children().end())
+	{
+		treeModel->erase(iter);
+	}
 }
 
 void Summary::on_dateChanged()
@@ -182,34 +176,54 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 				iter = treeModel->append();
 			}
 			row = *iter;
-			//assignValuesToRow
-			row[columns.col_id] = task.getID();
-			row[columns.col_name] = task.getName();
-			row[columns.col_time] = Utils::seconds2hhmm(task.getTotalTime());
-			//
+
+			assignValuesToRow(row, task);
+
 			populate(&row, task.getID());
-			TreeModel::Path path(iter);
-			this->expand_row(path, false);
 		}
 	}
-	//for (int i=0; i < (int)tasks.size(); i++)
-	/*std::map<int64_t, TaskTime>::iterator iter;
-	 for (iter = timeList.begin(); iter != timeList.end(); iter++)
-	 {
-	 int64_t id = iter->first;
-	 TaskTime taskTime = iter->second;
+	if(parentID == 0)
+	{
+		this->expand_all();
+	}
 
-	 Gtk::TreeIter treeIter = findRow(id);
-	 if (treeIter == treeModel->children().end())
-	 {
-	 treeIter = treeModel->append();
-	 }
-	 TreeModel::Row row;
-	 row = *treeIter;
-	 row[columns.col_id] = id;
-	 row[columns.col_name] = taskTime.name;
-	 row[columns.col_time] = Utils::seconds2hhmm(taskTime.duration);
-	 }*/
+}
+
+void Summary::assignValuesToRow(TreeModel::Row& row, const Task& task)
+{
+	row[columns.col_id] = task.getID();
+	row[columns.col_name] = task.getName();
+	row[columns.col_time] = Utils::seconds2hhmm(task.getTotalTime());
+}
+
+Gtk::TreeModel::iterator Summary::findRow(int id)
+{
+	TreeModel::Children children = treeModel->children();
+	return subSearch(id, children);
+}
+
+Gtk::TreeModel::iterator Summary::subSearch(int id, TreeModel::Children children)
+{
+	TreeIter iter;
+
+	for (iter = children.begin(); iter != children.end(); iter++)
+	{
+		TreeModel::Row row = *iter;
+		if (row.children().size() > 0)
+		{
+			TreeIter subIter = subSearch(id, row.children());
+			if (subIter != row.children().end())
+			{
+				iter = subIter;
+				break;
+			}
+		}
+		if (row[columns.col_id] == id)
+		{
+			break;
+		}
+	}
+	return iter;
 }
 
 }

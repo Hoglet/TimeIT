@@ -1,3 +1,7 @@
+0.9.10
+* Better management of treview in summaries
+0.9.9
+* Bugfix: Summaries were wrong. https://bugs.launchpad.net/timeit/+bug/617736
 0.9.8
 * Bugfix: Idle detection did not work. Reverting to use of libxss
 * Feature: Hierarchic viewing in summaries

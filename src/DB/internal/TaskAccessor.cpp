@@ -25,14 +25,14 @@
 using namespace std;
 using namespace DBAbstraction;
 
-vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start , time_t stop )
+vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(parentID, false , start, stop);
+	vector<Task> tasks = _getTasks(parentID, false, start, stop);
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
 	{
 		int totalTime = iter->getTime();
-		totalTime += getTotalChildTime(iter->getID());
+		totalTime += getTotalChildTime(iter->getID(), start, stop);
 		iter->setTotalTime(totalTime);
 	}
 	return tasks;
@@ -51,59 +51,54 @@ vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
 	return tasks;
 }
 
-
-int TaskAccessor::getTotalChildTime(int64_t id)
+int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(id);
+	vector<Task> tasks = _getTasks(id, false, start, stop);
 	int totalTime = 0;
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
 	{
 		totalTime += iter->getTime();
-		totalTime += getTotalChildTime(iter->getID());
+		totalTime += getTotalChildTime(iter->getID(), start, stop);
 	}
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t start , time_t stop )
+vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t start, time_t stop)
 {
 	vector<Task> retVal;
 	int totalTime = 0;
 	stringstream statement;
 
-	statement <<
-			"SELECT id, parent, name, expanded, running, autotrack, time "
-			"  FROM "
-			"    ("
-			"      SELECT"
-			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
-			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-			"        tasks.autotrack as autotrack, tasks.deleted as deleted "
-			"      FROM"
-			"        tasks "
-			"      LEFT JOIN "
-			"        ("
-			"          SELECT"
-			"            taskID as times_taskID, SUM(stop-start) AS times_time "
-			"          FROM "
-			"            times";
-	if(stop>0)
+	statement << "SELECT id, parent, name, expanded, running, autotrack, time "
+		"  FROM "
+		"    ("
+		"      SELECT"
+		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
+		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
+		"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+		"      FROM"
+		"        tasks "
+		"      LEFT JOIN "
+		"        ("
+		"          SELECT"
+		"            taskID as times_taskID, SUM(stop-start) AS times_time "
+		"          FROM "
+		"            times";
+	if (stop > 0)
 	{
-		statement <<
-				"      WHERE"
-				"        start >=" << start <<
-				"      AND"
-				"        stop <= " << stop;
+		statement << "      WHERE"
+			"        start >=" << start << "      AND"
+			"        stop <= " << stop;
 	}
-	statement <<
-			"          GROUP BY "
-			"            taskID"
-			"        )"
-			"      ON tasks.id=times_taskID"
-			"    )"
-			"WHERE deleted='false'";
+	statement << "          GROUP BY "
+		"            taskID"
+		"        )"
+		"      ON tasks.id=times_taskID"
+		"    )"
+		"WHERE deleted='false'";
 
-	if(onlyRunning)
+	if (onlyRunning)
 	{
 		statement << " AND running=1";
 	}
@@ -154,30 +149,28 @@ Task TaskAccessor::getTask(int64_t taskID)
 	int totalTime = 0;
 	bool autotrack = false;
 	stringstream statement;
-	statement <<
-			"SELECT "
-			"    id,parent,name,expanded,running,autotrack,time "
-			"  FROM "
-			"    ("
-			"      SELECT"
-			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
-			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-			"        tasks.autotrack as autotrack, tasks.deleted as deleted "
-			"      FROM"
-			"        tasks "
-			"      LEFT JOIN "
-			"        ("
-			"          SELECT"
-			"            taskID as times_taskID, SUM(stop-start) AS times_time "
-			"          FROM "
-			"            times"
-			"          GROUP BY "
-			"            taskID"
-			"        )"
-			"      ON tasks.id=times_taskID"
-			"    )"
-			"  WHERE id=" << taskID <<
-			"  AND deleted='false'";
+	statement << "SELECT "
+		"    id,parent,name,expanded,running,autotrack,time "
+		"  FROM "
+		"    ("
+		"      SELECT"
+		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
+		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
+		"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+		"      FROM"
+		"        tasks "
+		"      LEFT JOIN "
+		"        ("
+		"          SELECT"
+		"            taskID as times_taskID, SUM(stop-start) AS times_time "
+		"          FROM "
+		"            times"
+		"          GROUP BY "
+		"            taskID"
+		"        )"
+		"      ON tasks.id=times_taskID"
+		"    )"
+		"  WHERE id=" << taskID << "  AND deleted='false'";
 	try
 	{
 		db.exe(statement.str());
@@ -221,10 +214,10 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 {
 	int64_t id = 0;
 	stringstream statement;
-	if(parentID<0)
+	if (parentID < 0)
 	{
-		dbexception* e=new dbexception();
-		statement << "parenID is <0" << " in " << __FILE__<<":" <<__LINE__<<endl;
+		dbexception* e = new dbexception();
+		statement << "parenID is <0" << " in " << __FILE__ << ":" << __LINE__ << endl;
 		e->setMessage(statement.str());
 		cerr << statement.str() << endl;
 		throw e;

@@ -1,3 +1,9 @@
+timeit (0.9.9) lucid; urgency=low
+
+  * Bugfix: Summaries were wrong. (LP: #617736)
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 14 Aug 2010 10:03:25 +0200
+
 timeit (0.9.8) lucid; urgency=low
 
   * Bugfix: Idle detection did not work. Reverting to use of libxss
@@ -8,7 +14,7 @@ timeit (0.9.8) lucid; urgency=low
 
 timeit (0.9.7) lucid; urgency=low
 
-  * Bugfix: Timeit crasched. (https://bugs.launchpad.net/timeit/+bug/610173)
+  * Bugfix: Timeit crasched. (LP: #610173)
 
  -- Kent Asplund <hoglet@solit.se>  Tue, 27 Jul 2010 18:21:53 +0200
 

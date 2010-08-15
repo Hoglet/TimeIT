@@ -59,6 +59,9 @@ protected:
 	void empty();
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
+	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
+	void assignValuesToRow(Gtk::TreeModel::Row& row, const Task& task);
+
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
 	{
