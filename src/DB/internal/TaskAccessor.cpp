@@ -87,11 +87,13 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 		"            times";
 	if (stop > 0)
 	{
-		statement << "      WHERE"
+		statement << ""
+			"      WHERE"
 			"        start >=" << start << "      AND"
 			"        stop <= " << stop;
 	}
-	statement << "          GROUP BY "
+	statement << ""
+		"          GROUP BY "
 		"            taskID"
 		"        )"
 		"      ON tasks.id=times_taskID"
@@ -138,7 +140,7 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 	return retVal;
 }
 
-Task TaskAccessor::getTask(int64_t taskID)
+Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 {
 	int id = 0;
 	int parent = 0;
@@ -164,7 +166,16 @@ Task TaskAccessor::getTask(int64_t taskID)
 		"          SELECT"
 		"            taskID as times_taskID, SUM(stop-start) AS times_time "
 		"          FROM "
-		"            times"
+		"            times";
+	if (stop > 0)
+	{
+		statement << ""
+			"      WHERE"
+			"        start >=" << start << "      AND"
+			"        stop <= " << stop;
+	}
+
+	statement << ""
 		"          GROUP BY "
 		"            taskID"
 		"        )"

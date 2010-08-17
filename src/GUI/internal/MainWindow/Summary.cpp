@@ -122,8 +122,9 @@ void Summary::on_taskUpdated(const Task& task)
 	Gtk::TreeIter iter = findRow(task.getID());
 	if (iter != treeModel->children().end())
 	{
+		Task filteredTask = taskAccessor->getTask(task.getID(), startTime, stopTime);
 		TreeModel::Row row = *iter;
-		assignValuesToRow(row, task);
+		assignValuesToRow(row, filteredTask);
 	}
 }
 

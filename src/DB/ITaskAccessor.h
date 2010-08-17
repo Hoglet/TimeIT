@@ -29,7 +29,7 @@ public:
 	virtual void attach(TaskAccessorObserver*) = 0;
 	virtual void detach(TaskAccessorObserver*) = 0;
 
-	virtual Task getTask(int64_t taskID ) = 0;
+	virtual Task getTask(int64_t taskID, time_t start = 0, time_t stop = 0) = 0;
 	virtual std::vector<Task> getTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0) = 0;
 	virtual std::vector<Task> getRunningTasks(int64_t parentID = 0) = 0;
 	virtual int64_t newTask(std::string name, int64_t parentID) = 0;
