@@ -261,7 +261,7 @@ void TaskList::populate(TreeModel::Row* parent, int parentID)
 		if (tasks.at(i).getExpanded())
 		{
 			TreeModel::Path path(iter);
-			this->expand_row(path, false);
+			this->expand_to_path(path);
 		}
 	}
 }
