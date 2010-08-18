@@ -24,8 +24,8 @@ EditTaskDialog::EditTaskDialog(boost::shared_ptr<DB::Database>& database) :
 
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
-	label1.set_text(_("<b>Desktop</b>"));
-	AutotrackButton.set_label(_("Desktop tracking"));
+	label1.set_text(_("<b>Workspace</b>"));
+	AutotrackButton.set_label(_("Workspace tracking"));
 
 	createLayout();
 	OKButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_OKButton_clicked));

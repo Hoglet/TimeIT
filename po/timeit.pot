@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-13 23:41+0200\n"
+"POT-Creation-Date: 2010-08-18 12:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,11 +49,11 @@ msgid "Name: "
 msgstr ""
 
 #: ../src/GUI/internal/EditTaskDialog.cpp:27
-msgid "<b>Desktop</b>"
+msgid "<b>Workspace</b>"
 msgstr ""
 
 #: ../src/GUI/internal/EditTaskDialog.cpp:28
-msgid "Desktop tracking"
+msgid "Workspace tracking"
 msgstr ""
 
 #: ../src/GUI/internal/AddTime.cpp:19
