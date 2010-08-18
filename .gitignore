@@ -11,7 +11,6 @@ src/.deps/
 po/Makefile.in
 install-sh
 depcomp
-html
 latex
 *.o
 src/timeit
