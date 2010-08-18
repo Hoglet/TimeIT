@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-18 17:52+0200\n"
+"POT-Creation-Date: 2010-08-18 18:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,19 +40,20 @@ msgstr ""
 msgid "Application already running!\n"
 msgstr ""
 
-#: ../src/GUI/internal/EditTaskDialog.cpp:25
+#. Note to translators: This is the Parent in the context "Parent task"
+#: ../src/GUI/internal/EditTaskDialog.cpp:26
 msgid "Parent: "
 msgstr ""
 
-#: ../src/GUI/internal/EditTaskDialog.cpp:26
+#: ../src/GUI/internal/EditTaskDialog.cpp:27
 msgid "Name: "
 msgstr ""
 
-#: ../src/GUI/internal/EditTaskDialog.cpp:27
+#: ../src/GUI/internal/EditTaskDialog.cpp:28
 msgid "<b>Workspace</b>"
 msgstr ""
 
-#: ../src/GUI/internal/EditTaskDialog.cpp:28
+#: ../src/GUI/internal/EditTaskDialog.cpp:29
 msgid "Workspace tracking"
 msgstr ""
 
@@ -99,27 +100,33 @@ msgstr ""
 msgid "Gone, gone will not come again..."
 msgstr ""
 
-#: ../src/GUI/internal/IdleDialog.cpp:30
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:32
 msgid "Revert and stop"
 msgstr ""
 
-#: ../src/GUI/internal/IdleDialog.cpp:31
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:35
 msgid "Revert and continue"
 msgstr ""
 
-#: ../src/GUI/internal/IdleDialog.cpp:32
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:38
 msgid "Continue"
 msgstr ""
 
 #. Note to translators: This is the first part of the sentence "No activity have been detected
 #. for X minutes. What should we do?"
-#: ../src/GUI/internal/IdleDialog.cpp:73
+#: ../src/GUI/internal/IdleDialog.cpp:79
 msgid "No activity have been detected for"
 msgstr ""
 
 #. Note to translators: This is the second part of the sentence "No activity have been detected
 #. for X minutes. What should we do?"
-#: ../src/GUI/internal/IdleDialog.cpp:76
+#: ../src/GUI/internal/IdleDialog.cpp:82
 msgid "minutes. What should we do?"
 msgstr ""
 

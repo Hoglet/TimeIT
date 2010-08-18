@@ -21,14 +21,20 @@ IdleDialog::IdleDialog(boost::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
 
-	//Setting start tim to now in case nobody will set the idle time later.
+	//Setting start time to now in case nobody will set the idle time later.
 	m_idleStartTime = time(NULL);
 
 	set_deletable(false);
 	setText();
 	get_vbox()->pack_start(text);
+	// Note to translators: This is one answer to the question "No activity have
+	// been detected for X minutes. What should we do?"
 	add_button(_("Revert and stop"), RESPONSE_REVERT);
+	// Note to translators: This is one answer to the question "No activity have
+	// been detected for X minutes. What should we do?"
 	add_button(_("Revert and continue"), RESPONSE_REVERTANDCONTINUE);
+	// Note to translators: This is one answer to the question "No activity have
+	// been detected for X minutes. What should we do?"
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
 	m_timer->attach(this);

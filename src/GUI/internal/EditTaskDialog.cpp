@@ -22,6 +22,7 @@ EditTaskDialog::EditTaskDialog(boost::shared_ptr<DB::Database>& database) :
 	numColumns = workspace.get_numberOfColumns();
 	numberOfWorkspaces = workspace.get_numberOfWorkspaces();
 
+	// Note to translators: This is the Parent in the context "Parent task"
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
 	label1.set_text(_("<b>Workspace</b>"));
