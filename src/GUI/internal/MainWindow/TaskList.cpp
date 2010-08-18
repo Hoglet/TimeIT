@@ -82,6 +82,12 @@ bool TaskList::on_button_press_event(GdkEventButton* event)
 		Menu_Popup.popup(event->button, event->time);
 		retval = true; //It has been handled.
 	}
+	else if (event->type == GDK_2BUTTON_PRESS)
+	{
+		int64_t id = getSelectedID();
+		on_menu_edit();
+		retval = true;
+	}
 	return retval;
 }
 
@@ -321,6 +327,7 @@ void TaskList::on_menu_remove_task()
 		observer->on_action_remove_task();
 	}
 }
+
 
 void TaskList::attach(IActionObserver* observer)
 {

@@ -39,6 +39,8 @@ public:
 	void attach(SummaryObserver*);
 	void detach(SummaryObserver*);
 protected:
+	Gtk::Menu Menu_Popup;
+
 	bool on_button_press_event(GdkEventButton* event);
 
 	//SummaryObserver
@@ -50,8 +52,8 @@ protected:
 	void on_dateChanged();
 	virtual void on_taskAdded(const Task&)
 	{
-	}
-	;
+	};
+	void on_menu_showDetails();
 	virtual void on_taskUpdated(const Task&);
 	virtual void on_taskRemoved(int64_t);
 	void init();

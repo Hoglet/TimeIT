@@ -8,7 +8,7 @@
 #include "Summary.h"
 #include "Utils.h"
 #include "DetailsDialog.h"
-
+#include <glibmm/i18n.h>
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
@@ -31,6 +31,12 @@ Summary::Summary(boost::shared_ptr<DB::Database>& database)
 	refTreeSelection = get_selection();
 	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
 	taskAccessor->attach(this);
+
+	//Popup menu
+	Gtk::Menu::MenuList& menulist = Menu_Popup.items();
+
+	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
+
 }
 
 Summary::~Summary()
@@ -41,19 +47,31 @@ Summary::~Summary()
 bool Summary::on_button_press_event(GdkEventButton* event)
 {
 	bool retVal = Gtk::TreeView::on_button_press_event(event);
-	if (event->type == GDK_2BUTTON_PRESS)
+	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		int64_t id = getSelectedID();
-		std::list<SummaryObserver*>::iterator iter = observers.begin();
-		while (iter != observers.end())
-		{
-			SummaryObserver* observer = *iter;
-			observer->on_showDetailsClicked(this, id, startTime, stopTime);
-			iter++;
-		}
+		Menu_Popup.popup(event->button, event->time);
+		retVal = true; //It has been handled.
+	}
+	else if (event->type == GDK_2BUTTON_PRESS)
+	{
+		on_menu_showDetails();
+		retVal = true; //It has been handled.
 	}
 	return retVal;
 }
+
+void Summary::on_menu_showDetails()
+{
+	int64_t id = getSelectedID();
+	std::list<SummaryObserver*>::iterator iter = observers.begin();
+	while (iter != observers.end())
+	{
+		SummaryObserver* observer = *iter;
+		observer->on_showDetailsClicked(this, id, startTime, stopTime);
+		iter++;
+	}
+}
+
 
 void Summary::init()
 {
