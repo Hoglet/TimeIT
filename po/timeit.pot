@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-18 12:46+0200\n"
+"POT-Creation-Date: 2010-08-18 17:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,15 +167,19 @@ msgstr ""
 msgid "Remove task"
 msgstr ""
 
-#: ../src/GUI/internal/MainWindow/Menu.cpp:49
+#: ../src/GUI/internal/MainWindow/Menu.cpp:47
+msgid "Report bug"
+msgstr ""
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:50
 msgid "_File"
 msgstr ""
 
-#: ../src/GUI/internal/MainWindow/Menu.cpp:51
+#: ../src/GUI/internal/MainWindow/Menu.cpp:52
 msgid "_Task"
 msgstr ""
 
-#: ../src/GUI/internal/MainWindow/Menu.cpp:53
+#: ../src/GUI/internal/MainWindow/Menu.cpp:54
 msgid "_Help"
 msgstr ""
 

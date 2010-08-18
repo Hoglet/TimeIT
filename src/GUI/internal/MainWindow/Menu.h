@@ -42,6 +42,7 @@ private:
 	void on_menu_stop_all();
 	void on_menu_edit();
 	void on_menu_preferences();
+	void on_menu_report_bug();
 
 	std::list<IActionObserver*> observers;
 };

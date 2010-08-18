@@ -41,6 +41,7 @@ private:
 	virtual void on_action_help() ;
 	virtual void on_action_quit();
 	virtual void on_action_preferences();
+	virtual void on_action_report_bug();
 
 	//SummaryObserver
 	virtual void on_showDetailsClicked(GUI::ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime);

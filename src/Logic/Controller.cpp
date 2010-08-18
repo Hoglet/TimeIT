@@ -74,6 +74,10 @@ void Controller::on_action_about()
 {
 	guiFactory->getWidget(ABOUT_DIALOG)->show();
 }
+void Controller::on_action_report_bug()
+{
+	OSAbstraction::showURL("https://bugs.launchpad.net/timeit/+filebug");
+}
 
 void Controller::on_action_help()
 {
