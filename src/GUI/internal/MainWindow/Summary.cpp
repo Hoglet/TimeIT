@@ -144,6 +144,10 @@ void Summary::on_taskUpdated(const Task& task)
 		TreeModel::Row row = *iter;
 		assignValuesToRow(row, filteredTask);
 	}
+	else
+	{
+		populate();
+	}
 }
 
 void Summary::on_taskRemoved(int64_t taskID)
