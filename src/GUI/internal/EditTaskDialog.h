@@ -51,12 +51,10 @@ private:
 	Gtk::Button CancelButton;
 	Gtk::Button OKButton;
 	Gtk::Entry taskNameEntry;
-	Gtk::CheckButton AutotrackButton;
 	Gtk::Label parentLabel;
 	ParentChooser parentChooser;
 
 	std::string name;
-	bool autotrack;
 	int taskID;
 	int numberOfWorkspaces;
 	int numColumns;

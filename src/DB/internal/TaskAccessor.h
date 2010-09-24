@@ -44,9 +44,7 @@ public:
 	virtual void setTaskExpanded(int64_t taskID, bool expanded);
 	virtual void setTaskName(int64_t taskID, std::string name);
 	virtual void setParentID(int64_t taskID, int parentID);
-
 	virtual void removeTask(int64_t taskID);
-	virtual void setAutotrack(int64_t taskID, bool autotrack);
 private:
 	void setTaskRunning(int64_t taskID, bool running);
 	void taskUpdated(int64_t taskID);
@@ -54,7 +52,6 @@ private:
 	void taskAdded(int64_t taskID);
 	void taskParentChanged(int64_t taskID);
 
-	void taskAutotrackChanged(int64_t taskID, bool autotrack);
 	std::vector<Task> _getTasks(int64_t parentID = 0, bool onlyRunning = false, time_t start = 0, time_t stop = 0);
 	int getTotalChildTime(int64_t id, time_t start = 0 , time_t stop = 0);
 	DBAbstraction::CSQL db;

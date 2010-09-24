@@ -38,8 +38,7 @@
 		 int getTime() const;
 		 void setTime(int) ;
 		 bool getRunning() const;
-		 bool getAutotrack() const;
-		 Task(int ID, int parentID, std::string name, int time=0, bool expanded = false, bool running = false, bool autotrack = false, int totalTime=0);
+		 Task(int ID, int parentID, std::string name, int time=0, bool expanded = false, bool running = false, int totalTime=0);
 	 protected:
 		 std::string name;
 		 int ID;
@@ -48,7 +47,6 @@
 		 int parentID;
 		 int totalTime;
 		 int time;
-		 bool autotrack;
 	 private:
 		 Task() {};
  };

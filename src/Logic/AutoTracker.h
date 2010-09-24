@@ -24,7 +24,6 @@ private:
 	virtual void on_taskAdded(const Task&)  {};
 	virtual void on_taskUpdated(const Task&) {};
 	virtual void on_taskRemoved(int64_t) {};
-	virtual void on_taskAutotrackChanged(int64_t taskID, bool autotrack);
 
 	//
 	void stopTasks(int workspace);

@@ -56,10 +56,7 @@ void AutoTracker::stopTasks(int workspace)
 	{
 		int64_t taskID = *iter;
 		Task task = m_taskAccessor->getTask(taskID);
-		if (task.getAutotrack())
-		{
-			m_timekeeper->StopTask(taskID);
-		}
+		m_timekeeper->StopTask(taskID);
 	}
 }
 void AutoTracker::startTasks(int workspace)
@@ -72,39 +69,12 @@ void AutoTracker::startTasks(int workspace)
 		try
 		{
 			Task task = m_taskAccessor->getTask(taskID);
-			if (task.getAutotrack())
-			{
-				m_timekeeper->StartTask(taskID);
-			}
+			m_timekeeper->StartTask(taskID);
 		} catch (...)
 		{
 
 		}
 	}
-}
-void AutoTracker::on_taskAutotrackChanged(int64_t taskID, bool enable)
-{
-// Ignoring this event. Need a better strategy
-	//TODO Find a better strategy
-
-/*	std::vector<int> workspaces = m_autotrackAccessor->getWorkspaces(taskID);
-	Task task = m_taskAccessor->getTask(taskID);
-	std::vector<int>::iterator iter;
-	for (iter = workspaces.begin(); iter != workspaces.end(); iter++)
-	{
-		int workspace = *iter;
-		if (workspace == oldWorkspace)
-		{
-			if (task.getAutotrack())
-			{
-				m_timekeeper->StartTask(taskID);
-			}
-			else
-			{
-				m_timekeeper->StopTask(taskID);
-			}
-		}
-	}*/
 }
 
 //http://library.gnome.org/devel/libwnck/stable/WnckScreen.html#wnck-screen-calc-workspace-layout

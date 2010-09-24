@@ -24,7 +24,7 @@ Database::Database(const std::string& dbname)
 	CSQL db(dbname);
 
 	//Create necessary tables
-	db.exe("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, name VARCHAR, parent INTEGER, running BOOL DEFAULT false,expanded BOOL DEFAULT false , deleted BOOL DEFAULT false, autotrack BOOL DEFAULT false) ");
+	db.exe("CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, name VARCHAR, parent INTEGER, running BOOL DEFAULT false,expanded BOOL DEFAULT false , deleted BOOL DEFAULT false) ");
 	db.exe("CREATE TABLE IF NOT EXISTS times (id INTEGER PRIMARY KEY, taskID INTEGER, start INTEGER, stop INTEGER, running BOOL DEFAULT false) ");
 	db.exe("CREATE TABLE IF NOT EXISTS autotrack (taskID INTEGER, workspace INTEGER) ");
 	db.exe("CREATE TABLE IF NOT EXISTS parameters (id VARCHAR PRIMARY KEY, string VARCHAR, value INTEGER, boolean BOOL) ");

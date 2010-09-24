@@ -25,14 +25,12 @@ EditTaskDialog::EditTaskDialog(boost::shared_ptr<DB::Database>& database) :
 	// Note to translators: This is the Parent in the context "Parent task"
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
-	label1.set_text(_("<b>Workspace</b>"));
-	AutotrackButton.set_label(_("Workspace tracking"));
+	label1.set_text(_("<b>Workspace tracking</b>"));
 
 	createLayout();
 	OKButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_OKButton_clicked));
 	CancelButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_CancelButton_clicked));
 	taskNameEntry.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
-	AutotrackButton.signal_toggled().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
 	parentChooser.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
 
 	std::vector<Gtk::CheckButton*>::iterator iter=checkbutton.begin();
@@ -52,9 +50,6 @@ void EditTaskDialog::createLayout()
 	hbox1.pack_start(parentChooser);
 	hbox2.pack_start(NameLabel, Gtk::PACK_SHRINK, 0);
 	hbox2.pack_start(taskNameEntry);
-	AutotrackButton.set_flags(Gtk::CAN_FOCUS);
-	AutotrackButton.set_mode(true);
-	hbox3.pack_start(AutotrackButton, Gtk::PACK_SHRINK, 0);
 
 	label1.set_use_markup(true);
 	DesktopFrame.add(workspaceTable);
@@ -125,13 +120,11 @@ void EditTaskDialog::setTaskID(int64_t ID)
 	Task task = taskAccessor->getTask(taskID);
 	name = task.getName();
 	setParent( task.getParentID() );
-	autotrack = task.getAutotrack();
 	taskNameEntry.set_text(name);
-	AutotrackButton.set_active(autotrack);
 	std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
 	setTickedWorkspaces(workspaces);
 	OKButton.set_sensitive(false);
-	workspaces = workspaces;
+	this->workspaces = workspaces;
 	parentChooser.setID(ID);
 }
 
@@ -167,12 +160,10 @@ void EditTaskDialog::setTickedWorkspaces(std::vector<int> workspaces)
 }
 void EditTaskDialog::on_OKButton_clicked()
 {
-	bool autotrack;
 	std::string name;
 	std::stringstream checkButtonName;
 	std::vector<int> workspaces = getTickedWorkspaces();
 	name = taskNameEntry.get_text();
-	autotrack = AutotrackButton.get_active();
 	parentID = parentChooser.getParentID();
 
 	if(taskID<1)
@@ -185,7 +176,6 @@ void EditTaskDialog::on_OKButton_clicked()
 		taskAccessor->setTaskName(taskID, name);
 	}
 	autoTrackAccessor->setWorkspaces(taskID, workspaces);
-	taskAccessor->setAutotrack(taskID, autotrack);
 	taskID = -1;
 	parentID = 0;
 	hide();
@@ -199,7 +189,8 @@ void EditTaskDialog::on_CancelButton_clicked()
 void EditTaskDialog::check4changes()
 {
 	std::vector<int> tickedWorkspaces = getTickedWorkspaces();
-	if (taskNameEntry.get_text() != name || AutotrackButton.get_active() != autotrack || tickedWorkspaces != workspaces
+
+	if (taskNameEntry.get_text() != name || tickedWorkspaces != workspaces
 			|| parentChooser.getParentID() != parentID)
 	{
 		OKButton.set_sensitive(true);

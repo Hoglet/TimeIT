@@ -70,13 +70,13 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 	int totalTime = 0;
 	stringstream statement;
 
-	statement << "SELECT id, parent, name, expanded, running, autotrack, time "
+	statement << "SELECT id, parent, name, expanded, running, time "
 		"  FROM "
 		"    ("
 		"      SELECT"
 		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
 		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-		"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+		"        tasks.deleted as deleted "
 		"      FROM"
 		"        tasks "
 		"      LEFT JOIN "
@@ -120,16 +120,16 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 			string name = row[2].getString();
 			bool expanded = row[3].getBool();
 			bool running = row[4].getBool();
-			bool autotrack = row[5].getBool();
-			if (row[6].isNull() == false)
+
+			if (row[5].isNull() == false)
 			{
-				totalTime = row[6].getInt();
+				totalTime = row[5].getInt();
 			}
 			else
 			{
 				totalTime = 0;
 			}
-			Task task(id, parent, name, totalTime, expanded, running, autotrack);
+			Task task(id, parent, name, totalTime, expanded, running);
 			retVal.push_back(task);
 		}
 	} catch (dbexception& e)
@@ -149,16 +149,15 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 	bool running = false;
 	int time = 0;
 	int totalTime = 0;
-	bool autotrack = false;
 	stringstream statement;
 	statement << "SELECT "
-		"    id,parent,name,expanded,running,autotrack,time "
+		"    id,parent,name,expanded,running,time "
 		"  FROM "
 		"    ("
 		"      SELECT"
 		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
 		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-		"        tasks.autotrack as autotrack, tasks.deleted as deleted "
+		"        tasks.deleted as deleted "
 		"      FROM"
 		"        tasks "
 		"      LEFT JOIN "
@@ -194,10 +193,9 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 			name = row[2].getString();
 			expanded = row[3].getBool();
 			running = row[4].getBool();
-			autotrack = row[5].getBool();
-			if (row[6].isNull() == false)
+			if (row[5].isNull() == false)
 			{
-				time = row[6].getInt();
+				time = row[5].getInt();
 			}
 			else
 			{
@@ -216,7 +214,7 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 		cerr << e.what() << endl;
 		throw e;
 	}
-	Task task(id, parent, name, time, expanded, running, autotrack, totalTime);
+	Task task(id, parent, name, time, expanded, running, totalTime);
 	return task;
 
 }
@@ -263,22 +261,7 @@ void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
 	}
 }
 
-void TaskAccessor::setAutotrack(int64_t taskID, bool autotrack)
-{
-	stringstream statement;
-	statement << "UPDATE tasks SET autotrack = " << autotrack;
-	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-		taskAutotrackChanged(taskID, autotrack);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
-}
+
 void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 {
 	stringstream statement;
@@ -371,21 +354,6 @@ TaskAccessor::TaskAccessor(const std::string& dbname) :
 }
 TaskAccessor::~TaskAccessor()
 {
-}
-void TaskAccessor::taskAutotrackChanged(int64_t taskID, bool autotrack)
-{
-	try
-	{
-		//		Task task = getTask(taskID);
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskAutotrackChanged(taskID, autotrack);
-		}
-	} catch (...)
-	{
-	}
 }
 
 void TaskAccessor::taskUpdated(int64_t taskID)

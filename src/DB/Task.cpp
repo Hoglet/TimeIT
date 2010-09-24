@@ -48,15 +48,11 @@ bool Task::getRunning() const
 {
 	return running;
 }
-bool Task::getAutotrack() const
-{
-	return autotrack;
-}
 void Task::setExpanded(bool op)
 {
 	expanded=op;
 }
-Task::Task(int op_ID, int op_parentID, std::string op_name, int op_time, bool op_expanded, bool op_running, bool op_autotrack, int op_totalTime)
+Task::Task(int op_ID, int op_parentID, std::string op_name, int op_time, bool op_expanded, bool op_running, int op_totalTime)
 {
 	ID = op_ID;
 	parentID = op_parentID;
@@ -64,7 +60,6 @@ Task::Task(int op_ID, int op_parentID, std::string op_name, int op_time, bool op
 	totalTime = op_totalTime;
 	expanded = op_expanded;
 	running = op_running;
-	autotrack = op_autotrack;
 	time = op_time;
 }
 
