@@ -1,3 +1,15 @@
+timeit (0.9.10) lucid; urgency=low
+
+  * Menu to report bugs
+  * English help text.
+  * Symetry: Double click and context menus in more places
+  * Better management of treviews in task list and summaries.
+  * Polish and Swedish translations
+  * Simplified task editing by removing "Workspace tracking" ticker 
+    as it was unlogical.
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 25 Sep 2010 13:56:49 +0200
+
 timeit (0.9.9) lucid; urgency=low
 
   * Bugfix: Summaries were wrong. (LP: #617736)
