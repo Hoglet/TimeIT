@@ -5,8 +5,9 @@ html_DATA = \
 	TimeIT-MainWindow.png \
 	TimeIT-EditTask.png \
 	TimeIT-EditTime.png \
-	TimeIT-Preferences.png \
-	StatusIcon \
+	MainWindow-Preferences.png \
+	StatusIcon.png \
+	TimeIT-summaries.png\
 	TimeIT-ContextMenu.png
 
 EXTRA_DIST = \
