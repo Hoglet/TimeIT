@@ -146,6 +146,7 @@ void Summary::on_taskUpdated(const Task& task)
 	}
 	else
 	{
+		empty();
 		populate();
 	}
 }
