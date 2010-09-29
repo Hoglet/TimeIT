@@ -202,7 +202,7 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 				time = 0;
 			}
 			totalTime = time;
-			totalTime += getTotalChildTime(id);
+			totalTime += getTotalChildTime(id,start,stop);
 		}
 		else
 		{
