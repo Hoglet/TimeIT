@@ -18,6 +18,7 @@ public:
 
 	void StartTask(int64_t id);
 	void StopTask(int64_t id);
+	void ToggleTask(int64_t id);
 
 	bool hasRunningTasks();
 

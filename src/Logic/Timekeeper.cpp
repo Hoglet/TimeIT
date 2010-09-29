@@ -90,6 +90,22 @@ void Timekeeper::StartTask(int64_t id)
 		}
 	}
 }
+
+void Timekeeper::ToggleTask(int64_t id)
+{
+	map<int64_t, TaskTime>::iterator it;
+	it = activeTasks.find(id);
+	if (it == activeTasks.end())
+	{
+		StartTask(id);
+	}
+	else
+	{
+		StopTask(id);
+	}
+}
+
+
 void Timekeeper::StopTask(int64_t id)
 {
 	map<int64_t, TaskTime>::iterator it;

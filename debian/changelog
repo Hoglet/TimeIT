@@ -1,3 +1,11 @@
+timeit (0.9.11) lucid; urgency=low
+
+  * Bugfix: Parents times in summary is wrongly calculated (LP: 650571)
+  * StatusIcon menu now has most recent tasks so you can toggle runing on them
+  * Summaries was not correctly repopulated 
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 29 Sep 2010 14:09:42 +0200
+
 timeit (0.9.10) lucid; urgency=low
 
   * Menu to report bugs

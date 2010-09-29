@@ -39,5 +39,6 @@ public:
 	virtual void remove(int64_t id) = 0;
 	virtual std::map<int64_t, TaskTime> getTimeList(time_t startTime, time_t stopTime) = 0;
 	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) = 0;
+	virtual std::vector<int64_t> getLatestTasks(int amount) = 0;
 };
 #endif /* ITIMEACCESSOR_H_ */

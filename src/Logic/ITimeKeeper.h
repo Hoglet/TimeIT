@@ -22,6 +22,7 @@ class ITimeKeeper
 public:
 	virtual void StartTask(int64_t id) = 0;
 	virtual void StopTask(int64_t id) = 0;
+	virtual void ToggleTask(int64_t id) = 0;
 
 	virtual bool hasRunningTasks() = 0;
 	virtual time_t timeIdle() = 0;

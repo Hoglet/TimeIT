@@ -200,6 +200,33 @@ map<int64_t, TaskTime> TimeAccessor::getTimeList(time_t startTime, time_t stopTi
 	}
 	return resultList;
 }
+std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
+{
+	vector<int64_t> resultList;
+	stringstream statement;
+	statement << "SELECT DISTINCT times.taskid FROM times  ORDER BY times.stop DESC LIMIT " << amount;
+
+	int id;
+	try
+	{
+		db.exe(statement.str());
+
+		vector< vector<DataCell> >::iterator iter=db.rows.begin();
+		for(;iter!=db.rows.end();iter++)
+		{
+			vector<DataCell> row=*iter;
+			id = row[0].getInt();
+			resultList.push_back(id);
+		}
+	}
+	catch(dbexception& e)
+	{
+		cerr << statement << " caused: " << endl;
+		cerr << e.what() << endl;
+	}
+	return resultList;
+
+}
 
 std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskId, time_t startTime, time_t stopTime)
 {

@@ -20,7 +20,7 @@ public:
 	virtual void changeEndTime(int64_t timeID, time_t stopTime);
 	virtual void changeStartTime(int64_t timeID, time_t startTime);
 	virtual void setRunning(int64_t timeID, bool running);
-	//virtual  getLatestTasks(int amount); select distinct times.taskid from times  order by times.stop DESC limit 5
+	virtual std::vector<int64_t> getLatestTasks(int amount);
 	virtual TimeEntry getByID(int64_t id);
 	virtual void remove(int64_t id);
 	virtual std::map<int64_t, TaskTime> getTimeList(time_t startTime, time_t stopTime);
