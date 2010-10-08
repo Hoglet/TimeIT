@@ -1,3 +1,9 @@
+timeit (0.9.12) lucid; urgency=low
+
+  * Bugfix: Crasch when "recent" task is deleted (LP: 656998)
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 08 Oct 2010 20:27:53 +0200
+
 timeit (0.9.11) lucid; urgency=low
 
   * Bugfix: Parents times in summary is wrongly calculated (LP: 650571)
