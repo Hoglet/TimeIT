@@ -51,3 +51,4 @@ Profiling
 .bzrignore
 .bzr
 .anjuta
+/test.db.lock.lock

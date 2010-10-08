@@ -67,42 +67,49 @@ void StatusIcon::populateContextMenu()
 
 	for (int i = 0; i < (int) latestTasks.size(); i++)
 	{
-		Task task = m_taskaccessor->getTask(latestTasks[i]);
-		std::string menuLine = completeTaskPath(latestTasks[i]);
-
-		Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
-		if( task.getRunning()==true)
+		try
 		{
-			menuIcon->set(runningIconSmall);
+			Task task = m_taskaccessor->getTask(latestTasks[i]);
+			std::string menuLine = completeTaskPath(latestTasks[i]);
+
+			Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
+			if( task.getRunning()==true)
+			{
+				menuIcon->set(runningIconSmall);
+			}
+			else
+			{
+				menuIcon->set(idleIconSmall);
+			}
+
+
+			switch (i)
+			{
+				case 0:
+					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon , sigc::mem_fun(*this,
+							&StatusIcon::on_menu_toggle_task1)));
+					break;
+				case 1:
+					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
+							&StatusIcon::on_menu_toggle_task2)));
+					break;
+				case 2:
+					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
+							&StatusIcon::on_menu_toggle_task3)));
+					break;
+				case 3:
+					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
+							&StatusIcon::on_menu_toggle_task4)));
+					break;
+				case 4:
+					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
+							&StatusIcon::on_menu_toggle_task5)));
+					break;
+			}
 		}
-		else
+		catch(...)
 		{
-			menuIcon->set(idleIconSmall);
-		}
-
-
-		switch (i)
-		{
-			case 0:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon , sigc::mem_fun(*this,
-						&StatusIcon::on_menu_toggle_task1)));
-				break;
-			case 1:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-						&StatusIcon::on_menu_toggle_task2)));
-				break;
-			case 2:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-						&StatusIcon::on_menu_toggle_task3)));
-				break;
-			case 3:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-						&StatusIcon::on_menu_toggle_task4)));
-				break;
-			case 4:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-						&StatusIcon::on_menu_toggle_task5)));
-				break;
+			//Ignore all errors
 		}
 	}
 	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());

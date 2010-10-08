@@ -56,6 +56,7 @@ private:
 	int getTotalChildTime(int64_t id, time_t start = 0 , time_t stop = 0);
 	DBAbstraction::CSQL db;
 	std::list<TaskAccessorObserver*> observers;
+	dbexception dbe;
 };
 
 #endif // _TASK_MANAGER_HPP_

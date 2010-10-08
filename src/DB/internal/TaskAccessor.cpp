@@ -206,7 +206,9 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 		}
 		else
 		{
-			throw "Task not found";
+			dbe.setReturnCode(0);
+			dbe.setMessage("Task not found");
+			throw dbe;
 		}
 	} catch (dbexception& e)
 	{
