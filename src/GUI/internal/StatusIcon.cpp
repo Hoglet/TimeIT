@@ -124,7 +124,7 @@ void StatusIcon::populateContextMenu()
 
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
-	Task task = m_taskaccessor->getTask(id);
+	Task task = m_taskaccessor->getTask(id,0,0,false);
 	std::string taskName = task.getName();
 	if(task.getParentID()>0)
 	{

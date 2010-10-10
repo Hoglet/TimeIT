@@ -140,7 +140,7 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 	return retVal;
 }
 
-Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
+Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
 {
 	int id = 0;
 	int parent = 0;
@@ -201,8 +201,11 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop)
 			{
 				time = 0;
 			}
-			totalTime = time;
-			totalTime += getTotalChildTime(id,start,stop);
+			if(calculateTotalTime)
+			{
+				totalTime = time;
+				totalTime += getTotalChildTime(id,start,stop);
+			}
 		}
 		else
 		{

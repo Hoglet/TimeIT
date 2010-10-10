@@ -52,3 +52,4 @@ Profiling
 .bzr
 .anjuta
 /test.db.lock.lock
+/callgrind.out.*
