@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(timeit, 0.9.12, http://freshmeat.net/projects/timeit)
+AC_INIT(timeit, 0.9.13, http://freshmeat.net/projects/timeit)
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)

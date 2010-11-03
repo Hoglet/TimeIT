@@ -1,3 +1,9 @@
+timeit (0.9.13) lucid; urgency=low
+
+  * Performance improvement. Populating status icon menu
+
+ -- Kent Asplund <hoglet@solit.se>  Mon, 11 Oct 2010 16:14:44 +0200
+
 timeit (0.9.12) lucid; urgency=low
 
   * Bugfix: Crasch when "recent" task is deleted (LP: 656998)
