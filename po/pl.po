@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-18 18:12+0200\n"
-"PO-Revision-Date: 2010-08-19 05:19+0000\n"
-"Last-Translator: Kent Asplund <Unknown>\n"
+"POT-Creation-Date: 2010-09-24 17:21+0200\n"
+"PO-Revision-Date: 2010-11-02 06:17+0000\n"
+"Last-Translator: Jarosław Ogrodnik <nobodythere@gmail.com>\n"
 "Language-Team: Polish <homek@kotten.solit.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-08-20 04:06+0000\n"
+"X-Launchpad-Export-Date: 2010-11-03 05:21+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ../src/Main.cpp:84
@@ -52,12 +52,8 @@ msgid "Name: "
 msgstr "Nazwa: "
 
 #: ../src/GUI/internal/EditTaskDialog.cpp:28
-msgid "<b>Workspace</b>"
-msgstr "<b>Obszar roboczy</b>"
-
-#: ../src/GUI/internal/EditTaskDialog.cpp:29
-msgid "Workspace tracking"
-msgstr "Obszar roboczy"
+msgid "<b>Workspace tracking</b>"
+msgstr ""
 
 #: ../src/GUI/internal/AddTime.cpp:19
 #: ../src/GUI/internal/MainWindow/MainWindow.cpp:52
@@ -178,7 +174,7 @@ msgstr "Usuń zadanie"
 
 #: ../src/GUI/internal/MainWindow/Menu.cpp:47
 msgid "Report bug"
-msgstr ""
+msgstr "Zgłoś błąd"
 
 #: ../src/GUI/internal/MainWindow/Menu.cpp:50
 msgid "_File"
@@ -252,3 +248,9 @@ msgstr "Czas zero (m)"
 #: ../src/GUI/internal/PreferenceDialog.cpp:40
 msgid "Idle time (m)"
 msgstr "Czas bez aktywności (m)"
+
+#~ msgid "Workspace tracking"
+#~ msgstr "Obszar roboczy"
+
+#~ msgid "<b>Workspace</b>"
+#~ msgstr "<b>Obszar roboczy</b>"
