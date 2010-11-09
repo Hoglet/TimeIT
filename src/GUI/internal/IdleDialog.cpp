@@ -27,13 +27,13 @@ IdleDialog::IdleDialog(boost::shared_ptr<Timer>& timer)
 	set_deletable(false);
 	setText();
 	get_vbox()->pack_start(text);
-	// Note to translators: This is one answer to the question "No activity have
+	// This is one answer to the question "No activity have
 	// been detected for X minutes. What should we do?"
 	add_button(_("Revert and stop"), RESPONSE_REVERT);
-	// Note to translators: This is one answer to the question "No activity have
+	// This is one answer to the question "No activity have
 	// been detected for X minutes. What should we do?"
 	add_button(_("Revert and continue"), RESPONSE_REVERTANDCONTINUE);
-	// Note to translators: This is one answer to the question "No activity have
+	// This is one answer to the question "No activity have
 	// been detected for X minutes. What should we do?"
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
