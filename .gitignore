@@ -53,3 +53,4 @@ Profiling
 .anjuta
 /test.db.lock.lock
 /callgrind.out.*
+documentation

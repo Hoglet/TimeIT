@@ -1,3 +1,9 @@
+timeit (1.0.0) natty; urgency=low
+
+  * Turkish language added.
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 25 Jun 2011 10:23:30 +0200
+
 timeit (0.9.13) lucid; urgency=low
 
   * Performance improvement. Populating status icon menu
