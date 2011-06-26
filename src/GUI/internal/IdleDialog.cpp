@@ -98,11 +98,11 @@ void IdleDialog::responseHandler(int result)
 		case (RESPONSE_REVERTANDCONTINUE):
 			observer->on_action_revertAndContinue();
 			break;
-		default:
-			std::cout << "Unexpected button clicked." << std::endl;
-			//Fall trough
 		case (RESPONSE_CONTINUE):
 			observer->on_action_continue();
+			break;
+		default:
+			std::cout << "Unexpected button clicked." << std::endl;
 			break;
 		}
 	}

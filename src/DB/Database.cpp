@@ -48,23 +48,18 @@ Database::Database(const std::string& dbname)
 		}
 		if (DBVersion != expectedDBVersion)
 		{
-			switch (DBVersion)
-			{
-			case 0: //Empty database. Populate with data
+			if (DBVersion == 0)
+			{   //Empty database. Populate with data
 				statement.str("INSERT INTO parameters (id, value) VALUES ( \"dbversion\", 1 )");
 				db.exe(statement.str());
-				break;
-			case 1:
-				//Fall through
-			case 2:
-				//Fall through
-			case 3:
-				db.exe("DROP VIEW v_timesSummary;");
-				db.exe("DROP VIEW v_tasks;");
-			case 4:
-				//Fall through
-			default:
-				break;
+			}
+			else
+			{   //Upgrade existing
+				if (DBVersion < 4)
+				{
+					db.exe("DROP VIEW v_timesSummary;");
+					db.exe("DROP VIEW v_tasks;");
+				}
 			}
 
 			statement.str("");

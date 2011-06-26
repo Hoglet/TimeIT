@@ -120,6 +120,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 			preferenceDialogInstance = dialog;
 		}
 		retVal = preferenceDialogInstance;
+		break;
 	case MAX_WIDGETS:
 	default:
 		break;

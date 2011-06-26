@@ -32,7 +32,7 @@ class TaskAccessor : public ITaskAccessor
 public:
 	friend class TimeAccessor;
 	TaskAccessor(const std::string& dbname);
-	~TaskAccessor();
+	virtual ~TaskAccessor();
 
 	void attach(TaskAccessorObserver*);
 	void detach(TaskAccessorObserver*);
