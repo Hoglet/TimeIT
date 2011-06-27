@@ -54,3 +54,4 @@ Profiling
 /test.db.lock.lock
 /callgrind.out.*
 documentation
+.cccc
