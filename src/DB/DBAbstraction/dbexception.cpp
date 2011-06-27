@@ -39,6 +39,7 @@ std::string dbexception::rc2string() const
 	{
 	default:
 		str<<"Error "<<returnCode;
+		break;
 	}
 	return str.str();
 }
