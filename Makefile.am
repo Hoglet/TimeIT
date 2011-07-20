@@ -3,6 +3,8 @@
 
 ACLOCAL_AMFLAGS = -I m4
 
+man1_MANS = timeit.man
+
 SUBDIRS = src po \
 	doc  images
 

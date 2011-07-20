@@ -1,0 +1,32 @@
+.TH timeit 1  "July 20, 2011" "version 1.0" "USER COMMANDS"
+.SH NAME
+timeit \- The unobtrusive time tracker
+.SH SYNOPSIS
+.B timeit
+[\--help] [\--db]
+.SH DESCRIPTION
+TimeIT is a tool intended to help you to keep track on how much
+time you spend on tasks.
+.PP
+It is intended to be discreet and unobtrusive. It is using 
+workspace-tracking and idle detection to minimize the interaction
+needed, in the intended use case you are not even interacting at 
+all with the program
+.SH OPTIONS
+.TP
+\--help
+display a short help text
+.TP
+\--db
+use non default database-file
+.SH EXAMPLES
+.TP
+Normal start
+.B timeit
+.PP
+.TP
+Using a temporary database
+.B timeit --db=/tmp/volatile.db
+.PP
+.SH AUTHOR
+Kent Asplund (hoglet (at) solit.se)
