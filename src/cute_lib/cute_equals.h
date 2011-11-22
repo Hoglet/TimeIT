@@ -20,6 +20,9 @@
 
 #ifndef CUTE_EQUALS_H_
 #define CUTE_EQUALS_H_
+#if defined(__GXX_EXPERIMENTAL_CXX0X__)
+#define USE_STD0X 1
+#endif
 
 #include "cute_base.h"
 #include "cute_demangle.h"
@@ -76,7 +79,7 @@ namespace cute {
 		template <typename T, bool select>
 		struct select_built_in_shift_if {
 			std::ostream &os;
-			select_built_in_shift_if(std::ostream &os):os(os){}
+			select_built_in_shift_if(std::ostream &ros):os(ros){}
 			std::ostream& operator()(T const &t){
 				return os << t ; // default uses operator<<(std::ostream&,T const&)
 			}
@@ -85,7 +88,7 @@ namespace cute {
 		template <typename T>
 		struct select_built_in_shift_if<T,false> {
 			std::ostream &os;
-			select_built_in_shift_if(std::ostream &os):os(os){}
+			select_built_in_shift_if(std::ostream &ros):os(ros){}
 			std::ostream & operator()(T const &t){
 				return os << "operator << not defined for type " <<cute::demangle(typeid(T).name());
 			}
@@ -120,7 +123,7 @@ namespace cute {
 		bool do_equals_floating_with_delta(ExpectedValue const &expected
 				,ActualValue const &actual
 				,DeltaValue const &delta) {
-			return !(std::abs(delta)  < std::abs(expected-actual));
+			return std::abs(delta)  >= std::abs(expected-actual);
 		}
 		template <typename ExpectedValue, typename ActualValue, bool select_non_floating_point_type>
 		bool do_equals_floating(ExpectedValue const &expected

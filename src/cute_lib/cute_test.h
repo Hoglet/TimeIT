@@ -46,8 +46,8 @@ namespace cute {
 		// but a name can also be given explicitely, e.g. for CUTE() macro
 		// for simple test functions
 		template <typename VoidFunctor>
-		test(VoidFunctor const &t, std::string name = demangle(typeid(VoidFunctor).name()))
-		:theTest(t),name_(name){}
+		test(VoidFunctor const &t, std::string sname = demangle(typeid(VoidFunctor).name()))
+		:theTest(t),name_(sname){}
 
 	private:
 		boost_or_tr1::function<void()> theTest;

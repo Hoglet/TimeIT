@@ -47,4 +47,5 @@ namespace cute{
 	};
 }
 #define CUTE_SUITE_TEST(s) cute::test(cute::suite_test((s)),#s)
+#define CUTE_SUITE_TEST_NAME(s, name) cute::test(cute::suite_test((s)),name)
 #endif /*CUTE_SUITE_TEST_H_*/
