@@ -84,7 +84,6 @@ bool TaskList::on_button_press_event(GdkEventButton* event)
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
-		int64_t id = getSelectedID();
 		on_menu_edit();
 		retval = true;
 	}

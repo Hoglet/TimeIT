@@ -29,8 +29,6 @@ StatusIcon::StatusIcon(boost::shared_ptr<ITimeKeeper>& timekeeper, boost::shared
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
 	std::string blankIconPath = Glib::build_filename(imagePath, "blank.png");
 
-	const char * str = runningIconPath.c_str();
-	str = defaultIconPath.c_str();
 	m_defaultIcon = Gdk::Pixbuf::create_from_file(defaultIconPath);
 	m_runningIcon = Gdk::Pixbuf::create_from_file(runningIconPath);
 	m_statusIcon = Gtk::StatusIcon::create(m_defaultIcon);
