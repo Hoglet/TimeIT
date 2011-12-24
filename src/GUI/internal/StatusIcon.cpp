@@ -11,7 +11,7 @@
 #include <iostream>
 #include <glibmm/i18n.h>
 #include <iomanip>
-#include <strstream>
+#include <sstream>
 namespace GUI
 {
 namespace Internal
