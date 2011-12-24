@@ -34,6 +34,7 @@ typedef boost::shared_ptr<IWidget> WidgetPtr;
 class IGUIFactory
 {
 public:
+	virtual ~IGUIFactory() {};
 	virtual WidgetPtr getWidget(EWidget) = 0;
 	virtual IStatusIcon& getStatusIcon() = 0;
 	virtual WidgetPtr getAddTime(int64_t taskID) = 0;

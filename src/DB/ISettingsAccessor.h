@@ -11,12 +11,14 @@
 class ISettingsAccessorObserver
 {
 public:
+	virtual ~ISettingsAccessorObserver(){}
 	virtual void on_settingsChanged(const std::string& name) = 0;
 };
 
 class ISettingsAccessor
 {
 public:
+	virtual ~ISettingsAccessor() {};
 	/* ShortFilterTime
 	 * Time in minutes that is the shortest time counted as work.
 	 * Shorter records is to be removed.

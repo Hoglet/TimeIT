@@ -129,7 +129,6 @@ void Timekeeper::on_taskRemoved(int64_t id)
 	it = activeTasks.find(id);
 	if (it != activeTasks.end())
 	{
-		TaskTime task = it->second;
 		activeTasks.erase(it);
 		if (activeTasks.size() <= 0)
 		{

@@ -30,6 +30,7 @@ struct TimeEntry
 class ITimeAccessor
 {
 public:
+	virtual ~ITimeAccessor() {};
 	virtual int64_t newTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
 	virtual void updateTime(int64_t timeID, time_t startTime, time_t stopTime) = 0;
 	virtual void changeEndTime(int64_t timeID, time_t stopTime) = 0;

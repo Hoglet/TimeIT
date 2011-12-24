@@ -18,7 +18,7 @@ class SummaryObserver
 {
 public:
 	SummaryObserver();
-	~SummaryObserver();
+	virtual ~SummaryObserver();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
 	virtual void on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime) = 0;
 	void attach(ISummary* subject);
@@ -30,6 +30,7 @@ private:
 class ISummary
 {
 public:
+	virtual ~ISummary() {};
 	virtual void attach(SummaryObserver*) = 0;
 	virtual void detach(SummaryObserver*) = 0;
 };

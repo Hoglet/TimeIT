@@ -53,7 +53,7 @@ namespace cute {
 					case '\t': result += "\\t"; break;
 					case '\\': result += "\\\\"; break;
 					case '\r': result += "\\r"; break;
-					default: result += input[i];
+					default: result += input[i];break;
 				}
 			}
 			return result;

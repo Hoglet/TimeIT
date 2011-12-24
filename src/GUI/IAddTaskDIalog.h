@@ -13,6 +13,7 @@ namespace GUI {
 class IAddTaskDialog
 {
 public:
+	virtual ~IAddTaskDialog() {};
 	virtual void setParent(int ID) = 0;
 };
 

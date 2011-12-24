@@ -13,6 +13,7 @@
 class TimerObserver
 {
 public:
+	virtual ~TimerObserver() {};
 	virtual void on_signal_1_second() = 0;
 	virtual void on_signal_10_seconds() = 0;
 };

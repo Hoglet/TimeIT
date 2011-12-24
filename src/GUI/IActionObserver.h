@@ -12,6 +12,7 @@
 class IActionObserver
 {
 public:
+	virtual ~IActionObserver(){};
 	virtual void on_action_task_selection_changed(int selectedTaskID)=0;
 	virtual void on_action_add_task()=0;
 	virtual void on_action_remove_task()=0;

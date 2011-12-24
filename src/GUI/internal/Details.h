@@ -23,6 +23,7 @@ namespace Internal
 class DetailsObserver
 {
 public:
+	virtual ~DetailsObserver() {};
 	virtual void on_selected_changed() = 0;
 };
 /*

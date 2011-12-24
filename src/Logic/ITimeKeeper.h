@@ -13,6 +13,7 @@
 class TimekeeperObserver
 {
 public:
+	virtual ~TimekeeperObserver() {};
 	virtual void on_idleDetected() = 0;
 	virtual void on_runningChanged() = 0;
 };
@@ -20,6 +21,7 @@ public:
 class ITimeKeeper
 {
 public:
+	virtual ~ITimeKeeper() {};
 	virtual void StartTask(int64_t id) = 0;
 	virtual void StopTask(int64_t id) = 0;
 	virtual void ToggleTask(int64_t id) = 0;

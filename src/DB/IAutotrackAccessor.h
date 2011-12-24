@@ -13,9 +13,10 @@
 class IAutotrackAccessor
 {
 public:
+	virtual ~IAutotrackAccessor() {};
 	virtual std::vector<int64_t> getTaskIDs(int workspace) = 0;
 	virtual std::vector<int> getWorkspaces(int64_t taskID) = 0;
-	virtual void setWorkspaces(int64_t taskID,std::vector<int> workspaces) = 0;
+	virtual void setWorkspaces(int64_t taskID, std::vector<int> workspaces) = 0;
 };
 
 #endif /* IAUTOTRACKACCESSOR_H_ */

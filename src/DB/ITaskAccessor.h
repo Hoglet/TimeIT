@@ -15,6 +15,7 @@
 class TaskAccessorObserver
 {
 public:
+	virtual ~TaskAccessorObserver() {};
 	virtual void on_taskAdded(const Task&)  = 0;
 	virtual void on_taskUpdated(const Task&) = 0;
 	virtual void on_taskRemoved(int64_t) = 0;
@@ -24,6 +25,7 @@ public:
 class ITaskAccessor
 {
 public:
+	virtual ~ITaskAccessor() {};
 	virtual void attach(TaskAccessorObserver*) = 0;
 	virtual void detach(TaskAccessorObserver*) = 0;
 
