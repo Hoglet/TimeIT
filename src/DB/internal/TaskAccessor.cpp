@@ -67,38 +67,13 @@ int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start, time_t stop)
 {
 	vector<Task> retVal;
-	int totalTime = 0;
+	int time = 0;
 	stringstream statement;
 
-	statement << "SELECT id, parent, name, expanded, running, time "
+	statement << "SELECT id, parent, name, expanded, running "
 			"  FROM "
-			"    ("
-			"      SELECT"
-			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
-			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-			"        tasks.deleted as deleted "
-			"      FROM"
-			"        tasks "
-			"      LEFT JOIN "
-			"        ("
-			"          SELECT"
-			"            taskID as times_taskID, SUM(stop-start) AS times_time "
-			"          FROM "
-			"            times";
-	if (stop > 0)
-	{
-		statement << ""
-				"      WHERE"
-				"        start >=" << start << "      AND"
-				"        stop <= " << stop;
-	}
-	statement << ""
-			"          GROUP BY "
-			"            taskID"
-			"        )"
-			"      ON tasks.id=times_taskID"
-			"    )"
-			"WHERE deleted='false'";
+			"    tasks"
+			"  WHERE deleted='false'";
 
 	if (taskID > 0)
 	{
@@ -113,28 +88,20 @@ vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool only
 		statement << " AND parent=" << parentID;
 	}
 
-		db.exe(statement.str());
-		for (unsigned int r = 0; r < db.rows.size(); r++)
-		{
-			vector<DataCell> row = db.rows[r];
+	db.exe(statement.str());
+	for (unsigned int r = 0; r < db.rows.size(); r++)
+	{
+		vector<DataCell> row = db.rows[r];
 
-			int id = row[0].getInt();
-			int parent = row[1].getInt();
-			string name = row[2].getString();
-			bool expanded = row[3].getBool();
-			bool running = row[4].getBool();
-
-			if (row[5].isNull() == false)
-			{
-				totalTime = row[5].getInt();
-			}
-			else
-			{
-				totalTime = 0;
-			}
-			Task task(id, parent, name, totalTime, expanded, running);
-			retVal.push_back(task);
-		}
+		int id = row[0].getInt();
+		int parent = row[1].getInt();
+		string name = row[2].getString();
+		bool expanded = row[3].getBool();
+		bool running = row[4].getBool();
+		time = timeAccessor->getTime(id, start, stop);
+		Task task(id, parent, name, time, expanded, running);
+		retVal.push_back(task);
+	}
 	return retVal;
 }
 
@@ -174,9 +141,9 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 	}
 	statement << "INSERT INTO tasks (name,parent) VALUES (\"" << name << "\", " << parentID << ")";
 
-		db.exe(statement.str());
-		id = db.getIDOfLastInsert();
-		notifier->taskAdded(id);
+	db.exe(statement.str());
+	id = db.getIDOfLastInsert();
+	notifier->taskAdded(id);
 	return id;
 }
 void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
@@ -222,10 +189,12 @@ void TaskAccessor::setTaskRunning(int64_t taskID, bool running)
 
 }
 
-TaskAccessor::TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier> notifier) :
+TaskAccessor::TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier> notifier,
+		boost::shared_ptr<ITimeAccessor> timeAccessor) :
 		db(dbname)
 {
 	this->notifier = notifier;
+	this->timeAccessor = timeAccessor;
 	db.exe("UPDATE tasks SET running = 0");
 	db.exe("UPDATE tasks SET parent = 0 WHERE parent < 0");
 }

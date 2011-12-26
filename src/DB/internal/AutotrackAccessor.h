@@ -12,12 +12,12 @@
 #include <IAutotrackAccessor.h>
 #include <boost/shared_ptr.hpp>
 #include "CSQL.h"
-#include "TaskAccessor.h"
+#include <ITaskAccessor.h>
 
 class AutotrackAccessor : public TaskAccessorObserver, public IAutotrackAccessor
 {
 public:
-	AutotrackAccessor(const std::string& dbpath,  boost::shared_ptr<TaskAccessor>& taskAccessor);
+	AutotrackAccessor(const std::string& dbpath,  boost::shared_ptr<ITaskAccessor>& taskAccessor);
 	virtual ~AutotrackAccessor();
 	std::vector<int64_t> getTaskIDs(int workspace);
 	std::vector<int> getWorkspaces(int64_t taskID);

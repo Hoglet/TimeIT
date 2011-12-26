@@ -13,7 +13,7 @@
 using namespace std;
 using namespace DBAbstraction;
 
-AutotrackAccessor::AutotrackAccessor(const std::string& dbpath, boost::shared_ptr<TaskAccessor>& taskAccessor) :
+AutotrackAccessor::AutotrackAccessor(const std::string& dbpath, boost::shared_ptr<ITaskAccessor>& taskAccessor) :
 		db(dbpath)
 {
 	m_taskAccessor = taskAccessor;

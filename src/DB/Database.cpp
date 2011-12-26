@@ -75,10 +75,9 @@ Database::Database(const std::string& dbname)
 	{
 		boost::shared_ptr<Notifier> notifier(new Notifier());
 		m_notifier = notifier;
-		boost::shared_ptr<TaskAccessor> taskAccessor(new TaskAccessor(dbname, notifier));
-		m_taskAccessor = taskAccessor;
-		m_autotrackAccessor = boost::shared_ptr<AutotrackAccessor>(new AutotrackAccessor(dbname, taskAccessor));
 		m_timeAccessor = boost::shared_ptr<TimeAccessor>(new TimeAccessor(dbname, notifier));
+		m_taskAccessor = boost::shared_ptr<TaskAccessor>(new TaskAccessor(dbname, notifier, m_timeAccessor));
+		m_autotrackAccessor = boost::shared_ptr<AutotrackAccessor>(new AutotrackAccessor(dbname, m_taskAccessor));
 		m_settingsAccessor = boost::shared_ptr<SettingsAccessor>(new SettingsAccessor(dbname));
 	} catch (dbexception& e)
 	{

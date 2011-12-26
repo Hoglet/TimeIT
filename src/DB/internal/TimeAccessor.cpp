@@ -158,7 +158,7 @@ int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
 	if (stop > 0)
 	{
 		statement << ""
-				"      WHERE"
+				"      AND"
 				"        start >=" << start << "      AND"
 				"        stop <= " << stop;
 	}
