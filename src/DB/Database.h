@@ -13,6 +13,7 @@
 #include <ITaskAccessor.h>
 #include <boost/shared_ptr.hpp>
 #include <ISettingsAccessor.h>
+#include <Notifier.h>
 
 namespace DB
 {
@@ -31,6 +32,7 @@ private:
 	boost::shared_ptr<ITimeAccessor> m_timeAccessor;
 	boost::shared_ptr<ITaskAccessor> m_taskAccessor;
 	boost::shared_ptr<ISettingsAccessor> m_settingsAccessor;
+	boost::shared_ptr<Notifier> m_notifier;
 };
 
 }

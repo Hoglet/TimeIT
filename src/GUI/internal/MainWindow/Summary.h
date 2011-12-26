@@ -50,11 +50,11 @@ protected:
 	//
 	void connectSignals();
 	void on_dateChanged();
-	virtual void on_taskAdded(const Task&)
+	virtual void on_taskAdded(int64_t)
 	{
 	};
 	void on_menu_showDetails();
-	virtual void on_taskUpdated(const Task&);
+	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
 	void init();
 	void populate(Gtk::TreeModel::Row* parent=0, int parentID=0);

@@ -8,6 +8,7 @@
 #include "AutotrackAccessor.h"
 #include <sstream>
 #include "TaskAccessor.h"
+#include <boost/shared_ptr.hpp>
 
 using namespace std;
 using namespace DBAbstraction;

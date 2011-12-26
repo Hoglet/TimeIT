@@ -27,7 +27,7 @@ using namespace DBAbstraction;
 
 vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(parentID, false, start, stop);
+	vector<Task> tasks = _getTasks(0, parentID, false, start, stop);
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
 	{
@@ -40,7 +40,7 @@ vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 
 vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
 {
-	vector<Task> tasks = _getTasks(parentID, true);
+	vector<Task> tasks = _getTasks(0, parentID, true);
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
 	{
@@ -53,7 +53,7 @@ vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
 
 int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(id, false, start, stop);
+	vector<Task> tasks = _getTasks(0, id, false, start, stop);
 	int totalTime = 0;
 	std::vector<Task>::iterator iter;
 	for (iter = tasks.begin(); iter != tasks.end(); iter++)
@@ -64,43 +64,47 @@ int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t start, time_t stop)
+vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start, time_t stop)
 {
 	vector<Task> retVal;
 	int totalTime = 0;
 	stringstream statement;
 
 	statement << "SELECT id, parent, name, expanded, running, time "
-		"  FROM "
-		"    ("
-		"      SELECT"
-		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
-		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-		"        tasks.deleted as deleted "
-		"      FROM"
-		"        tasks "
-		"      LEFT JOIN "
-		"        ("
-		"          SELECT"
-		"            taskID as times_taskID, SUM(stop-start) AS times_time "
-		"          FROM "
-		"            times";
+			"  FROM "
+			"    ("
+			"      SELECT"
+			"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
+			"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
+			"        tasks.deleted as deleted "
+			"      FROM"
+			"        tasks "
+			"      LEFT JOIN "
+			"        ("
+			"          SELECT"
+			"            taskID as times_taskID, SUM(stop-start) AS times_time "
+			"          FROM "
+			"            times";
 	if (stop > 0)
 	{
 		statement << ""
-			"      WHERE"
-			"        start >=" << start << "      AND"
-			"        stop <= " << stop;
+				"      WHERE"
+				"        start >=" << start << "      AND"
+				"        stop <= " << stop;
 	}
 	statement << ""
-		"          GROUP BY "
-		"            taskID"
-		"        )"
-		"      ON tasks.id=times_taskID"
-		"    )"
-		"WHERE deleted='false'";
+			"          GROUP BY "
+			"            taskID"
+			"        )"
+			"      ON tasks.id=times_taskID"
+			"    )"
+			"WHERE deleted='false'";
 
-	if (onlyRunning)
+	if (taskID > 0)
+	{
+		statement << " AND id=" << taskID;
+	}
+	else if (onlyRunning)
 	{
 		statement << " AND running=1";
 	}
@@ -136,92 +140,31 @@ vector<Task> TaskAccessor::_getTasks(int64_t parentID, bool onlyRunning, time_t 
 	{
 		cerr << statement.str() << " caused :\n";
 		cerr << e.what() << endl;
+		throw e;
 	}
 	return retVal;
 }
 
 Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
 {
-	int id = 0;
-	int parent = 0;
-	string name;
-	bool expanded = false;
-	bool running = false;
-	int time = 0;
-	int totalTime = 0;
-	stringstream statement;
-	statement << "SELECT "
-		"    id,parent,name,expanded,running,time "
-		"  FROM "
-		"    ("
-		"      SELECT"
-		"        tasks.id as id, tasks.parent as parent,tasks.running as running,"
-		"        tasks.name as name, tasks.expanded as expanded, times_time as time,"
-		"        tasks.deleted as deleted "
-		"      FROM"
-		"        tasks "
-		"      LEFT JOIN "
-		"        ("
-		"          SELECT"
-		"            taskID as times_taskID, SUM(stop-start) AS times_time "
-		"          FROM "
-		"            times";
-	if (stop > 0)
+	vector<Task> tasks = _getTasks(taskID, 0, false, start, stop);
+	if (tasks.size() == 1)
 	{
-		statement << ""
-			"      WHERE"
-			"        start >=" << start << "      AND"
-			"        stop <= " << stop;
-	}
-
-	statement << ""
-		"          GROUP BY "
-		"            taskID"
-		"        )"
-		"      ON tasks.id=times_taskID"
-		"    )"
-		"  WHERE id=" << taskID << "  AND deleted='false'";
-	try
-	{
-		db.exe(statement.str());
-		if (db.rows.size() > 0)
+		Task task = tasks[0];
+		if (calculateTotalTime)
 		{
-			vector<DataCell> row = db.rows[0];
-
-			id = row[0].getInt();
-			parent = row[1].getInt();
-			name = row[2].getString();
-			expanded = row[3].getBool();
-			running = row[4].getBool();
-			if (row[5].isNull() == false)
-			{
-				time = row[5].getInt();
-			}
-			else
-			{
-				time = 0;
-			}
-			if(calculateTotalTime)
-			{
-				totalTime = time;
-				totalTime += getTotalChildTime(id,start,stop);
-			}
+			int totalTime = task.getTime();
+			totalTime += getTotalChildTime(taskID, start, stop);
+			task.setTotalTime(totalTime);
 		}
-		else
-		{
-			dbe.setReturnCode(0);
-			dbe.setMessage("Task not found");
-			throw dbe;
-		}
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
+		return task;
 	}
-	Task task(id, parent, name, time, expanded, running, totalTime);
-	return task;
-
+	else
+	{
+		dbe.setReturnCode(0);
+		dbe.setMessage("Task not found");
+		throw dbe;
+	}
 }
 
 int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
@@ -241,7 +184,7 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 	{
 		db.exe(statement.str());
 		id = db.getIDOfLastInsert();
-		taskAdded(id);
+		notifier->taskAdded(id);
 	} catch (dbexception& e)
 	{
 		cerr << statement.str() << " caused :\n";
@@ -266,7 +209,6 @@ void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
 	}
 }
 
-
 void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 {
 	stringstream statement;
@@ -275,7 +217,7 @@ void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 	try
 	{
 		db.exe(statement.str());
-		taskUpdated(taskID);
+		notifier->taskUpdated(taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement.str() << " caused :\n";
@@ -292,7 +234,7 @@ void TaskAccessor::setParentID(int64_t taskID, int parentID)
 	try
 	{
 		db.exe(statement.str());
-		taskParentChanged(taskID);
+		notifier->taskParentChanged(taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement.str() << " caused :\n";
@@ -312,12 +254,7 @@ void TaskAccessor::removeTask(int64_t taskID)
 	try
 	{
 		db.exe(statement.str());
-		taskRemoved(taskID);
-		int parentID = task.getParentID();
-		if (parentID > 0)
-		{
-			taskUpdated(parentID);
-		}
+		notifier->taskRemoved(taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement.str() << " caused :\n";
@@ -328,25 +265,13 @@ void TaskAccessor::removeTask(int64_t taskID)
 
 void TaskAccessor::setTaskRunning(int64_t taskID, bool running)
 {
-	//ENHANCEMENT Column running should be taken from time into v_tasks. (Avoid duplicate data)
-	stringstream statement;
-	statement << "UPDATE tasks SET running = " << running;
-	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-		taskUpdated(taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
+
 }
 
-TaskAccessor::TaskAccessor(const std::string& dbname) :
-	db(dbname)
+TaskAccessor::TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier> notifier) :
+		db(dbname)
 {
+	this->notifier = notifier;
 	try
 	{
 		db.exe("UPDATE tasks SET running = 0");
@@ -361,88 +286,11 @@ TaskAccessor::~TaskAccessor()
 {
 }
 
-void TaskAccessor::taskUpdated(int64_t taskID)
-{
-	try
-	{
-		Task task = getTask(taskID);
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskUpdated(task);
-		}
-		if (task.getParentID() != 0)
-		{
-			taskUpdated(task.getParentID());
-		}
-	} catch (...)
-	{
-	}
-}
-
-void TaskAccessor::taskAdded(int64_t taskID)
-{
-	try
-	{
-		Task task = getTask(taskID);
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskAdded(task);
-		}
-		if (task.getParentID() != 0)
-		{
-			taskUpdated(task.getParentID());
-		}
-	} catch (...)
-	{
-	}
-}
-
-void TaskAccessor::taskParentChanged(int64_t taskID)
-{
-	try
-	{
-		Task task = getTask(taskID);
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskParentChanged(task);
-		}
-	} catch (...)
-	{
-	}
-}
-
-void TaskAccessor::taskRemoved(int64_t taskID)
-{
-	try
-	{
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskRemoved(taskID);
-		}
-	} catch (...)
-	{
-	}
-}
-
 void TaskAccessor::attach(TaskAccessorObserver* observer)
 {
-	if (observer)
-	{
-		observers.push_back(observer);
-	}
+	notifier->attach(observer);
 }
 void TaskAccessor::detach(TaskAccessorObserver* observer)
 {
-	if (observer)
-	{
-		observers.remove(observer);
-	}
+	notifier->detach(observer);
 }

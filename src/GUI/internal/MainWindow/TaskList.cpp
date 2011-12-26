@@ -103,8 +103,9 @@ void TaskList::on_row_collapsed(const TreeModel::iterator& iter, const TreeModel
 	taskAccessor->setTaskExpanded(id, false);
 }
 
-void TaskList::on_taskAdded(const Task& task)
+void TaskList::on_taskAdded(int64_t taskID)
 {
+	Task task=taskAccessor->getTask(taskID);
 	int64_t parentID = task.getParentID();
 	TreeModel::iterator iter;
 	if (parentID > 0)
@@ -128,13 +129,19 @@ void TaskList::on_taskAdded(const Task& task)
 	assignValuesToRow(row, task);
 }
 
-void TaskList::on_taskUpdated(const Task& task)
+void TaskList::on_taskUpdated(int64_t taskID)
 {
-	Gtk::TreeIter iter = findRow(task.getID());
+	Task task=taskAccessor->getTask(taskID);
+	Gtk::TreeIter iter = findRow(taskID);
 	if (iter != treeModel->children().end())
 	{
 		TreeModel::Row row = *iter;
 		assignValuesToRow(row, task);
+	}
+	int64_t parentID = task.getParentID();
+	if(parentID>0)
+	{
+		on_taskUpdated(parentID);
 	}
 }
 
@@ -159,7 +166,7 @@ void TaskList::on_selection_changed()
 	}
 }
 
-void TaskList::on_taskParentChanged(const Task&)
+void TaskList::on_taskParentChanged(int64_t)
 {
 	doUpdate();
 }

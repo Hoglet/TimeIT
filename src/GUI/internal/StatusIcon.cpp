@@ -207,7 +207,7 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 	m_Menu_Popup.popup(button, activate_time);
 }
 
-void StatusIcon::on_taskUpdated(const Task&)
+void StatusIcon::on_taskUpdated(int64_t)
 {
 	setTooltip();
 	populateContextMenu();

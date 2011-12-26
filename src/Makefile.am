@@ -24,6 +24,7 @@ bin_PROGRAMS = timeit
 timeit_SOURCES = \
 	DB/Task.cpp \
 	DB/Task.h \
+	DB/Notifier.cpp \
 	DB/DBAbstraction/CSQL.cpp \
 	DB/DBAbstraction/CSQL.h \
 	DB/DBAbstraction/DataCell.cpp \
@@ -117,7 +118,7 @@ timeit_SOURCES = \
 	GUI/internal/PreferenceDialog.cpp \
 	GUI/internal/PreferenceDialog.h \
 	DB/DefaultValues.h \
-	Tests/DB/test_TaskAccessor.cpp \
+	Tests/DB/test_TimeManagement.cpp \
 	Tests/TestRunner.cpp
 
 timeit_CXXFLAGS =        \

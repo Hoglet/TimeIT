@@ -73,7 +73,11 @@ void CSQL::exe(const std::string& s_exe)
 	if (rc!=SQLITE_OK)
 	{
 		e.setReturnCode(rc);
-		e.setMessage(errorMessage);
+		string message= "The statement ";
+		message += statement;
+		message += " caused :";
+		message += errorMessage;
+		e.setMessage(message);
 		throw e;
 	}
 }

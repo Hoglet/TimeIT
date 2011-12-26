@@ -5,9 +5,9 @@
 using namespace std;
 using namespace DBAbstraction;
 
-TimeAccessor::TimeAccessor(const std::string& dbname, boost::shared_ptr<TaskAccessor>& taskAccessor) : db(dbname)
+TimeAccessor::TimeAccessor(const std::string& dbname, boost::shared_ptr<Notifier>& notifier) : db(dbname)
 {
-	m_taskAccesor = taskAccessor;
+	this->notifier = notifier;
 	//Disable all previously running tasks
 	stringstream statement;
 	statement << "UPDATE times SET running = 0" ;
@@ -39,7 +39,7 @@ int64_t TimeAccessor::newTime(int64_t taskID, time_t startTime, time_t stopTime)
 		id = db.getIDOfLastInsert();
 		if(startTime != stopTime)
 		{
-			m_taskAccesor->taskUpdated(taskID);
+			notifier->taskUpdated(taskID);
 		}
 	} catch (dbexception& e)
 	{
@@ -58,7 +58,7 @@ void TimeAccessor::changeEndTime(int64_t timeID, time_t stopTime)
 	try
 	{
 		db.exe(statement.str());
-		m_taskAccesor->taskUpdated(te.taskID);
+		notifier->taskUpdated(te.taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement << " caused: " << endl;
@@ -75,7 +75,7 @@ void TimeAccessor::changeStartTime(int64_t timeID, time_t startTime)
 	try
 	{
 		db.exe(statement.str());
-		m_taskAccesor->taskUpdated(te.taskID);
+		notifier->taskUpdated(te.taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement << " caused: " << endl;
@@ -92,7 +92,7 @@ void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 	try
 	{
 		db.exe(statement.str());
-		m_taskAccesor->taskUpdated(te.taskID);
+		notifier->taskUpdated(te.taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement << " caused: " << endl;
@@ -108,7 +108,7 @@ void TimeAccessor::remove(int64_t id)
 	try
 	{
 		db.exe(statement.str());
-		m_taskAccesor->taskUpdated(te.taskID);
+		notifier->taskUpdated(te.taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement << " caused: " << endl;
@@ -200,6 +200,37 @@ map<int64_t, TaskTime> TimeAccessor::getTimeList(time_t startTime, time_t stopTi
 	}
 	return resultList;
 }
+
+int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
+{
+	int time;
+	stringstream statement;
+	statement << "     SELECT"
+			"            SUM(stop-start) AS time "
+			"          FROM "
+			"            times"
+			"          WHERE"
+			"			 taskID = " << taskID;
+
+	if (stop > 0)
+	{
+		statement << ""
+				"      WHERE"
+				"        start >=" << start << "      AND"
+				"        stop <= " << stop;
+	}
+	statement << ""
+			"          GROUP BY "
+			"            taskID";
+	db.exe(statement.str());
+	if (db.rows.size()==1)
+	{
+		vector<DataCell> row = db.rows[0];
+		time = row[0].getInt();
+	}
+	return time;
+}
+
 std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 {
 	vector<int64_t> resultList;
@@ -261,15 +292,22 @@ std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskId, time_t st
 
 void TimeAccessor::setRunning(int64_t timeID, bool running)
 {
+	//TODO: Remove duplication of data. "Running" is in two tables
 	TimeEntry te = getByID(timeID);
+	int64_t taskID = te.taskID;
 	stringstream statement;
 	statement << "UPDATE times SET running = " << (int)running;
 	statement << " WHERE id=" << timeID;
+
+	stringstream statement2;
+	statement2 << "UPDATE tasks SET running = " << (int)running;
+	statement2 << " WHERE id=" << taskID;
+
 	try
 	{
 		db.exe(statement.str());
-		//ENHANCEMENT filter short times!
-		m_taskAccesor->setTaskRunning(te.taskID, running);
+		db.exe(statement2.str());
+		notifier->taskUpdated(taskID);
 	} catch (dbexception& e)
 	{
 		cerr << statement << " caused: " << endl;
