@@ -37,10 +37,10 @@ public:
 	virtual ~TaskList();
 	void populate (Gtk::TreeModel::Row* parent=0, int parentID=0);
 	int64_t getSelectedID();
-	virtual void on_taskAdded(const Task&);
-	virtual void on_taskUpdated(const Task&);
+	virtual void on_taskAdded(int64_t);
+	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
-	virtual void on_taskParentChanged(const Task&);
+	virtual void on_taskParentChanged(int64_t);
 	void on_row_expanded(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
 	void on_row_collapsed(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
 	void attach(IActionObserver* observer);

@@ -12,7 +12,8 @@
 
 using namespace std;
 using namespace DBAbstraction;
-SettingsAccessor::SettingsAccessor(const std::string& dbpath): db(dbpath)
+SettingsAccessor::SettingsAccessor(const std::string& dbpath) :
+		db(dbpath)
 {
 	idleGT = 7;
 	idleGZ = 1;
@@ -54,22 +55,16 @@ int SettingsAccessor::GetIntByName(const std::string& name, int defaultValue)
 	statement << " WHERE name = '" << name << "'";
 
 	int retVal = defaultValue;
-	try
+
+	db.exe(statement.str());
+	if (db.rows.size())
 	{
-		db.exe(statement.str());
-		if (db.rows.size())
-		{
-			vector<DataCell> row = db.rows[0];
-			retVal = row[0].getInt();
-		}
-		else
-		{
-			SetIntByName( name,  defaultValue);
-		}
-	} catch (dbexception& e)
+		vector<DataCell> row = db.rows[0];
+		retVal = row[0].getInt();
+	}
+	else
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		SetIntByName(name, defaultValue);
 	}
 	return retVal;
 }
@@ -78,37 +73,31 @@ bool SettingsAccessor::SetIntByName(const std::string& name, int value)
 {
 	stringstream statement;
 	statement << "SELECT intValue FROM settings ";
-	statement << " WHERE name = '" << name <<"'";
+	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	try
-	{
-		db.exe(statement.str());
-		if (db.rows.size())
-		{
-			statement.str("");
-			statement << "UPDATE settings";
-			statement << " SET intValue = " << value;
-			statement << " WHERE name = '" << name <<"'";
-			db.exe(statement.str());
-			SettingsChanged(name);
-			retVal = true;
-		}
-		else //Value did not exist
 
-		{
-			statement.str("");
-			statement << "INSERT INTO settings";
-			statement << " (intValue, name) ";
-			statement << " VALUES (" << value << ", '" << name << "') ";
-			db.exe(statement.str());
-			SettingsChanged(name);
-			retVal = true;
-		}
-	} catch (dbexception& e)
+	db.exe(statement.str());
+	if (db.rows.size())
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		statement.str("");
+		statement << "UPDATE settings";
+		statement << " SET intValue = " << value;
+		statement << " WHERE name = '" << name << "'";
+		db.exe(statement.str());
+		SettingsChanged(name);
+		retVal = true;
+	}
+	else //Value did not exist
+
+	{
+		statement.str("");
+		statement << "INSERT INTO settings";
+		statement << " (intValue, name) ";
+		statement << " VALUES (" << value << ", '" << name << "') ";
+		db.exe(statement.str());
+		SettingsChanged(name);
+		retVal = true;
 	}
 	return retVal;
 }
@@ -120,22 +109,16 @@ bool SettingsAccessor::GetBoolByName(const std::string& name, bool defaultValue)
 	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = defaultValue;
-	try
+
+	db.exe(statement.str());
+	if (db.rows.size())
 	{
-		db.exe(statement.str());
-		if (db.rows.size())
-		{
-			vector<DataCell> row = db.rows[0];
-			retVal = row[0].getBool();
-		}
-		else
-		{
-			SetBoolByName( name,  defaultValue);
-		}
-	} catch (dbexception& e)
+		vector<DataCell> row = db.rows[0];
+		retVal = row[0].getBool();
+	}
+	else
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		SetBoolByName(name, defaultValue);
 	}
 	return retVal;
 }
@@ -144,37 +127,30 @@ bool SettingsAccessor::SetBoolByName(const std::string& name, bool value)
 {
 	stringstream statement;
 	statement << "SELECT boolValue FROM settings ";
-	statement << " WHERE name = '" << name <<"'";
+	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	try
+	db.exe(statement.str());
+	if (db.rows.size())
 	{
+		statement.str("");
+		statement << "UPDATE settings";
+		statement << " SET boolValue = " << value;
+		statement << " WHERE name = '" << name << "'";
 		db.exe(statement.str());
-		if (db.rows.size())
-		{
-			statement.str("");
-			statement << "UPDATE settings";
-			statement << " SET boolValue = " << value;
-			statement << " WHERE name = '" << name <<"'";
-			db.exe(statement.str());
-			SettingsChanged(name);
-			retVal = true;
-		}
-		else //Value did not exist
+		SettingsChanged(name);
+		retVal = true;
+	}
+	else //Value did not exist
 
-		{
-			statement.str("");
-			statement << "INSERT INTO settings";
-			statement << " (boolValue, name) ";
-			statement << " VALUES (" << value << ", '" << name << "') ";
-			db.exe(statement.str());
-			SettingsChanged(name);
-			retVal = true;
-		}
-	} catch (dbexception& e)
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		statement.str("");
+		statement << "INSERT INTO settings";
+		statement << " (boolValue, name) ";
+		statement << " VALUES (" << value << ", '" << name << "') ";
+		db.exe(statement.str());
+		SettingsChanged(name);
+		retVal = true;
 	}
 	return retVal;
 }

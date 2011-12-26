@@ -16,6 +16,7 @@ namespace GUI
 class IStatusIcon
 {
 public:
+	virtual ~IStatusIcon() {};
 	virtual void show() = 0;
 	virtual void attach(IActionObserver* observer) = 0;
 	virtual void detach(IActionObserver* observer) = 0;

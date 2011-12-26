@@ -46,8 +46,8 @@ private:
 	void toggleTask(int64_t id);
 	std::string completeTaskPath(int64_t id);
 
-	virtual void on_taskAdded(const Task&)  {};
-	virtual void on_taskUpdated(const Task&) ;
+	virtual void on_taskAdded(int64_t)  {};
+	virtual void on_taskUpdated(int64_t) ;
 	virtual void on_taskRemoved(int64_t) {};
 
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;

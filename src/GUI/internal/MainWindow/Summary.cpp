@@ -135,14 +135,19 @@ void Summary::calculateTimeSpan()
 {
 }
 
-void Summary::on_taskUpdated(const Task& task)
+void Summary::on_taskUpdated(int64_t taskID)
 {
-	Gtk::TreeIter iter = findRow(task.getID());
+	Gtk::TreeIter iter = findRow(taskID);
 	if (iter != treeModel->children().end())
 	{
-		Task filteredTask = taskAccessor->getTask(task.getID(), startTime, stopTime);
+		Task filteredTask = taskAccessor->getTask(taskID, startTime, stopTime);
 		TreeModel::Row row = *iter;
 		assignValuesToRow(row, filteredTask);
+		int64_t parentID = filteredTask.getParentID();
+		if(parentID>0)
+		{
+			on_taskUpdated(parentID);
+		}
 	}
 	else
 	{

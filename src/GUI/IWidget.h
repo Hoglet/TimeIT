@@ -13,6 +13,7 @@
 class IWidget
 {
 public:
+	virtual ~IWidget() {};
 	virtual void show() = 0;
 	virtual void hide() = 0;
 	virtual void move(int x, int y) = 0;

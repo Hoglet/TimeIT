@@ -9,8 +9,6 @@
 //TODO: Start recent
 //TODO: Show hierarchy in Day/week/month/year/summary
 
-
-
 #include "Main.h"
 
 #ifdef ENABLE_NLS
@@ -27,7 +25,7 @@
 
 #include <Timekeeper.h>
 #include <glibmm/i18n.h>
-
+#include <TestRunner.h>
 using namespace std;
 
 extern "C"
@@ -38,8 +36,6 @@ void sighandler(int sig)
 	GUI::GUIFactory::quit();
 }
 }
-
-
 
 Main::Main(int argc, char *argv[])
 {
@@ -54,22 +50,27 @@ Main::Main(int argc, char *argv[])
 
 	dbName = Glib::build_filename(dbPath, "TimeIt.db");
 
-	test=false;
+	test = false;
 	for (int i = 0; i < argc; i++)
 	{
 		std::string argument = argv[i];
-		if (argument == "--help"  ||
-		    argument == "-?")
+		if (argument == "--help" || argument == "-?")
 		{
 			printHelp();
 		}
-		if(argument.substr(0,5) == "--db=")
+		if (argument.substr(0, 5) == "--db=")
 		{
-			std::string filename=argument.substr(5,argument.length()-5);
-			if(filename.length()>0)
+			std::string filename = argument.substr(5, argument.length() - 5);
+			if (filename.length() > 0)
 			{
 				dbName = filename;
 			}
+		}
+		if (argument == "--test" || argument == "-t")
+		{
+			TestRunner testrunner;
+			testrunner.run();
+			throw "Tjohopp!";
 		}
 	}
 
@@ -81,12 +82,12 @@ Main::~Main()
 
 void Main::printHelp()
 {
-	cout<<_("Usage:")<<endl;
-	cout<<_("timeit [OPTION...]")<<endl;
-	cout<<endl;
-	cout<<_("Help Options:")<<endl;
-	cout<<_(" -?, --help                                Show help")<<endl;
-	cout<<_("--db=[FILENAME]")<<endl;
+	cout << _("Usage:")<<endl;
+	cout << _("timeit [OPTION...]")<<endl;
+	cout << endl;
+	cout << _("Help Options:")<<endl;
+	cout << _(" -?, --help                                Show help")<<endl;
+	cout << _("--db=[FILENAME]")<<endl;
 }
 
 int Main::run()
@@ -102,16 +103,16 @@ int Main::run()
 		{
 
 			//Create a database object
-			database = boost::shared_ptr<DB::Database> (new DB::Database(dbName));
+			database = boost::shared_ptr<DB::Database>(new DB::Database(dbName));
 
 			//Initiate all logic
-			timer = boost::shared_ptr<Timer> (new Timer());
+			timer = boost::shared_ptr<Timer>(new Timer());
 
-			boost::shared_ptr<ITimeKeeper> timekeeper = boost::shared_ptr<ITimeKeeper>(new Timekeeper( database, timer));
+			boost::shared_ptr<ITimeKeeper> timekeeper = boost::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
 			guiFactory = boost::shared_ptr<GUI::GUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
 
 			AutoTracker autotracker(timekeeper, database, timer);
-			Controller controller(guiFactory, timekeeper,database);
+			Controller controller(guiFactory, timekeeper, database);
 			controller.start();
 			//Then start message loop
 			guiFactory->run();
@@ -131,6 +132,6 @@ int Main::run()
 
 int main(int argc, char *argv[])
 {
-	Main program(argc,argv);
+	Main program(argc, argv);
 	return program.run();
 }

@@ -129,7 +129,7 @@ Gtk::TreeModel::iterator Details::findRow(int id)
 	}
 	return iter;
 }
-void Details::on_taskUpdated(const Task&)
+void Details::on_taskUpdated(int64_t)
 {
 	populate();
 }

@@ -21,8 +21,8 @@ private:
 	virtual void on_signal_10_seconds();
 
 	//TaskObserver
-	virtual void on_taskAdded(const Task&)  {};
-	virtual void on_taskUpdated(const Task&) {};
+	virtual void on_taskAdded(int64_t)  {};
+	virtual void on_taskUpdated(int64_t) {};
 	virtual void on_taskRemoved(int64_t) {};
 
 	//

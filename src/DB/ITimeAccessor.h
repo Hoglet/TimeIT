@@ -30,6 +30,7 @@ struct TimeEntry
 class ITimeAccessor
 {
 public:
+	virtual ~ITimeAccessor() {};
 	virtual int64_t newTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
 	virtual void updateTime(int64_t timeID, time_t startTime, time_t stopTime) = 0;
 	virtual void changeEndTime(int64_t timeID, time_t stopTime) = 0;
@@ -40,5 +41,6 @@ public:
 	virtual std::map<int64_t, TaskTime> getTimeList(time_t startTime, time_t stopTime) = 0;
 	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) = 0;
 	virtual std::vector<int64_t> getLatestTasks(int amount) = 0;
+	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
 };
 #endif /* ITIMEACCESSOR_H_ */

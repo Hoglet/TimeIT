@@ -41,7 +41,7 @@ std::string Workspace::get_name(int workspaceNR)
 	{
 		vector<string> names = x11property.get_strings("_NET_DESKTOP_NAMES");
 
-		if (names.size() >= workspaceNR)
+		if ((int)names.size() >= workspaceNR)
 		{
 			retVal = names[workspaceNR];
 		}

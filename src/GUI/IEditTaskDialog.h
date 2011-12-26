@@ -14,6 +14,7 @@ namespace GUI
 class IEditTaskDialog
 {
 public:
+	virtual ~IEditTaskDialog() {};
 	virtual void setTaskID(int64_t) = 0;
 };
 }

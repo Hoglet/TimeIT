@@ -14,6 +14,7 @@ namespace GUI
 class IDetailsDialog
 {
 public:
+	virtual ~IDetailsDialog() {};
 	virtual void setTimeEntryID(int64_t id) = 0;
 	virtual void set(int64_t ID,time_t startTime,time_t stopTime) = 0;
 	virtual void  show() = 0;
