@@ -8,11 +8,11 @@
 #include "TestRunner.h"
 #include "ide_listener.h"
 #include "cute_runner.h"
-#include "test_TaskAccessor.h"
+#include "test_TimeManagement.h"
 
 TestRunner::TestRunner()
 {
-	s += make_suite_test_TaskAccessor();
+	s += make_suite_test_TimeManagement();
 }
 
 TestRunner::~TestRunner()
