@@ -5,46 +5,33 @@
 using namespace std;
 using namespace DBAbstraction;
 
-TimeAccessor::TimeAccessor(const std::string& dbname, boost::shared_ptr<Notifier>& notifier) : db(dbname)
+TimeAccessor::TimeAccessor(const std::string& dbname, boost::shared_ptr<Notifier>& notifier) :
+		db(dbname)
 {
 	this->notifier = notifier;
 	//Disable all previously running tasks
 	stringstream statement;
-	statement << "UPDATE times SET running = 0" ;
-	try
-	{
-		db.exe(statement.str());
-		statement.str("");
+	statement << "UPDATE times SET running = 0";
+	db.exe(statement.str());
+	statement.str("");
 
-		//Remove short times;
-		statement << "DELETE FROM times WHERE stop < (start + 60)";
-		db.exe(statement.str());
+	//Remove short times;
+	statement << "DELETE FROM times WHERE stop < (start + 60)";
+	db.exe(statement.str());
 
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
 }
-
 
 int64_t TimeAccessor::newTime(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	stringstream statement;
 	int64_t id;
-	statement << "INSERT INTO times (taskID, start, stop) VALUES (" << taskID << ", " << startTime << ", " << stopTime << ")";
-	try
+	statement << "INSERT INTO times (taskID, start, stop) VALUES (" << taskID << ", " << startTime << ", " << stopTime
+			<< ")";
+	db.exe(statement.str());
+	id = db.getIDOfLastInsert();
+	if (startTime != stopTime)
 	{
-		db.exe(statement.str());
-		id = db.getIDOfLastInsert();
-		if(startTime != stopTime)
-		{
-			notifier->taskUpdated(taskID);
-		}
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		notifier->taskUpdated(taskID);
 	}
 	return id;
 }
@@ -55,15 +42,8 @@ void TimeAccessor::changeEndTime(int64_t timeID, time_t stopTime)
 	stringstream statement;
 	statement << "UPDATE times SET stop=" << stopTime;
 	statement << " WHERE id=" << timeID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskUpdated(te.taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
+	db.exe(statement.str());
+	notifier->taskUpdated(te.taskID);
 }
 
 void TimeAccessor::changeStartTime(int64_t timeID, time_t startTime)
@@ -72,15 +52,8 @@ void TimeAccessor::changeStartTime(int64_t timeID, time_t startTime)
 	stringstream statement;
 	statement << "UPDATE times SET start = " << startTime;
 	statement << " WHERE id=" << timeID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskUpdated(te.taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
+	db.exe(statement.str());
+	notifier->taskUpdated(te.taskID);
 }
 
 void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
@@ -89,15 +62,8 @@ void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 	stringstream statement;
 	statement << "UPDATE times SET start = " << startTime << ", stop=" << stopTime;
 	statement << " WHERE id=" << timeID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskUpdated(te.taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
+	db.exe(statement.str());
+	notifier->taskUpdated(te.taskID);
 }
 
 void TimeAccessor::remove(int64_t id)
@@ -105,15 +71,8 @@ void TimeAccessor::remove(int64_t id)
 	TimeEntry te = getByID(id);
 	stringstream statement;
 	statement << "DELETE FROM times WHERE id=" << id;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskUpdated(te.taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
+	db.exe(statement.str());
+	notifier->taskUpdated(te.taskID);
 }
 
 TimeEntry TimeAccessor::getByID(int64_t id)
@@ -124,24 +83,16 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 
 	TimeEntry item;
 	item.id = 0;
-	try
+	db.exe(statement.str());
+	std::vector<std::vector<DataCell> >::iterator iter = db.rows.begin();
+	for (; iter != db.rows.end(); iter++)
 	{
-		db.exe(statement.str());
-		std::vector< std::vector<DataCell> >::iterator iter=db.rows.begin();
-		for( ;iter!=db.rows.end();iter++)
-		{
-			vector<DataCell> row=*iter;
-			item.id = row[0].getInt();
-			item.taskID = row[1].getInt();
-			item.start = row[2].getInt();
-			item.stop = row[3].getInt();
-			item.running = row[4].getBool();
-		}
-	}
-	catch(dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		vector<DataCell> row = *iter;
+		item.id = row[0].getInt();
+		item.taskID = row[1].getInt();
+		item.start = row[2].getInt();
+		item.stop = row[3].getInt();
+		item.running = row[4].getBool();
 	}
 	return item;
 }
@@ -161,42 +112,34 @@ map<int64_t, TaskTime> TimeAccessor::getTimeList(time_t startTime, time_t stopTi
 	int stop;
 	std::string name;
 	TaskTime taskTime;
-	try
-	{
-		db.exe(statement.str());
+	db.exe(statement.str());
 
-		vector< vector<DataCell> >::iterator iter=db.rows.begin();
-		for(;iter!=db.rows.end();iter++)
-		{
-			vector<DataCell> row=*iter;
-			id = row[0].getInt();
-			start = row[1].getInt();
-			stop = row[2].getInt();
-			name = row[3].getString();
-			if(start<startTime)
-			{
-				start=startTime;
-			}
-			if(stop>stopTime)
-			{
-				stop=stopTime;
-			}
-			if( resultList.find(id) != resultList.end())
-			{
-				resultList[id].duration += (stop-start);
-			}
-			else
-			{
-				taskTime.duration = (stop-start);
-				taskTime.name = name;
-				resultList[id] = taskTime;
-			}
-		}
-	}
-	catch(dbexception& e)
+	vector<vector<DataCell> >::iterator iter = db.rows.begin();
+	for (; iter != db.rows.end(); iter++)
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		vector<DataCell> row = *iter;
+		id = row[0].getInt();
+		start = row[1].getInt();
+		stop = row[2].getInt();
+		name = row[3].getString();
+		if (start < startTime)
+		{
+			start = startTime;
+		}
+		if (stop > stopTime)
+		{
+			stop = stopTime;
+		}
+		if (resultList.find(id) != resultList.end())
+		{
+			resultList[id].duration += (stop - start);
+		}
+		else
+		{
+			taskTime.duration = (stop - start);
+			taskTime.name = name;
+			resultList[id] = taskTime;
+		}
 	}
 	return resultList;
 }
@@ -223,7 +166,7 @@ int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
 			"          GROUP BY "
 			"            taskID";
 	db.exe(statement.str());
-	if (db.rows.size()==1)
+	if (db.rows.size() == 1)
 	{
 		vector<DataCell> row = db.rows[0];
 		time = row[0].getInt();
@@ -238,22 +181,14 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 	statement << "SELECT DISTINCT times.taskid FROM times  ORDER BY times.stop DESC LIMIT " << amount;
 
 	int id;
-	try
-	{
-		db.exe(statement.str());
+	db.exe(statement.str());
 
-		vector< vector<DataCell> >::iterator iter=db.rows.begin();
-		for(;iter!=db.rows.end();iter++)
-		{
-			vector<DataCell> row=*iter;
-			id = row[0].getInt();
-			resultList.push_back(id);
-		}
-	}
-	catch(dbexception& e)
+	vector<vector<DataCell> >::iterator iter = db.rows.begin();
+	for (; iter != db.rows.end(); iter++)
 	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		vector<DataCell> row = *iter;
+		id = row[0].getInt();
+		resultList.push_back(id);
 	}
 	return resultList;
 
@@ -269,23 +204,15 @@ std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskId, time_t st
 	statement << " AND taskID = " << taskId;
 
 	TimeEntry item;
-	try
+	db.exe(statement.str());
+	vector<vector<DataCell> >::iterator iter = db.rows.begin();
+	for (; iter < db.rows.end(); iter++)
 	{
-		db.exe(statement.str());
-		vector< vector<DataCell> >::iterator iter= db.rows.begin();
-		for(; iter< db.rows.end();iter++)
-		{
-			vector<DataCell> row=*iter;
-			item.id = row[0].getInt();
-			item.start = row[1].getInt();
-			item.stop = row[2].getInt();
-			resultList.push_back(item);
-		}
-	}
-	catch(dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
+		vector<DataCell> row = *iter;
+		item.id = row[0].getInt();
+		item.start = row[1].getInt();
+		item.stop = row[2].getInt();
+		resultList.push_back(item);
 	}
 	return resultList;
 }
@@ -296,21 +223,14 @@ void TimeAccessor::setRunning(int64_t timeID, bool running)
 	TimeEntry te = getByID(timeID);
 	int64_t taskID = te.taskID;
 	stringstream statement;
-	statement << "UPDATE times SET running = " << (int)running;
+	statement << "UPDATE times SET running = " << (int) running;
 	statement << " WHERE id=" << timeID;
 
 	stringstream statement2;
-	statement2 << "UPDATE tasks SET running = " << (int)running;
+	statement2 << "UPDATE tasks SET running = " << (int) running;
 	statement2 << " WHERE id=" << taskID;
 
-	try
-	{
-		db.exe(statement.str());
-		db.exe(statement2.str());
-		notifier->taskUpdated(taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement << " caused: " << endl;
-		cerr << e.what() << endl;
-	}
+	db.exe(statement.str());
+	db.exe(statement2.str());
+	notifier->taskUpdated(taskID);
 }

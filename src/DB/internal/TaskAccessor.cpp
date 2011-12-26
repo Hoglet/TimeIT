@@ -112,8 +112,7 @@ vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool only
 	{
 		statement << " AND parent=" << parentID;
 	}
-	try
-	{
+
 		db.exe(statement.str());
 		for (unsigned int r = 0; r < db.rows.size(); r++)
 		{
@@ -136,12 +135,6 @@ vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool only
 			Task task(id, parent, name, totalTime, expanded, running);
 			retVal.push_back(task);
 		}
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
 	return retVal;
 }
 
@@ -180,17 +173,10 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 		throw e;
 	}
 	statement << "INSERT INTO tasks (name,parent) VALUES (\"" << name << "\", " << parentID << ")";
-	try
-	{
+
 		db.exe(statement.str());
 		id = db.getIDOfLastInsert();
 		notifier->taskAdded(id);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
 	return id;
 }
 void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
@@ -198,15 +184,7 @@ void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
 	stringstream statement;
 	statement << "UPDATE tasks SET expanded = " << expanded;
 	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
+	db.exe(statement.str());
 }
 
 void TaskAccessor::setTaskName(int64_t taskID, std::string name)
@@ -214,16 +192,8 @@ void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 	stringstream statement;
 	statement << "UPDATE tasks SET name = \"" << name << "\" ";
 	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskUpdated(taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
+	db.exe(statement.str());
+	notifier->taskUpdated(taskID);
 }
 
 void TaskAccessor::setParentID(int64_t taskID, int parentID)
@@ -231,16 +201,8 @@ void TaskAccessor::setParentID(int64_t taskID, int parentID)
 	stringstream statement;
 	statement << "UPDATE tasks SET parent = " << parentID;
 	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskParentChanged(taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
+	db.exe(statement.str());
+	notifier->taskParentChanged(taskID);
 
 }
 
@@ -251,16 +213,8 @@ void TaskAccessor::removeTask(int64_t taskID)
 	stringstream statement;
 	statement << "UPDATE tasks SET deleted = " << true;
 	statement << " WHERE id=" << taskID;
-	try
-	{
-		db.exe(statement.str());
-		notifier->taskRemoved(taskID);
-	} catch (dbexception& e)
-	{
-		cerr << statement.str() << " caused :\n";
-		cerr << e.what() << endl;
-		throw e;
-	}
+	db.exe(statement.str());
+	notifier->taskRemoved(taskID);
 }
 
 void TaskAccessor::setTaskRunning(int64_t taskID, bool running)
@@ -272,15 +226,8 @@ TaskAccessor::TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier
 		db(dbname)
 {
 	this->notifier = notifier;
-	try
-	{
-		db.exe("UPDATE tasks SET running = 0");
-		db.exe("UPDATE tasks SET parent = 0 WHERE parent < 0");
-	} catch (dbexception& e)
-	{
-		cerr << e.what() << endl;
-		throw e;
-	}
+	db.exe("UPDATE tasks SET running = 0");
+	db.exe("UPDATE tasks SET parent = 0 WHERE parent < 0");
 }
 TaskAccessor::~TaskAccessor()
 {
