@@ -70,7 +70,7 @@ Main::Main(int argc, char *argv[])
 		{
 			TestRunner testrunner;
 			testrunner.run();
-			throw "Tjohopp!";
+			exit(0);
 		}
 	}
 
@@ -87,6 +87,7 @@ void Main::printHelp()
 	cout << endl;
 	cout << _("Help Options:")<<endl;
 	cout << _(" -?, --help                                Show help")<<endl;
+	cout << _(" -t, --test                                Run tests and exit")<<endl;
 	cout << _("--db=[FILENAME]")<<endl;
 }
 
