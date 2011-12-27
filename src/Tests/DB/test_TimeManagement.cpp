@@ -44,12 +44,33 @@ void tasksTotalTimeIs150()
 	ASSERT_EQUAL(150, task.getTotalTime());
 }
 
-void managesTimeWhenEndIsAfterLimit()
+void staggerTest1RecordedTimePassesEnd()
 {
 	TimeManagementTest tmt;
 	Task task = tmt.getTask(0,150);
 	ASSERT_EQUAL(50, task.getTime());
 }
+
+void staggerTest2RecordedTimeStartsBeforeStart()
+{
+	TimeManagementTest tmt;
+	Task task = tmt.getTask(150,300);
+	ASSERT_EQUAL(50, task.getTime());
+}
+
+void staggerTest3RecordedTotalTimePassesEnd()
+{
+	TimeManagementTest tmt;
+	Task task = tmt.getTask(0,150);
+	ASSERT_EQUAL(50, task.getTotalTime());
+}
+void staggerTest3RecordedTotalTimeStartsBeforeStart()
+{
+	TimeManagementTest tmt;
+	Task task = tmt.getTask(150,300);
+	ASSERT_EQUAL(100, task.getTotalTime());
+}
+
 
 //Manage time when start is before limit
 //ManageTime completely inside limits
@@ -60,7 +81,10 @@ cute::suite make_suite_test_TimeManagement()
 	cute::suite s;
 	s.push_back(CUTE(tasksTimeIs100));
 	s.push_back(CUTE(tasksTotalTimeIs150));
-	s.push_back(CUTE(managesTimeWhenEndIsAfterLimit));
+	s.push_back(CUTE(staggerTest1RecordedTimePassesEnd));
+	s.push_back(CUTE(staggerTest2RecordedTimeStartsBeforeStart));
+	s.push_back(CUTE(staggerTest3RecordedTotalTimeStartsBeforeStart));
+	s.push_back(CUTE(staggerTest3RecordedTotalTimePassesEnd));
 	return s;
 }
 

@@ -29,6 +29,9 @@ public:
 private:
 	DBAbstraction::CSQL db;
 	boost::shared_ptr<Notifier> notifier;
+    int getTimePassingStartLimit(int64_t taskID, time_t start,  time_t stop);
+    int getTimePassingEndLimit(int64_t & taskID, time_t & start, time_t & stop);
+    int getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start, time_t & stop);
 };
 
 #endif /*TIMEACCESSOR_H_*/

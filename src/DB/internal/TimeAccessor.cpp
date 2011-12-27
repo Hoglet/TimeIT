@@ -146,30 +146,81 @@ map<int64_t, TaskTime> TimeAccessor::getTimeList(time_t startTime, time_t stopTi
 
 int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
 {
-	int time;
-	stringstream statement;
-	statement << "     SELECT"
-			"            SUM(stop-start) AS time "
-			"          FROM "
-			"            times"
-			"          WHERE"
-			"			 taskID = " << taskID;
-
+	int time = 0;
+	time = getTimeCompletelyWithinLimits(taskID, start, stop);
 	if (stop > 0)
 	{
-		statement << ""
-				"      AND"
-				"        start >=" << start << "      AND"
-				"        stop <= " << stop;
+		time += getTimePassingEndLimit(taskID, start, stop);
+		time += getTimePassingStartLimit(taskID, start, stop);
 	}
-	statement << ""
-			"          GROUP BY "
-			"            taskID";
+	return time;
+}
+
+int TimeAccessor::getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start, time_t & stop)
+{
+	int time = 0;
+	stringstream statement;
+	statement << "SELECT SUM(stop-start) AS time ";
+	statement << " FROM times";
+	statement << " WHERE taskID = " << taskID;
+	if (stop > 0)
+	{
+		statement << "  AND start >=" << start;
+		statement << "  AND stop  <= " << stop;
+	}
 	db.exe(statement.str());
 	if (db.rows.size() == 1)
 	{
 		vector<DataCell> row = db.rows[0];
-		time = row[0].getInt();
+		if (row[0].isNull() == false)
+		{
+			time = row[0].getInt();
+		}
+	}
+
+	return time;
+}
+
+int TimeAccessor::getTimePassingEndLimit(int64_t & taskID, time_t & start, time_t & stop)
+{
+	int time = 0;
+	stringstream statement;
+	statement << " SELECT SUM(" << stop << "-start) AS time  ";
+	statement << " FROM times ";
+	statement << " WHERE taskID = " << taskID;
+	statement << " AND start < " << stop;
+	statement << " AND stop  > " << stop;
+	statement << " AND start > " << start;
+	db.exe(statement.str());
+	if (db.rows.size() == 1)
+	{
+		vector<DataCell> row = db.rows[0];
+		if (row[0].isNull() == false)
+		{
+			time = row[0].getInt();
+		}
+	}
+	return time;
+}
+
+int TimeAccessor::getTimePassingStartLimit(int64_t taskID, time_t start, time_t stop)
+{
+	int time = 0;
+	stringstream statement;
+	statement << "SELECT SUM(stop-" << start << ") AS time ";
+	statement << " FROM times";
+	statement << " WHERE taskID = " << taskID;
+	statement << " AND start <  " << start;
+	statement << " AND stop  >  " << start;
+	statement << " AND stop  <  " << stop;
+	db.exe(statement.str());
+	if (db.rows.size() == 1)
+	{
+		vector<DataCell> row = db.rows[0];
+		if (row[0].isNull() == false)
+		{
+			time = row[0].getInt();
+		}
 	}
 	return time;
 }
