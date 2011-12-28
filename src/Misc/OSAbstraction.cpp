@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <strstream>
+#include <sstream>
 
 using namespace std;
 
