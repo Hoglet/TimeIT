@@ -1,3 +1,13 @@
+timeit (1.0.1) oneiric; urgency=low
+
+  * Bugfix: Work spanning over midnight is not shown in daily summary (LP: 674003)
+  * Added a man-page
+  * Added unit-tests to support refactoring
+  * Refactoring of code to readability
+  * Fixed warnings indicated by new tools (gcc 4.6 & eclipse indigo)
+
+ -- Kent Asplund <hoglet@solit.se>  Tue, 27 Dec 2011 21:48:10 +0100
+
 timeit (1.0.0) natty; urgency=low
 
   * Turkish language added.

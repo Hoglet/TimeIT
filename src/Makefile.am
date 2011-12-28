@@ -11,10 +11,10 @@ AM_CPPFLAGS = \
 	-DPACKAGE_VERSION=\"${PACKAGE_VERSION}\" \
 	-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\" \
 	-DPROGRAMNAME_LOCALEDIR=\"${PROGRAMNAME_LOCALEDIR}\" \
- 	-DPROGRAMNAME_DATADIR=\""$(datadir)/@PACKAGE@"\"  \
+	-DPROGRAMNAME_DATADIR=\""$(datadir)/@PACKAGE@"\"  \
 	$(TIMEIT_CFLAGS) \
 	$(BOOST_CPPFLAGS)
-	
+
 AM_CFLAGS =\
 	 -Wall\
 	 -g
@@ -24,6 +24,7 @@ bin_PROGRAMS = timeit
 timeit_SOURCES = \
 	DB/Task.cpp \
 	DB/Task.h \
+	DB/Notifier.h \
 	DB/Notifier.cpp \
 	DB/DBAbstraction/CSQL.cpp \
 	DB/DBAbstraction/CSQL.h \
@@ -118,7 +119,30 @@ timeit_SOURCES = \
 	GUI/internal/PreferenceDialog.cpp \
 	GUI/internal/PreferenceDialog.h \
 	DB/DefaultValues.h \
+	cute_lib/cute_base.h \
+	cute_lib/cute_counting_listener.h \
+	cute_lib/cute_demangle.h \
+	cute_lib/cute_equals.h \
+	cute_lib/cute.h \
+	cute_lib/cute_listener.h \
+	cute_lib/cute_repeated_test.h \
+	cute_lib/cute_runner.h \
+	cute_lib/cute_suite.h \
+	cute_lib/cute_suite_test.h \
+	cute_lib/cute_test.h \
+	cute_lib/cute_test_incarnate.h \
+	cute_lib/cute_testmember.h \
+	cute_lib/cute_throws.h \
+	cute_lib/cute_version.h \
+	cute_lib/eclipse_listener.h \
+	cute_lib/gpl.txt \
+	cute_lib/ide_listener.h \
+	cute_lib/lgpl.txt \
+	cute_lib/ostream_listener.h \
+	cute_lib/vstudio_listener.h \
+	Tests/DB/test_TimeManagement.h \
 	Tests/DB/test_TimeManagement.cpp \
+	Tests/TestRunner.h \
 	Tests/TestRunner.cpp
 
 timeit_CXXFLAGS =        \
@@ -141,6 +165,4 @@ INCLUDES = -I$(top_srcdir)/src/DB/DBAbstraction \
 	-I$(top_srcdir)/src/Tests/DB \
 	-I$(top_srcdir)/src/Tests/Logic \
 	-I$(top_srcdir)/src/Tests
-	
-	
 

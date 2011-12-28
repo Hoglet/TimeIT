@@ -25,6 +25,7 @@ EXTRA_DIST = $(timeitdoc_DATA) \
 	$(images_DATA) \
 	TODO.tasks \
 	gpl-2.0.txt \
+	timeit.man \
 	debian \
 	$(timeitlauncher_DATA)
 
