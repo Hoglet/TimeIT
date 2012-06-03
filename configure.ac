@@ -36,13 +36,8 @@ AC_SUBST(TIMEIT_LIBS)
 AC_CONFIG_MACRO_DIR([m4])
 AX_BOOST_BASE([1.33])
 
+AC_CONFIG_FILES([po/Makefile.in])
 
-AC_OUTPUT([
-Makefile
-src/Makefile
-po/Makefile.in
-doc/Makefile
-doc/html/Makefile
-doc/html/C/Makefile
-images/Makefile
-])
+AC_CONFIG_FILES(Makefile src/Makefile po/Makefile doc/Makefile doc/html/Makefile doc/html/C/Makefile images/Makefile) 
+
+AC_OUTPUT
