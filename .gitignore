@@ -57,3 +57,5 @@ documentation
 .cccc
 src/*.gcno
 src/*.gcda
+config.guess
+config.sub
