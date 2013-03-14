@@ -1,0 +1,249 @@
+# Russian translation for timeit
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the timeit package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: timeit\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-09-24 17:21+0200\n"
+"PO-Revision-Date: 2012-10-26 05:58+0000\n"
+"Last-Translator: Eugene Marshal <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-10-27 05:17+0000\n"
+"X-Generator: Launchpad (build 16194)\n"
+
+#: ../src/Main.cpp:84
+msgid "Usage:"
+msgstr "Использование:"
+
+#: ../src/Main.cpp:85
+msgid "timeit [OPTION...]"
+msgstr "timeit [ПАРАМЕТР...]"
+
+#: ../src/Main.cpp:87
+msgid "Help Options:"
+msgstr "Параметры справки:"
+
+#: ../src/Main.cpp:88
+msgid " -?, --help                                Show help"
+msgstr " -?, --help                                Показать справку"
+
+#: ../src/Main.cpp:89
+msgid "--db=[FILENAME]"
+msgstr "--db=[ИМЯ_ФАЙЛА]"
+
+#: ../src/Main.cpp:121
+msgid "Application already running!\n"
+msgstr "Приложение уже выполняется!\n"
+
+#. Note to translators: This is the Parent in the context "Parent task"
+#: ../src/GUI/internal/EditTaskDialog.cpp:26
+msgid "Parent: "
+msgstr ""
+
+#: ../src/GUI/internal/EditTaskDialog.cpp:27
+msgid "Name: "
+msgstr "Название: "
+
+#: ../src/GUI/internal/EditTaskDialog.cpp:28
+msgid "<b>Workspace tracking</b>"
+msgstr ""
+
+#: ../src/GUI/internal/AddTime.cpp:19
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:52
+msgid "Year"
+msgstr "Год"
+
+#: ../src/GUI/internal/AddTime.cpp:19
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:52
+msgid "Month"
+msgstr "Месяц"
+
+#: ../src/GUI/internal/AddTime.cpp:19
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:51
+msgid "Day"
+msgstr "День"
+
+#: ../src/GUI/internal/AddTime.cpp:19
+msgid "Adding time to:"
+msgstr ""
+
+#: ../src/GUI/internal/AddTime.cpp:19 ../src/GUI/internal/DetailsDialog.cpp:26
+msgid "Start time"
+msgstr "Время начала"
+
+#: ../src/GUI/internal/AddTime.cpp:19 ../src/GUI/internal/DetailsDialog.cpp:27
+msgid "Stop time"
+msgstr "Время остановки"
+
+#: ../src/GUI/internal/Details.cpp:33
+msgid "_Edit"
+msgstr "_Правка"
+
+#: ../src/GUI/internal/Details.cpp:34
+msgid "_Remove"
+msgstr "_Удалить"
+
+#: ../src/GUI/internal/Details.cpp:73
+msgid "Do you really want to remove this?"
+msgstr "Вы действительно хотите удалить это?"
+
+#: ../src/GUI/internal/Details.cpp:74
+msgid "Gone, gone will not come again..."
+msgstr ""
+
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:32
+msgid "Revert and stop"
+msgstr ""
+
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:35
+msgid "Revert and continue"
+msgstr ""
+
+#. Note to translators: This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:38
+msgid "Continue"
+msgstr "Продолжить"
+
+#. Note to translators: This is the first part of the sentence "No activity have been detected
+#. for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:79
+msgid "No activity have been detected for"
+msgstr "Бездействие в течении"
+
+#. Note to translators: This is the second part of the sentence "No activity have been detected
+#. for X minutes. What should we do?"
+#: ../src/GUI/internal/IdleDialog.cpp:82
+msgid "minutes. What should we do?"
+msgstr "минут. Что мы должны сделать?"
+
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:51
+msgid "Week"
+msgstr "Неделя"
+
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:305
+msgid "Are you sure you want to delete this task"
+msgstr "Вы действительно хотите удалить эту задачу"
+
+#: ../src/GUI/internal/MainWindow/MainWindow.cpp:307
+msgid "There is not undelete function"
+msgstr "Отсутствует возможность восстановления"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:21
+msgid "_Start"
+msgstr "_Начать"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:24
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:55
+msgid "Stop"
+msgstr "Остановить"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:27
+msgid "Stop all"
+msgstr "Остановить все"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:29
+msgid "Edit"
+msgstr "Изменить"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:37
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:57
+msgid "Add time"
+msgstr "Добавить время"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:42
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:59
+msgid "Add task"
+msgstr "Добавить задачу"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:43
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:61
+msgid "Remove task"
+msgstr "Удалить задачу"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:47
+msgid "Report bug"
+msgstr "Сообщить об ошибке"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:50
+msgid "_File"
+msgstr "_Файл"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:52
+msgid "_Task"
+msgstr "_Задача"
+
+#: ../src/GUI/internal/MainWindow/Menu.cpp:54
+msgid "_Help"
+msgstr "_Справка"
+
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:41
+msgid "Name"
+msgstr "Название"
+
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:43
+msgid "Time"
+msgstr "Время"
+
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:54
+msgid "Start"
+msgstr "Запустить"
+
+#: ../src/GUI/internal/MainWindow/TaskList.cpp:60
+msgid "Edit task"
+msgstr "Свойства задачи"
+
+#: ../src/GUI/internal/StatusIcon.cpp:44
+msgid "Toggle main window"
+msgstr "Переключение основного окна"
+
+#: ../src/GUI/internal/StatusIcon.cpp:46
+msgid "Stop all timers"
+msgstr "Остановить все таймеры"
+
+#: ../src/GUI/internal/StatusIcon.cpp:48
+msgid "Quit"
+msgstr "Выйти"
+
+#: ../src/GUI/internal/StatusIcon.cpp:150
+msgid "TimeIt. the unobtrusive time tracker"
+msgstr ""
+
+#: ../src/GUI/internal/TimeItAboutDialog.cpp:35
+msgid "The unobtrusive time tracker\n"
+msgstr ""
+
+#: ../src/GUI/internal/TimeItAboutDialog.cpp:36
+msgid ""
+"This program is licenced under GNU General Public Licence (GPL) version 2."
+msgstr ""
+
+#: ../src/GUI/internal/TimeItAboutDialog.cpp:43
+msgid "TimeIT website"
+msgstr "Веб-сайт TimeIT"
+
+#: ../src/GUI/internal/PreferenceDialog.cpp:21
+msgid "Compact layout"
+msgstr ""
+
+#: ../src/GUI/internal/PreferenceDialog.cpp:22
+msgid "Start minimized"
+msgstr "Сворачивать окно при запуске"
+
+#: ../src/GUI/internal/PreferenceDialog.cpp:36
+msgid "Zero time (m)"
+msgstr ""
+
+#: ../src/GUI/internal/PreferenceDialog.cpp:40
+msgid "Idle time (m)"
+msgstr ""
