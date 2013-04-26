@@ -1,3 +1,10 @@
+timeit (1.0.2) precise; urgency=low
+
+  * Bugfix: Year summary did not count January
+  * Added partial russian translation
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 26 Apr 2013 13:25:43 +0200
+
 timeit (1.0.1) oneiric; urgency=low
 
   * Bugfix: Work spanning over midnight is not shown in daily summary (LP: 674003)

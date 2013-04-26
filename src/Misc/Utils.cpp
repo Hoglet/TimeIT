@@ -123,7 +123,7 @@ time_t getBeginingOfYear(const time_t& rawtime)
 	timeInfo->tm_min = 0;
 	timeInfo->tm_hour = 0;
 	timeInfo->tm_mday = 1;
-	timeInfo->tm_mon = 1;
+	timeInfo->tm_mon = 0;
 	return mktime(timeInfo);
 }
 time_t getEndOfYear(const time_t& rawtime)

@@ -59,3 +59,7 @@ src/*.gcno
 src/*.gcda
 config.guess
 config.sub
+CMakeFiles
+CMakeCache.txt
+*.cmake
+coverage
