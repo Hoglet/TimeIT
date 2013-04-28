@@ -20,6 +20,7 @@ namespace Internal
 
 Summary::Summary(std::shared_ptr<DB::Database>& database)
 {
+	needsRePopulation = true;
 	timeAccessor = database->getTimeAccessor();
 	taskAccessor = database->getTaskAccessor();
 	treeModel = TreeStore::create(columns);
@@ -35,7 +36,8 @@ Summary::Summary(std::shared_ptr<DB::Database>& database)
 	//Popup menu
 	Gtk::Menu::MenuList& menulist = Menu_Popup.items();
 
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
 
 }
 
@@ -51,8 +53,7 @@ bool Summary::on_button_press_event(GdkEventButton* event)
 	{
 		Menu_Popup.popup(event->button, event->time);
 		retVal = true; //It has been handled.
-	}
-	else if (event->type == GDK_2BUTTON_PRESS)
+	} else if (event->type == GDK_2BUTTON_PRESS)
 	{
 		on_menu_showDetails();
 		retVal = true; //It has been handled.
@@ -71,7 +72,6 @@ void Summary::on_menu_showDetails()
 		iter++;
 	}
 }
-
 
 void Summary::init()
 {
@@ -137,22 +137,31 @@ void Summary::calculateTimeSpan()
 
 void Summary::on_taskUpdated(int64_t taskID)
 {
-	Gtk::TreeIter iter = findRow(taskID);
-	if (iter != treeModel->children().end())
+	if (isVisible())
 	{
-		Task filteredTask = taskAccessor->getTask(taskID, startTime, stopTime);
-		TreeModel::Row row = *iter;
-		assignValuesToRow(row, filteredTask);
-		int64_t parentID = filteredTask.getParentID();
-		if(parentID>0)
+		Gtk::TreeIter iter = findRow(taskID);
+		if (iter != treeModel->children().end())
 		{
-			on_taskUpdated(parentID);
+			shared_ptr<vector<Task>> result = taskAccessor->getTask(taskID, startTime, stopTime);
+			if (result->size() > 0)
+			{
+				Task& filteredTask = result->at(0);
+				TreeModel::Row row = *iter;
+				assignValuesToRow(row, filteredTask);
+				int64_t parentID = filteredTask.getParentID();
+				if (parentID > 0)
+				{
+					on_taskUpdated(parentID);
+				}
+			} else
+			{
+				empty();
+				populate();
+			}
+		} else
+		{
+			needsRePopulation = true;
 		}
-	}
-	else
-	{
-		empty();
-		populate();
 	}
 }
 
@@ -181,40 +190,70 @@ void Summary::empty()
 	treeModel->clear();
 }
 
+bool Summary::on_focus(Gtk::DirectionType direction)
+{
+	bool returnValue = Gtk::TreeView::on_focus(direction);
+	if (needsRePopulation)
+	{
+		populate();
+	}
+	return returnValue;
+}
+
+bool Summary::isVisible()
+{
+	Container* parent = this->get_parent();
+	Gtk::Notebook* notebook = dynamic_cast<Gtk::Notebook*>(parent->get_parent());
+	if (notebook)
+	{
+		int active_tab = notebook->get_current_page();
+		Widget* active = notebook->get_nth_page(active_tab);
+		if (active != parent)
+		{
+			return false;
+		}
+	}
+	return true;
+}
 /*
  * Populate is filling the list, updating existing and adding elements not in list
  */
 void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 {
-	vector<Task> tasks = taskAccessor->getTasks(parentID, startTime, stopTime);
-
-	for (int i = 0; i < (int) tasks.size(); i++)
+	if (isVisible())
 	{
-		Task task = tasks.at(i);
-		if (task.getTotalTime() > 0)
+		shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID, startTime, stopTime);
+
+		for (int i = 0; i < (int) tasks->size(); i++)
 		{
-			TreeModel::Row row;
-			TreeModel::iterator iter;
-			if (parent)
+			Task& task = tasks->at(i);
+			if (task.getTotalTime() > 0)
 			{
-				iter = treeModel->append(parent->children());
-			}
-			else
-			{
-				iter = treeModel->append();
-			}
-			row = *iter;
+				TreeModel::Row row;
+				TreeModel::iterator iter;
+				if (parent)
+				{
+					iter = treeModel->append(parent->children());
+				} else
+				{
+					iter = treeModel->append();
+				}
+				row = *iter;
 
-			assignValuesToRow(row, task);
+				assignValuesToRow(row, task);
 
-			populate(&row, task.getID());
+				populate(&row, task.getID());
+			}
 		}
-	}
-	if(parentID == 0)
+		if (parentID == 0)
+		{
+			this->expand_all();
+		}
+		needsRePopulation = false;
+	} else
 	{
-		this->expand_all();
+		needsRePopulation = true;
 	}
-
 }
 
 void Summary::assignValuesToRow(TreeModel::Row& row, const Task& task)

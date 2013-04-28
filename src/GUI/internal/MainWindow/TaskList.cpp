@@ -23,7 +23,6 @@
 #include <glibmm/i18n.h>
 #include "Utils.h"
 
-
 namespace GUI
 {
 namespace Internal
@@ -34,8 +33,10 @@ using namespace Glib;
 TaskList::TaskList(std::shared_ptr<DB::Database>& database)
 {
 	taskAccessor = database->getTaskAccessor();
-	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"),24,24,true);
-	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "blank.svg"),24,24,true);
+	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"),
+			24, 24, true);
+	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "blank.svg"), 24,
+			24, true);
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column(_("Name"), columns.col_name);
@@ -51,14 +52,20 @@ TaskList::TaskList(std::shared_ptr<DB::Database>& database)
 	//Popup menu
 	Gtk::Menu::MenuList& menulist = Menu_Popup.items();
 
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &TaskList::on_menu_start)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &TaskList::on_menu_start)));
 	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(*this, &TaskList::on_menu_stop)));
 	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &TaskList::on_menu_add_time)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &TaskList::on_menu_add_time)));
 	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &TaskList::on_menu_add_task)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &TaskList::on_menu_edit)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(*this, &TaskList::on_menu_remove_task)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &TaskList::on_menu_add_task)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &TaskList::on_menu_edit)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Remove task"),
+					sigc::mem_fun(*this, &TaskList::on_menu_remove_task)));
 
 }
 
@@ -81,8 +88,7 @@ bool TaskList::on_button_press_event(GdkEventButton* event)
 	{
 		Menu_Popup.popup(event->button, event->time);
 		retval = true; //It has been handled.
-	}
-	else if (event->type == GDK_2BUTTON_PRESS)
+	} else if (event->type == GDK_2BUTTON_PRESS)
 	{
 		on_menu_edit();
 		retval = true;
@@ -105,43 +111,48 @@ void TaskList::on_row_collapsed(const TreeModel::iterator& iter, const TreeModel
 
 void TaskList::on_taskAdded(int64_t taskID)
 {
-	Task task=taskAccessor->getTask(taskID);
-	int64_t parentID = task.getParentID();
-	TreeModel::iterator iter;
-	if (parentID > 0)
+	shared_ptr<vector<Task>> tasks = taskAccessor->getTask(taskID);
+	if (tasks->size() > 0)
 	{
-		iter = findRow(parentID);
-		if (iter != treeModel->children().end())
+		int64_t parentID = tasks->at(0).getParentID();
+		TreeModel::iterator iter;
+		if (parentID > 0)
 		{
-			TreeModel::Row row = *iter;
-			iter = treeModel->append(row.children());
-		}
-		else
+			iter = findRow(parentID);
+			if (iter != treeModel->children().end())
+			{
+				TreeModel::Row row = *iter;
+				iter = treeModel->append(row.children());
+			} else
+			{
+				iter = treeModel->append();
+			}
+		} else
 		{
 			iter = treeModel->append();
 		}
+		TreeModel::Row row = *iter;
+		assignValuesToRow(row, tasks->at(0));
 	}
-	else
-	{
-		iter = treeModel->append();
-	}
-	TreeModel::Row row = *iter;
-	assignValuesToRow(row, task);
 }
 
 void TaskList::on_taskUpdated(int64_t taskID)
 {
-	Task task=taskAccessor->getTask(taskID);
-	Gtk::TreeIter iter = findRow(taskID);
-	if (iter != treeModel->children().end())
+	shared_ptr<vector<Task> > tasks = taskAccessor->getTask(taskID);
+	if (tasks->size() > 0)
 	{
-		TreeModel::Row row = *iter;
-		assignValuesToRow(row, task);
-	}
-	int64_t parentID = task.getParentID();
-	if(parentID>0)
-	{
-		on_taskUpdated(parentID);
+		Task& task=tasks->at(0);
+		Gtk::TreeIter iter = findRow(taskID);
+		if (iter != treeModel->children().end())
+		{
+			TreeModel::Row row = *iter;
+			assignValuesToRow(row, task);
+		}
+		int64_t parentID = task.getParentID();
+		if (parentID > 0)
+		{
+			on_taskUpdated(parentID);
+		}
 	}
 }
 
@@ -153,7 +164,6 @@ void TaskList::on_taskRemoved(int64_t taskID)
 		treeModel->erase(iter);
 	}
 }
-
 
 void TaskList::on_selection_changed()
 {
@@ -170,7 +180,6 @@ void TaskList::on_taskParentChanged(int64_t)
 {
 	doUpdate();
 }
-
 
 void TaskList::doUpdate()
 {
@@ -233,8 +242,7 @@ void TaskList::assignValuesToRow(TreeModel::Row& row, const Task& task)
 	if (task.getRunning())
 	{
 		row[columns.col_pixbuf] = runningIcon;
-	}
-	else
+	} else
 	{
 		row[columns.col_pixbuf] = blankIcon;
 	}
@@ -243,8 +251,7 @@ void TaskList::assignValuesToRow(TreeModel::Row& row, const Task& task)
 	if (totalTime > 0)
 	{
 		row[columns.col_time] = Utils::seconds2hhmm(totalTime);
-	}
-	else
+	} else
 	{
 		row[columns.col_time] = "";
 	}
@@ -252,25 +259,23 @@ void TaskList::assignValuesToRow(TreeModel::Row& row, const Task& task)
 
 void TaskList::populate(TreeModel::Row* parent, int parentID)
 {
-	vector<Task> tasks = taskAccessor->getTasks(parentID);
+	shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID);
 
-	for (int i = 0; i < (int) tasks.size(); i++)
+	for (int i = 0; i < (int) tasks->size(); i++)
 	{
 		TreeModel::Row row;
 		TreeModel::iterator iter;
 		if (parent)
 		{
 			iter = treeModel->append(parent->children());
-		}
-		else
+		} else
 		{
 			iter = treeModel->append();
 		}
 		row = *iter;
-		Task task = tasks.at(i);
-		assignValuesToRow(row, task);
-		populate(&row, task.getID());
-		if (tasks.at(i).getExpanded())
+		assignValuesToRow(row, tasks->at(i));
+		populate(&row, tasks->at(i).getID());
+		if (tasks->at(i).getExpanded())
 		{
 			TreeModel::Path path(iter);
 			this->expand_to_path(path);
@@ -333,7 +338,6 @@ void TaskList::on_menu_remove_task()
 		observer->on_action_remove_task();
 	}
 }
-
 
 void TaskList::attach(IActionObserver* observer)
 {

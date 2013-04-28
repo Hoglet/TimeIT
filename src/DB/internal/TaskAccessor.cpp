@@ -25,12 +25,12 @@
 using namespace std;
 using namespace DBAbstraction;
 
-vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
+std::shared_ptr<vector<Task>> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(0, parentID, false, start, stop);
-	for (unsigned int i = 0; i < tasks.size();i++)
+	std::shared_ptr<vector<Task>> tasks = _getTasks(0, parentID, false, start, stop);
+	for (unsigned int i = 0; i < tasks->size();i++)
 	{
-		Task& task = tasks.at(i);
+		Task& task = tasks->at(i);
 		int totalTime = task.getTime();
 		totalTime += getTotalChildTime(task.getID(), start, stop);
 		task.setTotalTime(totalTime);
@@ -38,12 +38,12 @@ vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 	return tasks;
 }
 
-vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
+std::shared_ptr<vector<Task>> TaskAccessor::getRunningTasks(int64_t parentID)
 {
-	vector<Task> tasks = _getTasks(0, parentID, true);
-	for (unsigned int i=0; i < tasks.size(); i++)
+	std::shared_ptr<vector<Task>> tasks = _getTasks(0, parentID, true);
+	for (unsigned int i=0; i < tasks->size(); i++)
 	{
-		Task& task = tasks.at(i);
+		Task& task = tasks->at(i);
 		int totalTime = task.getTime();
 		totalTime += getTotalChildTime(task.getID());
 		task.setTotalTime(totalTime);
@@ -53,9 +53,9 @@ vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
 
 int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
-	vector<Task> tasks = _getTasks(0, id, false, start, stop);
+	std::shared_ptr<vector<Task>> tasks = _getTasks(0, id, false, start, stop);
 	int totalTime = 0;
-	for (Task task : tasks)
+	for (Task task : *tasks)
 	{
 		totalTime += task.getTime();
 		totalTime += getTotalChildTime(task.getID(), start, stop);
@@ -63,10 +63,10 @@ int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start,
+std::shared_ptr<vector<Task>> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start,
 		time_t stop)
 {
-	vector<Task> retVal;
+	shared_ptr<vector<Task>> retVal=shared_ptr<vector<Task>>(new vector<Task>);
 	int time = 0;
 	stringstream statement;
 
@@ -96,30 +96,25 @@ vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool only
 		bool running = row[4].getBool();
 		time = timeAccessor->getTime(id, start, stop);
 		Task task(id, parent, name, time, expanded, running);
-		retVal.push_back(task);
+		retVal->push_back(task);
 	}
 	return retVal;
 }
 
-Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
+std::shared_ptr<vector<Task>> TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
 {
-	vector<Task> tasks = _getTasks(taskID, 0, false, start, stop);
-	if (tasks.size() == 1)
+	std::shared_ptr<vector<Task>> tasks = _getTasks(taskID, 0, false, start, stop);
+	if (tasks->size() == 1)
 	{
-		Task task = tasks[0];
 		if (calculateTotalTime)
 		{
+			Task& task=tasks->at(0);
 			int totalTime = task.getTime();
 			totalTime += getTotalChildTime(taskID, start, stop);
 			task.setTotalTime(totalTime);
 		}
-		return task;
-	} else
-	{
-		dbe.setReturnCode(0);
-		dbe.setMessage("Task not found");
-		throw dbe;
 	}
+	return tasks;
 }
 
 int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
@@ -135,7 +130,14 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 	}
 	if (parentID > 0)
 	{
-		getTask(parentID); //Will throw exception if parent is not existing
+		std::shared_ptr<std::vector<Task>> tasks=getTask(parentID);
+		if(tasks->size()<1)
+		{
+			statement << "parent did not exist when creating new task" << " in " << __FILE__ << ":" << __LINE__ << endl;
+			dbe.setMessage(statement.str());
+			cerr << statement.str() << endl;
+			throw dbe;
+		}
 	}
 	statement << "INSERT INTO tasks (name,parent) VALUES (\"" << name << "\", " << parentID << ")";
 
@@ -163,24 +165,37 @@ void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 
 void TaskAccessor::setParentID(int64_t taskID, int parentID)
 {
-	getTask(parentID); //Throws exception if parent does not exist
-	stringstream statement;
-	statement << "UPDATE tasks SET parent = " << parentID;
-	statement << " WHERE id=" << taskID;
-	db.exe(statement.str());
-	notifier->taskParentChanged(taskID);
-
+	std::shared_ptr<std::vector<Task>> tasks = getTask(parentID);
+	if(tasks->size()>0)
+	{
+		stringstream statement;
+		statement << "UPDATE tasks SET parent = " << parentID;
+		statement << " WHERE id=" << taskID;
+		db.exe(statement.str());
+		notifier->taskParentChanged(taskID);
+	}
+	else
+	{
+		stringstream statement;
+		statement << "parent did not exist when changing parent on task" << " in " << __FILE__ << ":" << __LINE__ << endl;
+		dbe.setMessage(statement.str());
+		throw dbe;
+	}
 }
 
 void TaskAccessor::removeTask(int64_t taskID)
 {
 	//ENHANCEMENT Column running should be taken from time into v_tasks. (Avoid duplicate data)
-	Task task = getTask(taskID);
-	stringstream statement;
-	statement << "UPDATE tasks SET deleted = " << true;
-	statement << " WHERE id=" << taskID;
-	db.exe(statement.str());
-	notifier->taskRemoved(taskID);
+	shared_ptr<vector<Task>> tasks = getTask(taskID);
+	if(tasks->size()>0)
+	{
+		Task& task = tasks->at(0);
+		stringstream statement;
+		statement << "UPDATE tasks SET deleted = " << true;
+		statement << " WHERE id=" << taskID;
+		db.exe(statement.str());
+		notifier->taskRemoved(taskID);
+	}
 }
 
 TaskAccessor::TaskAccessor(const std::string& dbname, std::shared_ptr<Notifier> notifier,

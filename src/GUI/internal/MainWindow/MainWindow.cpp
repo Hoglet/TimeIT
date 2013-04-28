@@ -55,10 +55,11 @@ MainWindow::MainWindow(std::shared_ptr<DB::Database>& database) :
 	settingsAccessor = database->getSettingsAccessor();
 	settingsAccessor->attach(this);
 	createLayout();
+	setCalendar();
 	relateWidgets();
 	attach(this);
 	show_all_children();
-	setCalendar();
+
 }
 
 ICalendar& MainWindow::getCalendar()

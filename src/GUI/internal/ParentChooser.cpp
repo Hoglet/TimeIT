@@ -30,7 +30,7 @@ ParentChooser::ParentChooser(std::shared_ptr<DB::Database>& database)
 	std::string baseString = "";
 	populate(baseString, 0);
 	parentID = 0;
-	
+
 	//Add the model columns to the Combo (which is a kind of view),
 	//rendering them in the default way:
 	//pack_start(m_Columns.m_col_id);
@@ -96,14 +96,14 @@ Gtk::TreeModel::iterator ParentChooser::findRow(int id)
 
 void ParentChooser::populate(std::string& baseString, int parentID)
 {
-	vector<Task> tasks = taskAccessor->getTasks(parentID);
+	std::shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID);
 
-	for (int i = 0; i < (int) tasks.size(); i++)
+	for (int i = 0; i < (int) tasks->size(); i++)
 	{
 		Gtk::TreeModel::Row row;
 		Gtk::TreeModel::iterator iter = model->append();
 		row = *(iter);
-		Task task = tasks.at(i);
+		Task& task = tasks->at(i);
 
 		string name;
 		if (baseString.length() > 0)

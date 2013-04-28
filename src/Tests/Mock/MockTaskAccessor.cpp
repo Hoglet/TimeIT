@@ -27,21 +27,23 @@ void MockTaskAccessor::detach(TaskAccessorObserver*)
 }
 
 
-Task MockTaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
+std::shared_ptr<std::vector<Task> > MockTaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calculateTotalTime)
 {
+	std::shared_ptr<std::vector<Task>> returnValue = std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
 	Task task(1, 0, "Hum", 0, 0);
-	return task;
+	returnValue->push_back(task);
+	return returnValue;
 }
 
-std::vector<Task> MockTaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop )
+std::shared_ptr<std::vector<Task>> MockTaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop )
 {
-	std::vector<Task> list;
+	std::shared_ptr<std::vector<Task>> list=std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
 	return list;
 }
 
-std::vector<Task> MockTaskAccessor::getRunningTasks(int64_t parentID)
+std::shared_ptr<std::vector<Task>> MockTaskAccessor::getRunningTasks(int64_t parentID)
 {
-	std::vector<Task> list;
+	std::shared_ptr<std::vector<Task>> list=std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
 	return list;
 }
 

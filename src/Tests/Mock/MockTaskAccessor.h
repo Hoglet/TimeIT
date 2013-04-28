@@ -22,9 +22,9 @@ public:
 	virtual void attach(TaskAccessorObserver*);
 	virtual void detach(TaskAccessorObserver*);
 
-	virtual Task getTask(int64_t taskID, time_t start = 0, time_t stop = 0, bool calculateTotalTime=true);
-	virtual std::vector<Task> getTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
-	virtual std::vector<Task> getRunningTasks(int64_t parentID = 0);
+	virtual std::shared_ptr<std::vector<Task>> getTask(int64_t taskID, time_t start = 0, time_t stop = 0, bool calculateTotalTime=true);
+	virtual std::shared_ptr<std::vector<Task>> getTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
+	virtual std::shared_ptr<std::vector<Task>> getRunningTasks(int64_t parentID = 0);
 	virtual int64_t newTask(std::string name, int64_t parentID);
 	virtual void setTaskExpanded(int64_t taskID, bool expanded);
 	virtual void setTaskName(int64_t taskID, std::string name);

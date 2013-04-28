@@ -47,7 +47,6 @@ void AutoTracker::stopTasks(int workspace)
 	for (; iter != tasksToStop.end(); iter++)
 	{
 		int64_t taskID = *iter;
-		Task task = m_taskAccessor->getTask(taskID);
 		m_timekeeper->StopTask(taskID);
 	}
 }
@@ -60,7 +59,6 @@ void AutoTracker::startTasks(int workspace)
 		int64_t taskID = *iter;
 		try
 		{
-			Task task = m_taskAccessor->getTask(taskID);
 			m_timekeeper->StartTask(taskID);
 		} catch (...)
 		{

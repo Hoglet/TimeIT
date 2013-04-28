@@ -36,6 +36,7 @@ public:
 	}
 	void attach(SummaryObserver*);
 	void detach(SummaryObserver*);
+	virtual bool on_focus(Gtk::DirectionType direction);
 protected:
 	Gtk::Menu Menu_Popup;
 
@@ -87,6 +88,9 @@ protected:
 	std::list<SummaryObserver* > observers;
 	std::shared_ptr<ITimeAccessor> timeAccessor;
 	std::shared_ptr<ITaskAccessor> taskAccessor;
+private:
+	bool isVisible();
+	bool needsRePopulation;
 };
 
 }

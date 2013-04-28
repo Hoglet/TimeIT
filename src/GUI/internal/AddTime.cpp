@@ -11,13 +11,15 @@
 #include <time.h>
 #include <glibmm/i18n.h>
 
-namespace GUI {
-namespace Internal {
-
+namespace GUI
+{
+namespace Internal
+{
 
 AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::Database>& database) :
-	table(4, 4),  yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")),taskNameLabel(_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
-			calendar(op_calendar), taskID(op_taskID)
+		table(4, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")), taskNameLabel(
+				_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), calendar(
+				op_calendar), taskID(op_taskID)
 {
 	m_timeAccessor = database->getTimeAccessor();
 	m_taskAccessor = database->getTaskAccessor();
@@ -25,8 +27,11 @@ AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::
 	set_deletable(false);
 	//OKButton.set_sensitive(false);
 
-	Task task=m_taskAccessor->getTask(taskID);
-	taskName.set_text(task.getName());
+	std::shared_ptr<std::vector<Task>> tasks = m_taskAccessor->getTask(taskID);
+	if (tasks->size() > 0)
+	{
+		taskName.set_text(tasks->at(0).getName());
+	}
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
 	stopTimeHour.set_range(0, 23);
@@ -107,11 +112,11 @@ AddTime::~AddTime()
 
 void AddTime::on_response(int response_id)
 {
-	if(response_id == Gtk::RESPONSE_OK)
+	if (response_id == Gtk::RESPONSE_OK)
 	{
 		guint y = year.get_value_as_int();
 		guint m = month.get_value_as_int() - 1;
-		guint d = day.get_value_as_int() ;
+		guint d = day.get_value_as_int();
 
 		int startH = startTimeHour.get_value_as_int();
 		int startM = startTimeMinute.get_value_as_int();
@@ -132,21 +137,20 @@ void AddTime::on_date_changed()
 	calendar.get_date(l_year, l_month, l_day);
 
 	year.set_value(l_year);
-	month.set_value(l_month+1);
+	month.set_value(l_month + 1);
 	day.set_value(l_day);
 }
 
 void AddTime::on_change()
 {
 	int startH = startTimeHour.get_value_as_int();
-	int stopH  = stopTimeHour.get_value_as_int();
+	int stopH = stopTimeHour.get_value_as_int();
 	int startM = startTimeMinute.get_value_as_int();
-	int stopM  = stopTimeMinute.get_value_as_int();
-	if( stopH > startH || ( stopH == startH && stopM > startM ))
+	int stopM = stopTimeMinute.get_value_as_int();
+	if (stopH > startH || (stopH == startH && stopM > startM))
 	{
 		OKButton->set_sensitive(true);
-	}
-	else
+	} else
 	{
 		OKButton->set_sensitive(false);
 	}
@@ -156,14 +160,13 @@ void AddTime::on_month_changed()
 {
 
 	guint y = year.get_value_as_int();
-	guint m = month.get_value_as_int()-1;
+	guint m = month.get_value_as_int() - 1;
 
 	//Avoiding problems with dayligt saving time by checking second day of month
 	time_t activeDay = Utils::getTime(y, m, 2);
 	int maxDay = Utils::getDaysInMonth(activeDay);
 	day.set_range(1, maxDay);
 }
-
 
 }
 }

@@ -119,15 +119,19 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 void EditTaskDialog::setTaskID(int64_t ID)
 {
 	taskID = ID;
-	Task task = taskAccessor->getTask(taskID);
-	name = task.getName();
-	setParent( task.getParentID() );
-	taskNameEntry.set_text(name);
-	std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
-	setTickedWorkspaces(workspaces);
-	OKButton.set_sensitive(false);
-	this->workspaces = workspaces;
-	parentChooser.setID(ID);
+	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTask(taskID);
+	if(tasks->size()>0)
+	{
+		Task& task=tasks->at(0);
+		name = task.getName();
+		setParent( task.getParentID() );
+		taskNameEntry.set_text(name);
+		std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
+		setTickedWorkspaces(workspaces);
+		OKButton.set_sensitive(false);
+		this->workspaces = workspaces;
+		parentChooser.setID(ID);
+	}
 }
 
 void EditTaskDialog::setParent(int ID)

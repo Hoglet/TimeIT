@@ -34,8 +34,8 @@ StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr
 	m_statusIcon = Gtk::StatusIcon::create(m_defaultIcon);
 	setIcon();
 
-	runningIconSmall = Gdk::Pixbuf::create_from_file(runningIconPath,15,15,true);
-	idleIconSmall    = Gdk::Pixbuf::create_from_file(blankIconPath,15,15,true);
+	runningIconSmall = Gdk::Pixbuf::create_from_file(runningIconPath, 15, 15, true);
+	idleIconSmall = Gdk::Pixbuf::create_from_file(blankIconPath, 15, 15, true);
 
 	Gtk::Window::set_default_icon(m_defaultIcon);
 
@@ -48,7 +48,6 @@ StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr
 
 	m_taskaccessor->attach(this);
 }
-
 
 StatusIcon::~StatusIcon()
 {
@@ -67,66 +66,79 @@ void StatusIcon::populateContextMenu()
 	{
 		try
 		{
-			Task task = m_taskaccessor->getTask(latestTasks[i]);
-			std::string menuLine = completeTaskPath(latestTasks[i]);
-
-			Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
-			if( task.getRunning()==true)
+			std::shared_ptr<std::vector<Task> > tasks = m_taskaccessor->getTask(latestTasks[i]);
+			if (tasks->size() > 0)
 			{
-				menuIcon->set(runningIconSmall);
-			}
-			else
-			{
-				menuIcon->set(idleIconSmall);
-			}
+				Task& task = tasks->at(0);
+				std::string menuLine = completeTaskPath(latestTasks[i]);
 
+				Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
+				if (task.getRunning() == true)
+				{
+					menuIcon->set(runningIconSmall);
+				} else
+				{
+					menuIcon->set(idleIconSmall);
+				}
 
-			switch (i)
-			{
-				case 0:
-					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon , sigc::mem_fun(*this,
-							&StatusIcon::on_menu_toggle_task1)));
-					break;
-				case 1:
-					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-							&StatusIcon::on_menu_toggle_task2)));
-					break;
-				case 2:
-					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-							&StatusIcon::on_menu_toggle_task3)));
-					break;
-				case 3:
-					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-							&StatusIcon::on_menu_toggle_task4)));
-					break;
-				case 4:
-					menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this,
-							&StatusIcon::on_menu_toggle_task5)));
-					break;
+				switch (i)
+				{
+					case 0:
+						menulist.push_back(
+								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
+						break;
+					case 1:
+						menulist.push_back(
+								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
+						break;
+					case 2:
+						menulist.push_back(
+								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
+						break;
+					case 3:
+						menulist.push_back(
+								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
+						break;
+					case 4:
+						menulist.push_back(
+								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+						break;
+				}
 			}
-		}
-		catch(...)
+		} catch (...)
 		{
 			//Ignore all errors
 		}
 	}
 	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle main window"), sigc::mem_fun(*this,
-			&StatusIcon::on_menu_file_popup_open)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this,
-			&StatusIcon::on_menu_stop_all_timers)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Quit"), sigc::mem_fun(*this,
-			&StatusIcon::on_menu_file_popup_quit)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Toggle main window"),
+					sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Stop all timers"),
+					sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::MenuElem(_("Quit"),
+					sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
 }
-
 
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
-	Task task = m_taskaccessor->getTask(id,0,0,false);
-	std::string taskName = task.getName();
-	if(task.getParentID()>0)
+	std::string taskName;
+	std::shared_ptr<std::vector<Task> > tasks = m_taskaccessor->getTask(id, 0, 0, false);
+	if (tasks->size() > 0)
 	{
-		taskName = completeTaskPath(task.getParentID()) + " / " + taskName;
+		Task& task = tasks->at(0);
+		taskName = task.getName();
+		if (task.getParentID() > 0)
+		{
+			taskName = completeTaskPath(task.getParentID()) + " / " + taskName;
+		}
 	}
 	return taskName;
 }
@@ -211,8 +223,8 @@ void StatusIcon::on_taskUpdated(int64_t)
 {
 	setTooltip();
 	populateContextMenu();
-};
-
+}
+;
 
 void StatusIcon::on_runningChanged()
 {
@@ -225,22 +237,22 @@ void StatusIcon::setTooltip()
 	std::stringstream message;
 	if (m_timekeeper->hasRunningTasks())
 	{
-		std::vector<Task> tasks = m_taskaccessor->getRunningTasks();
+		std::shared_ptr<std::vector<Task>> tasks = m_taskaccessor->getRunningTasks();
 		//Figure out start and end of today
 		time_t startTime = Utils::getBeginingOfDay(time(0));
 		time_t stopTime = Utils::getEndOfDay(time(0));
-		for (int i = 0; i < (int) tasks.size(); i++)
+		for (int i = 0; i < (int) tasks->size(); i++)
 		{
-			Task task = tasks.at(i);
+			Task& task = tasks->at(i);
 			if (i > 0)
 			{
 				message << endl;
 			}
-			message << setw(15) << setiosflags(ios::left) <<task.getName();
-			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
+			message << setw(15) << setiosflags(ios::left) << task.getName();
+			message << " "
+					<< Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
 		}
-	}
-	else
+	} else
 	{
 		message << _("TimeIt. the unobtrusive time tracker");
 	}
@@ -253,8 +265,7 @@ void StatusIcon::setIcon()
 	{
 		m_statusIcon->set(m_runningIcon);
 		Gtk::Window::set_default_icon(m_runningIcon);
-	}
-	else
+	} else
 	{
 		m_statusIcon->set(m_defaultIcon);
 		Gtk::Window::set_default_icon(m_defaultIcon);

@@ -16,7 +16,7 @@ Task getTask(time_t start = 0, time_t stop = 0)
 	int64_t subTaskID = taskAccessor->newTask("subtask",taskID);
 	timeAccessor->newTime(taskID, 100, 200);
 	timeAccessor->newTime(subTaskID, 150, 200);
-	return taskAccessor->getTask(taskID, start, stop);
+	return taskAccessor->getTask(taskID, start, stop)->at(0);
 }
 
 void tasksTimeIs100()
