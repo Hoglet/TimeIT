@@ -9,9 +9,11 @@
 #define IGUIFACTORY_H_
 
 #include "IStatusIcon.h"
-#include "ICalendar.h"
-#include <boost/shared_ptr.hpp>
+#include "internal/ICalendar.h"
 #include <IWidget.h>
+#include <memory>
+#include <stdint.h>
+
 namespace GUI
 {
 
@@ -29,7 +31,7 @@ enum EWidget
 };
 
 
-typedef boost::shared_ptr<IWidget> WidgetPtr;
+typedef std::shared_ptr<IWidget> WidgetPtr;
 
 class IGUIFactory
 {

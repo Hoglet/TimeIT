@@ -5,7 +5,7 @@
 using namespace std;
 using namespace DBAbstraction;
 
-TimeAccessor::TimeAccessor(const std::string& dbname, boost::shared_ptr<Notifier>& notifier) :
+TimeAccessor::TimeAccessor(const std::string& dbname, std::shared_ptr<Notifier>& notifier) :
 		db(dbname)
 {
 	this->notifier = notifier;
@@ -25,8 +25,8 @@ int64_t TimeAccessor::newTime(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	stringstream statement;
 	int64_t id;
-	statement << "INSERT INTO times (taskID, start, stop) VALUES (" << taskID << ", " << startTime << ", " << stopTime
-			<< ")";
+	statement << "INSERT INTO times (taskID, start, stop) VALUES (" << taskID << ", " << startTime << ", "
+			<< stopTime << ")";
 	db.exe(statement.str());
 	id = db.getIDOfLastInsert();
 	if (startTime != stopTime)
@@ -84,10 +84,8 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 	TimeEntry item;
 	item.id = 0;
 	db.exe(statement.str());
-	std::vector<std::vector<DataCell> >::iterator iter = db.rows.begin();
-	for (; iter != db.rows.end(); iter++)
+	for (vector<DataCell> row : db.rows)
 	{
-		vector<DataCell> row = *iter;
 		item.id = row[0].getInt();
 		item.taskID = row[1].getInt();
 		item.start = row[2].getInt();
@@ -95,53 +93,6 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 		item.running = row[4].getBool();
 	}
 	return item;
-}
-
-map<int64_t, TaskTime> TimeAccessor::getTimeList(time_t startTime, time_t stopTime)
-{
-	map<int64_t, TaskTime> resultList;
-	stringstream statement;
-	statement << "SELECT times.taskID, times.start, times.stop, tasks.name FROM times, tasks ";
-	statement << " WHERE times.stop > " << startTime;
-	statement << " AND times.start <" << stopTime;
-	statement << " AND times.taskID = tasks.id ";
-	statement << " AND tasks.deleted = 'false'";
-
-	int id;
-	int start;
-	int stop;
-	std::string name;
-	TaskTime taskTime;
-	db.exe(statement.str());
-
-	vector<vector<DataCell> >::iterator iter = db.rows.begin();
-	for (; iter != db.rows.end(); iter++)
-	{
-		vector<DataCell> row = *iter;
-		id = row[0].getInt();
-		start = row[1].getInt();
-		stop = row[2].getInt();
-		name = row[3].getString();
-		if (start < startTime)
-		{
-			start = startTime;
-		}
-		if (stop > stopTime)
-		{
-			stop = stopTime;
-		}
-		if (resultList.find(id) != resultList.end())
-		{
-			resultList[id].duration += (stop - start);
-		}
-		else
-		{
-			taskTime.duration = (stop - start);
-			taskTime.name = name;
-			resultList[id] = taskTime;
-		}
-	}
-	return resultList;
 }
 
 int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
@@ -234,10 +185,8 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 	int id;
 	db.exe(statement.str());
 
-	vector<vector<DataCell> >::iterator iter = db.rows.begin();
-	for (; iter != db.rows.end(); iter++)
+	for (vector<DataCell> row : db.rows)
 	{
-		vector<DataCell> row = *iter;
 		id = row[0].getInt();
 		resultList.push_back(id);
 	}
@@ -256,10 +205,8 @@ std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskId, time_t st
 
 	TimeEntry item;
 	db.exe(statement.str());
-	vector<vector<DataCell> >::iterator iter = db.rows.begin();
-	for (; iter < db.rows.end(); iter++)
+	for (vector<DataCell> row : db.rows)
 	{
-		vector<DataCell> row = *iter;
 		item.id = row[0].getInt();
 		item.start = row[1].getInt();
 		item.stop = row[2].getInt();

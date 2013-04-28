@@ -9,6 +9,7 @@
 #define ITIMEKEEPER_H_
 
 #include <IGUIFactory.h>
+#include <stdint.h>
 
 class TimekeeperObserver
 {

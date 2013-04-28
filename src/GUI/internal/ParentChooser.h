@@ -12,7 +12,6 @@
 #include <gtkmm/liststore.h>
 #include <Database.h>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 namespace GUI
 {
@@ -22,7 +21,7 @@ namespace Internal
 class ParentChooser: public Gtk::ComboBox
 {
 public:
-	ParentChooser(boost::shared_ptr<DB::Database>& database);
+	ParentChooser(std::shared_ptr<DB::Database>& database);
 	virtual ~ParentChooser();
 
 	void setID(int ID);
@@ -54,7 +53,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
 	int parentID;
 };
 

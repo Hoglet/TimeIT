@@ -27,6 +27,7 @@
 #include <glibmm/i18n.h>
 #include <TestRunner.h>
 using namespace std;
+using namespace Test;
 
 extern "C"
 {
@@ -104,13 +105,13 @@ int Main::run()
 		{
 
 			//Create a database object
-			database = boost::shared_ptr<DB::Database>(new DB::Database(dbName));
+			database = std::shared_ptr<DB::Database>(new DB::Database(dbName));
 
 			//Initiate all logic
-			timer = boost::shared_ptr<Timer>(new Timer());
+			timer = std::shared_ptr<Timer>(new Timer());
 
-			boost::shared_ptr<ITimeKeeper> timekeeper = boost::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
-			guiFactory = boost::shared_ptr<GUI::GUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
+			std::shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
+			guiFactory = std::shared_ptr<GUI::GUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
 
 			AutoTracker autotracker(timekeeper, database, timer);
 			Controller controller(guiFactory, timekeeper, database);

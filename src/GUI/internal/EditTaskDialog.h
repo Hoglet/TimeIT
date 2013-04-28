@@ -8,7 +8,6 @@
 #include <IEditTaskDialog.h>
 #include <IAddTaskDIalog.h>
 #include <IAutotrackAccessor.h>
-#include <boost/shared_ptr.hpp>
 #include <IWidget.h>
 #include <Workspace.h>
 #include <Database.h>
@@ -19,7 +18,7 @@ namespace Internal {
 class EditTaskDialog: public Gtk::Dialog, public IEditTaskDialog, public IAddTaskDialog, public IWidget
 {
 public:
-	EditTaskDialog( boost::shared_ptr<DB::Database>& database);
+	EditTaskDialog( std::shared_ptr<DB::Database>& database);
 	virtual ~EditTaskDialog();
 	void on_OKButton_clicked();
 	void on_CancelButton_clicked();
@@ -30,7 +29,7 @@ public:
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
@@ -62,8 +61,8 @@ private:
 	std::vector<int> workspaces;
 	int parentID;
 
-	boost::shared_ptr<IAutotrackAccessor> autoTrackAccessor;
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<IAutotrackAccessor> autoTrackAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
 	Workspace workspace;
 };
 }

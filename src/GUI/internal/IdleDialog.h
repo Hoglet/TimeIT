@@ -11,8 +11,9 @@
 #include <gtkmm.h>
 #include <Timer.h>
 #include <IIdleDialog.h>
-#include <boost/shared_ptr.hpp>
 #include <IWidget.h>
+#include <memory>
+
 namespace GUI
 {
 namespace Internal
@@ -27,7 +28,7 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
 {
 public:
-	IdleDialog(boost::shared_ptr<Timer>& timer);
+	IdleDialog(std::shared_ptr<Timer>& timer);
 	void setIdleStartTime(time_t idleStartTime);
 	virtual ~IdleDialog();
 	virtual void attach(IActionObserver*);
@@ -35,7 +36,7 @@ public:
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
@@ -48,7 +49,7 @@ private:
 	Gtk::Button revertButton;
 	Gtk::Button revertAndContinueButton;
 	Gtk::Button continueButton;
-	boost::shared_ptr<Timer> m_timer;
+	std::shared_ptr<Timer> m_timer;
 	time_t m_idleStartTime;
 
 	std::list<IActionObserver*> observers;

@@ -7,7 +7,7 @@
 
 #include "Summary.h"
 #include "Utils.h"
-#include "DetailsDialog.h"
+#include "internal/DetailsDialog.h"
 #include <glibmm/i18n.h>
 using namespace std;
 using namespace Gtk;
@@ -18,7 +18,7 @@ namespace GUI
 namespace Internal
 {
 
-Summary::Summary(boost::shared_ptr<DB::Database>& database)
+Summary::Summary(std::shared_ptr<DB::Database>& database)
 {
 	timeAccessor = database->getTimeAccessor();
 	taskAccessor = database->getTaskAccessor();
@@ -186,7 +186,6 @@ void Summary::empty()
  */
 void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 {
-	//	std::map<int64_t, TaskTime> timeList = timeAccessor->getTimeList(startTime, stopTime);
 	vector<Task> tasks = taskAccessor->getTasks(parentID, startTime, stopTime);
 
 	for (int i = 0; i < (int) tasks.size(); i++)

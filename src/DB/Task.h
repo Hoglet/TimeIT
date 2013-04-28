@@ -48,7 +48,7 @@
 		 int totalTime;
 		 int time;
 	 private:
-		 Task() {};
+		 Task();
  };
 
 #endif // _TASK_HPP_

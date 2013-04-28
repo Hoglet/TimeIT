@@ -8,6 +8,7 @@
 #ifndef ISETTINGSACCESSOR_H_
 #define ISETTINGSACCESSOR_H_
 
+#include <string>
 class ISettingsAccessorObserver
 {
 public:

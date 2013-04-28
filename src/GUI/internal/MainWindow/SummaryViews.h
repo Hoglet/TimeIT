@@ -20,7 +20,7 @@ namespace Internal
 class DaySummary: public Summary
 {
 public:
-	DaySummary( boost::shared_ptr<DB::Database>& database) :
+	DaySummary( std::shared_ptr<DB::Database>& database) :
 		Summary( database)
 	{
 		init();
@@ -41,7 +41,7 @@ private:
 class WeekSummary: public Summary
 {
 public:
-	WeekSummary( boost::shared_ptr<DB::Database>& database) :
+	WeekSummary( std::shared_ptr<DB::Database>& database) :
 		Summary( database)
 	{
 		init();
@@ -62,7 +62,7 @@ private:
 class MonthSummary: public Summary
 {
 public:
-	MonthSummary( boost::shared_ptr<DB::Database>& database) :
+	MonthSummary( std::shared_ptr<DB::Database>& database) :
 		Summary( database)
 	{
 		init();
@@ -83,7 +83,7 @@ private:
 class YearSummary: public Summary
 {
 public:
-	YearSummary( boost::shared_ptr<DB::Database>& database) :
+	YearSummary( std::shared_ptr<DB::Database>& database) :
 		Summary( database)
 	{
 		init();

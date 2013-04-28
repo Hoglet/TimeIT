@@ -2,79 +2,57 @@
 #include "ide_listener.h"
 #include "cute_runner.h"
 #include "test_TimeManagement.h"
-#include "Database.h"
+#include "TempDB.h"
 
-class TimeManagementTest
+namespace Test
 {
-public:
-	TimeManagementTest()
-	{
-		database = boost::shared_ptr<DB::Database>(new DB::Database("/tmp/test.db"));
-		taskAccessor = database->getTaskAccessor();
-		timeAccessor = database->getTimeAccessor();
-		taskID = taskAccessor->newTask("task", 0);
-		subTaskID = taskAccessor->newTask("subtask",taskID);
-		timeAccessor->newTime(taskID, 100, 200);
-		timeAccessor->newTime(subTaskID, 150, 200);
-	}
 
-	Task getTask(time_t start = 0, time_t stop = 0)
-	{
-		return taskAccessor->getTask(taskID, start, stop);
-	}
-private:
-	int64_t taskID;
-	int64_t subTaskID;
-	boost::shared_ptr<DB::Database> database;
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
-	boost::shared_ptr<ITimeAccessor> timeAccessor;
-};
+Task getTask(time_t start = 0, time_t stop = 0)
+{
+	TempDB tempdb;
+	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
+	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
+	int64_t taskID = taskAccessor->newTask("task", 0);
+	int64_t subTaskID = taskAccessor->newTask("subtask",taskID);
+	timeAccessor->newTime(taskID, 100, 200);
+	timeAccessor->newTime(subTaskID, 150, 200);
+	return taskAccessor->getTask(taskID, start, stop);
+}
 
 void tasksTimeIs100()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask();
+	Task task = getTask();
 	ASSERT_EQUAL(100, task.getTime());
 }
 
 void tasksTotalTimeIs150()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask();
+	Task task = getTask();
 	ASSERT_EQUAL(150, task.getTotalTime());
 }
 
 void staggerTest1RecordedTimePassesEnd()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask(0,150);
+	Task task = getTask(0,150);
 	ASSERT_EQUAL(50, task.getTime());
 }
 
 void staggerTest2RecordedTimeStartsBeforeStart()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask(150,300);
+	Task task = getTask(150,300);
 	ASSERT_EQUAL(50, task.getTime());
 }
 
 void staggerTest3RecordedTotalTimePassesEnd()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask(0,150);
+	Task task = getTask(0,150);
 	ASSERT_EQUAL(50, task.getTotalTime());
 }
 void staggerTest3RecordedTotalTimeStartsBeforeStart()
 {
-	TimeManagementTest tmt;
-	Task task = tmt.getTask(150,300);
+	Task task = getTask(150,300);
 	ASSERT_EQUAL(100, task.getTotalTime());
 }
-
-
-//Manage time when start is before limit
-//ManageTime completely inside limits
-//ManageTotalTime completely inside limits
 
 cute::suite make_suite_test_TimeManagement()
 {
@@ -88,3 +66,4 @@ cute::suite make_suite_test_TimeManagement()
 	return s;
 }
 
+}

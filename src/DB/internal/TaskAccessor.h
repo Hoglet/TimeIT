@@ -27,14 +27,13 @@
 #include <ITaskAccessor.h>
 #include <string>
 #include <Notifier.h>
-#include <boost/shared_ptr.hpp>
 #include <ITimeAccessor.h>
-
+#include <memory>
 class TaskAccessor : public ITaskAccessor
 {
 public:
 	friend class TimeAccessor;
-	TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier> notifier, boost::shared_ptr<ITimeAccessor> timeAccessor);
+	TaskAccessor(const std::string& dbname, std::shared_ptr<Notifier> notifier, std::shared_ptr<ITimeAccessor> timeAccessor);
 	virtual ~TaskAccessor();
 
 	void attach(TaskAccessorObserver*);
@@ -54,8 +53,8 @@ private:
 	int getTotalChildTime(int64_t id, time_t start = 0 , time_t stop = 0);
 	DBAbstraction::CSQL db;
 	dbexception dbe;
-	boost::shared_ptr<Notifier> notifier;
-	boost::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<Notifier> notifier;
+	std::shared_ptr<ITimeAccessor> timeAccessor;
 };
 
 #endif // _TASK_MANAGER_HPP_

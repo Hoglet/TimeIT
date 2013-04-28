@@ -1,3 +1,8 @@
+timeit (1.1.0-beta1) precise; urgency=low
+
+  * Replaced autotools with CMake.
+  * Migration from BOOST to c++11
+
 timeit (1.0.2) precise; urgency=low
 
   * Bugfix: Year summary did not count January

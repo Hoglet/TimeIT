@@ -5,10 +5,10 @@
  *      Author: hoglet
  */
 
-#include <Details.h>
+#include "Details.h"
 #include <vector>
 #include <Utils.h>
-#include <DetailsDialog.h>
+#include "DetailsDialog.h"
 #include <glibmm/i18n.h>
 
 using namespace Gtk;
@@ -17,7 +17,7 @@ namespace GUI
 {
 namespace Internal
 {
-Details::Details(IDetailsDialog& detailsDialog, boost::shared_ptr<DB::Database>& database) : m_detailsDialog(detailsDialog)
+Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& database) : m_detailsDialog(detailsDialog)
 {
 	m_timeAccessor = database->getTimeAccessor();
 	m_taskAccessor = database->getTaskAccessor();

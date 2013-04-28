@@ -159,11 +159,8 @@ void SettingsAccessor::SettingsChanged(const std::string& name)
 {
 	try
 	{
-		//		Task task = getTask(taskID);
-		std::list<ISettingsAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
+		for (ISettingsAccessorObserver* observer : observers)
 		{
-			ISettingsAccessorObserver* observer = *iter;
 			observer->on_settingsChanged(name);
 		}
 	} catch (...)

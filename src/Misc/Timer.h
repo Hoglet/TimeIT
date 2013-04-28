@@ -10,23 +10,32 @@
 
 #include <list>
 
+namespace Test
+{
+	class TimerTest;
+}
+
 class TimerObserver
 {
 public:
-	virtual ~TimerObserver() {};
-	virtual void on_signal_1_second() = 0;
-	virtual void on_signal_10_seconds() = 0;
+	virtual ~TimerObserver()
+	{
+	}
+	virtual void on_signal_1_second() {};
+	virtual void on_signal_10_seconds() {};
 };
 
 class Timer
 {
+	friend class Test::TimerTest;
 public:
 	Timer();
 	virtual ~Timer();
 	void attach(TimerObserver* observer);
 	void detach(TimerObserver* observer);
-private:
+protected:
 	bool on_signal_1_second();
+private:
 	void signalSender();
 	std::list<TimerObserver*> observers;
 };

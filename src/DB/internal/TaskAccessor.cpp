@@ -28,12 +28,12 @@ using namespace DBAbstraction;
 vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 {
 	vector<Task> tasks = _getTasks(0, parentID, false, start, stop);
-	std::vector<Task>::iterator iter;
-	for (iter = tasks.begin(); iter != tasks.end(); iter++)
+	for (unsigned int i = 0; i < tasks.size();i++)
 	{
-		int totalTime = iter->getTime();
-		totalTime += getTotalChildTime(iter->getID(), start, stop);
-		iter->setTotalTime(totalTime);
+		Task& task = tasks.at(i);
+		int totalTime = task.getTime();
+		totalTime += getTotalChildTime(task.getID(), start, stop);
+		task.setTotalTime(totalTime);
 	}
 	return tasks;
 }
@@ -41,12 +41,12 @@ vector<Task> TaskAccessor::getTasks(int64_t parentID, time_t start, time_t stop)
 vector<Task> TaskAccessor::getRunningTasks(int64_t parentID)
 {
 	vector<Task> tasks = _getTasks(0, parentID, true);
-	std::vector<Task>::iterator iter;
-	for (iter = tasks.begin(); iter != tasks.end(); iter++)
+	for (unsigned int i=0; i < tasks.size(); i++)
 	{
-		int totalTime = iter->getTime();
-		totalTime += getTotalChildTime(iter->getID());
-		iter->setTotalTime(totalTime);
+		Task& task = tasks.at(i);
+		int totalTime = task.getTime();
+		totalTime += getTotalChildTime(task.getID());
+		task.setTotalTime(totalTime);
 	}
 	return tasks;
 }
@@ -55,16 +55,16 @@ int TaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
 	vector<Task> tasks = _getTasks(0, id, false, start, stop);
 	int totalTime = 0;
-	std::vector<Task>::iterator iter;
-	for (iter = tasks.begin(); iter != tasks.end(); iter++)
+	for (Task task : tasks)
 	{
-		totalTime += iter->getTime();
-		totalTime += getTotalChildTime(iter->getID(), start, stop);
+		totalTime += task.getTime();
+		totalTime += getTotalChildTime(task.getID(), start, stop);
 	}
 	return totalTime;
 }
 
-vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start, time_t stop)
+vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool onlyRunning, time_t start,
+		time_t stop)
 {
 	vector<Task> retVal;
 	int time = 0;
@@ -78,21 +78,17 @@ vector<Task> TaskAccessor::_getTasks(int64_t taskID, int64_t parentID, bool only
 	if (taskID > 0)
 	{
 		statement << " AND id=" << taskID;
-	}
-	else if (onlyRunning)
+	} else if (onlyRunning)
 	{
 		statement << " AND running=1";
-	}
-	else
+	} else
 	{
 		statement << " AND parent=" << parentID;
 	}
 
 	db.exe(statement.str());
-	for (unsigned int r = 0; r < db.rows.size(); r++)
+	for (std::vector<DataCell> row: db.rows)
 	{
-		vector<DataCell> row = db.rows[r];
-
 		int id = row[0].getInt();
 		int parent = row[1].getInt();
 		string name = row[2].getString();
@@ -118,8 +114,7 @@ Task TaskAccessor::getTask(int64_t taskID, time_t start, time_t stop, bool calcu
 			task.setTotalTime(totalTime);
 		}
 		return task;
-	}
-	else
+	} else
 	{
 		dbe.setReturnCode(0);
 		dbe.setMessage("Task not found");
@@ -133,11 +128,14 @@ int64_t TaskAccessor::newTask(std::string name, int64_t parentID)
 	stringstream statement;
 	if (parentID < 0)
 	{
-		dbexception* e = new dbexception();
 		statement << "parenID is <0" << " in " << __FILE__ << ":" << __LINE__ << endl;
-		e->setMessage(statement.str());
+		dbe.setMessage(statement.str());
 		cerr << statement.str() << endl;
-		throw e;
+		throw dbe;
+	}
+	if (parentID > 0)
+	{
+		getTask(parentID); //Will throw exception if parent is not existing
 	}
 	statement << "INSERT INTO tasks (name,parent) VALUES (\"" << name << "\", " << parentID << ")";
 
@@ -165,6 +163,7 @@ void TaskAccessor::setTaskName(int64_t taskID, std::string name)
 
 void TaskAccessor::setParentID(int64_t taskID, int parentID)
 {
+	getTask(parentID); //Throws exception if parent does not exist
 	stringstream statement;
 	statement << "UPDATE tasks SET parent = " << parentID;
 	statement << " WHERE id=" << taskID;
@@ -184,13 +183,8 @@ void TaskAccessor::removeTask(int64_t taskID)
 	notifier->taskRemoved(taskID);
 }
 
-void TaskAccessor::setTaskRunning(int64_t taskID, bool running)
-{
-
-}
-
-TaskAccessor::TaskAccessor(const std::string& dbname, boost::shared_ptr<Notifier> notifier,
-		boost::shared_ptr<ITimeAccessor> timeAccessor) :
+TaskAccessor::TaskAccessor(const std::string& dbname, std::shared_ptr<Notifier> notifier,
+		std::shared_ptr<ITimeAccessor> timeAccessor) :
 		db(dbname)
 {
 	this->notifier = notifier;

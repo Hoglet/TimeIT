@@ -11,7 +11,6 @@
 
 
 #include <Database.h>
-#include <boost/shared_ptr.hpp>
 
 #include <ITimeKeeper.h>
 #include <IGUIFactory.h>
@@ -24,7 +23,7 @@ namespace GUI
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(boost::shared_ptr<ITimeKeeper>&, boost::shared_ptr<DB::Database>& database, const boost::shared_ptr<Timer>& timer);
+	GUIFactory(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual IStatusIcon& getStatusIcon();
@@ -53,11 +52,11 @@ private:
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
-	boost::shared_ptr<ITimeKeeper> timekeeper;
+	std::shared_ptr<ITimeKeeper> timekeeper;
 
-	boost::shared_ptr<DB::Database> database;
-	boost::shared_ptr<Timer> timer;
-	static boost::shared_ptr<Gtk::Main> main;
+	std::shared_ptr<DB::Database> database;
+	std::shared_ptr<Timer> timer;
+	static std::shared_ptr<Gtk::Main> main;
 };
 }
 #endif /* GUIFACTORY_H_ */

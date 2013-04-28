@@ -19,15 +19,15 @@
 class Controller : public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
 {
 public:
-	Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory, boost::shared_ptr<ITimeKeeper>& timeKeeper, boost::shared_ptr<DB::Database>& database );
+	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::Database>& database );
 	virtual ~Controller();
 	void start();
 private:
-	boost::shared_ptr<GUI::IGUIFactory> guiFactory;
-	boost::shared_ptr<ITimeKeeper> timeKeeper;
-	boost::shared_ptr<IIdleDialog> idleDialog;
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
-	boost::shared_ptr<ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<GUI::IGUIFactory> guiFactory;
+	std::shared_ptr<ITimeKeeper> timeKeeper;
+	std::shared_ptr<IIdleDialog> idleDialog;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<ISettingsAccessor> settingsAccessor;
 
 	//Action observers
 	virtual void on_action_task_selection_changed(int selectedTaskID);

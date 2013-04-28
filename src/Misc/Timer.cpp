@@ -45,10 +45,8 @@ void Timer::signalSender()
 		signal10Seconds=true;
 		TenSecondCounter = 10;
 	}
-	std::list<TimerObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (TimerObserver* observer: observers)
 	{
-		TimerObserver* observer = *iter;
 		observer->on_signal_1_second();
 		if(signal10Seconds)
 		{

@@ -7,13 +7,13 @@
 #include <ITimeKeeper.h>
 #include <Database.h>
 #include <IdleDetector.h>
-#include <boost/weak_ptr.hpp>
+
 
 
 class Timekeeper : public TimerObserver, public ITimeKeeper, public TaskAccessorObserver, public ISettingsAccessorObserver
 {
 public:
-	Timekeeper(const boost::shared_ptr<DB::Database>& database, const boost::shared_ptr<Timer>& timer);
+	Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -72,10 +72,10 @@ private:
 	void notifyIdleDetected();
 	std::list<TimekeeperObserver*> observers;
 
-	boost::shared_ptr<ITimeAccessor> m_timeAccessor;
-	boost::shared_ptr<ITaskAccessor> m_taskAccessor;
-	boost::shared_ptr<Timer> m_timer;
-	boost::shared_ptr<ISettingsAccessor> m_settingsAccessor;
+	std::shared_ptr<ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<Timer> m_timer;
+	std::shared_ptr<ISettingsAccessor> m_settingsAccessor;
 
 	IdleDetector m_idleDetector;
 };

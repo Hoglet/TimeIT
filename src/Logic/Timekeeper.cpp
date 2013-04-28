@@ -1,4 +1,4 @@
-#include <IdleDialog.h>
+#include <IIdleDialog.h>
 #include <Timekeeper.h>
 #include <Timer.h>
 #include <iostream>
@@ -9,7 +9,7 @@ using namespace std;
 
 //TODO Autostart on movement (if autotracker and supressed dialog)
 
-Timekeeper::Timekeeper(const boost::shared_ptr<DB::Database>& database, const boost::shared_ptr<Timer>& timer): m_idleDetector(timer)
+Timekeeper::Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer): m_idleDetector(timer)
 {
 	m_timer = timer;
 	m_timeAccessor = database->getTimeAccessor();

@@ -10,14 +10,14 @@
 #include <vector>
 #include <ITaskAccessor.h>
 #include <IAutotrackAccessor.h>
-#include <boost/shared_ptr.hpp>
 #include "CSQL.h"
 #include <ITaskAccessor.h>
+#include <memory>
 
 class AutotrackAccessor : public TaskAccessorObserver, public IAutotrackAccessor
 {
 public:
-	AutotrackAccessor(const std::string& dbpath,  boost::shared_ptr<ITaskAccessor>& taskAccessor);
+	AutotrackAccessor(const std::string& dbpath,  std::shared_ptr<ITaskAccessor>& taskAccessor);
 	virtual ~AutotrackAccessor();
 	std::vector<int64_t> getTaskIDs(int workspace);
 	std::vector<int> getWorkspaces(int64_t taskID);
@@ -26,7 +26,7 @@ private:
 	virtual void on_taskAdded(int64_t)  {};
 	virtual void on_taskUpdated(int64_t) {};
 	virtual void on_taskRemoved(int64_t);
-	boost::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
 	DBAbstraction::CSQL db;
 };
 

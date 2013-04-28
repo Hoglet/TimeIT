@@ -31,7 +31,7 @@ namespace Internal
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(boost::shared_ptr<DB::Database>& database)
+TaskList::TaskList(std::shared_ptr<DB::Database>& database)
 {
 	taskAccessor = database->getTaskAccessor();
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"),24,24,true);

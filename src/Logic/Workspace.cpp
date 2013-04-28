@@ -15,6 +15,7 @@ using std::string;
 
 Workspace::Workspace()
 {
+	numWorkspaces=0;
 }
 
 Workspace::~Workspace()

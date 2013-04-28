@@ -9,9 +9,9 @@
 #define DETAILS_H_
 #include <gtkmm.h>
 #include <Task.h>
-#include <Summary.h>
+#include "MainWindow/Summary.h"
 #include <signal.h>
-#include <IDetailsDialog.h>
+#include "IDetailsDialog.h"
 #include <Database.h>
 #include <ITimeAccessor.h>
 
@@ -33,7 +33,7 @@ public:
 class Details : public Gtk::TreeView, public TaskAccessorObserver
 {
 public:
-	Details(IDetailsDialog& detailsDialog, boost::shared_ptr<DB::Database>& database);
+	Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
@@ -81,8 +81,8 @@ private:
 	Gtk::Menu m_Menu_Popup;
 	std::list<DetailsObserver*> observers;
 	IDetailsDialog& m_detailsDialog;
-	boost::shared_ptr<ITimeAccessor> m_timeAccessor;
-	boost::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
 };
 }
 }

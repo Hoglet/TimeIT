@@ -17,7 +17,7 @@
 
 using namespace GUI;
 
-Controller::Controller(boost::shared_ptr<GUI::IGUIFactory>& guiFactory, boost::shared_ptr<ITimeKeeper>& timeKeeper, boost::shared_ptr<DB::Database>& database)
+Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::Database>& database)
 {
 	settingsAccessor = database->getSettingsAccessor();
 	selectedTaskID = -1;
@@ -123,7 +123,7 @@ void Controller::on_action_edit_task()
 	if (selectedTaskID)
 	{
 		WidgetPtr editTaskDialog = guiFactory->getWidget(EDIT_TASK_DIALOG);
-		boost::dynamic_pointer_cast<IEditTaskDialog>(editTaskDialog)->setTaskID(selectedTaskID);
+		std::dynamic_pointer_cast<IEditTaskDialog>(editTaskDialog)->setTaskID(selectedTaskID);
 		editTaskDialog->show();
 	}
 }
@@ -147,7 +147,7 @@ void Controller::on_idleDetected()
 	time_t now = time(0);
 	time_t idleStartTime = now - timeKeeper->timeIdle();
 	//TODO Automatic off without dialog
-	idleDialog = boost::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
+	idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
 	idleDialog->attach(this);
 	idleDialog->setIdleStartTime(idleStartTime);
 	idleDialog->show();
@@ -196,7 +196,7 @@ void Controller::on_action_task_selection_changed(int selectedTaskID)
 void Controller::on_action_add_task()
 {
 	WidgetPtr addTaskDialog = guiFactory->getWidget(ADD_TASK_DIALOG);
-	boost::dynamic_pointer_cast<IAddTaskDialog>(addTaskDialog)->setParent(selectedTaskID);
+	std::dynamic_pointer_cast<IAddTaskDialog>(addTaskDialog)->setParent(selectedTaskID);
 	addTaskDialog->show();
 }
 
@@ -210,7 +210,7 @@ void Controller::on_action_preferences()
 
 void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime)
 {
-	boost::shared_ptr<IDetailsDialog> detailsDialog = boost::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
+	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
 	if(detailsDialog)
 	{
 		detailsDialog->set(taskId,startTime,stopTime);

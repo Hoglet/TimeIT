@@ -14,7 +14,7 @@ namespace GUI
 namespace Internal
 {
 using namespace std;
-ParentChooser::ParentChooser(boost::shared_ptr<DB::Database>& database)
+ParentChooser::ParentChooser(std::shared_ptr<DB::Database>& database)
 {
 	taskAccessor = database->getTaskAccessor();
 	//Create the Tree model:

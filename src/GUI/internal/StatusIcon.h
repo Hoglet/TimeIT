@@ -22,7 +22,7 @@ class StatusIcon :  public TimekeeperObserver, public IStatusIcon, public TaskAc
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(boost::shared_ptr<ITimeKeeper>&, boost::shared_ptr<ITaskAccessor>&, boost::shared_ptr<ITimeAccessor>&);
+	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<ITaskAccessor>&, std::shared_ptr<ITimeAccessor>&);
 	virtual void show() {}; //Shown directly on creation. Might change
 	virtual void attach(IActionObserver* observer);
 	virtual void detach(IActionObserver* observer);
@@ -57,9 +57,9 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> runningIconSmall;
 
 	Gtk::Menu m_Menu_Popup;
-	boost::shared_ptr<ITimeKeeper> m_timekeeper;
-	boost::shared_ptr<ITaskAccessor> m_taskaccessor;
-	boost::shared_ptr<ITimeAccessor> m_timeaccessor;
+	std::shared_ptr<ITimeKeeper> m_timekeeper;
+	std::shared_ptr<ITaskAccessor> m_taskaccessor;
+	std::shared_ptr<ITimeAccessor> m_timeaccessor;
 	std::list<IActionObserver*> observers;
 	std::vector<int64_t> latestTasks;
 

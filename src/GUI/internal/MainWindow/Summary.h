@@ -9,8 +9,6 @@
 #define SUMMARY_H_
 
 #include <gtkmm.h>
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
 #include <ISummary.h>
 #include <ITimeAccessor.h>
 #include <Database.h>
@@ -24,7 +22,7 @@ namespace Internal
 class Summary: public Gtk::TreeView, public TaskAccessorObserver, public ISummary
 {
 public:
-	Summary(boost::shared_ptr<DB::Database>& database);
+	Summary(std::shared_ptr<DB::Database>& database);
 	virtual ~Summary();
 	void setReferences(Gtk::Calendar& calendar);
 	int64_t getSelectedID();
@@ -87,8 +85,8 @@ protected:
 	time_t startTime;
 	time_t stopTime;
 	std::list<SummaryObserver* > observers;
-	boost::shared_ptr<ITimeAccessor> timeAccessor;
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
 };
 
 }

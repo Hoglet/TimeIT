@@ -21,9 +21,9 @@ public:
 	std::vector< std::vector<DataCell> > rows;
 	int64_t getIDOfLastInsert();
 protected:
-	CSQL();
 	void init(const std::string& databasename);
 private:
+	CSQL();
 	sqlite3 *db;
 	dbexception e;
 };

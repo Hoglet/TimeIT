@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include <AddTime.h>
+#include "AddTime.h"
 #include <Utils.h>
 #include <Task.h>
 #include <time.h>
@@ -15,7 +15,7 @@ namespace GUI {
 namespace Internal {
 
 
-AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, boost::shared_ptr<DB::Database>& database) :
+AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::Database>& database) :
 	table(4, 4),  yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")),taskNameLabel(_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
 			calendar(op_calendar), taskID(op_taskID)
 {

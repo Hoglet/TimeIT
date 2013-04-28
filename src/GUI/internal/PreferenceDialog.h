@@ -16,7 +16,6 @@
 #include <gtkmm/label.h>
 #include <IWidget.h>
 #include <ISettingsAccessor.h>
-#include <boost/shared_ptr.hpp>
 #include <Database.h>
 
 namespace GUI
@@ -25,17 +24,17 @@ namespace GUI
 class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(boost::shared_ptr<DB::Database>& database);
+	PreferenceDialog(std::shared_ptr<DB::Database>& database);
 	virtual ~PreferenceDialog();
 
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	PreferenceDialog() {};
+	PreferenceDialog();
 	void on_CancelButton_clicked();
 	void on_OKButton_clicked();
 
@@ -64,7 +63,7 @@ private:
 
 	void on_data_changed();
 
-	boost::shared_ptr<ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<ISettingsAccessor> settingsAccessor;
 };
 
 }

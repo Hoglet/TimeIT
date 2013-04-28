@@ -73,12 +73,12 @@ Database::Database(const std::string& dbname)
 
 	try
 	{
-		boost::shared_ptr<Notifier> notifier(new Notifier());
+		std::shared_ptr<Notifier> notifier(new Notifier());
 		m_notifier = notifier;
-		m_timeAccessor = boost::shared_ptr<TimeAccessor>(new TimeAccessor(dbname, notifier));
-		m_taskAccessor = boost::shared_ptr<TaskAccessor>(new TaskAccessor(dbname, notifier, m_timeAccessor));
-		m_autotrackAccessor = boost::shared_ptr<AutotrackAccessor>(new AutotrackAccessor(dbname, m_taskAccessor));
-		m_settingsAccessor = boost::shared_ptr<SettingsAccessor>(new SettingsAccessor(dbname));
+		m_timeAccessor = std::shared_ptr<TimeAccessor>(new TimeAccessor(dbname, notifier));
+		m_taskAccessor = std::shared_ptr<TaskAccessor>(new TaskAccessor(dbname, notifier, m_timeAccessor));
+		m_autotrackAccessor = std::shared_ptr<AutotrackAccessor>(new AutotrackAccessor(dbname, m_taskAccessor));
+		m_settingsAccessor = std::shared_ptr<SettingsAccessor>(new SettingsAccessor(dbname));
 	} catch (dbexception& e)
 	{
 		cerr << "Initiating DB with " << dbname << " caused: " << e.what() << endl;
@@ -91,22 +91,22 @@ Database::~Database()
 {
 }
 
-boost::shared_ptr<IAutotrackAccessor> Database::getAutotrackAccessor()
+std::shared_ptr<IAutotrackAccessor> Database::getAutotrackAccessor()
 {
 	return m_autotrackAccessor;
 }
 
-boost::shared_ptr<ITimeAccessor> Database::getTimeAccessor()
+std::shared_ptr<ITimeAccessor> Database::getTimeAccessor()
 {
 	return m_timeAccessor;
 }
 
-boost::shared_ptr<ITaskAccessor> Database::getTaskAccessor()
+std::shared_ptr<ITaskAccessor> Database::getTaskAccessor()
 {
 	return m_taskAccessor;
 }
 
-boost::shared_ptr<ISettingsAccessor> Database::getSettingsAccessor()
+std::shared_ptr<ISettingsAccessor> Database::getSettingsAccessor()
 {
 	return m_settingsAccessor;
 }

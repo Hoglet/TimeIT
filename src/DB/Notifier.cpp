@@ -7,74 +7,43 @@
 
 #include "Notifier.h"
 
-
-
 Notifier::Notifier()
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 Notifier::~Notifier()
 {
-	// TODO Auto-generated destructor stub
 }
 
 void Notifier::taskUpdated(int64_t taskID)
 {
-	try
+	for (TaskAccessorObserver* observer : observers)
 	{
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskUpdated(taskID);
-		}
-	} catch (...)
-	{
+		observer->on_taskUpdated(taskID);
 	}
 }
+
 void Notifier::taskAdded(int64_t taskID)
 {
-	try
+	for (TaskAccessorObserver* observer : observers)
 	{
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskAdded(taskID);
-		}
-	} catch (...)
-	{
+		observer->on_taskAdded(taskID);
 	}
 }
+
 void Notifier::taskParentChanged(int64_t taskID)
 {
-	try
+	for (TaskAccessorObserver* observer : observers)
 	{
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskParentChanged(taskID);
-		}
-	} catch (...)
-	{
+		observer->on_taskParentChanged(taskID);
 	}
 }
 
 void Notifier::taskRemoved(int64_t taskID)
 {
-	try
+	for (TaskAccessorObserver* observer : observers)
 	{
-		std::list<TaskAccessorObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); iter++)
-		{
-			TaskAccessorObserver* observer = *iter;
-			observer->on_taskRemoved(taskID);
-		}
-	} catch (...)
-	{
+		observer->on_taskRemoved(taskID);
 	}
 }
 
@@ -85,6 +54,7 @@ void Notifier::attach(TaskAccessorObserver* observer)
 		observers.push_back(observer);
 	}
 }
+
 void Notifier::detach(TaskAccessorObserver* observer)
 {
 	if (observer)
@@ -92,7 +62,3 @@ void Notifier::detach(TaskAccessorObserver* observer)
 		observers.remove(observer);
 	}
 }
-
-
-
-

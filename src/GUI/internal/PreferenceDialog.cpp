@@ -13,7 +13,7 @@
 namespace GUI
 {
 
-PreferenceDialog::PreferenceDialog(boost::shared_ptr<DB::Database>& database) :
+PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::Database>& database) :
 	CancelButton(Gtk::StockID("gtk-cancel")), OKButton(
 			Gtk::StockID("gtk-apply"))
 {

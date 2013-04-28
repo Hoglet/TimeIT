@@ -17,7 +17,7 @@ namespace GUI
 namespace Internal
 {
 
-IdleDialog::IdleDialog(boost::shared_ptr<Timer>& timer)
+IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
 
@@ -33,7 +33,7 @@ IdleDialog::IdleDialog(boost::shared_ptr<Timer>& timer)
 	// This is one answer to the question "No activity have
 	// been detected for X minutes. What should we do?"
 	add_button(_("Revert and continue"), RESPONSE_REVERTANDCONTINUE);
-	// This is one answer to the question "No activity have
+	// This is one answer to the question "No activity has
 	// been detected for X minutes. What should we do?"
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
@@ -74,10 +74,10 @@ void IdleDialog::setText()
 {
 	std::stringstream str;
 	int minutesIdle = (time(NULL) - m_idleStartTime) / 60;
-	// Note to translators: This is the first part of the sentence "No activity have been detected
+	// Note to translators: This is the first part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
-	str << _("No activity have been detected for") << " "<<minutesIdle;
-	// Note to translators: This is the second part of the sentence "No activity have been detected
+	str << _("No activity has been detected for") << " "<<minutesIdle;
+	// Note to translators: This is the second part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
 	str<< " "<<_("minutes. What should we do?");
 	text.set_text(str.str());

@@ -5,31 +5,23 @@
 #include <Timekeeper.h>
 #include <Timer.h>
 
-AutoTracker::AutoTracker(boost::shared_ptr<ITimeKeeper>& timekeeper, const boost::shared_ptr<DB::Database>& database,
-		const boost::shared_ptr<Timer>& timer)
+AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper>& timekeeper, const std::shared_ptr<DB::IDatabase>& database,
+		const std::shared_ptr<Timer>& timer)
 {
 	m_timekeeper = timekeeper;
 	m_timer = timer;
 	m_autotrackAccessor = database->getAutotrackAccessor();
 	m_taskAccessor = database->getTaskAccessor();
 	oldWorkspace = -1;
-	on_signal_10_seconds();//check if we should start anything;
+	on_signal_1_second();//check if we should start anything;
 	m_timer->attach(this);
-	m_taskAccessor->attach(this);
-	//m_taskAccessor->attach(this);
 }
 
 AutoTracker::~AutoTracker()
 {
 	m_timer->detach(this);
-	m_taskAccessor->detach(this);
-	//m_taskAccessor->detach(this);
 }
 
-void AutoTracker::on_signal_10_seconds()
-{
-
-}
 void AutoTracker::on_signal_1_second()
 {
 	check4Changes();

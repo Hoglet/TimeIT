@@ -11,7 +11,7 @@
 #include <Database.h>
 #include <Timer.h>
 #include <IGUIFactory.h>
-#include <boost/shared_ptr.hpp>
+
 
 
 class Main
@@ -22,9 +22,9 @@ public:
 	void printHelp();
 	int run();
 private:
-	boost::shared_ptr<DB::Database> database;
-	boost::shared_ptr<Timer> timer;
-	boost::shared_ptr<GUI::IGUIFactory> guiFactory;
+	std::shared_ptr<DB::Database> database;
+	std::shared_ptr<Timer> timer;
+	std::shared_ptr<GUI::IGUIFactory> guiFactory;
 	std::string dbName;
 	bool test;
 };

@@ -11,7 +11,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
-
+#include <memory>
 
 namespace
 {
@@ -21,7 +21,7 @@ XScreenSaverInfo* XInfo = 0;
 }
 
 
-IdleDetector::IdleDetector(const boost::shared_ptr<Timer>& timer)
+IdleDetector::IdleDetector(const std::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
 	int event_base, error_base;

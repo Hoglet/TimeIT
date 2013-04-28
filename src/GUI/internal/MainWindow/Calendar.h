@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 #include <list>
-#include "ICalendar.h"
+#include "internal/ICalendar.h"
 
 namespace GUI
 {

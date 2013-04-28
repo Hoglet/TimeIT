@@ -6,7 +6,7 @@
  */
 
 #include "StatusIcon.h"
-#include "MainWindow.h"
+#include "MainWindow/MainWindow.h"
 #include "Utils.h"
 #include <iostream>
 #include <glibmm/i18n.h>
@@ -18,8 +18,8 @@ namespace Internal
 {
 using namespace std;
 
-StatusIcon::StatusIcon(boost::shared_ptr<ITimeKeeper>& timekeeper, boost::shared_ptr<ITaskAccessor>& taskaccessor,
-		boost::shared_ptr<ITimeAccessor>& timeaccessor)
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<ITaskAccessor>& taskaccessor,
+		std::shared_ptr<ITimeAccessor>& timeaccessor)
 {
 	m_timekeeper = timekeeper;
 	m_taskaccessor = taskaccessor;
@@ -229,7 +229,6 @@ void StatusIcon::setTooltip()
 		//Figure out start and end of today
 		time_t startTime = Utils::getBeginingOfDay(time(0));
 		time_t stopTime = Utils::getEndOfDay(time(0));
-		std::map<int64_t, TaskTime> times = m_timeaccessor->getTimeList(startTime, stopTime);
 		for (int i = 0; i < (int) tasks.size(); i++)
 		{
 			Task task = tasks.at(i);
@@ -238,13 +237,7 @@ void StatusIcon::setTooltip()
 				message << endl;
 			}
 			message << setw(15) << setiosflags(ios::left) <<task.getName();
-			std::map<int64_t, TaskTime>::iterator time = times.find(task.getID());
-			if (time != times.end())
-			{
-				TaskTime taskTime = time->second;
-				message << " " << Utils::seconds2hhmm(taskTime.duration);
-			}
-
+			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
 		}
 	}
 	else

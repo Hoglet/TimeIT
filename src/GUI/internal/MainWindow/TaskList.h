@@ -33,7 +33,7 @@ namespace Internal
 class TaskList: public Gtk::TreeView, public TaskAccessorObserver
 {
 public:
-	TaskList(boost::shared_ptr<DB::Database>& database);
+	TaskList(std::shared_ptr<DB::Database>& database);
 	virtual ~TaskList();
 	void populate (Gtk::TreeModel::Row* parent=0, int parentID=0);
 	int64_t getSelectedID();
@@ -82,7 +82,7 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();
 	std::list<IActionObserver*> observers;
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
 };
 }
 }

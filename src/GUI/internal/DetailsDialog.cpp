@@ -14,15 +14,15 @@ namespace GUI
 {
 namespace Internal
 {
-boost::shared_ptr<DetailsDialog> DetailsDialog::create(boost::shared_ptr<
+std::shared_ptr<DetailsDialog> DetailsDialog::create(std::shared_ptr<
 		DB::Database>& database)
 {
-	boost::shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
-	retVal->weak_this_ptr = boost::weak_ptr<DetailsDialog>(retVal);
+	std::shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
+	retVal->weak_this_ptr = std::weak_ptr<DetailsDialog>(retVal);
 	return retVal;
 }
 
-DetailsDialog::DetailsDialog(boost::shared_ptr<DB::Database>& database) :
+DetailsDialog::DetailsDialog(std::shared_ptr<DB::Database>& database) :
 	detailList(*this, database), table(4, 4), startTimeLabel(_("Start time")),
 			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
 					"gtk-revert-to-saved")),

@@ -8,9 +8,6 @@ using namespace std;
 namespace DBAbstraction
 {
 
-CSQL::CSQL()
-{
-}
 CSQL::CSQL(const string& dbname)
 {
 	init(dbname);

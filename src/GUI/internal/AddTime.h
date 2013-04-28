@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 #include "LZSpinButton.h"
-#include "Calendar.h"
+#include "ICalendar.h"
 #include <Database.h>
 #include <IWidget.h>
 namespace GUI {
@@ -18,12 +18,12 @@ namespace Internal {
 class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, ICalendar& calendar, boost::shared_ptr<DB::Database>& database);
+	AddTime(int64_t taskId, ICalendar& calendar, std::shared_ptr<DB::Database>& database);
 	virtual ~AddTime();
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
@@ -56,8 +56,8 @@ private:
 	ICalendar& calendar;
 
 	int64_t taskID;
-	boost::shared_ptr<ITimeAccessor> m_timeAccessor;
-	boost::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
 };
 }
 }

@@ -11,7 +11,7 @@ namespace Internal
 {
 using namespace DB;
 using namespace std;
-EditTaskDialog::EditTaskDialog(boost::shared_ptr<DB::Database>& database) :
+EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::Database>& database) :
 	CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database)
 {
 	parentID = 0;

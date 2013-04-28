@@ -26,8 +26,8 @@
 #include "TaskList.h"
 #include "Task.h"
 #include "SummaryViews.h"
-#include "TimeItAboutDialog.h"
-#include "Details.h"
+#include "internal/TimeItAboutDialog.h"
+#include "internal/Details.h"
 #include "Menu.h"
 #include "Toolbar.h"
 #include "Calendar.h"
@@ -41,14 +41,14 @@ class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, pu
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(boost::shared_ptr<DB::Database>& database);
+	MainWindow(std::shared_ptr<DB::Database>& database);
 
 
 	// IWidget interface
 	virtual void show() { Gtk::Window::show(); }
 	virtual void hide() { Gtk::Window::hide(); }
 	virtual bool is_visible() { return Gtk::Window::is_visible(); } ;
-	virtual void move(int x, int y) { return Gtk::Window::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Window::move(x,y); };
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Window::get_position(Window_x, Window_y); };
 
 	virtual void attach(SummaryObserver* observer);
@@ -119,8 +119,8 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
-	boost::shared_ptr<ITaskAccessor> taskAccessor;
-	boost::shared_ptr<ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<ISettingsAccessor> settingsAccessor;
 	std::vector<Summary*> summaries;
 };
 }

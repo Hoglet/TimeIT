@@ -14,15 +14,16 @@
 #include "internal/StatusIcon.h"
 #include "internal/DetailsDialog.h"
 #include "internal/PreferenceDialog.h"
+#include <memory>
 
 namespace GUI
 {
 using namespace GUI::Internal;
 
-boost::shared_ptr<Gtk::Main> GUIFactory::main;
+std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(boost::shared_ptr<ITimeKeeper>& timekeeper, boost::shared_ptr<DB::Database>& database,
-		const boost::shared_ptr<Timer>& timer)
+GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<DB::Database>& database,
+		const std::shared_ptr<Timer>& timer)
 {
 	this->timekeeper = timekeeper;
 	this->timer = timer;
@@ -37,7 +38,7 @@ GUIFactory::~GUIFactory()
 
 void GUIFactory::init(int argc, char *argv[])
 {
-	main = boost::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
 }
 void GUIFactory::quit()
 {
@@ -60,7 +61,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case MAIN_WINDOW:
 		if (mainWindow == 0)
 		{
-			boost::shared_ptr<MainWindow> window(new MainWindow( database));
+			std::shared_ptr<MainWindow> window(new MainWindow( database));
 			window->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_mainWindow_hide));
 			this->mainWindow = window;
 
@@ -70,7 +71,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case ADD_TASK_DIALOG:
 /*		if (addTaskInstance == 0)
 		{
-			boost::shared_ptr<AddTaskDialog> dialog(new AddTaskDialog(database));
+			std::shared_ptr<AddTaskDialog> dialog(new AddTaskDialog(database));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_addTaskDialog_hide));
 			addTaskInstance = dialog;
 		}
@@ -79,7 +80,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case EDIT_TASK_DIALOG:
 		if (editTaskDialogInstace == 0)
 		{
-			boost::shared_ptr<EditTaskDialog> dialog(new EditTaskDialog(database));
+			std::shared_ptr<EditTaskDialog> dialog(new EditTaskDialog(database));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_editTask_hide));
 			editTaskDialogInstace = dialog;
 		}
@@ -88,7 +89,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case ABOUT_DIALOG:
 		if (aboutDialogInstance == 0)
 		{
-			boost::shared_ptr<TimeItAboutDialog> dialog(new TimeItAboutDialog());
+			std::shared_ptr<TimeItAboutDialog> dialog(new TimeItAboutDialog());
 			dialog->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_aboutDialog_response));
 			aboutDialogInstance = dialog;
 		}
@@ -97,7 +98,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case IDLE_DIALOG:
 		if (idleDialogInstance == 0)
 		{
-			boost::shared_ptr<IdleDialog> dialog(new IdleDialog(timer));
+			std::shared_ptr<IdleDialog> dialog(new IdleDialog(timer));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_idleDialog_hide));
 			idleDialogInstance = dialog;
 		}
@@ -106,7 +107,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case DETAILS_DIALOG:
 		if (detailsDialogInstance == 0)
 		{
-			boost::shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database);
+			std::shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database);
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_detailsDialog_hide));
 			detailsDialogInstance = dialog;
 		}
@@ -115,7 +116,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case PREFERENCE_DIALOG:
 		if(preferenceDialogInstance == 0)
 		{
-			boost::shared_ptr<PreferenceDialog> dialog(new PreferenceDialog(database));
+			std::shared_ptr<PreferenceDialog> dialog(new PreferenceDialog(database));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_preferenceDialog_hide));
 			preferenceDialogInstance = dialog;
 		}
@@ -168,8 +169,8 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon* statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		boost::shared_ptr<ITaskAccessor> taskaccessor=database->getTaskAccessor();
-		boost::shared_ptr<ITimeAccessor> timeaccessor=database->getTimeAccessor();
+		std::shared_ptr<ITaskAccessor> taskaccessor=database->getTaskAccessor();
+		std::shared_ptr<ITimeAccessor> timeaccessor=database->getTimeAccessor();
 
 		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor ));
 	}
@@ -183,8 +184,8 @@ WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 		{
 			getWidget(MAIN_WINDOW);
 		}
-		ICalendar& calendar = boost::dynamic_pointer_cast<IMainWindow>(mainWindow)->getCalendar();
-		boost::shared_ptr<AddTime> addTime(new AddTime(taskID, calendar, database));
+		ICalendar& calendar = std::dynamic_pointer_cast<IMainWindow>(mainWindow)->getCalendar();
+		std::shared_ptr<AddTime> addTime(new AddTime(taskID, calendar, database));
 		addTime->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_addTime_response));
 		addTimeInstance = addTime;
 	}

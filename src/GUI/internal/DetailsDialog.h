@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include "LZSpinButton.h"
 #include "Details.h"
-#include "Summary.h"
+#include "MainWindow/Summary.h"
 #include "IDetailsDialog.h"
 #include <Database.h>
 #include <IWidget.h>
@@ -23,7 +23,7 @@ namespace Internal
 class DetailsDialog: public Gtk::Dialog, public SummaryObserver, public DetailsObserver, public IDetailsDialog, public IWidget
 {
 public:
-	static boost::shared_ptr<DetailsDialog> create(boost::shared_ptr<DB::Database>& database);
+	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<DB::Database>& database);
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -32,11 +32,11 @@ public:
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
 	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { return Gtk::Dialog::move(x,y); };
+	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	DetailsDialog(boost::shared_ptr<DB::Database>& database);
+	DetailsDialog(std::shared_ptr<DB::Database>& database);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -70,8 +70,8 @@ private:
 	time_t  rangeStop;
 	int64_t id;
 	int64_t timeEntryID;
-	boost::weak_ptr<DetailsDialog> weak_this_ptr;
-	boost::shared_ptr<ITimeAccessor> timeAccessor;
+	std::weak_ptr<DetailsDialog> weak_this_ptr;
+	std::shared_ptr<ITimeAccessor> timeAccessor;
 };
 }
 }

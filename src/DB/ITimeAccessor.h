@@ -13,11 +13,7 @@
 #include <string>
 #include <stdint.h>
 
-struct TaskTime
-{
-	std::string name;
-	time_t duration;
-};
+
 struct TimeEntry
 {
 	int64_t id;
@@ -38,7 +34,6 @@ public:
 	virtual void setRunning(int64_t timeID, bool running) = 0;
 	virtual TimeEntry getByID(int64_t id) = 0;
 	virtual void remove(int64_t id) = 0;
-	virtual std::map<int64_t, TaskTime> getTimeList(time_t startTime, time_t stopTime) = 0;
 	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) = 0;
 	virtual std::vector<int64_t> getLatestTasks(int amount) = 0;
 	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;

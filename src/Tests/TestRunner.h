@@ -10,15 +10,18 @@
 
 #include "cute.h"
 
+namespace Test
+{
 
 class TestRunner
 {
 public:
 	TestRunner();
-	virtual ~TestRunner();
 	void run();
 private:
 	cute::suite s;
 };
+
+}
 
 #endif /* TESTRUNNER_H_ */

@@ -28,7 +28,7 @@
 #include <glibmm/i18n.h>
 #include "IAddTaskDIalog.h"
 #include "Summary.h"
-#include "DetailsDialog.h"
+#include "internal/DetailsDialog.h"
 #include <DefaultValues.h>
 #include <glibmm.h>
 #include <gtkmm.h>
@@ -46,7 +46,7 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(boost::shared_ptr<DB::Database>& database) :
+MainWindow::MainWindow(std::shared_ptr<DB::Database>& database) :
 	taskList(database), daySummary(database), weekSummary(database),
 			monthSummary(database),yearSummary(database), labelDay(_("Day")), labelWeek(_("Week")),
 			labelMonth(_("Month")), labelYear(_("Year"))

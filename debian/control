@@ -2,9 +2,8 @@ Source: timeit
 Section: utils
 Priority: optional
 Maintainer: Kent Asplund <hoglet@solit.se>
-Build-Depends: debhelper (>= 7), autotools-dev, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libboost-dev (>=1.33), libxss-dev
+Build-Depends: debhelper (>= 7), cmake, autotools-dev, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libxss-dev
 Standards-Version: 3.8.0
-Homepage: http://devcorner.solit.se/project/timeit/
 
 Package: timeit
 Architecture: any
