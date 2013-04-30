@@ -13,7 +13,6 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0 -fprofile-arcs -ftest-cov
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage")
 
 add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
-add_definitions( -DPACKAGE_VERSION=\"${VERSION}\" )
 add_definitions( -DPACKAGE_DATA_DIR=\"${DATADIR}\" )
 add_definitions( -DGETTEXT_PACKAGE=${GETTEXT_PACKAGE})
 add_definitions( -DPROGRAMNAME_LOCALEDIR=${PROGRAMNAME_LOCALEDIR})
@@ -30,6 +29,7 @@ link_directories(${GTKMM_LIBRARY_DIRS}
 include_directories(${GTKMM_INCLUDE_DIRS}
                     ${SQLITE_INCLUDE_DIRS}
                     ${XSCRNS_INCLUDE_DIRS}
+										"${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/DB/"
                     "${PROJECT_SOURCE_DIR}/Logic/"
                     "${PROJECT_SOURCE_DIR}/GUI/"

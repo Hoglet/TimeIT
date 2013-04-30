@@ -65,3 +65,9 @@ coverage
 CMakeCache.txt
 *.cmake
 install_manifest.txt
+version
+src/version.h
+_CPack_Packages
+*.deb
+*.rpm
+

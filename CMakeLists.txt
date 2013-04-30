@@ -6,11 +6,13 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 #  about TimeIT
 # ---------------
 project(timeit)
-set(VERSION_MAJOR "1")
-set(VERSION_MINOR "1")
-set(VERSION_PATCH "0")
-set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
+add_custom_target(version ALL
+                  COMMAND ./git_version_gen.sh .                  
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+file (STRINGS "version" PACKAGE_VERSION)
+message("Version: ${PACKAGE_VERSION}")
 
 #  dependencies
 # ---------------
@@ -20,13 +22,23 @@ pkg_check_modules(SQLITE sqlite3)
 pkg_check_modules(XSCRNS xscrnsaver)
 
 # make dist target
-# --------------------
-set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${VERSION})
-add_custom_target(dist
-    COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
-        | gzip > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.gz
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+# -------------------
+#set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${VERSION})
+#add_custom_target(dist
+#    COMMAND ./makedist.sh
+#    WORKING_DIRECTORY ${CMAKE_ROOT_DIR}
+#    DEPENDS ${TIMEIT_VERSION_FILE})
 
+# make DEB & RPM package
+#--------------------
+set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
+SET(CPACK_GENERATOR "DEB;RPM")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Kent Asplund")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-2.4-1c2a (>=2.8), libsqlite3-0, libxss1")
+set(CPACK_PACKAGE_DESCRIPTION "TimeIT is a time tracker somewhat similar to ktimetracker and gnotime written in C++ using gtkmm. It aims to be unobtrusive and simple to use.  It has Workspace tracking, Idle detection, hierarchical tasks and can show summaries over day/week/month")
+set(CPACK_PACKAGE_CONTACT "Kent Asplund hoglet@solit.se")
+INCLUDE(CPack)
 
 #  Subfolders
 # ---------------

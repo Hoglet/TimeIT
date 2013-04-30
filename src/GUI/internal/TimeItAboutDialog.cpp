@@ -9,7 +9,7 @@
 #include <OSAbstraction.h>
 #include <glibmm/i18n.h>
 #include <Utils.h>
-
+#include "version.h"
 namespace GUI
 {
 namespace Internal
@@ -29,7 +29,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	//set_transient_for(*this);
 
 	set_name("TimeIt");
-	set_version(PACKAGE_VERSION);
+	set_version(VERSION);
 
 	set_copyright("Kent Asplund");
 	set_comments(_("The unobtrusive time tracker\n"));

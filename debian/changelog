@@ -1,7 +1,11 @@
-timeit (1.1.0-beta1) precise; urgency=low
+timeit (1.1.0.0) precise; urgency=low
 
+  * Forcing idle window to be topmost
+  * Speedup of MainWindow creation
   * Replaced autotools with CMake.
   * Migration from BOOST to c++11
+
+ -- Kent Asplund <hoglet@solit.se>  Tue, 30 Apr 2013 08:43:22 +0200
 
 timeit (1.0.2) precise; urgency=low
 
