@@ -1,4 +1,4 @@
-timeit (1.1.0.0) precise; urgency=low
+timeit (1.1.0) precise; urgency=low
 
   * Forcing idle window to be topmost
   * Speedup of MainWindow creation
@@ -121,7 +121,7 @@ timeit (0.9.3-2) jaunty; urgency=low
 
   * Fixed icon in menu
 
- -- Kent Asplund <hoglet@d630>  Wed, 19 Aug 2009 19:41:20 +0200
+ -- Kent Asplund <hoglet@solit.se>  Wed, 19 Aug 2009 19:41:20 +0200
 
 timeit (0.9.3-1) jaunty; urgency=low
 
@@ -132,6 +132,6 @@ timeit (0.9.3-1) jaunty; urgency=low
 
 timeit (0.9.3) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial release 
 
  -- Kent Asplund <hoglet@solit.se>  Wed, 19 Aug 2009 12:02:45 +0200

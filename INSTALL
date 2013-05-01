@@ -3,7 +3,7 @@ Installation Instructions
 
 Dependencies
 ==================
-In Ubunutu/Linux min/Debian following externals needs to be installed:
+In Ubunutu/Linux mint/Debian following externals needs to be installed:
 libxss-dev
 libsqlite3-dev
 gtkmm-2.4-dev
@@ -11,7 +11,17 @@ On other distributions they might have different names.
 
 Basic Installation
 ==================
+If runing in debian derived environments:
+
+Run shell commands `cmake .; make package` and install 
+the produced installation package:
+dpkg -i timeit-<version>.deb
+
+In redhat derived environments:
+Run shell commands `cmake .; make package` and install 
+the produced installation package:
+rpm -i timeit-<version>.rpm
+
+Otherwise:
 
 Run shell commands `cmake .; make ; make install`
-
-
