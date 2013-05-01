@@ -43,7 +43,7 @@ IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer)
 
 	//set_type_hint(Gdk::WindowTypeHint::WINDOW_TYPE_HINT_DIALOG);
 	show_all_children();
-
+	set_keep_above(true);
 }
 
 IdleDialog::~IdleDialog()
