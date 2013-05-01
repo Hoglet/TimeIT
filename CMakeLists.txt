@@ -22,16 +22,10 @@ pkg_check_modules(XSCRNS xscrnsaver)
 
 # make dist target
 # -------------------
-set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PACKAGE_VERSION})
-set(ARCHIVE_NAME_P ${CMAKE_PROJECT_NAME}-${PACKAGE_VERSION}/)
 add_custom_target(dist
-    COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD > ${ARCHIVE_NAME}.tar
-    COMMAND ln -s . ${ARCHIVE_NAME}
-		COMMAND tar  --append -f ${ARCHIVE_NAME}.tar ${ARCHIVE_NAME}/version ${ARCHIVE_NAME}/src/version.h
-    COMMAND gzip -c ${ARCHIVE_NAME}.tar > ${ARCHIVE_NAME}.tar.gz 
-    COMMAND rm ${ARCHIVE_NAME}.tar
-    COMMAND rm ${ARCHIVE_NAME}
+    COMMAND ./makedist.sh ${CMAKE_PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_ROOT_DIR}
+		DEPENDS version
     )
 
 # make DEB & RPM package
