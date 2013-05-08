@@ -55,7 +55,6 @@ MainWindow::MainWindow(std::shared_ptr<DB::Database>& database) :
 	settingsAccessor = database->getSettingsAccessor();
 	settingsAccessor->attach(this);
 	createLayout();
-	setCalendar();
 	relateWidgets();
 	attach(this);
 	show_all_children();
@@ -280,6 +279,13 @@ void MainWindow::classicLayout()
 		mainVBox.pack_start(statusbar, Gtk::PACK_SHRINK, 0);
 	}
 }
+
+void MainWindow::on_show()
+{
+	Gtk::Window::on_show();
+	setCalendar();
+}
+
 void MainWindow::setCalendar()
 {
 	struct tm * timeInfo;

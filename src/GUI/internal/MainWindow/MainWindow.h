@@ -58,6 +58,8 @@ public:
 
 
 	virtual ICalendar& getCalendar();
+
+	virtual void on_show();
 private:
 	//Action observer
 	virtual void on_action_task_selection_changed(int selectedTaskID);
