@@ -181,9 +181,20 @@ void Summary::on_dateChanged()
 	guint day;
 	calendar->get_date(year, month, day);
 	activeDay = Utils::getTime(year, month, day);
+	time_t old_startTime = startTime;
+	time_t old_stopTime = stopTime;
 	calculateTimeSpan();
-	empty();
-	populate();
+	if (needsRePopulation || old_startTime != startTime || old_stopTime != stopTime)
+	{
+		if (isVisible())
+		{
+			empty();
+			populate();
+		} else
+		{
+			needsRePopulation = true;
+		}
+	}
 }
 void Summary::empty()
 {
