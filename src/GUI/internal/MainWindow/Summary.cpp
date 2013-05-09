@@ -139,11 +139,11 @@ void Summary::on_taskUpdated(int64_t taskID)
 {
 	if (isVisible())
 	{
-		Gtk::TreeIter iter = findRow(taskID);
-		if (iter != treeModel->children().end())
+		shared_ptr<vector<Task>> result = taskAccessor->getTask(taskID, startTime, stopTime);
+		if (result->size() > 0)
 		{
-			shared_ptr<vector<Task>> result = taskAccessor->getTask(taskID, startTime, stopTime);
-			if (result->size() > 0)
+			Gtk::TreeIter iter = findRow(taskID);
+			if (iter != treeModel->children().end())
 			{
 				Task& filteredTask = result->at(0);
 				TreeModel::Row row = *iter;
@@ -158,10 +158,10 @@ void Summary::on_taskUpdated(int64_t taskID)
 				empty();
 				populate();
 			}
-		} else
-		{
-			needsRePopulation = true;
 		}
+	} else
+	{
+		needsRePopulation = true;
 	}
 }
 
