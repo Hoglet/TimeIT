@@ -37,6 +37,8 @@ private:
 	void on_menu_file_popup_quit();
 	void on_menu_file_popup_open();
 	void on_menu_stop_all_timers();
+	void on_menu_about();
+	void on_menu_preferences();
 	void on_menu_toggle_task1();
 	void on_menu_toggle_task2();
 	void on_menu_toggle_task3();

@@ -123,8 +123,15 @@ void StatusIcon::populateContextMenu()
 			Gtk::Menu_Helpers::MenuElem(_("Stop all timers"),
 					sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
 	menulist.push_back(
-			Gtk::Menu_Helpers::MenuElem(_("Quit"),
+			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"),
 					sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"),
+					sigc::mem_fun(this, &StatusIcon::on_menu_preferences)));
+	menulist.push_back(
+			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"),
+					sigc::mem_fun(this, &StatusIcon::on_menu_about)));
+
 }
 
 std::string StatusIcon::completeTaskPath(int64_t id)
@@ -214,6 +221,26 @@ void StatusIcon::on_menu_stop_all_timers()
 	}
 }
 
+void StatusIcon::on_menu_about()
+{
+	std::list<IActionObserver*>::iterator iter;
+	for (iter = observers.begin(); iter != observers.end(); iter++)
+	{
+		IActionObserver* observer = *iter;
+		observer->on_action_about();
+	}
+}
+
+void StatusIcon::on_menu_preferences()
+{
+	std::list<IActionObserver*>::iterator iter;
+	for (iter = observers.begin(); iter != observers.end(); iter++)
+	{
+		IActionObserver* observer = *iter;
+		observer->on_action_preferences();
+	}
+}
+
 void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 {
 	m_Menu_Popup.popup(button, activate_time);
@@ -249,8 +276,7 @@ void StatusIcon::setTooltip()
 				message << endl;
 			}
 			message << setw(15) << setiosflags(ios::left) << task.getName();
-			message << " "
-					<< Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
+			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
 		}
 	} else
 	{
