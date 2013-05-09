@@ -30,6 +30,11 @@ PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::Database>& database) :
 	StartMinimizedButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GzEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GtEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
+	GzEntry.signal_focus_out_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_focus_changed));
+	GtEntry.signal_focus_out_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_focus_changed));
+	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
+	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
+	this->set_events(Gdk::BUTTON_RELEASE_MASK);
 	/******/
 	TimeConstantTable.resize(2, 2);
 	{
@@ -107,6 +112,18 @@ void PreferenceDialog::on_data_changed()
 	{
 		OKButton.set_sensitive(false);
 	}
+}
+
+bool PreferenceDialog::on_focus_changed(GdkEventFocus*)
+{
+	on_data_changed();
+	return false;
+}
+
+bool PreferenceDialog::on_button_released(GdkEventButton* event)
+{
+	on_data_changed();
+	return false;
 }
 
 void PreferenceDialog::on_CancelButton_clicked()

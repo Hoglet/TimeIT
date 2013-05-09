@@ -62,6 +62,8 @@ private:
 	bool 	oldStartMinimized;
 
 	void on_data_changed();
+	bool on_focus_changed(GdkEventFocus*);
+	bool on_button_released(GdkEventButton* event);
 
 	std::shared_ptr<ISettingsAccessor> settingsAccessor;
 };
