@@ -46,6 +46,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	list_authors.push_back("Kent Asplund");
 	set_copyright("Kent Asplund");
 	set_authors(list_authors);
+	set_translator_credits (_("translator-credits"));
 }
 }
 }
