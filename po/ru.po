@@ -97,31 +97,31 @@ msgstr "Вы действительно хотите удалить это?"
 msgid "Gone, gone will not come again..."
 msgstr ""
 
-#. Note to translators: This is one answer to the question "No activity have
+#. Note to translators: This is one answer to the question "No activity has
 #. been detected for X minutes. What should we do?"
 #: ../src/GUI/internal/IdleDialog.cpp:32
 msgid "Revert and stop"
 msgstr ""
 
-#. Note to translators: This is one answer to the question "No activity have
+#. Note to translators: This is one answer to the question "No activity has
 #. been detected for X minutes. What should we do?"
 #: ../src/GUI/internal/IdleDialog.cpp:35
 msgid "Revert and continue"
 msgstr ""
 
-#. Note to translators: This is one answer to the question "No activity have
+#. Note to translators: This is one answer to the question "No activity has
 #. been detected for X minutes. What should we do?"
 #: ../src/GUI/internal/IdleDialog.cpp:38
 msgid "Continue"
 msgstr "Продолжить"
 
-#. Note to translators: This is the first part of the sentence "No activity have been detected
+#. Note to translators: This is the first part of the sentence "No activity has been detected
 #. for X minutes. What should we do?"
 #: ../src/GUI/internal/IdleDialog.cpp:79
-msgid "No activity have been detected for"
+msgid "No activity has been detected for"
 msgstr "Бездействие в течении"
 
-#. Note to translators: This is the second part of the sentence "No activity have been detected
+#. Note to translators: This is the second part of the sentence "No activity has been detected
 #. for X minutes. What should we do?"
 #: ../src/GUI/internal/IdleDialog.cpp:82
 msgid "minutes. What should we do?"
