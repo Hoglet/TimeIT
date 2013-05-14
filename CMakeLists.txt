@@ -15,10 +15,10 @@ file (STRINGS "version" PACKAGE_VERSION)
 
 #  dependencies
 # ---------------
-find_package(PkgConfig)
-pkg_check_modules(GTKMM gtkmm-2.4)
-pkg_check_modules(SQLITE sqlite3)
-pkg_check_modules(XSCRNS xscrnsaver)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
+pkg_check_modules(SQLITE sqlite3 REQUIRED)
+pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
 
 # make dist target
 # -------------------
