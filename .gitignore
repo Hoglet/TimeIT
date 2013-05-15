@@ -4,11 +4,7 @@ config.log
 config.status
 configure.ac.bak
 .tm_project2.cache
-.anjuta/session
 missing
-src/Makefile.am.bak
-src/.deps/
-po/Makefile.in
 install-sh
 depcomp
 latex
@@ -42,12 +38,8 @@ Debug
 Profiling
 .anjuta/associations
 *~
-.cproject
 .metadata
-.settings
 .autotools
-.cproject
-.project
 .bzrignore
 .bzr
 .anjuta
@@ -70,4 +62,6 @@ src/version.h
 _CPack_Packages
 *.deb
 *.rpm
+*.out
+*.data
 

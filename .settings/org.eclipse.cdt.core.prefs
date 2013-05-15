@@ -1,0 +1,10 @@
+#Thu Jul 14 19:32:16 CEST 2011
+eclipse.preferences.version=1
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CFLAGS/delimiter=\:
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CFLAGS/operation=replace
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CFLAGS/value=-ftest-coverage -fprofile-arcs -Wall -g -O1
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CXXFLAGS/delimiter=\:
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CXXFLAGS/operation=replace
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/CXXFLAGS/value=-ftest-coverage -fprofile-arcs  -Wall -g -O0
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/append=true
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.541655407/appendContributed=true

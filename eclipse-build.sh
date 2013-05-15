@@ -4,5 +4,6 @@
 # calling cmake before make is ensuring that new files 
 # will be called
 # ------------
-cmake -DCMAKE_BUILD_TYPE=Debug
+cd Debug
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 /usr/bin/make $@
