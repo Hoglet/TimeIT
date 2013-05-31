@@ -1,3 +1,9 @@
+timeit (1.1.2) precise; urgency=low
+
+  * Bugfix: Summary tabs duplicated data if they where not visible when data updated
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 31 May 2013 09:28:03 +0200
+
 timeit (1.1.1) precise; urgency=low
 
   * Feature: Possibility to make rpm-packages.
