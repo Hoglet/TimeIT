@@ -206,6 +206,7 @@ bool Summary::on_focus(Gtk::DirectionType direction)
 	bool returnValue = Gtk::TreeView::on_focus(direction);
 	if (needsRePopulation)
 	{
+		empty();
 		populate();
 	}
 	return returnValue;
