@@ -28,7 +28,7 @@ namespace cute {
 			TestFunctor()();
 		}
 	};
-	// TODO: check if there are problems with references.
+
 	template <typename TestFunctor, typename ContextObject>
 	struct test_incarnate_with_context {
 		test_incarnate_with_context(ContextObject context):theContext(context)

@@ -63,7 +63,7 @@ namespace cute {
 					case '\t': result += "\\t"; break;
 					case '\\': result += "\\\\"; break;
 					case '\r': result += "\\r"; break;
-					default: result += input[i];
+					default: result += input[i]; break;
 				}
 			}
 			return result;
@@ -287,7 +287,6 @@ namespace cute {
 		bool do_equals_integral(ExpectedValue const &expected
 				,ActualValue const &actual
 				,const impl_place_for_traits::false_type&,const impl_place_for_traits::true_type&){
-//TODO complicated case, one signed one unsigned type. since it is about equality casting to the longer should work?
 			if (sizeof(ExpectedValue) >	sizeof(ActualValue))
 				return expected==static_cast<ExpectedValue>(actual);
 			else
@@ -297,7 +296,7 @@ namespace cute {
 		bool do_equals_integral(ExpectedValue const &expected
 				,ActualValue const &actual
 				,const impl_place_for_traits::true_type&,const impl_place_for_traits::false_type&){
-//TODO
+
 			if (sizeof(ExpectedValue) < sizeof(ActualValue))
 				return static_cast<ActualValue>(expected)==	actual;
 			else
@@ -324,7 +323,6 @@ namespace cute {
 					impl_place_for_traits::is_signed<ExpectedValue>()
 					,impl_place_for_traits::is_signed<ActualValue>());
 #else
-// TODO: replace the following code with a dispatcher on signed/unsigned
 			typedef typename impl_place_for_traits::make_signed<ExpectedValue>::type ex_s;
 			typedef typename impl_place_for_traits::make_signed<ActualValue>::type ac_s;
 				// need to sign extend with the longer type, should work...

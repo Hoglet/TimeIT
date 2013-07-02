@@ -21,7 +21,6 @@
 #ifndef VSTUDIO_LISTENER_H
 #define VSTUDIO_LISTENER_H
 // Windows listener for debug mode: allows selection of assert failing source line
-// TODO: vstudio_listener is broken for VS later than 2003, because OutputDebugString no longer works as before
 #ifndef __GNUG__
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

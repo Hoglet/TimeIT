@@ -12,13 +12,10 @@ namespace Test
 
 MockSettingsAccessor::MockSettingsAccessor()
 {
-	// TODO Auto-generated constructor stub
-
 }
 
 MockSettingsAccessor::~MockSettingsAccessor()
 {
-	// TODO Auto-generated destructor stub
 }
 
 int MockSettingsAccessor::GetShortFilterTime()

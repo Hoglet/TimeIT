@@ -5,10 +5,6 @@
  *      Author: hoglet
  */
 
-// List of things to do
-//TODO: Start recent
-//TODO: Show hierarchy in Day/week/month/year/summary
-
 #include "Main.h"
 
 #ifdef ENABLE_NLS
