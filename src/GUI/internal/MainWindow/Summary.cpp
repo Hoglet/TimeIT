@@ -21,6 +21,10 @@ namespace Internal
 Summary::Summary(std::shared_ptr<DB::Database>& database)
 {
 	needsRePopulation = true;
+	activeDay = 0;
+	startTime = 0;
+	stopTime = 0;
+	calendar = nullptr;
 	timeAccessor = database->getTimeAccessor();
 	taskAccessor = database->getTaskAccessor();
 	treeModel = TreeStore::create(columns);
