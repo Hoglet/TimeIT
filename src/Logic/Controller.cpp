@@ -76,7 +76,7 @@ void Controller::on_action_about()
 }
 void Controller::on_action_report_bug()
 {
-	OSAbstraction::showURL("https://bugs.launchpad.net/timeit/+filebug");
+	OSAbstraction::showURL("https://github.com/Hoglet/TimeIT/issues/new");
 }
 
 void Controller::on_action_help()
@@ -95,11 +95,6 @@ void Controller::on_action_help()
 		if(Utils::fileExists(std::string(defaultHelp.str())))
 		{
 			helpToUse<<"file://"<<defaultHelp.str();
-		}
-		else
-		{
-			std::cerr<<defaultHelp.str()<<" did not exist\n";
-			helpToUse<<"http://devcorner.solit.se/wiki/TimeIT%20help%20page";
 		}
 	}
 	const char * helpfile=helpToUse.str().c_str();
