@@ -19,6 +19,9 @@ using namespace GUI;
 
 Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::Database>& database)
 {
+	mainWindow_x=0;
+	mainWindow_y=0;
+
 	settingsAccessor = database->getSettingsAccessor();
 	selectedTaskID = -1;
 	this->timeKeeper = timeKeeper;

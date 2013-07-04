@@ -17,8 +17,13 @@ namespace GUI
 {
 namespace Internal
 {
-Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& database) : m_detailsDialog(detailsDialog)
+Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& database) :
+		m_detailsDialog(detailsDialog)
 {
+	m_calendar = nullptr;
+	m_startTime = 0;
+	m_stopTime = 0;
+	m_taskID = 0;
 	m_timeAccessor = database->getTimeAccessor();
 	m_taskAccessor = database->getTaskAccessor();
 	m_treeModel = ListStore::create(m_columns);
@@ -37,7 +42,6 @@ Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& d
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Details::on_selection_changed));
 
 }
-
 
 Details::~Details()
 {
@@ -70,7 +74,8 @@ void Details::on_menu_file_popup_edit()
 }
 void Details::on_menu_file_popup_remove()
 {
-	Gtk::MessageDialog dialog( _("Do you really want to remove this?"), false , Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+	Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_OK_CANCEL);
 	dialog.set_secondary_text(_("Gone, gone will not come again..."));
 
 	int result = dialog.run();
@@ -78,24 +83,24 @@ void Details::on_menu_file_popup_remove()
 	//Handle the response:
 	switch (result)
 	{
-	case (Gtk::RESPONSE_OK):
-	{
-		int64_t selectedID = getSelectedID();
-		if (selectedID > 0)
+		case (Gtk::RESPONSE_OK):
 		{
-			m_timeAccessor->remove(selectedID);
-			empty();
-			populate();
-			//DetailsDialog::instance().show();
+			int64_t selectedID = getSelectedID();
+			if (selectedID > 0)
+			{
+				m_timeAccessor->remove(selectedID);
+				empty();
+				populate();
+				//DetailsDialog::instance().show();
+			}
+			break;
 		}
-		break;
-	}
-	case (Gtk::RESPONSE_CANCEL):
-		std::cout << "Cancel clicked." << std::endl;
-		break;
-	default:
-		std::cout << "Unexpected button clicked." << std::endl;
-		break;
+		case (Gtk::RESPONSE_CANCEL):
+			std::cout << "Cancel clicked." << std::endl;
+			break;
+		default:
+			std::cout << "Unexpected button clicked." << std::endl;
+			break;
 	}
 
 }
@@ -114,7 +119,6 @@ bool Details::on_button_press_event(GdkEventButton* event)
 
 	return return_value;
 }
-
 
 Gtk::TreeModel::iterator Details::findRow(int id)
 {
@@ -139,7 +143,6 @@ void Details::on_taskRemoved(int64_t)
 	populate();
 }
 
-
 void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 {
 	if (ID > 0)
@@ -149,8 +152,7 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 		m_stopTime = stopTime;
 		empty();
 		populate();
-	}
-	else
+	} else
 	{
 		m_taskID = 0;
 		m_startTime = 0;
@@ -166,20 +168,20 @@ void Details::empty()
 void Details::populate()
 {
 	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
-	std::vector<TimeEntry>::iterator iter=timeList.begin();
-	for(;iter!=timeList.end();iter++)
+	std::vector<TimeEntry>::iterator iter = timeList.begin();
+	for (; iter != timeList.end(); iter++)
 	{
-		TimeEntry te=*iter;
+		TimeEntry te = *iter;
 		TreeModel::Row row;
 		TreeModel::iterator TMIter;
 		Gtk::TreeIter treeIter = findRow(te.id);
-		if(treeIter==m_treeModel->children().end())
+		if (treeIter == m_treeModel->children().end())
 		{
 			treeIter = m_treeModel->append();
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.id;
-		row[m_columns.m_col_time] = Utils::createDurationString(te.start,te.stop);
+		row[m_columns.m_col_time] = Utils::createDurationString(te.start, te.stop);
 	}
 }
 

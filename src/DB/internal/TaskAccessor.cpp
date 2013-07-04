@@ -189,7 +189,6 @@ void TaskAccessor::removeTask(int64_t taskID)
 	shared_ptr<vector<Task>> tasks = getTask(taskID);
 	if(tasks->size()>0)
 	{
-		Task& task = tasks->at(0);
 		stringstream statement;
 		statement << "UPDATE tasks SET deleted = " << true;
 		statement << " WHERE id=" << taskID;
