@@ -259,14 +259,14 @@ img {
 }
 
 #social {
-		background: inherit;
+		margin-top: 2em;
 }
 
 #___plusone_0 {
-		top: 0;
+		vertical-align: top;
 }
 .fb-like{
-		top:0;
+		vertical-align: top
 }
 
 
