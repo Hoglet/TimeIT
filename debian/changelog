@@ -1,3 +1,11 @@
+timeit (1.2.1) precise; urgency=low
+
+  * Bugfix:  Several build problems fixed.
+  * Feature: Moved homepage and issue tracking to github.
+  * Misc: More code cleanups: Warnings and ToDos
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 04 Jul 2013 12:25:48 +0200
+
 timeit (1.2.0) precise; urgency=low
 
   * Features: Nothing changed. Just released tested version. 
