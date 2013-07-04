@@ -8,7 +8,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 project(timeit)
 
 add_custom_target(version ALL
-                  COMMAND ./git_version_gen.sh .                  
+                  COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .                  
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 unset(VERSION_FILE CACHE)
@@ -30,8 +30,8 @@ pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
 # make dist target
 # -------------------
 add_custom_target(dist
-    COMMAND ./makedist.sh ${CMAKE_PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_ROOT_DIR}
+    COMMAND   ${CMAKE_SOURCE_DIR}/makedist.sh ${CMAKE_PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 		DEPENDS version
     )
 
