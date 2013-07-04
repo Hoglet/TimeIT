@@ -22,7 +22,6 @@
           <h2 id="project_tagline">The unobtrusive time tracker</h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/Hoglet/TimeIT/zipball/master">Download this project as a .zip file</a>
               <a class="tar_download_link" href="https://github.com/Hoglet/TimeIT/tarball/master">Download this project as a tar.gz file</a>
             </section>
         </header>
@@ -31,7 +30,8 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>TimeIT is a time tracker that works quietly almost without
+<img src="images/timeit.png" align="right" width="398px" height="253px">        
+<p>TimeIT is a time tracker that works quietly almost without
 any interaction and still measures the time you are spending 
 on several projects. The concept of this program is that tasks
 and projects are assigned to workspaces and while you are in 
@@ -40,11 +40,58 @@ those workspaces your projects are timed. </p>
 <p>It features workspace tracking, idle detection, editing of 
 time records and has summary views grouped by day, week, month,
 and year.</p>
+<h3>
+<a name="Pre built packages" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Pre built packages</h3>
+<p>
+Pre built packages for Debian derived environments are available on launchpad: 
+<a href="https://launchpad.net/~hoglet/+archive/timeit/">https://launchpad.net/~hoglet/+archive/timeit/</a>
+</p>
+<p> Add PPA by running this in terminal:
+<pre>
+sudo apt-add-repository ppa:hoglet/timeit
+</pre>
+<h3>
+<a name="build-and-install" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Building and installing</h3>
+<p>Fetch the whole repository (recomended) with:
+<pre>
+git clone https://github.com/Hoglet/TimeIT.git
+</pre>
+<h4>In debian derived environments</h4>
+
+Run following shell commands in root of source directory:
+<pre>
+cmake .
+make package
+</pre>
+Install the produced installation package:
+<pre>
+dpkg -i timeit-&lt;version&gt;.deb
+</pre>
+
+<h4>In redhat derived environments</h4>
+Run following shell commands in root of source directory:
+<pre>
+cmake .
+make package
+</pre>
+Install the produced installation package with:
+<pre>
+rpm -i timeit-&lt;Version&gt;.rpm
+</pre>
+
+<h4>Other Unix-like environments</h4>
+
+Run following shell commands in source root:
+<pre>
+cmake .
+make
+make install
+</pre>
 
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p>Programming and design: Kent Asplund
+<p>Programming and design: Kent Asplund<br>
 Translations: Kaya Zeren, zeugma, Jarosław Ogrodnik, Joanna Porankiewicz-Asplund, Eugene Marshal, Kent Asplund</p>
 
 <h3>
