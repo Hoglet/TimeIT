@@ -10,8 +10,15 @@ project(timeit)
 add_custom_target(version ALL
                   COMMAND ./git_version_gen.sh .                  
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-file (STRINGS "version" PACKAGE_VERSION)
 
+unset(VERSION_FILE CACHE)
+find_file(VERSION_FILE NAME "version" PATHS ${CMAKE_CURRENT_SOURCE_DIR})
+
+IF (NOT "${VERSION_FILE}" STREQUAL VERSION_FILE-NOTFOUND)
+  file (STRINGS ${VERSION_FILE} PACKAGE_VERSION)
+ELSE()
+  SET(PACKAGE_VERSION "Unknown")
+ENDIF()
 
 #  dependencies
 # ---------------

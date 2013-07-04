@@ -2,15 +2,21 @@ Installation Instructions
 *************************
 
 Dependencies
-==================
+======================
 In Ubunutu/Linux mint/Debian following externals needs to be installed:
 libxss-dev
 libsqlite3-dev
 gtkmm-2.4-dev
 On other distributions they might have different names.
 
+Note on version number
+======================
+Version numbers are generated from Git. If building outside of 
+the repository it does a fallback to Debian changelog data with an added
+"Unofficial". 
+
 Basic Installation
-==================
+======================
 If runing in debian derived environments:
 
 Run shell commands `cmake .; make package` and install 

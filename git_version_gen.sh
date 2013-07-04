@@ -25,14 +25,19 @@ if test -d .git -o -f .git &&
 	esac
 then
 	VN="$VN"
-	if test -r $GVF
-	then
-		VC=$(cat $GVF)
-	else
-		VC=unset
-	fi
-	test "$VN" = "$VC" || {
-		echo "$VN" > $GVF
-    echo "#define VERSION \"$VN\""> src/version.h
-	}
+else
+	#Git failed to find version number. Falling back to Debian changelog.
+	DEBIAN_VERSION=`head debian/changelog  -n 1 | cut -d'(' -f2 |cut -d')' -f1`
+	VN="${DEBIAN_VERSION}-unofficial"
 fi
+
+if test -r $GVF
+then
+	VC=$(cat $GVF)
+else
+	VC=unset
+fi
+test "$VN" = "$VC" || {
+	echo "$VN" > $GVF
+	echo "#define VERSION \"$VN\""> src/version.h
+}
