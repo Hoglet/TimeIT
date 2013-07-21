@@ -1,3 +1,9 @@
+timeit (1.2.2) precise; urgency=low
+
+  * Bugfix: Week summaries did not start and end on correct day.
+
+ -- Kent Asplund <hoglet@solit.se>  Tue, 23 Jul 2013 07:06:02 +0200
+
 timeit (1.2.1) precise; urgency=low
 
   * Bugfix:  Several build problems fixed.
