@@ -24,7 +24,6 @@ namespace Utils
 	time_t getEndOfMonth(const time_t&);
 	time_t getBeginingOfYear(const time_t&);
 	time_t getEndOfYear(const time_t&);
-	int    getDayOfWeek(struct tm * timeInfo);
 	int    getDaysInMonth(const time_t& rawtime);
 	std::string seconds2ddhhmm(int s);
 	std::string seconds2hhmm(int s);

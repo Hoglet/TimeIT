@@ -17,6 +17,7 @@
 #include "DB/test_TaskAccessor.h"
 #include "DB/test_SettingsAccessor.h"
 #include "DB/test_AutotrackAccessor.h"
+#include "Misc/test_utils.h"
 
 namespace Test
 {
@@ -30,6 +31,7 @@ TestRunner::TestRunner()
 	s += make_suite_test_TaskAccessor();
 	s += make_suite_test_SettingsAccessor();
 	s += make_suite_test_AutotrackAccessor();
+	s += make_suite_UtilsTest();
 }
 
 void TestRunner::run()

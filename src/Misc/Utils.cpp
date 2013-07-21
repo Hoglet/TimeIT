@@ -21,6 +21,9 @@ using namespace std;
 
 namespace Utils
 {
+
+#define SECOND_PER_DAY 24*60*60
+
 std::string getImagePath()
 {
 	return PROGRAMNAME_DATADIR;
@@ -58,12 +61,13 @@ time_t getEndOfDay(const time_t& rawtime)
 	return mktime(timeInfo);
 }
 
-int getDayOfWeek(struct tm * timeInfo)
+int getDayOfWeek(const time_t rawtime)
 {
+	struct tm * timeInfo = localtime(&rawtime);
 	int dow=timeInfo->tm_wday;
 	int retVal=dow;
 
-	int weekStartsOnDay = *(nl_langinfo(_NL_TIME_FIRST_WEEKDAY)) - 1;
+	int weekStartsOnDay = *(nl_langinfo(_NL_TIME_FIRST_WEEKDAY))-1;
 	retVal = retVal - weekStartsOnDay;
 	if(retVal<0)
 	{
@@ -75,24 +79,25 @@ int getDayOfWeek(struct tm * timeInfo)
 time_t getBeginingOfWeek(const time_t& rawtime)
 {
 	struct tm * timeInfo;
-	timeInfo = localtime(&rawtime);
+	int dayOfWeek = getDayOfWeek(rawtime);
+	time_t bow = rawtime - (dayOfWeek) * SECOND_PER_DAY;
+	timeInfo = localtime(&bow);
 	timeInfo->tm_sec = 0;
 	timeInfo->tm_min = 0;
 	timeInfo->tm_hour = 0;
-	int dayOfWeek = getDayOfWeek(timeInfo);
-	timeInfo->tm_mday -= dayOfWeek;
+	timeInfo->tm_wday = 1;
 	return mktime(timeInfo);
 }
 
 time_t getEndOfWeek(const time_t& rawtime)
 {
 	struct tm * timeInfo;
-	timeInfo = localtime(&rawtime);
+	int dayOfWeek = getDayOfWeek(rawtime);
+	time_t eow = rawtime + (6 - dayOfWeek) * SECOND_PER_DAY;
+	timeInfo = localtime(&eow);
 	timeInfo->tm_sec = 59;
 	timeInfo->tm_min = 59;
 	timeInfo->tm_hour = 23;
-	int dayOfWeek = getDayOfWeek(timeInfo);
-	timeInfo->tm_mday += (6 - dayOfWeek);
 	return mktime(timeInfo);
 }
 time_t getBeginingOfMonth(const time_t& rawtime)
@@ -173,15 +178,15 @@ time_t getTime(int year, int month, int day, int hour, int min, int sec)
 {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm timeInfo;
-	timeInfo = *localtime(&rawtime);
-	timeInfo.tm_year = year - 1900;
-	timeInfo.tm_mon = month;
-	timeInfo.tm_mday = day;
-	timeInfo.tm_hour = hour;
-	timeInfo.tm_min = min;
-	timeInfo.tm_sec = sec;
-	return mktime(&timeInfo);
+	struct tm* timeInfo;
+	timeInfo = localtime(&rawtime);
+	timeInfo->tm_year = year - 1900;
+	timeInfo->tm_mon = month;
+	timeInfo->tm_mday = day;
+	timeInfo->tm_hour = hour;
+	timeInfo->tm_min = min;
+	timeInfo->tm_sec = sec;
+	return mktime(timeInfo);
 }
 
 std::string seconds2ddhhmm(int s)
@@ -216,7 +221,7 @@ std::string createDurationString(const time_t& from, const time_t& to)
 	struct tm toTime = *localtime(&to);
 	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon+1 << "-" << setfill('0') << setw(2)
 			<< fromTime.tm_mday << " " << setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
-	retVal << " ->  ";
+	retVal << " -> ";
 	if (fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday)
 	{
 		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon+1 << "-" << setfill('0') << setw(2)
