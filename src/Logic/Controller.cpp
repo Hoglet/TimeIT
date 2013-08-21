@@ -17,10 +17,11 @@
 
 using namespace GUI;
 
-Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::Database>& database)
+Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper,
+		std::shared_ptr<DB::Database>& database)
 {
-	mainWindow_x=0;
-	mainWindow_y=0;
+	mainWindow_x = 0;
+	mainWindow_y = 0;
 
 	settingsAccessor = database->getSettingsAccessor();
 	selectedTaskID = -1;
@@ -39,7 +40,7 @@ void Controller::start()
 {
 	guiFactory->getStatusIcon().show();
 	guiFactory->getStatusIcon().attach(this);
-	if(!settingsAccessor->GetBoolByName("StartMinimized",DEFAULT_START_MINIMIZED))
+	if (!settingsAccessor->GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
 	{
 		WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
 		mainWindow->attach(this);
@@ -86,21 +87,21 @@ void Controller::on_action_help()
 {
 	std::stringstream translatedHelp;
 	std::stringstream helpToUse;
-	translatedHelp<<PACKAGE_DATA_DIR<<"/doc/timeit/html/"<< Utils::get639LanguageString() <<"/index.html";
-	if(Utils::fileExists(std::string(translatedHelp.str())))
+	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << Utils::get639LanguageString() << "/index.html";
+	if (Utils::fileExists(std::string(translatedHelp.str())))
 	{
-		helpToUse<<"file://"<<translatedHelp.str();
+		helpToUse << "file://" << translatedHelp.str();
 	}
 	else
 	{
 		std::stringstream defaultHelp;
-		defaultHelp << PACKAGE_DATA_DIR<<"/doc/timeit/html/C/index.html";
-		if(Utils::fileExists(std::string(defaultHelp.str())))
+		defaultHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/C/index.html";
+		if (Utils::fileExists(std::string(defaultHelp.str())))
 		{
-			helpToUse<<"file://"<<defaultHelp.str();
+			helpToUse << "file://" << defaultHelp.str();
 		}
 	}
-	const char * helpfile=helpToUse.str().c_str();
+	const char * helpfile = helpToUse.str().c_str();
 	OSAbstraction::showURL(helpfile);
 }
 void Controller::on_action_start_task()
@@ -144,11 +145,19 @@ void Controller::on_idleDetected()
 	timeKeeper->enable(false);
 	time_t now = time(0);
 	time_t idleStartTime = now - timeKeeper->timeIdle();
-	//TODO Automatic off without dialog
-	idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
-	idleDialog->attach(this);
-	idleDialog->setIdleStartTime(idleStartTime);
-	idleDialog->show();
+
+	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
+	if (quiet)
+	{
+		on_action_revertAndContinue();
+	}
+	else
+	{
+		idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
+		idleDialog->attach(this);
+		idleDialog->setIdleStartTime(idleStartTime);
+		idleDialog->show();
+	}
 }
 
 void Controller::on_action_revertAndContinue()
@@ -204,14 +213,13 @@ void Controller::on_action_preferences()
 	preferenceDialog->show();
 }
 
-
-
-void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime)
+void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
-	if(detailsDialog)
+	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(
+			guiFactory->getWidget(GUI::DETAILS_DIALOG));
+	if (detailsDialog)
 	{
-		detailsDialog->set(taskId,startTime,stopTime);
+		detailsDialog->set(taskId, startTime, stopTime);
 		detailsDialog->show();
 	}
 }

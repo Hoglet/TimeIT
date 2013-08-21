@@ -11,9 +11,9 @@
 
 <H2>Introduction</h2>
 <p>
-TimeIT is a tool intended to help you to keep track on how much time you 
-spend on tasks.</p><p>It is intended to be discreet and unobtrusive. It is using  
-workspace-tracking and idle detection to minimize the interaction needed, in the 
+TimeIT is a tool intended to help you to keep track on how much time you
+spend on tasks.</p><p>It is intended to be discreet and unobtrusive. It is using
+workspace-tracking and idle detection to minimize the interaction needed, in the
 intended use case you are not even interacting at all with the program</p>
 
 <H2>Download</H2>
@@ -39,7 +39,7 @@ The program puts into the status tray, if such exists, an icon which:
 <ul>
 <li>Shows the state: green if timer(s) are running.</li>
 <li>Toggles main window when clicked</li>
-<li>Has a small menu on right click</li> 
+<li>Has a small menu on right click</li>
 </ul>
 </td>
 <td>
@@ -49,14 +49,14 @@ The program puts into the status tray, if such exists, an icon which:
 </table>
 
 <H2>Tasks</h2>
-Tasks can be organized in a tree where one task is parent to others thus grouping tasks bonded 
+Tasks can be organized in a tree where one task is parent to others thus grouping tasks bonded
 together like different parts of a project. Parents are then shown with the aggregated time.
 <table>
 <tr><td>
 <H3>Create/edit task</h3>
-Creating, or editing, a task is done through menu, toolbar or context menu. 
+Creating, or editing, a task is done through menu, toolbar or context menu.
 The dialog then opened contains possibility ty change following aspects of the task:
-<dl> 
+<dl>
 <dt>Name</dt>
 <dd>The name of the task</dd>
 <dt>Parent</dt>
@@ -64,7 +64,7 @@ The dialog then opened contains possibility ty change following aspects of the t
 </dd>
 <dt>Workspace</dt>
 <dd>
-This is setting on which workspaces TimeIt should run the tasks timer. 
+This is setting on which workspaces TimeIt should run the tasks timer.
 </dd>
 </dl>
 </td>
@@ -73,6 +73,23 @@ This is setting on which workspaces TimeIt should run the tasks timer.
 <h3>Start a task manually</h3>
 
 <H2>Idle detection</h2>
+<table>
+<tr>
+<td>
+If TimeIT is detecting idle while a task, or tasks, are running it is presenting a dialog with three choices:
+<dl>
+<dt>Revert and stop</dt>
+<dd>Idle time was not active. Reseting to last known active time and stop counting time</dd>
+<dt>Revert and continue</dt>
+<dd>Idle time was not active. Reseting to last known active time and Continuing counting time from current time</dd>
+<dt>Continue</dt>
+<dd>Time span was activity of the computer. Continuing counting time</dd>
+</dl>
+</td>
+<td><img src="TimeIT-IdleDialog.png" width="360" height="107" border="0" alt="" align="right">
+</td>
+</tr>
+</table>
 <H2>Preferences</h2>
 <table>
 <tr>
@@ -88,6 +105,8 @@ Here you can set how TimeIt behaves.
 <dd>This is the maximum time of no activity before TimeIt decides that a break have occured. When this </dd>
 <dt>Zero time</dt>
 <dd>Shorter than this time will not be counted.</dd>
+<dt>Quiet mode</dt>
+<dd>Idle detection is not presenting a dialog questioning why the computer has been idle. No idle periods are registered as work.</dd>
 </dl>
 </td>
 <td><img src="MainWindow-Preferences.png" width="146" height="139" border="0" alt="" align="right">
@@ -107,7 +126,7 @@ To add time to a task you simply select the task in the list and then select "Ad
 <h3>Show/Edit time records</h3>
 <table><tr>
 <td>
-<p>By double clicking or using context menu on an item in the summary you 
+<p>By double clicking or using context menu on an item in the summary you
 bring up a window showing the individual time recordings that together bring the sum shown in summary.
 </p>
 <p>
@@ -119,6 +138,6 @@ Here you can edit or remove times.
 </tr>
 </table>
 <H2>Reporting bugs</H2>
-Any found bugs are preferably reported on <a href="https://bugs.launchpad.net/timeit/+filebug">launchpad</a>
+Any found bugs are preferably reported on <a href="https://github.com/Hoglet/TimeIT/issues/new">github</a>
 </body>
 </html>

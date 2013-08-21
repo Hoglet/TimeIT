@@ -12,5 +12,5 @@
 #define DEFAULT_GT 7
 #define DEFAULT_COMPACTLAYOUT true
 #define DEFAULT_START_MINIMIZED false
-
+#define DEFAULT_QUIET_MODE false
 #endif /* DEFAULTVALUES_H_ */

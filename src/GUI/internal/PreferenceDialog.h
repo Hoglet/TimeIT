@@ -47,6 +47,9 @@ private:
 	Gtk::SpinButton	GzEntry;
 	Gtk::SpinButton	GtEntry;
 
+	Gtk::Label QuietLabel;
+	Gtk::CheckButton QuietButton;
+
 	Gtk::Button CancelButton;
 	Gtk::Button OKButton;
 
@@ -56,10 +59,13 @@ private:
 	int		gt;
 	bool	compactLayout;
 	bool	startMinimized;
+	bool	quietMode;
 	int		oldGz;
 	int 	oldGt;
 	bool	oldCompactLayout;
 	bool 	oldStartMinimized;
+	bool	oldQuietMode;
+
 
 	void on_data_changed();
 	bool on_focus_changed(GdkEventFocus*);
