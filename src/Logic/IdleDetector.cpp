@@ -21,9 +21,8 @@ XScreenSaverInfo* XInfo = 0;
 }
 
 
-IdleDetector::IdleDetector(const std::shared_ptr<Timer>& timer)
+IdleDetector::IdleDetector()
 {
-	m_timer = timer;
 	int event_base, error_base;
 	if (display == 0)
 	{
@@ -39,21 +38,16 @@ IdleDetector::IdleDetector(const std::shared_ptr<Timer>& timer)
 		IdleDetectionPossible = true;
 	}
 	idleSeconds = 0;
-	m_timer->attach(this);
 }
 
 IdleDetector::~IdleDetector()
 {
-	m_timer->detach(this);
 	if (XInfo)
 	{
 		//TODO safer allocation/dealocation!
 		XFree(XInfo);
+		XInfo=nullptr;
 	}
-}
-void IdleDetector::on_signal_10_seconds()
-{
-	pollStatus();
 }
 
 void IdleDetector::pollStatus()
@@ -67,10 +61,11 @@ void IdleDetector::pollStatus()
 
 int IdleDetector::minutesIdle()
 {
-	return idleSeconds / secsPerMinute;
+	return timeIdle() / secsPerMinute;
 }
 
 time_t IdleDetector::timeIdle()
 {
+	pollStatus();
 	return idleSeconds;
 }

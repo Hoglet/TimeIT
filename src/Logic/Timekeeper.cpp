@@ -9,7 +9,7 @@ using namespace std;
 
 //TODO Autostart on movement (if autotracker and supressed dialog)
 
-Timekeeper::Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer): m_idleDetector(timer)
+Timekeeper::Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
 	m_timeAccessor = database->getTimeAccessor();

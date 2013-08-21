@@ -14,14 +14,10 @@
 class IdleDetector : public TimerObserver
 {
 public:
-	IdleDetector(const std::shared_ptr<Timer>& timer);
+	IdleDetector();
 	virtual ~IdleDetector();
 	int minutesIdle();
 	time_t timeIdle();
-	//TimerObserver interface
-	virtual void on_signal_1_second() {};
-	virtual void on_signal_10_seconds();
-	//
 private:
 	void pollStatus();
 	bool IdleDetectionPossible;
