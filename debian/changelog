@@ -1,3 +1,11 @@
+timeit (1.2.3) precise; urgency=low
+
+  * Feature: Quiet mode.
+  * Bugfix: Idle detection failed when computer was suspended to ram or hibernated
+  * Bugfix: Unable to compile (on some platforms) as an include was missing.
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 21 Aug 2013 21:36:30 +0200
+
 timeit (1.2.2) precise; urgency=low
 
   * Bugfix: Week summaries did not start and end on correct day.
