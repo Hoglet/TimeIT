@@ -6,6 +6,7 @@
  */
 
 #include "TempDB.h"
+#include "OSAbstraction.h"
 
 namespace Test
 {
@@ -17,7 +18,7 @@ TempDB::TempDB() : Database("/tmp/test.db")
 
 TempDB::~TempDB()
 {
-	unlink("/tmp/test.db");
+	OSAbstraction::unlink("/tmp/test.db");
 }
 
 } /* namespace Test */
