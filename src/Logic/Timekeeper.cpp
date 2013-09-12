@@ -39,7 +39,8 @@ void Timekeeper::on_settingsChanged(const std::string& name)
 {
 	if(name.length() < 1 || name == "Gt")
 	{
-		m_idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
+		long idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
+		m_idleDetector.setIdleTimeout(idleGt);
 	}
 	if (name.length()<1 || name == "Gz")
 	{
@@ -52,20 +53,20 @@ void Timekeeper::on_signal_10_seconds()
 	if (m_enabled)
 	{
 		map<int64_t, TaskTime>::iterator it;
-		if (m_idleDetector.minutesIdle() < m_idleGz)
+		if (m_idleDetector.idle())
+		{
+			if (hasRunningTasks())
+			{
+				notifyIdleDetected();
+			}
+		}
+		else if (m_idleDetector.minutesIdle() < m_idleGz)
 		{
 			//Only saving time when being certain that somebody is working
 			for (it = activeTasks.begin(); it != activeTasks.end(); it++)
 			{
 				TaskTime tt = it->second;
 				UpdateTask(tt.taskID);
-			}
-		}
-		else if (hasRunningTasks())
-		{
-			if (m_idleDetector.minutesIdle() >= m_idleGt)
-			{
-				notifyIdleDetected();
 			}
 		}
 	}
@@ -137,7 +138,7 @@ void Timekeeper::on_taskRemoved(int64_t id)
 	}
 }
 
-void Timekeeper::UpdateTask(int64_t id)
+void Timekeeper::UpdateTask(int64_t id, time_t now)
 {
 	map<int64_t, TaskTime>::iterator it;
 	it = activeTasks.find(id);
@@ -148,6 +149,12 @@ void Timekeeper::UpdateTask(int64_t id)
 
 		m_timeAccessor->changeEndTime(task.dbHandle, task.stopTime);
 	}
+}
+
+void Timekeeper::UpdateTask(int64_t id)
+{
+	time_t now = time(NULL);
+	UpdateTask(id, now);
 }
 bool Timekeeper::hasRunningTasks()
 {
@@ -211,6 +218,10 @@ void Timekeeper::notifyIdleDetected()
 void Timekeeper::enable(bool enable)
 {
 	m_enabled = enable;
+	if(m_enabled)
+	{
+		m_idleDetector.reset();
+	}
 }
 
 void Timekeeper::attach(TimekeeperObserver* observer)

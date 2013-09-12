@@ -39,6 +39,7 @@ public:
 	virtual time_t timeIdle() ;
 	virtual int minutesIdle();
 private:
+	void UpdateTask(int64_t id, time_t now);
 
 	//TimerProxyObserver interface
 	void on_signal_1_second() {};
@@ -66,7 +67,6 @@ private:
 	std::map<int64_t,TaskTime> activeTasks;
 
 	int m_idleGz;
-	int m_idleGt;
 
 	void notifyRunningChanged();
 	void notifyIdleDetected();

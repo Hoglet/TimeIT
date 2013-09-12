@@ -18,12 +18,19 @@ public:
 	virtual ~IdleDetector();
 	int minutesIdle();
 	time_t timeIdle();
+	void setIdleTimeout(int minutes);
+	void reset();
+	bool idle();
 private:
 	void pollStatus();
 	bool IdleDetectionPossible;
 	long getTimestamp();
 	time_t idleSeconds;
-	std::shared_ptr<Timer> m_timer;
+	time_t lastPoll;
+	long idleTimeout;
+	bool isIdle;
+	time_t lastActivity;
+
 };
 
 #endif /* IDLEDETECTOR_H_ */
