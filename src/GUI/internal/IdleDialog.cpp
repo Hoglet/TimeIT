@@ -65,10 +65,33 @@ void IdleDialog::setIdleStartTime(time_t idleStartTime)
 	m_idleStartTime = idleStartTime;
 }
 
+void IdleDialog::setActiveTaskList(std::shared_ptr<std::vector<Task>> activeTasks)
+{
+	std::stringstream text;
+	int i=0;
+	for ( Task task: *activeTasks)
+	{
+		if(i++>0)
+		{
+			text<<", ";
+		}
+		text<<task.getName();
+	}
+	taskString = text.str();
+}
+
+
 void IdleDialog::on_signal_10_seconds()
 {
 	setText();
 }
+
+void IdleDialog::show()
+{
+	setText();
+	Gtk::Dialog::show();
+}
+
 
 void IdleDialog::setText()
 {
@@ -77,9 +100,17 @@ void IdleDialog::setText()
 	// Note to translators: This is the first part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
 	str << _("No activity has been detected for") << " "<<minutesIdle;
+
 	// Note to translators: This is the second part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
 	str<< " "<<_("minutes. What should we do?");
+
+	if(taskString.size()>0)
+	{
+		str<<_("\n\nTasks affected: ");
+		str<<taskString<<std::endl;
+	}
+
 	text.set_text(str.str());
 }
 

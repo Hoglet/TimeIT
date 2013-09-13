@@ -29,12 +29,13 @@ class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog,
 {
 public:
 	IdleDialog(std::shared_ptr<Timer>& timer);
-	void setIdleStartTime(time_t idleStartTime);
+	virtual void setIdleStartTime(time_t idleStartTime);
+	virtual void setActiveTaskList(std::shared_ptr<std::vector<Task>> activeTasks);
 	virtual ~IdleDialog();
 	virtual void attach(IActionObserver*);
 	virtual void detach(IActionObserver*);
 	// IWidget interface
-	virtual void show() { Gtk::Dialog::show(); }
+	virtual void show();
 	virtual void hide() { Gtk::Dialog::hide(); }
 	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
@@ -51,6 +52,7 @@ private:
 	Gtk::Button continueButton;
 	std::shared_ptr<Timer> m_timer;
 	time_t m_idleStartTime;
+	std::string taskString;
 
 	std::list<IActionObserver*> observers;
 	void responseHandler(int result);

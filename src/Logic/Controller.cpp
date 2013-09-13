@@ -24,6 +24,7 @@ Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::share
 	mainWindow_y = 0;
 
 	settingsAccessor = database->getSettingsAccessor();
+	taskAccessor = database->getTaskAccessor();
 	selectedTaskID = -1;
 	this->timeKeeper = timeKeeper;
 	this->guiFactory = guiFactory;
@@ -156,6 +157,8 @@ void Controller::on_idleDetected()
 		idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
+		std::shared_ptr<std::vector<Task> > activeTasks = taskAccessor->getRunningTasks();
+		idleDialog->setActiveTaskList(activeTasks);
 		idleDialog->show();
 	}
 }
