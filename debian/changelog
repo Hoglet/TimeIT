@@ -1,3 +1,10 @@
+timeit (1.2.4) precise; urgency=low
+
+  * Feature: Improved information in idle dialog
+  * Bugfix: Idle detection during hibernation and suspension.
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Sep 2013 15:29:40 +0200
+
 timeit (1.2.3) precise; urgency=low
 
   * Feature: Quiet mode.
