@@ -1,3 +1,9 @@
+timeit (1.2.5) precise; urgency=low
+
+  * Bugfix: Idle detection got into an infinite loop.
+
+ -- Kent Asplund <hoglet@solit.se>  Wed, 25 Sep 2013 16:19:13 +0200
+
 timeit (1.2.4) precise; urgency=low
 
   * Feature: Improved information in idle dialog
