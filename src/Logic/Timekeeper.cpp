@@ -122,6 +122,7 @@ void Timekeeper::StopTask(int64_t id)
 			notifyRunningChanged();
 		}
 	}
+	m_idleDetector.setEnabled(activeTasks.size()>0);
 }
 
 void Timekeeper::on_taskRemoved(int64_t id)
@@ -197,6 +198,7 @@ time_t Timekeeper::timeIdle()
 
 void Timekeeper::notifyRunningChanged()
 {
+	m_idleDetector.setEnabled(activeTasks.size()>0);
 	std::list<TimekeeperObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); iter++)
 	{

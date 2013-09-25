@@ -21,6 +21,7 @@ public:
 	void setIdleTimeout(int minutes);
 	void reset();
 	bool idle();
+	void setEnabled(bool state);
 private:
 	void pollStatus();
 	bool IdleDetectionPossible;
@@ -30,7 +31,7 @@ private:
 	long idleTimeout;
 	bool isIdle;
 	time_t lastActivity;
-
+	bool enabled;
 };
 
 #endif /* IDLEDETECTOR_H_ */

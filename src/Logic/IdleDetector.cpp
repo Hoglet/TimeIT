@@ -22,99 +22,106 @@ XScreenSaverInfo* XInfo = 0;
 
 IdleDetector::IdleDetector()
 {
-	int event_base, error_base;
-	if (display == 0)
-	{
-		display = XOpenDisplay(0);
-	}
-	if (XInfo == 0)
-	{
-		XInfo = XScreenSaverAllocInfo();
-	}
-	IdleDetectionPossible = false;
-	if (XScreenSaverQueryExtension(display, &event_base, &error_base))
-	{
-		IdleDetectionPossible = true;
-	}
-	idleSeconds = 0;
-	lastPoll = time(NULL);
-	idleTimeout = 2000;
-	lastActivity = lastPoll;
-	isIdle = false;
+  int event_base, error_base;
+  if (display == 0)
+  {
+    display = XOpenDisplay(0);
+  }
+  if (XInfo == 0)
+  {
+    XInfo = XScreenSaverAllocInfo();
+  }
+  IdleDetectionPossible = false;
+  if (XScreenSaverQueryExtension(display, &event_base, &error_base))
+  {
+    IdleDetectionPossible = true;
+  }
+  idleSeconds = 0;
+  lastPoll = time(NULL);
+  idleTimeout = 2000;
+  lastActivity = lastPoll;
+  isIdle = false;
+  enabled = false;
 }
 
 IdleDetector::~IdleDetector()
 {
-	if (XInfo)
-	{
-		//TODO safer allocation/dealocation!
-		XFree(XInfo);
-		XInfo = nullptr;
-	}
+  if (XInfo)
+  {
+    //TODO safer allocation/dealocation!
+    XFree(XInfo);
+    XInfo = nullptr;
+  }
 }
 
 void IdleDetector::setIdleTimeout(int minutes)
 {
-	idleTimeout = minutes * 60;
+  idleTimeout = minutes * 60;
 }
 
 void IdleDetector::reset()
 {
-	isIdle = false;
+  isIdle = false;
+  lastPoll = time(NULL);
 }
 
 void IdleDetector::pollStatus()
 {
-	if (IdleDetectionPossible)
-	{
-		time_t now = time(NULL);
-		if (isIdle)
-		{
-			idleSeconds = now - lastActivity;
-		}
-		else
-		{
-			if (now - lastPoll > 30)
-			{
-				idleSeconds = now - lastActivity;
-			}
-			else
-			{
-					XScreenSaverQueryInfo(display, XRootWindow(display, 0), XInfo);
-					idleSeconds = (XInfo->idle / 1000);
-					lastPoll = now;
-					if (idleSeconds < 20)
-					{
-						lastActivity = now;
-					}
-					time_t executionTime = time(NULL) -now;
-					if( executionTime > 10)
-					{
-						//We have been suspended for more than 10 seconds inside this function
-						idleSeconds = executionTime;
-					}
-			}
-			lastPoll = now;
-		}
-		if (idleSeconds > idleTimeout)
-		{
-			isIdle = true;
-		}
-	}
+  if (IdleDetectionPossible)
+  {
+    time_t now = time(NULL);
+    if (isIdle)
+    {
+      idleSeconds = now - lastActivity;
+    }
+    else
+    {
+      if (now - lastPoll > 30)
+      {
+        idleSeconds = now - lastActivity;
+      }
+      else
+      {
+          XScreenSaverQueryInfo(display, XRootWindow(display, 0), XInfo);
+          idleSeconds = (XInfo->idle / 1000);
+          lastPoll = now;
+          if (idleSeconds < 20)
+          {
+            lastActivity = now;
+          }
+          time_t executionTime = time(NULL) -now;
+          if( executionTime > 10)
+          {
+            //We have been suspended for more than 10 seconds inside this function
+            idleSeconds = executionTime;
+          }
+      }
+      lastPoll = now;
+    }
+    if (enabled && idleSeconds > idleTimeout)
+    {
+      isIdle = true;
+    }
+  }
 }
 
 bool IdleDetector::idle()
 {
-	return isIdle;
+  return isIdle;
 }
 
 int IdleDetector::minutesIdle()
 {
-	return timeIdle() / secsPerMinute;
+  return timeIdle() / secsPerMinute;
 }
 
 time_t IdleDetector::timeIdle()
 {
-	pollStatus();
-	return idleSeconds;
+  pollStatus();
+  return idleSeconds;
+}
+
+void IdleDetector::setEnabled(bool state)
+{
+  enabled = state;
 }
