@@ -1,3 +1,9 @@
+timeit (1.2.6) precise; urgency=low
+
+  * Bugfix: Unable to build on Ubuntu 13.10 because of missing dependency.
+
+ -- Kent Asplund <hoglet@solit.se>  Tue, 18 Feb 2014 11:39:28 +0100
+
 timeit (1.2.5) precise; urgency=low
 
   * Bugfix: Idle detection got into an infinite loop.
