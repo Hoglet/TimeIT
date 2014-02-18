@@ -21,13 +21,15 @@ add_definitions( -DPROGRAMNAME_LOCALEDIR=${PROGRAMNAME_LOCALEDIR})
 file( GLOB_RECURSE headers *.h)
 file( GLOB_RECURSE sources *.cpp)
 
-link_directories(${GTKMM_LIBRARY_DIRS}
+link_directories(${XLIB_LIBRARY_DIRS}
+                 ${GTKMM_LIBRARY_DIRS}
                  ${SQLITE_LIBRARY_DIRS}
 								 ${XSCRNS_LIBRARY_DIRS})
 
 include_directories(${GTKMM_INCLUDE_DIRS}
                     ${SQLITE_INCLUDE_DIRS}
                     ${XSCRNS_INCLUDE_DIRS}
+                    ${XLIB_INCLUDE_DIRS}
 										"${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/DB/"
                     "${PROJECT_SOURCE_DIR}/Logic/"
@@ -40,7 +42,7 @@ include_directories(${GTKMM_INCLUDE_DIRS}
 
 add_executable(${PROJECT_NAME} ${sources} ${headers} )
 
-target_link_libraries(${PROJECT_NAME} ${GTKMM_LIBRARIES} ${SQLITE_LIBRARIES} ${XSCRNS_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} ${GTKMM_LIBRARIES} ${SQLITE_LIBRARIES} ${XSCRNS_LIBRARIES} ${XLIB_LIBRARIES} )
 
 
 install(TARGETS ${PROJECT_NAME}

@@ -26,6 +26,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
 pkg_check_modules(SQLITE sqlite3 REQUIRED)
 pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
+pkg_check_modules(XLIB x11 REQUIRED)
 
 # make dist target
 # -------------------
