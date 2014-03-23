@@ -9,20 +9,21 @@
 #define STATUSICON_H_
 
 #include <gtkmm.h>
-#include <ITimeKeeper.h>
-#include <ITaskAccessor.h>
-#include <ITimeAccessor.h>
+
+#include "ITimeKeeper.h"
+#include "ExtendedTaskAccessor.h"
+#include "TimeAccessor.h"
 
 namespace GUI
 {
 namespace Internal
 {
 
-class StatusIcon :  public TimekeeperObserver, public IStatusIcon, public TaskAccessorObserver
+class StatusIcon :  public TimekeeperObserver, public IStatusIcon, public DB::TaskAccessorObserver
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<ITaskAccessor>&, std::shared_ptr<ITimeAccessor>&);
+	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::IExtendedTaskAccessor>&, std::shared_ptr<DB::ITimeAccessor>&);
 	virtual void show() {}; //Shown directly on creation. Might change
 	virtual void attach(IActionObserver* observer);
 	virtual void detach(IActionObserver* observer);
@@ -51,7 +52,7 @@ private:
 	virtual void on_taskAdded(int64_t)  {};
 	virtual void on_taskUpdated(int64_t) ;
 	virtual void on_taskRemoved(int64_t) {};
-
+	virtual void on_completeUpdate();
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_runningIcon;
@@ -60,8 +61,8 @@ private:
 
 	Gtk::Menu m_Menu_Popup;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
-	std::shared_ptr<ITaskAccessor> m_taskaccessor;
-	std::shared_ptr<ITimeAccessor> m_timeaccessor;
+	std::shared_ptr<DB::IExtendedTaskAccessor> m_taskaccessor;
+	std::shared_ptr<DB::ITimeAccessor> m_timeaccessor;
 	std::list<IActionObserver*> observers;
 	std::vector<int64_t> latestTasks;
 

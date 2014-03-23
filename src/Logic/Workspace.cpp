@@ -13,6 +13,7 @@
 using std::vector;
 using std::string;
 
+//LCOV_EXCL_START
 Workspace::Workspace()
 {
 	numWorkspaces=0;
@@ -116,3 +117,4 @@ int Workspace::get_numberOfWorkspaces()
 	return retVal;
 }
 
+//LCOV_EXCL_STOP

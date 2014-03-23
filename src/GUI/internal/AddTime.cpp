@@ -7,16 +7,18 @@
 
 #include "AddTime.h"
 #include <Utils.h>
-#include <Task.h>
+#include <ExtendedTask.h>
 #include <time.h>
 #include <glibmm/i18n.h>
+
+using namespace DB;
 
 namespace GUI
 {
 namespace Internal
 {
 
-AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::Database>& database) :
+AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::IDatabase>& database) :
 		table(4, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")), taskNameLabel(
 				_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), calendar(
 				op_calendar), taskID(op_taskID)
@@ -27,10 +29,10 @@ AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::
 	set_deletable(false);
 	//OKButton.set_sensitive(false);
 
-	std::shared_ptr<std::vector<Task>> tasks = m_taskAccessor->getTask(taskID);
-	if (tasks->size() > 0)
+	std::shared_ptr<Task> task = m_taskAccessor->getTask(taskID);
+	if (task)
 	{
-		taskName.set_text(tasks->at(0).getName());
+		taskName.set_text(task->getName());
 	}
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);

@@ -7,13 +7,16 @@
 
 #ifndef DETAILS_H_
 #define DETAILS_H_
-#include <gtkmm.h>
-#include <Task.h>
+
+#include "ExtendedTask.h"
 #include "MainWindow/Summary.h"
-#include <signal.h>
+
 #include "IDetailsDialog.h"
-#include <Database.h>
-#include <ITimeAccessor.h>
+#include "Database.h"
+#include "TimeAccessor.h"
+
+#include <gtkmm.h>
+#include <signal.h>
 
 namespace GUI
 {
@@ -30,10 +33,10 @@ public:
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details : public Gtk::TreeView, public TaskAccessorObserver
+class Details : public Gtk::TreeView, public DB::TaskAccessorObserver
 {
 public:
-	Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::Database>& database);
+	Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::IDatabase>& database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
@@ -44,6 +47,7 @@ public:
 	virtual void on_taskAdded(int64_t) {};
 	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t) ;
+	virtual void on_completeUpdate();
 	//
 	int64_t getSelectedID();
 	//
@@ -81,8 +85,8 @@ private:
 	Gtk::Menu m_Menu_Popup;
 	std::list<DetailsObserver*> observers;
 	IDetailsDialog& m_detailsDialog;
-	std::shared_ptr<ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
 };
 }
 }

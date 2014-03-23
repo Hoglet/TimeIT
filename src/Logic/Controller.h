@@ -11,7 +11,7 @@
 #include <IGUIFactory.h>
 #include <IIdleDialog.h>
 #include <ITimeKeeper.h>
-#include <ITaskAccessor.h>
+#include <ExtendedTaskAccessor.h>
 #include <ISummary.h>
 #include <ISettingsAccessor.h>
 #include <Database.h>
@@ -19,15 +19,9 @@
 class Controller : public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
 {
 public:
-	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::Database>& database );
+	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::IDatabase>& database);
 	virtual ~Controller();
 	void start();
-private:
-	std::shared_ptr<GUI::IGUIFactory> guiFactory;
-	std::shared_ptr<ITimeKeeper> timeKeeper;
-	std::shared_ptr<IIdleDialog> idleDialog;
-	std::shared_ptr<ITaskAccessor> taskAccessor;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor;
 
 	//Action observers
 	virtual void on_action_task_selection_changed(int selectedTaskID);
@@ -45,17 +39,23 @@ private:
 
 	//SummaryObserver
 	virtual void on_showDetailsClicked(GUI::ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime);
-	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) {};
-
+	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime);
 
 	//
 	virtual void on_idleDetected();
-	virtual void on_runningChanged() {};
+	virtual void on_runningChanged();
 	virtual void on_action_toggleMainWindow();
 	virtual void on_action_revertAndContinue();
 	virtual void on_action_revertAndStop();
 	virtual void on_action_continue();
 	virtual void on_action_stopTimers();
+
+private:
+	std::shared_ptr<GUI::IGUIFactory> guiFactory;
+	std::shared_ptr<ITimeKeeper> timeKeeper;
+	std::shared_ptr<IIdleDialog> idleDialog;
+	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 
 	int mainWindow_x;
 	int mainWindow_y;

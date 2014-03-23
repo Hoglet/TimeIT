@@ -52,13 +52,13 @@ void Utils_convertTimespanToString()
 	time_t start = Utils::getTime(2013, 0, 4, 11, 0, 0);
 	time_t stop = Utils::getTime(2013, 0, 4, 12, 0, 0);
 	std::string result = Utils::createDurationString(start, stop);
-	std::string expected = "2013-01-04 10:00 -> 11:00";
+	std::string expected = "2013-01-04 11:00 -> 12:00";
 	ASSERT_EQUALM("Converting a time span of one hour into a text string", expected, result);
 
 	start = Utils::getTime(2012, 0, 4, 11, 0, 0);
 	stop = Utils::getTime(2013, 0, 4, 12, 0, 0);
 	result = Utils::createDurationString(start, stop);
-	expected = "2012-01-04 10:00 -> 2013-01-04 11:00";
+	expected = "2012-01-04 11:00 -> 2013-01-04 12:00";
 	ASSERT_EQUALM("Converting a time span of one year into a text string", expected, result);
 }
 
@@ -116,6 +116,19 @@ void Utils_endOfWeek()
 	ASSERT_EQUALM("Check year", 113, end_of_day->tm_year);
 }
 
+void Utils_endOfWeek2()
+{
+	time_t testPoint = Utils::getTime(2013, 0, 6, 12, 0, 0);
+	time_t eod = Utils::getEndOfWeek(testPoint);
+	struct tm *end_of_day = localtime(&eod);
+	ASSERT_EQUALM("Check seconds", 59, end_of_day->tm_sec);
+	ASSERT_EQUALM("Check minute", 59, end_of_day->tm_min);
+	ASSERT_EQUALM("Check hour", 23, end_of_day->tm_hour);
+	ASSERT_EQUALM("Check day of month", 6, end_of_day->tm_mday);
+	ASSERT_EQUALM("Check seconds", 59, end_of_day->tm_sec);
+	ASSERT_EQUALM("Check month", 0, end_of_day->tm_mon);
+	ASSERT_EQUALM("Check year", 113, end_of_day->tm_year);
+}
 void Utils_beginningOfMonth()
 {
 	time_t testPoint = Utils::getTime(2013, 0, 4, 12, 0, 0);
@@ -185,6 +198,7 @@ cute::suite make_suite_UtilsTest()
 	s.push_back(CUTE(Utils_beginningOfYear));
 	s.push_back(CUTE(Utils_endOfMonth));
 	s.push_back(CUTE(Utils_endOfYear));
+	s.push_back(CUTE(Utils_endOfWeek2));
 	return s;
 }
 

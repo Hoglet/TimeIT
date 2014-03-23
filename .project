@@ -22,7 +22,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.build.arguments</key>
-					<value>-j2</value>
+					<value>-j4</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.build.command</key>
@@ -108,7 +108,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1365940120318</id>
+			<id>1375559254148</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
@@ -117,7 +117,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120327</id>
+			<id>1375559254151</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
@@ -126,7 +126,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120337</id>
+			<id>1375559254156</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
@@ -135,7 +135,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120367</id>
+			<id>1375559254223</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
@@ -144,7 +144,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120451</id>
+			<id>1375559254225</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
@@ -153,7 +153,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120490</id>
+			<id>1375559254228</id>
 			<name></name>
 			<type>6</type>
 			<matcher>
@@ -162,7 +162,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120520</id>
+			<id>1375559254233</id>
 			<name></name>
 			<type>6</type>
 			<matcher>
@@ -171,7 +171,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120556</id>
+			<id>1375559254304</id>
 			<name></name>
 			<type>6</type>
 			<matcher>
@@ -180,12 +180,66 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1365940120588</id>
+			<id>1375559254307</id>
 			<name></name>
 			<type>22</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-*.o</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254310</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-_CPack*</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254350</id>
+			<name></name>
+			<type>26</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-cmake</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254353</id>
+			<name></name>
+			<type>6</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-true-.*\.deb|.*\.rpm|.*\.tar.gz</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254356</id>
+			<name></name>
+			<type>22</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-*.cmake</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254379</id>
+			<name></name>
+			<type>26</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-.coverage</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1375559254382</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-documentation</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

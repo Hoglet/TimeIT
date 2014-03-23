@@ -22,7 +22,7 @@ public:
 	void printHelp();
 	int run();
 private:
-	std::shared_ptr<DB::Database> database;
+	std::shared_ptr<DB::IDatabase> database;
 	std::shared_ptr<Timer> timer;
 	std::shared_ptr<GUI::IGUIFactory> guiFactory;
 	std::string dbName;

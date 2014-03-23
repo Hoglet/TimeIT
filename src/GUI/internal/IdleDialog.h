@@ -30,7 +30,7 @@ class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog,
 public:
 	IdleDialog(std::shared_ptr<Timer>& timer);
 	virtual void setIdleStartTime(time_t idleStartTime);
-	virtual void setActiveTaskList(std::shared_ptr<std::vector<Task>> activeTasks);
+	virtual void setActiveTaskList(std::shared_ptr<std::vector<DB::ExtendedTask>> activeTasks);
 	virtual ~IdleDialog();
 	virtual void attach(IActionObserver*);
 	virtual void detach(IActionObserver*);

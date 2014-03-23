@@ -11,7 +11,7 @@ namespace Internal
 {
 using namespace DB;
 using namespace std;
-EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::Database>& database) :
+EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase>& database) :
 	CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database)
 {
 	parentID = 0;
@@ -119,12 +119,11 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 void EditTaskDialog::setTaskID(int64_t ID)
 {
 	taskID = ID;
-	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTask(taskID);
-	if(tasks->size()>0)
+	std::shared_ptr<Task > task = taskAccessor->getTask(taskID);
+	if(task)
 	{
-		Task& task=tasks->at(0);
-		name = task.getName();
-		setParent( task.getParentID() );
+		name = task->getName();
+		setParent( task->getParentID() );
 		taskNameEntry.set_text(name);
 		std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
 		setTickedWorkspaces(workspaces);
@@ -179,7 +178,12 @@ void EditTaskDialog::on_OKButton_clicked()
 	else
 	{
 		taskAccessor->setParentID(taskID, parentID);
-		taskAccessor->setTaskName(taskID, name);
+		shared_ptr<Task> task = taskAccessor->getTask(taskID);
+		if(task)
+		{
+			task->setName(name);
+			taskAccessor->updateTask(*task);
+		}
 	}
 	autoTrackAccessor->setWorkspaces(taskID, workspaces);
 	taskID = -1;

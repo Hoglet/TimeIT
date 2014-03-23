@@ -18,7 +18,7 @@ namespace Internal {
 class EditTaskDialog: public Gtk::Dialog, public IEditTaskDialog, public IAddTaskDialog, public IWidget
 {
 public:
-	EditTaskDialog( std::shared_ptr<DB::Database>& database);
+	EditTaskDialog( std::shared_ptr<DB::IDatabase>& database);
 	virtual ~EditTaskDialog();
 	void on_OKButton_clicked();
 	void on_CancelButton_clicked();
@@ -61,8 +61,8 @@ private:
 	std::vector<int> workspaces;
 	int parentID;
 
-	std::shared_ptr<IAutotrackAccessor> autoTrackAccessor;
-	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<DB::IAutotrackAccessor> autoTrackAccessor;
+	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 	Workspace workspace;
 };
 }

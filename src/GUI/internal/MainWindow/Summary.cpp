@@ -1,10 +1,3 @@
-/*
- * DaySummary.cpp
- *
- *  Created on: 2008-jul-12
- *      Author: hoglet
- */
-
 #include "Summary.h"
 #include "Utils.h"
 #include "internal/DetailsDialog.h"
@@ -12,13 +5,13 @@
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-
+using namespace DB;
 namespace GUI
 {
 namespace Internal
 {
 
-Summary::Summary(std::shared_ptr<DB::Database>& database)
+Summary::Summary(std::shared_ptr<DB::IDatabase>& database)
 {
 	needsRePopulation = true;
 	activeDay = 0;
@@ -26,7 +19,7 @@ Summary::Summary(std::shared_ptr<DB::Database>& database)
 	stopTime = 0;
 	calendar = nullptr;
 	timeAccessor = database->getTimeAccessor();
-	taskAccessor = database->getTaskAccessor();
+	taskAccessor = database->getExtendedTaskAccessor();
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column("Name", columns.col_name);
@@ -143,13 +136,13 @@ void Summary::on_taskUpdated(int64_t taskID)
 {
 	if (isVisible())
 	{
-		shared_ptr<vector<Task>> result = taskAccessor->getTask(taskID, startTime, stopTime);
+		shared_ptr<vector<ExtendedTask>> result = taskAccessor->getExtendedTask(taskID, startTime, stopTime);
 		if (result->size() > 0)
 		{
 			Gtk::TreeIter iter = findRow(taskID);
 			if (iter != treeModel->children().end())
 			{
-				Task& filteredTask = result->at(0);
+				ExtendedTask& filteredTask = result->at(0);
 				TreeModel::Row row = *iter;
 				assignValuesToRow(row, filteredTask);
 				int64_t parentID = filteredTask.getParentID();
@@ -168,6 +161,19 @@ void Summary::on_taskUpdated(int64_t taskID)
 		needsRePopulation = true;
 	}
 }
+void Summary::on_completeUpdate()
+{
+	if(isVisible())
+	{
+		empty();
+		populate();
+	}
+	else
+	{
+		needsRePopulation = true;
+	}
+}
+
 
 void Summary::on_taskRemoved(int64_t taskID)
 {
@@ -238,11 +244,11 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 {
 	if (isVisible())
 	{
-		shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID, startTime, stopTime);
+		shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTasks(parentID, startTime, stopTime);
 
 		for (int i = 0; i < (int) tasks->size(); i++)
 		{
-			Task& task = tasks->at(i);
+			ExtendedTask& task = tasks->at(i);
 			if (task.getTotalTime() > 0)
 			{
 				TreeModel::Row row;
@@ -272,7 +278,7 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 	}
 }
 
-void Summary::assignValuesToRow(TreeModel::Row& row, const Task& task)
+void Summary::assignValuesToRow(TreeModel::Row& row, const ExtendedTask& task)
 {
 	row[columns.col_id] = task.getID();
 	row[columns.col_name] = task.getName();

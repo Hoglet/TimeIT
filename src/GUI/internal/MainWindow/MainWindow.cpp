@@ -46,12 +46,12 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(std::shared_ptr<DB::Database>& database) :
+MainWindow::MainWindow(std::shared_ptr<DB::IDatabase>& database) :
 	taskList(database), daySummary(database), weekSummary(database),
 			monthSummary(database),yearSummary(database), labelDay(_("Day")), labelWeek(_("Week")),
 			labelMonth(_("Month")), labelYear(_("Year"))
 {
-	taskAccessor = database->getTaskAccessor();
+	taskAccessor = database->getExtendedTaskAccessor();
 	settingsAccessor = database->getSettingsAccessor();
 	settingsAccessor->attach(this);
 	createLayout();

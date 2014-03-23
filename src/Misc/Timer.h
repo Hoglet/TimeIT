@@ -13,21 +13,23 @@
 namespace Test
 {
 	class TimerTest;
+	class DummyTimerTest;
 }
 
 class TimerObserver
 {
 public:
-	virtual ~TimerObserver()
-	{
-	}
-	virtual void on_signal_1_second() {};
-	virtual void on_signal_10_seconds() {};
+	virtual ~TimerObserver();
+	//LCOV_EXCL_START
+	virtual void on_signal_1_second();
+	virtual void on_signal_10_seconds();
+	//LCOV_EXCL_STOP
 };
 
 class Timer
 {
 	friend class Test::TimerTest;
+	friend class Test::DummyTimerTest;
 public:
 	Timer();
 	virtual ~Timer();

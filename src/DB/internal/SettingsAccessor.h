@@ -11,10 +11,13 @@
 #include <ISettingsAccessor.h>
 #include "CSQL.h"
 
+namespace DB
+{
+
 class SettingsAccessor: public ISettingsAccessor
 {
 public:
-	SettingsAccessor(const std::string& dbpath);
+	SettingsAccessor(std::shared_ptr<DBAbstraction::CSQL>& op_db);
 	virtual ~SettingsAccessor();
 	/* ShortFilterTime
 	 * Time in minutes that is the shortest time counted as work.
@@ -29,6 +32,10 @@ public:
 	virtual bool GetBoolByName(const std::string& name, bool defaultValue);
 	virtual bool SetBoolByName(const std::string& name, bool value) ;
 
+	virtual std::string GetStringByName(const std::string& name, const std::string& defaultValue);
+	virtual bool SetStringByName(const std::string& name, const std::string& value);
+
+
 	virtual void attach(ISettingsAccessorObserver* observer);
 	virtual void detach(ISettingsAccessorObserver* observer);
 private:
@@ -37,8 +44,9 @@ private:
 	int idleGT;
 	int idleGZ;
 	int shortFilterTime;
-	DBAbstraction::CSQL db;
+	std::shared_ptr<DBAbstraction::CSQL> db;
 	std::list<ISettingsAccessorObserver*> observers;
 };
+}
 
 #endif /* SETTINGS_H_ */

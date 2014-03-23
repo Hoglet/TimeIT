@@ -38,7 +38,8 @@ public:
 	//
 	virtual void attach(TimekeeperObserver*);
 	virtual void detach(TimekeeperObserver*);
-
+	int64_t startedTask;
+	int64_t stopedTask;
 };
 
 }

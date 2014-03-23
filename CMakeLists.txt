@@ -11,10 +11,10 @@ if(NOT CONFIGURED)
 	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/git_version_gen.sh)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
 endif()
-
 add_custom_target(version ALL
                   COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .                  
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+file (STRINGS "version" PACKAGE_VERSION)
 
 unset(VERSION_FILE CACHE)
 find_file(VERSION_FILE NAME "version" PATHS ${CMAKE_CURRENT_SOURCE_DIR})
@@ -22,7 +22,7 @@ find_file(VERSION_FILE NAME "version" PATHS ${CMAKE_CURRENT_SOURCE_DIR})
 IF (NOT "${VERSION_FILE}" STREQUAL VERSION_FILE-NOTFOUND)
   file (STRINGS ${VERSION_FILE} PACKAGE_VERSION)
 ELSE()
-  SET(PACKAGE_VERSION "1.Unknown")
+  SET(PACKAGE_VERSION "1.Unknown ")
 ENDIF()
 
 #  dependencies
@@ -32,6 +32,8 @@ pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
 pkg_check_modules(SQLITE sqlite3 REQUIRED)
 pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
 pkg_check_modules(XLIB x11 REQUIRED)
+pkg_check_modules(JANSSON jansson REQUIRED)
+pkg_check_modules(CURL libcurl REQUIRED)
 
 # make dist target
 # -------------------
@@ -45,6 +47,7 @@ add_custom_target(dist
 #--------------------
 set(CMAKE_INSTALL_PREFIX "/usr" )
 set(CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 SET(CPACK_GENERATOR "DEB;RPM")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Kent Asplund")
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-2.4-1c2a (>=2.8), libsqlite3-0, libxss1")

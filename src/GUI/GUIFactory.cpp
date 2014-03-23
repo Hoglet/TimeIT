@@ -1,10 +1,3 @@
-/*
- * GUIFactory.cpp
- *
- *  Created on: 2008-nov-22
- *      Author: hoglet
- */
-
 #include "GUIFactory.h"
 #include "internal/MainWindow/MainWindow.h"
 #include "internal/TimeItAboutDialog.h"
@@ -22,7 +15,7 @@ using namespace GUI::Internal;
 
 std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<DB::Database>& database,
+GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<DB::IDatabase>& database,
 		const std::shared_ptr<Timer>& timer)
 {
 	this->timekeeper = timekeeper;
@@ -169,8 +162,8 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon* statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		std::shared_ptr<ITaskAccessor> taskaccessor=database->getTaskAccessor();
-		std::shared_ptr<ITimeAccessor> timeaccessor=database->getTimeAccessor();
+		std::shared_ptr<DB::IExtendedTaskAccessor> taskaccessor=database->getExtendedTaskAccessor();
+		std::shared_ptr<DB::ITimeAccessor> timeaccessor=database->getTimeAccessor();
 
 		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor ));
 	}

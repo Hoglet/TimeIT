@@ -19,9 +19,11 @@
 
 #include <glibmm.h>
 
-#include <Timekeeper.h>
+#include <TimeKeeper.h>
 #include <glibmm/i18n.h>
 #include <TestRunner.h>
+#include <SyncManager.h>
+
 using namespace std;
 using namespace Test;
 
@@ -99,17 +101,20 @@ int Main::run()
 		ApplicationLock lock(dbName);
 		if (lock.lockAquired())
 		{
-
 			//Create a database object
-			database = std::shared_ptr<DB::Database>(new DB::Database(dbName));
+			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));
 
 			//Initiate all logic
 			timer = std::shared_ptr<Timer>(new Timer());
 
 			std::shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
-			guiFactory = std::shared_ptr<GUI::GUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
+			guiFactory = std::shared_ptr<GUI::IGUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
 
 			AutoTracker autotracker(timekeeper, database, timer);
+
+			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network());
+			SyncManager syncManager(database, timer, network);
+
 			Controller controller(guiFactory, timekeeper, database);
 			controller.start();
 			//Then start message loop

@@ -15,9 +15,9 @@ class AutoTrackerTest
 public:
 	AutoTrackerTest()
 	{
-		timekeeper = std::shared_ptr < ITimeKeeper > (new MockTimeKeeper());
-		database = std::shared_ptr < IDatabase > (new MockDatabase());
-		timer = std::shared_ptr < Timer > (new Timer());
+		timekeeper = std::shared_ptr<ITimeKeeper>(new MockTimeKeeper());
+		database = std::shared_ptr<IDatabase>(new MockDatabase());
+		timer = std::shared_ptr<Timer>(new Timer());
 		tracker = new AutoTracker(timekeeper, database, timer);
 	}
 
@@ -26,16 +26,6 @@ public:
 		delete tracker;
 	}
 
-	void checkWorkspaceSwitch()
-	{
-/*		database->get
-		set task 2 to start on workspace 2
-		set workspace 1
-		Check no starts
-		Set workspace 2
-		Check that task 2 was started*/
-		ASSERTM("Write test", false);
-	}
 
 private:
 	AutoTracker* tracker;
@@ -47,7 +37,14 @@ private:
 void WorkspaceSwitchTest()
 {
 	AutoTrackerTest test;
-	test.checkWorkspaceSwitch();
+	/*		database->get
+	 set task 2 to start on workspace 2
+	 set workspace 1
+	 Check no starts
+	 Set workspace 2
+	 Check that task 2 was started
+	ASSERTM("Write test", false);
+	*/
 }
 
 cute::suite make_suite_AutoTrackerTest()

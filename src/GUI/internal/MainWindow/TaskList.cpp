@@ -1,22 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
- * TimeIT
- * Copyright (C) Kent Asplund 2008 <hoglet@solit.se>
- *
- * TimeIT is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * TimeIT is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "TaskList.h"
 #include <string>
 #include <iostream>
@@ -27,12 +8,13 @@ namespace GUI
 {
 namespace Internal
 {
+using namespace DB;
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(std::shared_ptr<DB::Database>& database)
+TaskList::TaskList(std::shared_ptr<DB::IDatabase>& database)
 {
-	taskAccessor = database->getTaskAccessor();
+	taskAccessor = database->getExtendedTaskAccessor();
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"),
 			24, 24, true);
 	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "blank.svg"), 24,
@@ -111,7 +93,7 @@ void TaskList::on_row_collapsed(const TreeModel::iterator& iter, const TreeModel
 
 void TaskList::on_taskAdded(int64_t taskID)
 {
-	shared_ptr<vector<Task>> tasks = taskAccessor->getTask(taskID);
+	shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(taskID);
 	if (tasks->size() > 0)
 	{
 		int64_t parentID = tasks->at(0).getParentID();
@@ -138,10 +120,10 @@ void TaskList::on_taskAdded(int64_t taskID)
 
 void TaskList::on_taskUpdated(int64_t taskID)
 {
-	shared_ptr<vector<Task> > tasks = taskAccessor->getTask(taskID);
+	shared_ptr<vector<ExtendedTask> > tasks = taskAccessor->getExtendedTask(taskID);
 	if (tasks->size() > 0)
 	{
-		Task& task=tasks->at(0);
+		ExtendedTask& task=tasks->at(0);
 		Gtk::TreeIter iter = findRow(taskID);
 		if (iter != treeModel->children().end())
 		{
@@ -177,6 +159,11 @@ void TaskList::on_selection_changed()
 }
 
 void TaskList::on_taskParentChanged(int64_t)
+{
+	doUpdate();
+}
+
+void TaskList::on_completeUpdate()
 {
 	doUpdate();
 }
@@ -236,7 +223,7 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 	return iter;
 }
 
-void TaskList::assignValuesToRow(TreeModel::Row& row, const Task& task)
+void TaskList::assignValuesToRow(TreeModel::Row& row, const ExtendedTask& task)
 {
 	row[columns.col_id] = task.getID();
 	if (task.getRunning())
@@ -259,7 +246,7 @@ void TaskList::assignValuesToRow(TreeModel::Row& row, const Task& task)
 
 void TaskList::populate(TreeModel::Row* parent, int parentID)
 {
-	shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID);
+	shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTasks(parentID);
 
 	for (int i = 0; i < (int) tasks->size(); i++)
 	{

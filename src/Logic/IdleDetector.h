@@ -11,7 +11,16 @@
 #include <time.h>
 #include <memory>
 
-class IdleDetector : public TimerObserver
+class IIdleDetector
+{
+public:
+	virtual ~IIdleDetector();
+	virtual int minutesIdle() = 0;
+	virtual time_t timeIdle() = 0;
+};
+
+
+class IdleDetector : public TimerObserver, public IIdleDetector
 {
 public:
 	IdleDetector();

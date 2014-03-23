@@ -10,15 +10,13 @@
 
 #include <string>
 
-class OSAbstraction
+namespace OSAbstraction
 {
-public:
-	static void mkDir(std::string path);
-	static std::string getApplicationPath();
-	static bool fileExists(std::string filename);
-	static void unlink(std::string filename);
-	static int getPID();
-	static void showURL(std::string url);
+	void mkDir(std::string path);
+	bool fileExists(std::string filename);
+	void unlink(std::string filename);
+	int getPID();
+	void showURL(std::string url);
 };
 
 #endif /* OSABSTRACTION_H_ */

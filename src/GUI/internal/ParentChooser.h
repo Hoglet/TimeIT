@@ -21,7 +21,7 @@ namespace Internal
 class ParentChooser: public Gtk::ComboBox
 {
 public:
-	ParentChooser(std::shared_ptr<DB::Database>& database);
+	ParentChooser(std::shared_ptr<DB::IDatabase>& database);
 	virtual ~ParentChooser();
 
 	void setID(int ID);
@@ -53,7 +53,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 	int parentID;
 };
 

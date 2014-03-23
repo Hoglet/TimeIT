@@ -7,14 +7,15 @@
 
 #include "AutotrackAccessor.h"
 #include <sstream>
-#include "TaskAccessor.h"
+#include "ExtendedTaskAccessor.h"
 
 using namespace std;
 using namespace DBAbstraction;
-
-AutotrackAccessor::AutotrackAccessor(const std::string& dbpath, std::shared_ptr<ITaskAccessor>& taskAccessor) :
-		db(dbpath)
+namespace DB
 {
+AutotrackAccessor::AutotrackAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<IExtendedTaskAccessor>& taskAccessor)
+{
+	db = op_db;
 	m_taskAccessor = taskAccessor;
 	m_taskAccessor->attach(this);
 }
@@ -28,8 +29,8 @@ std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 	std::vector<int64_t> retVal;
 	stringstream statement;
 	statement << "SELECT taskID FROM autotrack where workspace =" << workspace;
-	db.exe(statement.str());
-	for (vector<DataCell> row : db.rows)
+	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
+	for (vector<DataCell> row : *rows)
 	{
 		int64_t id = row[0].getInt();
 		retVal.push_back(id);
@@ -42,8 +43,8 @@ std::vector<int> AutotrackAccessor::getWorkspaces(int64_t taskID)
 	std::vector<int> retVal;
 	stringstream statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
-	db.exe(statement.str());
-	for (vector<DataCell> row : db.rows)
+	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
+	for (vector<DataCell> row : *rows)
 	{
 		int workspace = row[0].getInt();
 		retVal.push_back(workspace);
@@ -55,13 +56,13 @@ void AutotrackAccessor::setWorkspaces(int64_t taskID, std::vector<int> workspace
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << taskID;
-	db.exe(statement.str());
+	db->exe(statement.str());
 
 	for (int workspace : workspaces)
 	{
 		statement.str("");
 		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << taskID << ", " << workspace << ")";
-		db.exe(statement.str());
+		db->exe(statement.str());
 	}
 }
 
@@ -69,5 +70,11 @@ void AutotrackAccessor::on_taskRemoved(int64_t taskID)
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << taskID;
-	db.exe(statement.str());
+	db->exe(statement.str());
+}
+
+void AutotrackAccessor::on_completeUpdate()
+{
+	//TODO Detect if syncing removed task and remove from autotrack
+}
 }

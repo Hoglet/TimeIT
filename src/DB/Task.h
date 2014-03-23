@@ -1,55 +1,59 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
- * TimeIT
- * Copyright (C) Kent Asplund 2008 <hoglet@solit.se>
- *
- * TimeIT is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * TimeIT is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#ifndef _TASK_HPP_
-#define _TASK_HPP_
+#ifndef TASK_H_
+#define TASK_H_
 #include <string>
+#include "UUID.h"
 
+namespace Test
+{
+class TestTaskC;
+class Network_test;
+}
+;
 
- class Task
- {
-	 public:
-		 std::string getName() const;
-		 void setName(std::string newName);
-		 int getID() const;
-		 bool getExpanded() const;
-		 void setExpanded(bool);
-		 int getParentID() const;
-		 void setParent(int);
-		 void setParentID();
-		 int getTotalTime() const;
-		 void setTotalTime(int);
-		 int getTime() const;
-		 void setTime(int) ;
-		 bool getRunning() const;
-		 Task(int ID, int parentID, std::string name, int time=0, bool expanded = false, bool running = false, int totalTime=0);
-	 protected:
-		 std::string name;
-		 int ID;
-		 bool expanded;
-		 bool running;
-		 int parentID;
-		 int totalTime;
-		 int time;
-	 private:
-		 Task();
- };
+namespace DB
+{
+class TaskAccessor;
 
-#endif // _TASK_HPP_
+class Task
+{
+	friend class TaskAccessor;
+	friend class SyncManager;
+public:
+	Task(const std::string& name, int64_t parentID = 0);
+	Task(const std::string& name, int64_t parentID, const std::string& uuid, bool completed, int64_t ID, time_t lastChange, const std::string& parentUUID, bool deleted);
+	virtual ~Task();
+	std::string getName() const;
+	void setName(std::string newName);
+	int64_t getID() const;
+	int64_t getParentID() const;
+	void setParent(int64_t);
+	bool getCompleted() const;
+	void setCompleted(bool);
+	std::string getUUID() const;
+	std::string getParentUUID() const;
+	time_t getLastChanged() const;
+	bool getDeleted() const;
+	void setDeleted(bool state);
+	friend bool operator== (const Task &op1, const Task &op2);
+	friend bool operator!= (const Task &op1, const Task &op2);
 
+protected:
+	std::string name;
+	int64_t ID;
+	int64_t parentID;
+	std::string uuid;
+	std::string parentUuid;
+	bool completed;
+	time_t lastChanged;
+	bool deleted;
+	Task();
+	static UUID uuidManager;
+private:
+	void init(const std::string& op_name, int64_t op_parentID, const std::string& op_uuid, bool op_completed, int64_t op_ID,
+			time_t op_lastChange, const std::string& op_parentUuid, bool op_deleted);
+};
+
+extern bool operator== (const Task &op1, const Task &op2);
+extern bool operator!= (const Task &op1, const Task &op2);
+}
+#endif /* TASK_H_ */

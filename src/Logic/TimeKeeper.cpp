@@ -1,15 +1,19 @@
 #include <IIdleDialog.h>
-#include <Timekeeper.h>
 #include <Timer.h>
 #include <iostream>
 #include <DefaultValues.h>
+#include "TimeKeeper.h"
 
 using namespace std;
-//using namespace nsIdleDialog;
 
-//TODO Autostart on movement (if autotracker and supressed dialog)
+//LCOV_EXCL_START
+void Timekeeper::on_signal_1_second()
+{
+}
+//LCOV_EXCL_STOP
 
-Timekeeper::Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer)
+
+Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer)
 {
 	m_timer = timer;
 	m_timeAccessor = database->getTimeAccessor();
@@ -138,6 +142,11 @@ void Timekeeper::on_taskRemoved(int64_t id)
 		}
 	}
 }
+void Timekeeper::on_completeUpdate()
+{
+	//TODO Detect task removal during syncing
+}
+
 
 void Timekeeper::UpdateTask(int64_t id, time_t now)
 {
@@ -148,7 +157,9 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 		it->second.stopTime = time(NULL);
 		TaskTime task = it->second;
 
-		m_timeAccessor->changeEndTime(task.dbHandle, task.stopTime);
+		DB::TimeEntry te = m_timeAccessor->getByID(task.dbHandle);
+		te.setStop(task.stopTime);
+		m_timeAccessor->update(te);
 	}
 }
 

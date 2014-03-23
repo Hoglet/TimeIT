@@ -10,18 +10,19 @@ namespace DBAbstraction
 class DataCell
 {
 public:
-	DataCell(const char*);
-	DataCell(const DataCell&);
+	DataCell();
+	DataCell(int);
+	DataCell(const char *);
+	virtual ~DataCell();
+	bool hasValue();
 	int getInt();
-	bool isNull();
 	std::string getString();
 	bool getBool();
-	virtual ~DataCell();
-	DataCell();
-	DataCell& operator= (const DataCell&);
-private:
-	std::string data;
-	dbexception e;
+protected:
+	int type;
+	std::string text;
+	int64_t value;
+	dbexception dbe;
 };
 
 }

@@ -7,3 +7,4 @@
 cd Debug
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 /usr/bin/make $@
+find . -name '*.gcda' | xargs rm

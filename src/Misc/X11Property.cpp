@@ -10,7 +10,7 @@
 #include <X11/Xatom.h>
 #include <X11/cursorfont.h>
 
-
+//LCOV_EXCL_START
 X11Property::X11Property()
 {
 	display = XOpenDisplay(NULL);
@@ -47,13 +47,13 @@ long X11Property::get_cardinal(const char *name, int offset) throw(GeneralExcept
 		else
 		{
 			XFree(returnedData);
-			e.set_message("get_cardinal failed: Unexpected data");
+			e.setMessage("get_cardinal failed: Unexpected data");
 			throw e;
 		}
 	}
 	else
 	{
-		e.set_message("get_cardinal failed: XGetWindowProperty failed");
+		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
 		throw e;
 	}
 	return returnValue;
@@ -89,15 +89,15 @@ std::vector<std::string> X11Property::get_strings(const char *name) throw(Genera
 		else
 		{
 			XFree(returnedData);
-			e.set_message("get_strings failed: Unexpected data");
+			e.setMessage("get_strings failed: Unexpected data");
 			throw e;
 		}
 	}
 	else
 	{
-		e.set_message("get_cardinal failed: XGetWindowProperty failed");
+		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
 		throw e;
 	}
 	return returnValues;
 }
-
+//LCOV_EXCL_STOP

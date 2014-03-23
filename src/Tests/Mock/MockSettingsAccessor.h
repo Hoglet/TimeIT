@@ -13,7 +13,7 @@
 namespace Test
 {
 
-class MockSettingsAccessor: public ISettingsAccessor
+class MockSettingsAccessor: public DB::ISettingsAccessor
 {
 public:
 	MockSettingsAccessor();
@@ -22,14 +22,17 @@ public:
 	virtual int GetShortFilterTime();
 	virtual void SetShortFilterTime(int);
 
-	virtual void attach(ISettingsAccessorObserver* );
-	virtual void detach(ISettingsAccessorObserver* );
+	virtual void attach(DB::ISettingsAccessorObserver* );
+	virtual void detach(DB::ISettingsAccessorObserver* );
 
 	virtual int GetIntByName(const std::string& name, int defaultValue);
 	virtual bool SetIntByName(const std::string& name, int value);
 
 	virtual bool GetBoolByName(const std::string& name, bool defaultValue);
 	virtual bool SetBoolByName(const std::string& name, bool value);
+
+	virtual std::string GetStringByName(const std::string& name, const std::string& defaultValue);
+	virtual bool SetStringByName(const std::string& name, const std::string& value);
 
 };
 

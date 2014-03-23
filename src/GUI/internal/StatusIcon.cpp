@@ -17,8 +17,9 @@ namespace GUI
 namespace Internal
 {
 using namespace std;
+using namespace DB;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<ITaskAccessor>& taskaccessor,
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<IExtendedTaskAccessor>& taskaccessor,
 		std::shared_ptr<ITimeAccessor>& timeaccessor)
 {
 	m_timekeeper = timekeeper;
@@ -66,10 +67,10 @@ void StatusIcon::populateContextMenu()
 	{
 		try
 		{
-			std::shared_ptr<std::vector<Task> > tasks = m_taskaccessor->getTask(latestTasks[i]);
+			std::shared_ptr<std::vector<ExtendedTask> > tasks = m_taskaccessor->getExtendedTask(latestTasks[i]);
 			if (tasks->size() > 0)
 			{
-				Task& task = tasks->at(0);
+				ExtendedTask& task = tasks->at(0);
 				std::string menuLine = completeTaskPath(latestTasks[i]);
 
 				Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
@@ -137,14 +138,13 @@ void StatusIcon::populateContextMenu()
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
 	std::string taskName;
-	std::shared_ptr<std::vector<Task> > tasks = m_taskaccessor->getTask(id, 0, 0, false);
-	if (tasks->size() > 0)
+	std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
+	if (task)
 	{
-		Task& task = tasks->at(0);
-		taskName = task.getName();
-		if (task.getParentID() > 0)
+		taskName = task->getName();
+		if (task->getParentID() > 0)
 		{
-			taskName = completeTaskPath(task.getParentID()) + " / " + taskName;
+			taskName = completeTaskPath(task->getParentID()) + " / " + taskName;
 		}
 	}
 	return taskName;
@@ -251,7 +251,12 @@ void StatusIcon::on_taskUpdated(int64_t)
 	setTooltip();
 	populateContextMenu();
 }
-;
+
+void StatusIcon::on_completeUpdate()
+{
+	setTooltip();
+	populateContextMenu();
+}
 
 void StatusIcon::on_runningChanged()
 {
@@ -264,13 +269,13 @@ void StatusIcon::setTooltip()
 	std::stringstream message;
 	if (m_timekeeper->hasRunningTasks())
 	{
-		std::shared_ptr<std::vector<Task>> tasks = m_taskaccessor->getRunningTasks();
+		std::shared_ptr<std::vector<ExtendedTask>> tasks = m_taskaccessor->getRunningTasks();
 		//Figure out start and end of today
 		time_t startTime = Utils::getBeginingOfDay(time(0));
 		time_t stopTime = Utils::getEndOfDay(time(0));
 		for (int i = 0; i < (int) tasks->size(); i++)
 		{
-			Task& task = tasks->at(i);
+			ExtendedTask& task = tasks->at(i);
 			if (i > 0)
 			{
 				message << endl;

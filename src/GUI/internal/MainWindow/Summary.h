@@ -9,20 +9,20 @@
 #define SUMMARY_H_
 
 #include <gtkmm.h>
-#include <ISummary.h>
-#include <ITimeAccessor.h>
-#include <Database.h>
-#include <ITaskAccessor.h>
+#include "ISummary.h"
+#include "TimeAccessor.h"
+#include "Database.h"
+#include "ExtendedTaskAccessor.h"
 
 namespace GUI
 {
 namespace Internal
 {
 
-class Summary: public Gtk::TreeView, public TaskAccessorObserver, public ISummary
+class Summary: public Gtk::TreeView, public DB::TaskAccessorObserver, public ISummary
 {
 public:
-	Summary(std::shared_ptr<DB::Database>& database);
+	Summary(std::shared_ptr<DB::IDatabase>& database);
 	virtual ~Summary();
 	void setReferences(Gtk::Calendar& calendar);
 	int64_t getSelectedID();
@@ -55,13 +55,14 @@ protected:
 	void on_menu_showDetails();
 	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
+	virtual void on_completeUpdate();
 	void init();
 	void populate(Gtk::TreeModel::Row* parent=0, int parentID=0);
 	void empty();
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row& row, const Task& task);
+	void assignValuesToRow(Gtk::TreeModel::Row& row, const DB::ExtendedTask& task);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
@@ -86,8 +87,8 @@ protected:
 	time_t startTime;
 	time_t stopTime;
 	std::list<SummaryObserver* > observers;
-	std::shared_ptr<ITimeAccessor> timeAccessor;
-	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
+	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
 private:
 	bool isVisible();
 	bool needsRePopulation;

@@ -65,11 +65,11 @@ void IdleDialog::setIdleStartTime(time_t idleStartTime)
 	m_idleStartTime = idleStartTime;
 }
 
-void IdleDialog::setActiveTaskList(std::shared_ptr<std::vector<Task>> activeTasks)
+void IdleDialog::setActiveTaskList(std::shared_ptr<std::vector<DB::ExtendedTask>> activeTasks)
 {
 	std::stringstream text;
 	int i=0;
-	for ( Task task: *activeTasks)
+	for ( DB::ExtendedTask task: *activeTasks)
 	{
 		if(i++>0)
 		{

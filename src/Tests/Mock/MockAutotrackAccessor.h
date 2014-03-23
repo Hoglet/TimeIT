@@ -13,7 +13,7 @@
 namespace Test
 {
 
-class MockAutotrackAccessor: public IAutotrackAccessor
+class MockAutotrackAccessor: public DB::IAutotrackAccessor
 {
 public:
 	MockAutotrackAccessor();

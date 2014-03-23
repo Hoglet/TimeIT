@@ -5,6 +5,9 @@
 #include "TempDB.h"
 #include "ISettingsAccessor.h"
 
+using namespace DB;
+
+
 namespace Test
 {
 

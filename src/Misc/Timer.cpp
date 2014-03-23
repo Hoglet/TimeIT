@@ -8,6 +8,22 @@
 #include "Timer.h"
 #include <gtkmm.h>
 
+//LCOV_EXCL_START
+TimerObserver::~TimerObserver()
+{
+}
+
+void TimerObserver::on_signal_1_second()
+{
+
+}
+
+void TimerObserver::on_signal_10_seconds()
+{
+
+}
+//LCOV_EXCL_STOP
+
 Timer::Timer()
 {
 	Glib::signal_timeout().connect( sigc::mem_fun(*this, &Timer::on_signal_1_second), 1000 );

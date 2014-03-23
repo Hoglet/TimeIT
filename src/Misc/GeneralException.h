@@ -9,16 +9,17 @@
 #define GENERALEXCEPTION_H_
 
 #include <exception>
-
+//LCOV_EXCL_START
 class GeneralException: public std::exception
 {
 public:
 	GeneralException();
-	void set_message(const char* message);
+	void setMessage(const char* message);
 	virtual ~GeneralException() throw();
 	virtual const char* what() const throw();
 private:
 	const char* message;
 };
+//LCOV_EXCL_STOP
 
 #endif /* GENERALEXCEPTION_H_ */

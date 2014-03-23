@@ -21,7 +21,7 @@
 #define _TASK_LIST_HPP_
 
 #include <gtkmm.h>
-#include "Task.h"
+#include "ExtendedTask.h"
 #include "IActionObserver.h"
 #include <Database.h>
 
@@ -30,10 +30,10 @@ namespace GUI
 namespace Internal
 {
 
-class TaskList: public Gtk::TreeView, public TaskAccessorObserver
+class TaskList: public Gtk::TreeView, public DB::TaskAccessorObserver
 {
 public:
-	TaskList(std::shared_ptr<DB::Database>& database);
+	TaskList(std::shared_ptr<DB::IDatabase>& database);
 	virtual ~TaskList();
 	void populate (Gtk::TreeModel::Row* parent=0, int parentID=0);
 	int64_t getSelectedID();
@@ -41,6 +41,8 @@ public:
 	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
 	virtual void on_taskParentChanged(int64_t);
+	virtual void on_completeUpdate();
+
 	void on_row_expanded(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
 	void on_row_collapsed(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
 	void attach(IActionObserver* observer);
@@ -77,12 +79,12 @@ private:
 	void on_menu_remove_task();
 	void on_menu_add_time();
 	virtual bool on_button_press_event(GdkEventButton* event);
-	void assignValuesToRow(Gtk::TreeModel::Row& row,const Task& task);
+	void assignValuesToRow(Gtk::TreeModel::Row& row,const DB::ExtendedTask& task);
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();
 	std::list<IActionObserver*> observers;
-	std::shared_ptr<ITaskAccessor> taskAccessor;
+	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
 };
 }
 }

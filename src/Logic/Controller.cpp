@@ -17,14 +17,14 @@
 
 using namespace GUI;
 
-Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper,
-		std::shared_ptr<DB::Database>& database)
+Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory,
+                       std::shared_ptr<ITimeKeeper>& timeKeeper,
+                       std::shared_ptr<DB::IDatabase>& database)
 {
-	mainWindow_x = 0;
-	mainWindow_y = 0;
-
+	mainWindow_x=0;
+	mainWindow_y=0;
 	settingsAccessor = database->getSettingsAccessor();
-	taskAccessor = database->getTaskAccessor();
+	taskAccessor = database->getExtendedTaskAccessor();
 	selectedTaskID = -1;
 	this->timeKeeper = timeKeeper;
 	this->guiFactory = guiFactory;
@@ -41,7 +41,7 @@ void Controller::start()
 {
 	guiFactory->getStatusIcon().show();
 	guiFactory->getStatusIcon().attach(this);
-	if (!settingsAccessor->GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
+	if(!settingsAccessor->GetBoolByName("StartMinimized",DEFAULT_START_MINIMIZED))
 	{
 		WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
 		mainWindow->attach(this);
@@ -49,10 +49,12 @@ void Controller::start()
 	}
 }
 
+//LCOV_EXCL_START
 void Controller::on_action_quit()
 {
 	GUI::GUIFactory::quit();
 }
+//LCOV_EXCL_STOP
 
 void Controller::on_action_toggleMainWindow()
 {
@@ -79,6 +81,7 @@ void Controller::on_action_about()
 {
 	guiFactory->getWidget(ABOUT_DIALOG)->show();
 }
+//LCOV_EXCL_START
 void Controller::on_action_report_bug()
 {
 	OSAbstraction::showURL("https://github.com/Hoglet/TimeIT/issues/new");
@@ -88,23 +91,24 @@ void Controller::on_action_help()
 {
 	std::stringstream translatedHelp;
 	std::stringstream helpToUse;
-	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << Utils::get639LanguageString() << "/index.html";
-	if (Utils::fileExists(std::string(translatedHelp.str())))
+	translatedHelp<<PACKAGE_DATA_DIR<<"/doc/timeit/html/"<< Utils::get639LanguageString() <<"/index.html";
+	if(OSAbstraction::fileExists(std::string(translatedHelp.str())))
 	{
-		helpToUse << "file://" << translatedHelp.str();
+		helpToUse<<"file://"<<translatedHelp.str();
 	}
 	else
 	{
 		std::stringstream defaultHelp;
-		defaultHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/C/index.html";
-		if (Utils::fileExists(std::string(defaultHelp.str())))
+		defaultHelp << PACKAGE_DATA_DIR<<"/doc/timeit/html/C/index.html";
+		if(OSAbstraction::fileExists(std::string(defaultHelp.str())))
 		{
-			helpToUse << "file://" << defaultHelp.str();
+			helpToUse<<"file://"<<defaultHelp.str();
 		}
 	}
-	const char * helpfile = helpToUse.str().c_str();
+	const char * helpfile=helpToUse.str().c_str();
 	OSAbstraction::showURL(helpfile);
 }
+//LCOV_EXCL_STOP
 void Controller::on_action_start_task()
 {
 	timeKeeper->StartTask(selectedTaskID);
@@ -146,7 +150,6 @@ void Controller::on_idleDetected()
 	timeKeeper->enable(false);
 	time_t now = time(0);
 	time_t idleStartTime = now - timeKeeper->timeIdle();
-
 	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
 	if (quiet)
 	{
@@ -157,7 +160,7 @@ void Controller::on_idleDetected()
 		idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
-		std::shared_ptr<std::vector<Task> > activeTasks = taskAccessor->getRunningTasks();
+		std::shared_ptr<std::vector<DB::ExtendedTask> > activeTasks = taskAccessor->getRunningTasks();
 		idleDialog->setActiveTaskList(activeTasks);
 		idleDialog->show();
 	}
@@ -216,13 +219,19 @@ void Controller::on_action_preferences()
 	preferenceDialog->show();
 }
 
-void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime)
+
+
+void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(
-			guiFactory->getWidget(GUI::DETAILS_DIALOG));
-	if (detailsDialog)
+	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
+	if(detailsDialog)
 	{
-		detailsDialog->set(taskId, startTime, stopTime);
+		detailsDialog->set(taskId,startTime,stopTime);
 		detailsDialog->show();
 	}
 }
+//LCOV_EXCL_START
+void Controller::on_runningChanged() {}
+void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime) {}
+
+//LCOV_EXCL_STOP

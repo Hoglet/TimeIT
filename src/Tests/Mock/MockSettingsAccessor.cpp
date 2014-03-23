@@ -7,6 +7,8 @@
 
 #include "MockSettingsAccessor.h"
 
+using namespace DB;
+
 namespace Test
 {
 
@@ -52,6 +54,16 @@ bool MockSettingsAccessor::GetBoolByName(const std::string& name, bool defaultVa
 }
 
 bool MockSettingsAccessor::SetBoolByName(const std::string& name, bool value)
+{
+	return false;
+}
+
+std::string MockSettingsAccessor::GetStringByName(const std::string& name, const std::string& defaultValue)
+{
+	return defaultValue;
+}
+
+bool MockSettingsAccessor::SetStringByName(const std::string& name, const std::string& value)
 {
 	return false;
 }

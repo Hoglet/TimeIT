@@ -13,4 +13,7 @@
 #define DEFAULT_COMPACTLAYOUT true
 #define DEFAULT_START_MINIMIZED false
 #define DEFAULT_QUIET_MODE false
+#define DEFAULT_URL "http://localhost:8000/"
+#define DEFAULT_USER "testman"
+#define DEFAULT_PASSWORD "password"
 #endif /* DEFAULTVALUES_H_ */

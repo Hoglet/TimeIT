@@ -8,16 +8,18 @@
 #ifndef AUTOTRACKACCESSOR_H_
 #define AUTOTRACKACCESSOR_H_
 #include <vector>
-#include <ITaskAccessor.h>
-#include <IAutotrackAccessor.h>
+#include "ExtendedTaskAccessor.h"
+#include "IAutotrackAccessor.h"
 #include "CSQL.h"
-#include <ITaskAccessor.h>
 #include <memory>
+
+namespace DB
+{
 
 class AutotrackAccessor : public TaskAccessorObserver, public IAutotrackAccessor
 {
 public:
-	AutotrackAccessor(const std::string& dbpath,  std::shared_ptr<ITaskAccessor>& taskAccessor);
+	AutotrackAccessor(std::shared_ptr<DBAbstraction::CSQL>& db,  std::shared_ptr<IExtendedTaskAccessor>& taskAccessor);
 	virtual ~AutotrackAccessor();
 	std::vector<int64_t> getTaskIDs(int workspace);
 	std::vector<int> getWorkspaces(int64_t taskID);
@@ -26,8 +28,10 @@ private:
 	virtual void on_taskAdded(int64_t)  {};
 	virtual void on_taskUpdated(int64_t) {};
 	virtual void on_taskRemoved(int64_t);
-	std::shared_ptr<ITaskAccessor> m_taskAccessor;
-	DBAbstraction::CSQL db;
+	virtual void on_completeUpdate();
+	std::shared_ptr<IExtendedTaskAccessor> m_taskAccessor;
+	std::shared_ptr<DBAbstraction::CSQL> db;
 };
 
+}
 #endif /* AUTOTRACKACCESSOR_H_ */

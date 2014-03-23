@@ -14,6 +14,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/label.h>
+#include <gtkmm/frame.h>
 #include <IWidget.h>
 #include <ISettingsAccessor.h>
 #include <Database.h>
@@ -24,7 +25,7 @@ namespace GUI
 class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(std::shared_ptr<DB::Database>& database);
+	PreferenceDialog(std::shared_ptr<DB::IDatabase>& database);
 	virtual ~PreferenceDialog();
 
 	// IWidget interface
@@ -39,6 +40,7 @@ private:
 	void on_OKButton_clicked();
 
 	Gtk::Table TimeConstantTable;
+	Gtk::Table ServerTable;
 
 	Gtk::CheckButton CompactLayoutButton;
 	Gtk::CheckButton StartMinimizedButton;
@@ -49,7 +51,14 @@ private:
 
 	Gtk::Label QuietLabel;
 	Gtk::CheckButton QuietButton;
-
+	Gtk::Label UrlLabel;
+	Gtk::Label UserLabel;
+	Gtk::Label PasswordLabel;
+	Gtk::Entry UrlEntry;
+	Gtk::Entry UserEntry;
+	Gtk::Entry PasswordEntry;
+	Gtk::Label ServerLabel;
+	Gtk::Frame SyncServerFrame;
 	Gtk::Button CancelButton;
 	Gtk::Button OKButton;
 
@@ -65,13 +74,18 @@ private:
 	bool	oldCompactLayout;
 	bool 	oldStartMinimized;
 	bool	oldQuietMode;
-
+	std::string oldURL;
+	std::string oldUser;
+	std::string oldPassword;
+	std::string URL;
+	std::string User;
+	std::string Password;
 
 	void on_data_changed();
 	bool on_focus_changed(GdkEventFocus*);
 	bool on_button_released(GdkEventButton* event);
 
-	std::shared_ptr<ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 };
 
 }

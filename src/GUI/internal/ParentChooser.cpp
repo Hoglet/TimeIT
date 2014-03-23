@@ -7,14 +7,16 @@
 
 #include "ParentChooser.h"
 #include <iostream>
-#include <Task.h>
+#include <ExtendedTask.h>
+
+using namespace DB;
 
 namespace GUI
 {
 namespace Internal
 {
 using namespace std;
-ParentChooser::ParentChooser(std::shared_ptr<DB::Database>& database)
+ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase>& database)
 {
 	taskAccessor = database->getTaskAccessor();
 	//Create the Tree model:

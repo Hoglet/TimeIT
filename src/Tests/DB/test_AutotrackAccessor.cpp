@@ -7,14 +7,16 @@
 #include <vector>
 #include "dbexception.h"
 
+using namespace DB;
+
 namespace Test
 {
 
-void test_WorkspaceAccessor()
+void AutotrackAccessor_WorkspaceAccessor()
 {
 	TempDB tempdb;
 	std::shared_ptr<IAutotrackAccessor> autotrackAccessor = tempdb.getAutotrackAccessor();
-	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = tempdb.getExtendedTaskAccessor();
 	int64_t taskId = taskAccessor->newTask("Tjohopp", 0);
 	std::vector<int> workspaces;
 	workspaces.push_back(1);
@@ -24,7 +26,7 @@ void test_WorkspaceAccessor()
 }
 
 
-void test_getTaskIDs()
+void AutotrackAccessor_getTaskIDs()
 {
 	TempDB tempdb;
 	std::shared_ptr<IAutotrackAccessor> autotrackAccessor = tempdb.getAutotrackAccessor();
@@ -45,8 +47,8 @@ void test_getTaskIDs()
 cute::suite make_suite_test_AutotrackAccessor()
 {
 	cute::suite s;
-	s.push_back(CUTE(test_WorkspaceAccessor));
-	s.push_back(CUTE(test_getTaskIDs));
+	s.push_back(CUTE(AutotrackAccessor_WorkspaceAccessor));
+	s.push_back(CUTE(AutotrackAccessor_getTaskIDs));
 	return s;
 }
 }

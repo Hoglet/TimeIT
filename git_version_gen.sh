@@ -30,7 +30,6 @@ else
 	DEBIAN_VERSION=`head debian/changelog  -n 1 | cut -d'(' -f2 |cut -d')' -f1`
 	VN="${DEBIAN_VERSION}"
 fi
-
 if test -r $GVF
 then
 	VC=$(cat $GVF)
@@ -39,5 +38,5 @@ else
 fi
 test "$VN" = "$VC" || {
 	echo "$VN" > $GVF
-	echo "#define VERSION \"$VN\""> src/version.h
+    echo "#define VERSION \"$VN\""> src/version.h
 }

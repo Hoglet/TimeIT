@@ -3,8 +3,9 @@
 #include "cute_runner.h"
 #include "Notifier_test.h"
 #include "Notifier.h"
-#include "ITaskAccessor.h"
+#include "ExtendedTaskAccessor.h"
 
+using namespace DB;
 namespace Test
 {
 
@@ -17,43 +18,12 @@ public:
 		task_id_removed = 0;
 		task_id_updated = 0;
 		task_id_parent = 0;
+		notifier.attach(this);
 	}
 
 	virtual ~NotifyTester()
 	{
 	}
-
-	void TestTaskUpdated()
-	{
-		notifier.attach(this);
-		task_id_updated = 0;
-		notifier.taskUpdated(1);
-		ASSERT_EQUAL(1, task_id_updated);
-	}
-
-	void TestTaskAdded()
-	{
-		notifier.attach(this);
-		task_id_added = 0;
-		notifier.taskAdded(2);
-		ASSERT_EQUAL(2, task_id_added);
-	}
-
-	void TestTaskRemoved()
-	{
-		notifier.attach(this);
-		task_id_removed = 0;
-		notifier.taskRemoved(3);
-		ASSERT_EQUAL(3, task_id_removed);
-	}
-	void TestTaskParentChanged()
-	{
-		notifier.attach(this);
-		task_id_parent = 0;
-		notifier.taskParentChanged(4);
-		ASSERT_EQUAL(4, task_id_parent);
-	}
-
 
 	virtual void on_taskUpdated(int64_t t_id)
 	{
@@ -75,7 +45,11 @@ public:
 		task_id_parent = t_id;
 	}
 
-private:
+	virtual void on_completeUpdate()
+	{
+
+	}
+
 	Notifier notifier;
 	int64_t task_id_updated;
 	int64_t task_id_added;
@@ -87,25 +61,32 @@ private:
 void NotifyTaskUpdated()
 {
 	NotifyTester test;
-	test.TestTaskUpdated();
+	test.notifier.taskUpdated(1);
+	ASSERT_EQUAL(1, test.task_id_updated);
 }
 
 void NotifyTaskAdded()
 {
 	NotifyTester test;
-	test.TestTaskAdded();
+	test.notifier.taskAdded(2);
+	ASSERT_EQUAL(2, test.task_id_added);
 }
 
 void NotifyTaskRemoved()
 {
 	NotifyTester test;
-	test.TestTaskRemoved();
+	test.notifier.taskRemoved(3);
+	ASSERT_EQUAL(3, test.task_id_removed);
 }
 void NotifyTaskParentChanged()
 {
 	NotifyTester test;
-	test.TestTaskParentChanged();
+	test.notifier.taskParentChanged(4);
+	ASSERT_EQUAL(4, test.task_id_parent);
 }
+
+
+
 
 cute::suite make_suite_Notifier_test()
 {

@@ -12,6 +12,8 @@ namespace Test
 
 MockTimeKeeper::MockTimeKeeper()
 {
+	startedTask = 0;
+	stopedTask = 0;
 }
 
 MockTimeKeeper::~MockTimeKeeper()
@@ -20,12 +22,12 @@ MockTimeKeeper::~MockTimeKeeper()
 
 void MockTimeKeeper::StartTask(int64_t id)
 {
-	;
+	startedTask=id;
 }
 
 void MockTimeKeeper::StopTask(int64_t id)
 {
-	;
+	stopedTask=id;
 }
 void MockTimeKeeper::ToggleTask(int64_t id)
 {

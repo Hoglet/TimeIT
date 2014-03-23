@@ -7,13 +7,13 @@
 #include <ITimeKeeper.h>
 #include <Database.h>
 #include <IdleDetector.h>
+#include <ITaskAccessor.h>
 
 
-
-class Timekeeper : public TimerObserver, public ITimeKeeper, public TaskAccessorObserver, public ISettingsAccessorObserver
+class Timekeeper : public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
 {
 public:
-	Timekeeper(const std::shared_ptr<DB::Database>& database, const std::shared_ptr<Timer>& timer);
+	Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -38,17 +38,19 @@ public:
 	//
 	virtual time_t timeIdle() ;
 	virtual int minutesIdle();
-private:
-	void UpdateTask(int64_t id, time_t now);
 
 	//TimerProxyObserver interface
-	void on_signal_1_second() {};
+	void on_signal_1_second();
 	void on_signal_10_seconds();
+
+private:
+	void UpdateTask(int64_t id, time_t now);
 
 	virtual void on_taskAdded(int64_t)  {};
 	virtual void on_taskUpdated(int64_t) {};
 	virtual void on_taskRemoved(int64_t);
 	virtual void on_settingsChanged( const std::string& );
+	virtual void on_completeUpdate( );
 
 	void UpdateTask(int64_t id);
 	void testfunc();
@@ -67,15 +69,16 @@ private:
 	std::map<int64_t,TaskTime> activeTasks;
 
 	int m_idleGz;
+	int m_idleGt;
 
 	void notifyRunningChanged();
 	void notifyIdleDetected();
 	std::list<TimekeeperObserver*> observers;
 
-	std::shared_ptr<ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
 	std::shared_ptr<Timer> m_timer;
-	std::shared_ptr<ISettingsAccessor> m_settingsAccessor;
+	std::shared_ptr<DB::ISettingsAccessor> m_settingsAccessor;
 
 	IdleDetector m_idleDetector;
 };

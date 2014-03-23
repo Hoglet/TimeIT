@@ -23,7 +23,7 @@ namespace Internal
 class DetailsDialog: public Gtk::Dialog, public SummaryObserver, public DetailsObserver, public IDetailsDialog, public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<DB::Database>& database);
+	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<DB::IDatabase>& database);
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -36,7 +36,7 @@ public:
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	DetailsDialog(std::shared_ptr<DB::Database>& database);
+	DetailsDialog(std::shared_ptr<DB::IDatabase>& database);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -71,7 +71,7 @@ private:
 	int64_t id;
 	int64_t timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
-	std::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
 };
 }
 }

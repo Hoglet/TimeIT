@@ -24,8 +24,8 @@ private:
 	void startTasks(int workspace);
 	int oldWorkspace;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
-	std::shared_ptr<IAutotrackAccessor> m_autotrackAccessor;
-	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<DB::IAutotrackAccessor> m_autotrackAccessor;
+	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
 	std::shared_ptr<Timer> m_timer;
 	Workspace m_workspace;
 };

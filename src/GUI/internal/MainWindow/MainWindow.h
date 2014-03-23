@@ -24,7 +24,7 @@
 #include <IWidget.h>
 #include <IMainWindow.h>
 #include "TaskList.h"
-#include "Task.h"
+#include "ExtendedTask.h"
 #include "SummaryViews.h"
 #include "internal/TimeItAboutDialog.h"
 #include "internal/Details.h"
@@ -37,11 +37,11 @@ namespace GUI
 {
 namespace Internal
 {
-class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, public IMainWindow, public ISettingsAccessorObserver
+class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, public IMainWindow, public DB::ISettingsAccessorObserver
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(std::shared_ptr<DB::Database>& database);
+	MainWindow(std::shared_ptr<DB::IDatabase>& database);
 
 
 	// IWidget interface
@@ -82,7 +82,6 @@ private:
 	//
 	void createLayout();
 	void relateWidgets();
-	void testfunc();
 	void setCalendar();
 	void connectSignals();
 
@@ -121,8 +120,8 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
-	std::shared_ptr<ITaskAccessor> taskAccessor;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 	std::vector<Summary*> summaries;
 };
 }
