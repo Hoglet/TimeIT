@@ -52,13 +52,13 @@ void Utils_convertTimespanToString()
 	time_t start = Utils::getTime(2013, 0, 4, 11, 0, 0);
 	time_t stop = Utils::getTime(2013, 0, 4, 12, 0, 0);
 	std::string result = Utils::createDurationString(start, stop);
-	std::string expected = "2013-01-04 10:00 -> 11:00";
+	std::string expected = "2013-01-04 11:00 -> 12:00";
 	ASSERT_EQUALM("Converting a time span of one hour into a text string", expected, result);
 
 	start = Utils::getTime(2012, 0, 4, 11, 0, 0);
 	stop = Utils::getTime(2013, 0, 4, 12, 0, 0);
 	result = Utils::createDurationString(start, stop);
-	expected = "2012-01-04 10:00 -> 2013-01-04 11:00";
+	expected = "2012-01-04 11:00 -> 2013-01-04 12:00";
 	ASSERT_EQUALM("Converting a time span of one year into a text string", expected, result);
 }
 
