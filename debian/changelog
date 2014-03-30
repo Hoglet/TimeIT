@@ -1,3 +1,10 @@
+timeit (1.2.7) precise; urgency=low
+
+  * Bugfix: Summary reports  was showing  times from wrong day when viewed from DST.
+  * Bugfix: Problems when building first time.
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 30 Mar 2014 16:04:04 +0200
+
 timeit (1.2.6) precise; urgency=low
 
   * Bugfix: Unable to build on Ubuntu 13.10 because of missing dependency.
