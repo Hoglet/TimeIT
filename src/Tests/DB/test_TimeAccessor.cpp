@@ -178,6 +178,21 @@ void TimeAccessor_newItem()
  }
  */
 
+void TimeAccessor_GetTotalTimeWithChildren_test()
+{
+	TempDB tempdb;
+	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
+	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
+	const int64_t parentId = taskAccessor->newTask("test", 0);
+	const int64_t taskId = taskAccessor->newTask("test", parentId);
+	timeAccessor->newTime(taskId, 4000, 5000);
+	int parentTotalTime = timeAccessor->getTotalTimeWithChildren(parentId, 0, 0);
+	ASSERT_EQUAL(1000, parentTotalTime);
+	int childTotalTime = timeAccessor->getTotalTimeWithChildren(taskId, 0, 0);
+	ASSERT_EQUAL(1000, childTotalTime);
+}
+
+
 cute::suite make_suite_TimeAccessor_test()
 {
 	cute::suite s;
@@ -190,6 +205,7 @@ cute::suite make_suite_TimeAccessor_test()
 	s.push_back(CUTE(TimeAccessor_RemoveTime));
 	s.push_back(CUTE(TimeAccessor_testGetByID));
 	s.push_back(CUTE(TimeAccessor_newItem));
+	s.push_back(CUTE(TimeAccessor_GetTotalTimeWithChildren_test));
 	return s;
 }
 

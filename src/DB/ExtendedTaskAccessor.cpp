@@ -27,7 +27,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTasks(int
 	{
 		ExtendedTask& task = tasks->at(i);
 		int totalTime = task.getTime();
-		totalTime += timeAccessor->getTotalTimeWithChildren(task.getID(), start, stop);
+		totalTime = timeAccessor->getTotalTimeWithChildren(task.getID(), start, stop);
 		task.setTotalTime(totalTime);
 	}
 	return tasks;

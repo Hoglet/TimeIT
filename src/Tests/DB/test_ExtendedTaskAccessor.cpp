@@ -98,6 +98,37 @@ void ExtendedTaskAccessor_setExpandedTasks()
 	ASSERT_EQUAL(true, task.getExpanded());
 }
 
+void ExtendedTaskAccessor_testTimeReporting()
+{
+	TempDB tempdb;
+	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = tempdb.getExtendedTaskAccessor();
+	const int64_t parentId = taskAccessor->newTask("test", 0);
+	const int64_t taskId = taskAccessor->newTask("test", parentId);
+	timeAccessor->newTime(taskId, 4000, 5000);
+
+
+	std::shared_ptr<std::vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(parentId,0,0);
+	ExtendedTask task = tasks->at(0);
+	int result=task.getTotalTime();
+	ASSERT_EQUALM("Test1",1000, result);
+
+	tasks = taskAccessor->getExtendedTask(taskId,0,0);
+	task = tasks->at(0);
+	result=task.getTotalTime();
+	ASSERT_EQUALM("Test2",1000, result);
+
+	tasks = taskAccessor->getExtendedTasks(0,0,0);
+	task = tasks->at(0);
+	result=task.getTotalTime();
+	ASSERT_EQUALM("Test3",1000, result);
+
+	tasks = taskAccessor->getExtendedTasks(parentId,0,0);
+	task = tasks->at(0);
+	result=task.getTotalTime();
+	ASSERT_EQUALM("Test4",1000, result);
+
+}
 
 cute::suite make_suite_test_ExtendedTaskAccessor()
 {
@@ -107,6 +138,8 @@ cute::suite make_suite_test_ExtendedTaskAccessor()
 	s.push_back(CUTE(ExtendedTaskAccessor_setExpandedTasks));
 	s.push_back(CUTE(ExtendedTaskAccessor_getRunningTasks));
 	s.push_back(CUTE(ExtendedTaskAccessor_testTotalTime));
+	s.push_back(CUTE(ExtendedTaskAccessor_setExpandedTasks));
+	s.push_back(CUTE(ExtendedTaskAccessor_testTimeReporting));
 	return s;
 }
 
