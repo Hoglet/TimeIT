@@ -20,6 +20,11 @@ MockTimeAccessor::~MockTimeAccessor()
 {
 }
 
+void MockTimeAccessor::stopAllRunning()
+{
+}
+
+
 int64_t MockTimeAccessor::newTime(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	return 1;

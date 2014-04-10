@@ -21,6 +21,7 @@ public:
 	virtual void updateTime(int64_t timeID, time_t startTime, time_t stopTime);
 	virtual void changeEndTime(int64_t timeID, time_t stopTime);
 	virtual void changeStartTime(int64_t timeID, time_t startTime);
+	virtual void stopAllRunning();
 	virtual void setRunning(int64_t timeID, bool running);
 	virtual DB::TimeEntry getByID(int64_t id);
 	virtual void remove(int64_t id);

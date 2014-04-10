@@ -17,6 +17,7 @@ Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std
 {
 	m_timer = timer;
 	m_timeAccessor = database->getTimeAccessor();
+	m_timeAccessor->stopAllRunning();
 	m_taskAccessor = database->getTaskAccessor();
 	m_settingsAccessor = database->getSettingsAccessor();
 	m_settingsAccessor->attach(this);

@@ -17,13 +17,7 @@ TimeAccessor::TimeAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<Notifier>& n
 {
 	db = op_db;
 	this->notifier = notifier;
-	//TODO Disable all previously running tasks
 
-	/*stringstream statement;
-	 statement << "UPDATE times SET running = 0";
-	 db->exe(statement.str());
-	 statement.str("");
-	 */
 	//Remove short times;
 	//TODO: Should be handled differently or not at all?
 	//statement << "DELETE FROM times WHERE stop < (start + 60)";
@@ -33,6 +27,12 @@ TimeAccessor::TimeAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<Notifier>& n
 TimeAccessor::~TimeAccessor()
 {
 }
+
+void TimeAccessor::stopAllRunning()
+{
+	 db->exe("UPDATE times SET running = 0");
+}
+
 void TimeAccessor::createTable()
 {
 	db->exe("CREATE TABLE IF NOT EXISTS times "
