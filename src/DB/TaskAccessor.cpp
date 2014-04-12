@@ -249,14 +249,14 @@ bool TaskAccessor::updateTask(const Task& task)
 
 		statement_updateTask->execute();
 
-		notifier->taskUpdated(id);
+		notifier->sendNotification(TASK_UPDATED,id);
 		if (parentChanged)
 		{
-			notifier->taskParentChanged(id);
+			notifier->sendNotification(TASK_PARENT_CHANGED, id);
 		}
 		if (taskDeleted)
 		{
-			notifier->taskRemoved(id);
+			notifier->sendNotification(TASK_REMOVED, id);
 		}
 		return true;
 	}
@@ -294,7 +294,7 @@ int64_t TaskAccessor::newTask(const Task& op_task)
 
 	statement_newTask->execute();
 	id = db->getIDOfLastInsert();
-	notifier->taskAdded(id);
+	notifier->sendNotification(TASK_ADDED,id);
 	return id;
 }
 
@@ -319,7 +319,7 @@ void TaskAccessor::setParentID(int64_t taskID, int parentID)
 	statement << " , changed = " << now;
 	statement << " WHERE id=" << taskID;
 	db->exe(statement.str());
-	notifier->taskParentChanged(taskID);
+	notifier->sendNotification(TASK_PARENT_CHANGED, taskID);
 }
 
 void TaskAccessor::removeTask(int64_t taskID)
@@ -330,7 +330,7 @@ void TaskAccessor::removeTask(int64_t taskID)
 	statement << " ,changed = " << now;
 	statement << " WHERE id = " << taskID;
 	db->exe(statement.str());
-	notifier->taskRemoved(taskID);
+	notifier->sendNotification(TASK_REMOVED, taskID);
 }
 
 void TaskAccessor::attach(TaskAccessorObserver* observer)

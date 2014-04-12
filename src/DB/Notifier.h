@@ -11,9 +11,24 @@
 #include "ITaskAccessor.h"
 #include <stdint.h>
 #include <list>
+#include <deque>
+#include <glibmm.h>
+
 
 namespace DB
 {
+enum MessageType
+{
+	TASK_UPDATED,
+	TASK_REMOVED,
+	TASK_ADDED,
+	TASK_PARENT_CHANGED
+};
+struct NotificationMessage
+{
+	MessageType type;
+	int64_t	taskID;
+};
 
 class Notifier
 {
@@ -22,15 +37,16 @@ public:
 	virtual ~Notifier();
 	void attach(TaskAccessorObserver*);
 	void detach(TaskAccessorObserver*);
-	void taskUpdated(int64_t taskID);
-	void taskRemoved(int64_t taskID);
-	void taskAdded(int64_t taskID);
-	void taskParentChanged(int64_t taskID);
+	void sendNotification(MessageType type, int64_t taskId);
 	void enabled(bool);
 private:
+	void messageForwarder();
 	std::list<TaskAccessorObserver*> observers;
+	std::deque<NotificationMessage> messageQue;
+	Glib::Dispatcher signal_message;
 	bool m_enabled;
 	bool m_missedNotification;
+	Glib::Mutex mutex;
 };
 
 }

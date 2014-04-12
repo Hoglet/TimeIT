@@ -19,12 +19,18 @@ void ExtendedTaskAccessor_getExtendedTask()
 	int64_t taskId2 = taskAccessor->newTask("Test2", taskId);
 
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
+	timeAccessor->newTime(taskId, 0, 1000);
 	timeAccessor->newTime(taskId2, 0, 1000);
 
 	ExtendedTask task = taskAccessor->getExtendedTask(taskId)->at(0);
 	ASSERT_EQUAL("Test", task.getName());
+	ASSERT_EQUAL(2000, task.getTotalTime());
+
+	task = taskAccessor->getExtendedTask(taskId2)->at(0);
+	ASSERT_EQUAL("Test2", task.getName());
 	ASSERT_EQUAL(1000, task.getTotalTime());
 }
+
 
 void ExtendedTaskAccessor_getExtendedTasks()
 {

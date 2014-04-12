@@ -4,6 +4,9 @@
 #include "Notifier_test.h"
 #include "Notifier.h"
 #include "ExtendedTaskAccessor.h"
+#include <glibmm.h>
+#include <gtkmm.h>
+#include <memory>
 
 using namespace DB;
 namespace Test
@@ -60,33 +63,60 @@ public:
 
 void NotifyTaskUpdated()
 {
+	int argc=0;
+	char **argv;
+	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+
 	NotifyTester test;
-	test.notifier.taskUpdated(1);
+	main->iteration();
+	test.notifier.sendNotification(TASK_UPDATED, 1);
+	main->iteration();
+	ASSERT_EQUAL(0, test.task_id_added);
+	ASSERT_EQUAL(0, test.task_id_parent);
+	ASSERT_EQUAL(0, test.task_id_removed);
 	ASSERT_EQUAL(1, test.task_id_updated);
 }
 
 void NotifyTaskAdded()
 {
+	int argc=0;
+	char **argv;
+	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
 	NotifyTester test;
-	test.notifier.taskAdded(2);
+	test.notifier.sendNotification(TASK_ADDED, 2);
+	main->iteration();
+	ASSERT_EQUAL(0, test.task_id_updated);
+	ASSERT_EQUAL(0, test.task_id_parent);
+	ASSERT_EQUAL(0, test.task_id_removed);
 	ASSERT_EQUAL(2, test.task_id_added);
 }
 
 void NotifyTaskRemoved()
 {
+	int argc=0;
+	char **argv;
+	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
 	NotifyTester test;
-	test.notifier.taskRemoved(3);
+	test.notifier.sendNotification(TASK_REMOVED, 3);
+	main->iteration();
+	ASSERT_EQUAL(0, test.task_id_updated);
+	ASSERT_EQUAL(0, test.task_id_added);
+	ASSERT_EQUAL(0, test.task_id_parent);
 	ASSERT_EQUAL(3, test.task_id_removed);
 }
 void NotifyTaskParentChanged()
 {
+	int argc=0;
+	char **argv;
+	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
 	NotifyTester test;
-	test.notifier.taskParentChanged(4);
+	test.notifier.sendNotification(TASK_PARENT_CHANGED, 4);
+	main->iteration();
+	ASSERT_EQUAL(0, test.task_id_updated);
+	ASSERT_EQUAL(0, test.task_id_added);
+	ASSERT_EQUAL(0, test.task_id_removed);
 	ASSERT_EQUAL(4, test.task_id_parent);
 }
-
-
-
 
 cute::suite make_suite_Notifier_test()
 {

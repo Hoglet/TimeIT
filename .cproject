@@ -1364,8 +1364,6 @@
 		<pathentry kind="mac" name="GETTEXT_PACKAGE" path="" value="&quot;timeit&quot;"/>
 		<pathentry kind="mac" name="PROGRAMNAME_LOCALEDIR" path="" value="&quot;/usr/local/share/locale&quot;"/>
 		<pathentry kind="mac" name="__GXX_EXPERIMENTAL_CXX0X__" path="" value=""/>
-		<pathentry include="/usr/include/c++/4.6" kind="inc" path="" system="true"/>
-		<pathentry include="/usr/lib/x86_64-linux-gnu/gtkmm-2.4/include" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/atkmm-1.6" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/giomm-2.4" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/lib/x86_64-linux-gnu/giomm-2.4/include" kind="inc" path="" system="true"/>
@@ -1400,7 +1398,6 @@
 		<pathentry include="/home/hoglet/projects/timeit/timeit/src/DB/DBAbstraction" kind="inc" path="" system="true"/>
 		<pathentry base-path="timeit" include="cute_lib" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/gtkmm-2.4" kind="inc" path="" system="true"/>
-		<pathentry include="/usr/include/c++/4.6/x86_64-linux-gnu" kind="inc" path="" system="true"/>
 		<pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
 		<pathentry kind="src" path=""/>
 	</storageModule>

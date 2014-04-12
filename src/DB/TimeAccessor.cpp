@@ -90,7 +90,7 @@ void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 	statement << ", changed=" << now;
 	statement << " WHERE id=" << timeID;
 	db->exe(statement.str());
-	notifier->taskUpdated(te.getID());
+	notifier->sendNotification(TASK_UPDATED, te.getTaskID());
 }
 
 void TimeAccessor::remove(int64_t id)
@@ -239,7 +239,8 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 std::vector<int64_t> TimeAccessor::getRunningTasks()
 {
 	std::vector<int64_t> resultList;
-	std::shared_ptr<Statement> statement_getRunningTasks = db->prepare("SELECT DISTINCT times.taskid FROM times WHERE times.running;");
+	std::shared_ptr<Statement> statement_getRunningTasks = db->prepare(
+			"SELECT DISTINCT times.taskid FROM times WHERE times.running;");
 	std::shared_ptr<QueryResult> rows = statement_getRunningTasks->execute();
 
 	for (std::vector<DataCell> row : *rows)
@@ -285,12 +286,12 @@ void TimeAccessor::setRunning(int64_t timeID, bool running)
 	statement << " WHERE id=" << timeID;
 
 	db->exe(statement.str());
-	notifier->taskUpdated(taskID);
+	notifier->sendNotification(TASK_UPDATED, taskID);
 }
 
 std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time_t timestamp)
 {
-	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr<std::vector<TimeEntry>>(new vector<TimeEntry>);
+	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr < std::vector < TimeEntry >> (new vector<TimeEntry> );
 
 	std::shared_ptr<Statement> statement =
 			db->prepare(
@@ -348,14 +349,14 @@ bool TimeAccessor::update(const TimeEntry& item)
 
 		statement_updateTime->execute();
 
-		notifier->taskUpdated(id);
+		notifier->sendNotification(TASK_UPDATED, item.getTaskID());
 		return true;
 	}
 	return false;
 }
 shared_ptr<vector<int64_t>> TimeAccessor::getChildrenIDs(int64_t taskID)
 {
-	shared_ptr<vector<int64_t>> result = shared_ptr<vector<int64_t> >(new vector<int64_t>);
+	shared_ptr<vector<int64_t>> result = shared_ptr < vector<int64_t> > (new vector<int64_t> );
 	shared_ptr<Statement> statement_getChildrenIDs = db->prepare("SELECT id FROM tasks WHERE parent=?;");
 	statement_getChildrenIDs->bindValue(1, taskID);
 	shared_ptr<QueryResult> rows = statement_getChildrenIDs->execute();
@@ -390,7 +391,7 @@ int64_t TimeAccessor::newEntry(const TimeEntry& item)
 
 	if (item.getStart() != item.getStop())
 	{
-		notifier->taskUpdated(item.getTaskID());
+		notifier->sendNotification(TASK_UPDATED, item.getTaskID());
 	}
 	return db->getIDOfLastInsert();
 }

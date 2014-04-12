@@ -11,7 +11,7 @@ namespace DBAbstraction
 
 CSQL::CSQL(const string& dbname)
 {
-	db=nullptr;
+	db = nullptr;
 	init(dbname);
 }
 
@@ -58,7 +58,7 @@ std::shared_ptr<Statement> CSQL::prepare(const char *buffer)
 		throw e;
 	}
 	std::shared_ptr<CSQL> sharedMe = shared_from_this();
-	std::shared_ptr<Statement> statement = std::shared_ptr<Statement>(new Statement(stmt, sharedMe));
+	std::shared_ptr<Statement> statement = std::shared_ptr < Statement > (new Statement(stmt, sharedMe));
 
 	return statement;
 }
@@ -142,7 +142,7 @@ void Statement::bindNullValue(int index)
 
 std::shared_ptr<QueryResult> Statement::execute()
 {
-	shared_ptr<QueryResult> rows = shared_ptr<QueryResult>(new QueryResult());
+	shared_ptr<QueryResult> rows = shared_ptr < QueryResult > (new QueryResult());
 	while (true)
 	{
 		int rc = sqlite3_step(stmt);

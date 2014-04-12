@@ -12,12 +12,63 @@ namespace DB
 
 Notifier::Notifier()
 {
-	 m_enabled=true;
-	 m_missedNotification=false;
+	m_enabled = true;
+	m_missedNotification = false;
+	signal_message.connect(sigc::mem_fun(*this, &Notifier::messageForwarder));
 }
 
 Notifier::~Notifier()
 {
+}
+
+void Notifier::messageForwarder()
+{
+	if (m_enabled)
+	{
+		while (!messageQue.empty())
+		{
+			Glib::Mutex::Lock lock(mutex);
+			NotificationMessage message = messageQue.back();
+			messageQue.pop_back();
+			lock.release();
+			if (message.type == TASK_UPDATED)
+			{
+				for (TaskAccessorObserver* observer : observers)
+				{
+					observer->on_taskUpdated(message.taskID);
+				}
+			}
+			else if (message.type == TASK_ADDED)
+			{
+				for (TaskAccessorObserver* observer : observers)
+				{
+					observer->on_taskAdded(message.taskID);
+				}
+			}
+			else if (message.type == TASK_REMOVED)
+			{
+				for (TaskAccessorObserver* observer : observers)
+				{
+					observer->on_taskRemoved(message.taskID);
+				}
+			}
+			else if (message.type == TASK_PARENT_CHANGED)
+			{
+				for (TaskAccessorObserver* observer : observers)
+				{
+					observer->on_taskParentChanged(message.taskID);
+				}
+			}
+			else
+			{
+				throw("Unknown message type");
+			}
+		}
+	}
+	else
+	{
+		m_missedNotification = true;
+	}
 }
 
 void Notifier::enabled(bool state)
@@ -36,63 +87,16 @@ void Notifier::enabled(bool state)
 	}
 }
 
-void Notifier::taskUpdated(int64_t taskID)
+void Notifier::sendNotification(MessageType type, int64_t taskID)
 {
-	if (m_enabled)
-	{
-		for (TaskAccessorObserver* observer : observers)
-		{
-			observer->on_taskUpdated(taskID);
-		}
-	} else
-	{
-		m_missedNotification = true;
-	}
+	NotificationMessage message;
+	message.type = type;
+	message.taskID = taskID;
+	Glib::Mutex::Lock lock(mutex);
+	messageQue.push_front(message);
+	signal_message();
 }
 
-void Notifier::taskAdded(int64_t taskID)
-{
-	if (m_enabled)
-	{
-		for (TaskAccessorObserver* observer : observers)
-		{
-			observer->on_taskAdded(taskID);
-		}
-	} else
-	{
-		m_missedNotification = true;
-	}
-}
-
-void Notifier::taskParentChanged(int64_t taskID)
-{
-	if (m_enabled)
-	{
-
-		for (TaskAccessorObserver* observer : observers)
-		{
-			observer->on_taskParentChanged(taskID);
-		}
-	} else
-	{
-		m_missedNotification = true;
-	}
-}
-
-void Notifier::taskRemoved(int64_t taskID)
-{
-	if (m_enabled)
-	{
-
-		for (TaskAccessorObserver* observer : observers)
-		{
-			observer->on_taskRemoved(taskID);
-		}
-	} else
-	{
-		m_missedNotification = true;
-	}
-}
 
 void Notifier::attach(TaskAccessorObserver* observer)
 {
