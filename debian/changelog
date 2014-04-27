@@ -1,3 +1,9 @@
+timeit (1.9.9.2) saucy; urgency=low
+
+  * Bugfix: Missing dependencies for building on launchpad
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 27 Apr 2014 21:46:33 +0200
+
 timeit (1.9.9.1) precise; urgency=low
 
   * Feature: Syncing with server.
