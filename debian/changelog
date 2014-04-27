@@ -1,8 +1,8 @@
-timeit (1.9.9.0) UNRELEASED; urgency=low
+timeit (1.9.9.1) precise; urgency=low
 
   * Feature: Syncing with server.
 
- -- Kent Asplund <hoglet@solit.se>  Sun, 27 Apr 2014 20:03:47 +0200
+ -- Kent Asplund <hoglet@solit.se>  Sun, 27 Apr 2014 20:05:29 +0200
 
 timeit (1.2.6) precise; urgency=low
 
