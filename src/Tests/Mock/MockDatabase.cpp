@@ -39,6 +39,10 @@ std::shared_ptr<ITaskAccessor> MockDatabase::getTaskAccessor()
 	return std::shared_ptr<ITaskAccessor>(new MockTaskAccessor);
 }
 
+bool MockDatabase::isThreadSafe()
+{
+	return true;
+}
 void MockDatabase::beginTransaction()
 {
 

@@ -7,15 +7,17 @@
 #include "Network.h"
 #include "Json.h"
 
-class SyncManager: TimerObserver
+class SyncManager
 {
 public:
-	SyncManager(std::shared_ptr<DB::IDatabase>&, std::shared_ptr<Timer>&, std::shared_ptr<INetwork>& network);
+	SyncManager(std::shared_ptr<DB::IDatabase>&, std::shared_ptr<INetwork>& network);
 	virtual ~SyncManager();
-	virtual void on_signal_10_seconds();
+	void start();
+	void stop();
 	void completeSync();
 private:
 	SyncManager();
+	void worker();
 	int syncTasks();
 	int syncTimes();
 	int syncTimesToDatabase(std::string result);
@@ -24,9 +26,11 @@ private:
 	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
-	std::shared_ptr<Timer> timer;
 	std::shared_ptr<INetwork> network;
 	Json json;
+	bool running;
+	bool inited;
+	Glib::Thread *thread;
 
 };
 

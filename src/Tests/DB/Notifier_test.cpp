@@ -63,9 +63,7 @@ public:
 
 void NotifyTaskUpdated()
 {
-	int argc=0;
-	char **argv;
-	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	Gtk::Main* main = Gtk::Main::instance();
 
 	NotifyTester test;
 	main->iteration();
@@ -79,9 +77,7 @@ void NotifyTaskUpdated()
 
 void NotifyTaskAdded()
 {
-	int argc=0;
-	char **argv;
-	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_ADDED, 2);
 	main->iteration();
@@ -93,9 +89,7 @@ void NotifyTaskAdded()
 
 void NotifyTaskRemoved()
 {
-	int argc=0;
-	char **argv;
-	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_REMOVED, 3);
 	main->iteration();
@@ -106,9 +100,7 @@ void NotifyTaskRemoved()
 }
 void NotifyTaskParentChanged()
 {
-	int argc=0;
-	char **argv;
-	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_PARENT_CHANGED, 4);
 	main->iteration();

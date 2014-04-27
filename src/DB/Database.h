@@ -24,6 +24,7 @@ public:
 	std::shared_ptr<ITaskAccessor> getTaskAccessor();
 	std::shared_ptr<IExtendedTaskAccessor> getExtendedTaskAccessor();
 	std::shared_ptr<ISettingsAccessor> getSettingsAccessor();
+	bool isThreadSafe();
 	void beginTransaction();
 	void tryRollback();
 	void endTransaction();

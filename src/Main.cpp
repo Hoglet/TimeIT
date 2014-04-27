@@ -113,7 +113,8 @@ int Main::run()
 			AutoTracker autotracker(timekeeper, database, timer);
 
 			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network());
-			SyncManager syncManager(database, timer, network);
+			SyncManager syncManager(database, network);
+			syncManager.start();
 
 			Controller controller(guiFactory, timekeeper, database);
 			controller.start();

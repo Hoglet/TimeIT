@@ -20,6 +20,7 @@ public:
 	virtual std::shared_ptr<IExtendedTaskAccessor> getExtendedTaskAccessor() = 0;
 	virtual std::shared_ptr<ITaskAccessor> getTaskAccessor() = 0;
 	virtual std::shared_ptr<ISettingsAccessor> getSettingsAccessor() = 0;
+	virtual bool isThreadSafe() = 0;
 	virtual void beginTransaction() = 0;
 	virtual void endTransaction() = 0;
 };

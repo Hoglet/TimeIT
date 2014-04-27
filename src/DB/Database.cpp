@@ -131,6 +131,12 @@ Database::~Database()
 {
 }
 
+bool Database::isThreadSafe()
+{
+	return sqlite3_threadsafe();
+}
+
+
 void Database::beginTransaction()
 {
 	db->beginTransaction();

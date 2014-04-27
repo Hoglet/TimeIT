@@ -1334,29 +1334,6 @@
 			<content-type-mapping configuration="" content-type="org.eclipse.cdt.core.cxxHeader" language="org.eclipse.cdt.core.g++"/>
 		</project-mappings>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileCPP"/>
-		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
-			<buildOutputProvider>
-				<openAction enabled="true" filePath=""/>
-				<parser enabled="true"/>
-			</buildOutputProvider>
-			<scannerInfoProvider id="specsFile">
-				<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="/usr/bin/gcc" useDefault="true"/>
-				<parser enabled="true"/>
-			</scannerInfoProvider>
-		</profile>
-		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
-			<buildOutputProvider>
-				<openAction enabled="true" filePath=""/>
-				<parser enabled="true"/>
-			</buildOutputProvider>
-			<scannerInfoProvider id="makefileGenerator">
-				<runAction arguments="-f ${project_name}_scd.mk" command="/usr/bin/make" useDefault="true"/>
-				<parser enabled="true"/>
-			</scannerInfoProvider>
-		</profile>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.pathentry">
 		<pathentry kind="mac" name="PROGRAMNAME_DATADIR" path="" value="&quot;/usr/local/share/timeit&quot;"/>
 		<pathentry kind="mac" name="PACKAGE_VERSION" path="" value="&quot;1.1.0&quot;"/>
@@ -1390,15 +1367,33 @@
 		<pathentry include="/usr/lib/x86_64-linux-gnu/gtk-2.0/include" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/gdk-pixbuf-2.0" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/gio-unix-2.0" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/DB" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/Logic" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/GUI" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/Misc" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/Tests" kind="inc" path="" system="true"/>
-		<pathentry include="/home/hoglet/projects/timeit/timeit/src/DB/DBAbstraction" kind="inc" path="" system="true"/>
 		<pathentry base-path="timeit" include="cute_lib" kind="inc" path="" system="true"/>
 		<pathentry include="/usr/include/gtkmm-2.4" kind="inc" path="" system="true"/>
+		<pathentry base-path="timeit" include="src" kind="inc" path="" system="true"/>
 		<pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
 		<pathentry kind="src" path=""/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="false" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCWinManagedMakePerProjectProfileCPP"/>
+		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+			<buildOutputProvider>
+				<openAction enabled="true" filePath=""/>
+				<parser enabled="true"/>
+			</buildOutputProvider>
+			<scannerInfoProvider id="specsFile">
+				<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}" command="/usr/bin/gcc" useDefault="true"/>
+				<parser enabled="true"/>
+			</scannerInfoProvider>
+		</profile>
+		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+			<buildOutputProvider>
+				<openAction enabled="true" filePath=""/>
+				<parser enabled="true"/>
+			</buildOutputProvider>
+			<scannerInfoProvider id="makefileGenerator">
+				<runAction arguments="-f ${project_name}_scd.mk" command="/usr/bin/make" useDefault="true"/>
+				<parser enabled="true"/>
+			</scannerInfoProvider>
+		</profile>
 	</storageModule>
 </cproject>

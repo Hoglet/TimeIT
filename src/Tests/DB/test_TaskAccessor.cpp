@@ -10,7 +10,6 @@
 
 using namespace DB;
 
-
 namespace Test
 {
 using namespace std;
@@ -161,11 +160,10 @@ public:
 	int64_t removedTaskID;
 };
 
+
 void TaskAccessor_updateTask()
 {
-	int argc=0;
-	char **argv;
-	std::shared_ptr<Gtk::Main> main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
+	Gtk::Main* main = Gtk::Main::instance();
 
 	TempDB tempdb;
 	TAObserver observer;
@@ -188,7 +186,7 @@ void TaskAccessor_updateTask()
 	ASSERT_EQUALM("Notified TaskID: ", task1->getID(), observer.updatedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", 0, observer.updatedParentTaskID);
 
-	observer.updatedTaskID =0;
+	observer.updatedTaskID = 0;
 
 	task1 = changedTask;
 	taskAccessor->updateTask(*task1);
@@ -216,28 +214,29 @@ void TaskAccessor_lastChanged()
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	std::string originalName = "Test";
-	Task original_task(originalName,0,UUID::randomUUID(),false, 0, 500, "", false);
+	Task original_task(originalName, 0, UUID::randomUUID(), false, 0, 500, "", false);
 	taskAccessor->newTask(original_task);
 
 	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince(0);
-	ASSERT_EQUALM("Asking for all tasks", 1 , tasks->size());
-	Task task=tasks->at(0);
+	ASSERT_EQUALM("Asking for all tasks", 1, tasks->size());
+	Task task = tasks->at(0);
 	ASSERT_EQUALM("Checking change time", 500, task.getLastChanged());
 	tasks = taskAccessor->getTasksChangedSince(600);
-	ASSERT_EQUALM("Asking for all tasks after last inserted", 0 , tasks->size());
+	ASSERT_EQUALM("Asking for all tasks after last inserted", 0, tasks->size());
 
 	std::string newName = "New name";
-	Task updated_task(newName, task.getParentID(), task.getUUID(), task.getCompleted(), task.getID(), 495, task.getParentUUID(), false);
+	Task updated_task(newName, task.getParentID(), task.getUUID(), task.getCompleted(), task.getID(), 495,
+			task.getParentUUID(), false);
 	taskAccessor->updateTask(updated_task);
 	tasks = taskAccessor->getTasksChangedSince(0);
 
-	ASSERT_EQUALM("Updated with task changed before task in database. Number of tasks should be unchanged", 1 , tasks->size());
-	task=tasks->at(0);
-	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName , task.getName());
-
+	ASSERT_EQUALM("Updated with task changed before task in database. Number of tasks should be unchanged", 1,
+			tasks->size());
+	task = tasks->at(0);
+	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName,
+			task.getName());
 
 }
-
 
 cute::suite make_suite_test_TaskAccessor()
 {

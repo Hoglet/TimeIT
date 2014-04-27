@@ -3,20 +3,25 @@
 #include "Json.h"
 #include <iostream>
 #include "DefaultValues.h"
+#include <glibmm.h>
 
 using namespace std;
 using namespace DB;
 
-SyncManager::SyncManager(shared_ptr<DB::IDatabase>& database, shared_ptr<Timer>& op_timer,
-		shared_ptr<INetwork>& op_network)
+SyncManager::SyncManager(shared_ptr<DB::IDatabase>& database, shared_ptr<INetwork>& op_network)
 {
-	db = database;
-	taskAccessor = database->getTaskAccessor();
-	timeAccessor = database->getTimeAccessor();
-	settingsAccessor = database->getSettingsAccessor();
-	network = op_network;
-	timer = op_timer;
-	timer->attach(this);
+	thread = 0;
+	inited = false;
+	running = false;
+	if(Glib::thread_supported() && database->isThreadSafe())
+	{
+		db = database;
+		taskAccessor = database->getTaskAccessor();
+		timeAccessor = database->getTimeAccessor();
+		settingsAccessor = database->getSettingsAccessor();
+		network = op_network;
+		inited=true;
+	}
 }
 
 //LCOV_EXCL_START
@@ -28,15 +33,41 @@ SyncManager::SyncManager()
 
 SyncManager::~SyncManager()
 {
+	stop();
 }
 
-void SyncManager::on_signal_10_seconds()
+void SyncManager::start()
 {
-	static signed int counter = 0;
-	if (1 > counter--)
+	if(inited)
+	{
+		running=true;
+		thread = Glib::Thread::create(sigc::mem_fun(*this, &SyncManager::worker), true);
+	}
+}
+void SyncManager::stop()
+{
+	if(inited && thread)
+	{
+		running = false;
+		thread->join();
+		thread=0;
+	}
+}
+
+void SyncManager::worker()
+{
+	int secondBetweenSyncs = 15 * 60;
+	while(running)
 	{
 		completeSync();
-		counter = 2;
+		for(int q=0; q<secondBetweenSyncs; q++)
+		{
+			Glib::usleep(1000*1000); //One second;
+			if(!running)
+			{
+				break;
+			}
+		}
 	}
 }
 uint32_t currentTime()
