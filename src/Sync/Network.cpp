@@ -48,7 +48,8 @@ CURL* Network::init()
 	curl_easy_setopt(curl, CURLOPT_READDATA, this);
 
 	//TODO: Should be optional
-	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 
 	return curl;
 }
