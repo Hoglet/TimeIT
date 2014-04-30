@@ -22,7 +22,8 @@ enum MessageType
 	TASK_UPDATED,
 	TASK_REMOVED,
 	TASK_ADDED,
-	TASK_PARENT_CHANGED
+	TASK_PARENT_CHANGED,
+	COMPLETE_UPDATE
 };
 struct NotificationMessage
 {

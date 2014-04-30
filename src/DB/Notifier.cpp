@@ -59,6 +59,13 @@ void Notifier::messageForwarder()
 					observer->on_taskParentChanged(message.taskID);
 				}
 			}
+			else if (message.type == COMPLETE_UPDATE)
+			{
+				for (TaskAccessorObserver* observer : observers)
+				{
+					observer->on_completeUpdate();
+				}
+			}
 			else
 			{
 				throw("Unknown message type");
@@ -73,17 +80,16 @@ void Notifier::messageForwarder()
 
 void Notifier::enabled(bool state)
 {
+	Glib::Mutex::Lock lock(mutex);
 	if (m_enabled != state)
 	{
+		m_enabled = state;
+		lock.release();
 		if (state == true && m_missedNotification)
 		{
 			m_missedNotification = false;
-			for (TaskAccessorObserver* observer : observers)
-			{
-				observer->on_completeUpdate();
-			}
+			sendNotification(COMPLETE_UPDATE, 0);
 		}
-		m_enabled = state;
 	}
 }
 
@@ -96,7 +102,6 @@ void Notifier::sendNotification(MessageType type, int64_t taskID)
 	messageQue.push_front(message);
 	signal_message();
 }
-
 
 void Notifier::attach(TaskAccessorObserver* observer)
 {
