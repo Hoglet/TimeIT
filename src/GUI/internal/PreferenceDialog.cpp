@@ -208,11 +208,11 @@ void PreferenceDialog::on_OKButton_clicked()
 	}
 	if(oldUser!=User)
 	{
-		settingsAccessor->SetStringByName("User",User);
+		settingsAccessor->SetStringByName("Username",User);
 	}
 	if(oldPassword!=Password)
 	{
-		settingsAccessor->SetStringByName("User",User);
+		settingsAccessor->SetStringByName("Password",Password);
 	}
 	if(oldURL!=URL)
 	{
