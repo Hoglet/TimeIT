@@ -11,7 +11,7 @@ namespace DB
 class TimeEntry
 {
 public:
-	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
+	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, time_t changed);
 	time_t getStart() const;
 	void setStart(time_t);
 	time_t getStop() const;

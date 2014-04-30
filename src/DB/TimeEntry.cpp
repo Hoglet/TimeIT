@@ -20,23 +20,31 @@ int64_t TimeEntry::getID() const
 {
 	return id;
 }
-int64_t TimeEntry::getStart() const
+time_t TimeEntry::getStart() const
 {
 	return start;
 }
 void TimeEntry::setStart(int64_t op_start)
 {
-	start = op_start;
+	if(start != op_start)
+	{
+		start = op_start;
+		changed = time(0);
+	}
 }
 
-int64_t TimeEntry::getStop() const
+time_t TimeEntry::getStop() const
 {
 	return stop;
 }
 
 void TimeEntry::setStop(int64_t op_stop)
 {
-	stop = op_stop;
+	if(stop!=op_stop)
+	{
+		stop = op_stop;
+		changed = time(0);
+	}
 }
 
 int64_t TimeEntry::getTaskID() const
