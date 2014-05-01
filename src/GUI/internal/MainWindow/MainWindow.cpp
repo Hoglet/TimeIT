@@ -194,7 +194,6 @@ void MainWindow::on_settingsChanged(const std::string& name)
 {
 	if (name == "CompactLayout")
 	{
-		emptyContainers();
 		doLayout();
 	}
 }
@@ -202,10 +201,12 @@ void MainWindow::doLayout()
 {
 	if (settingsAccessor->GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT))
 	{
+		emptyContainers();
 		defaultLayout();
 	}
 	else
 	{
+		emptyContainers();
 		classicLayout();
 	}
 }
