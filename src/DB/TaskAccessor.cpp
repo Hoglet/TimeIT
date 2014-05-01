@@ -40,8 +40,8 @@ void TaskAccessor::createStatements()
 			" uuid, changed, deleted FROM  tasks WHERE id=?;");
 	statement_getTask = db->prepare("SELECT id, parent, name, completed,"
 			" uuid, changed, deleted FROM  tasks WHERE id=? AND deleted=0;");
-	statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed) "
-			"VALUES (?,?,?,?,?);");
+	statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
+			"VALUES (?,?,?,?,?,?);");
 	statement_updateTask = db->prepare(
 			"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
 }
@@ -270,6 +270,7 @@ int64_t TaskAccessor::newTask(const Task& op_task)
 	std::string name = op_task.getName();
 	bool completed = op_task.getCompleted();
 	time_t changeTime = op_task.getLastChanged();
+	bool deleted = op_task.getDeleted();
 	stringstream statement;
 
 	if (uuid.length() == 0)
@@ -291,6 +292,7 @@ int64_t TaskAccessor::newTask(const Task& op_task)
 	statement_newTask->bindValue(3, changeTime);
 	statement_newTask->bindValue(4, uuid);
 	statement_newTask->bindValue(5, completed);
+	statement_newTask->bindValue(6, deleted);
 
 	statement_newTask->execute();
 	id = db->getIDOfLastInsert();
