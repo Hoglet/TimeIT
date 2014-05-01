@@ -93,28 +93,34 @@ void TaskList::on_row_collapsed(const TreeModel::iterator& iter, const TreeModel
 
 void TaskList::on_taskAdded(int64_t taskID)
 {
-	shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(taskID);
-	if (tasks->size() > 0)
+	Gtk::TreeIter iter = findRow(taskID);
+	if (iter != treeModel->children().end())
 	{
-		int64_t parentID = tasks->at(0).getParentID();
-		TreeModel::iterator iter;
-		if (parentID > 0)
+		shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(taskID);
+		if (tasks->size() > 0)
 		{
-			iter = findRow(parentID);
-			if (iter != treeModel->children().end())
+			int64_t parentID = tasks->at(0).getParentID();
+			TreeModel::iterator iter;
+			if (parentID > 0)
 			{
-				TreeModel::Row row = *iter;
-				iter = treeModel->append(row.children());
-			} else
+				iter = findRow(parentID);
+				if (iter != treeModel->children().end())
+				{
+					TreeModel::Row row = *iter;
+					iter = treeModel->append(row.children());
+				}
+				else
+				{
+					iter = treeModel->append();
+				}
+			}
+			else
 			{
 				iter = treeModel->append();
 			}
-		} else
-		{
-			iter = treeModel->append();
+			TreeModel::Row row = *iter;
+			assignValuesToRow(row, tasks->at(0));
 		}
-		TreeModel::Row row = *iter;
-		assignValuesToRow(row, tasks->at(0));
 	}
 }
 
