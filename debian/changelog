@@ -1,3 +1,15 @@
+timeit (1.9.9.3) precise; urgency=low
+
+  * Feature: Ignoring certificate errors
+  * Feature: Adjustable syncing interval
+  * Feature: Syncing disabled when username or URI is blank
+  * Bugfix: Syncing resurected deleted tasks
+  * Bugfix: Duplicated items in summary and task lists after sync
+  * Bugfix: Change time was not updated causing items not to be propagated in syncing
+  * Bugfix: Call to gui from worker thread caused crash
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 04 May 2014 15:34:40 +0200
+
 timeit (1.9.9.2) saucy; urgency=low
 
   * Bugfix: Missing dependencies for building on launchpad
