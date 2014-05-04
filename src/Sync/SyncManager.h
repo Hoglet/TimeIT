@@ -17,11 +17,14 @@ public:
 	void completeSync();
 private:
 	SyncManager();
+	bool isActive();
 	void worker();
 	int syncTasks();
 	int syncTimes();
 	int syncTimesToDatabase(std::string result);
 	int syncTaskToDatabase(std::string result);
+	uint32_t currentTime();
+
 	std::shared_ptr<DB::IDatabase> db;
 	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 	std::shared_ptr<DB::ITimeAccessor> timeAccessor;

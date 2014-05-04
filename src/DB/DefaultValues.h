@@ -13,9 +13,9 @@
 #define DEFAULT_COMPACTLAYOUT true
 #define DEFAULT_START_MINIMIZED false
 #define DEFAULT_QUIET_MODE false
-#define DEFAULT_URL "http://localhost:8080/timeit/"
-#define DEFAULT_USER "testman"
-#define DEFAULT_PASSWORD "password"
+#define DEFAULT_URL ""
+#define DEFAULT_USER ""
+#define DEFAULT_PASSWORD ""
 #define DEFAULT_IGNORE_CERT_ERR false
 #define DEFAULT_SYNC_INTERVAL 10
 #endif /* DEFAULTVALUES_H_ */

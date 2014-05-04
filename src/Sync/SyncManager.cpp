@@ -58,7 +58,10 @@ void SyncManager::worker()
 {
 	while(running)
 	{
-		completeSync();
+		if(isActive())
+		{
+			completeSync();
+		}
 		int syncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
 		int secondBetweenSyncs = syncInterval * 60;
 		for(int q=0; q<secondBetweenSyncs; q++)
@@ -71,7 +74,7 @@ void SyncManager::worker()
 		}
 	}
 }
-uint32_t currentTime()
+uint32_t SyncManager::currentTime()
 {
 	struct timeval tv;
 	gettimeofday(&tv, 0);
@@ -79,6 +82,19 @@ uint32_t currentTime()
 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 
+bool SyncManager::isActive()
+{
+	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
+	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
+	if(baseUrl.length()>0 && username.length()>0 )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 int SyncManager::syncTaskToDatabase(string result)
 {
 	uint32_t start = currentTime();
