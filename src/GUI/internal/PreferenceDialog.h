@@ -61,6 +61,10 @@ private:
 	Gtk::Frame SyncServerFrame;
 	Gtk::Button CancelButton;
 	Gtk::Button OKButton;
+	Gtk::Label  IgnoreCertErrorLabel;
+	Gtk::CheckButton IgnoreCertErrorButton;
+	Gtk::Label SyncIntervalLabel;
+	Gtk::SpinButton SyncIntervalEntry;
 
 	void get_values();
 	void set_values();
@@ -80,6 +84,10 @@ private:
 	std::string URL;
 	std::string User;
 	std::string Password;
+	bool	oldIgnoreCertErr;
+	bool	ignoreCertErr;
+	int		oldSyncInterval;
+	int		syncInterval;
 
 	void on_data_changed();
 	bool on_focus_changed(GdkEventFocus*);

@@ -23,6 +23,7 @@
 #include <glibmm/i18n.h>
 #include <TestRunner.h>
 #include <SyncManager.h>
+#include <MessageCenter.h>
 
 using namespace std;
 using namespace Test;
@@ -105,6 +106,8 @@ int Main::run()
 			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));
 
 			//Initiate all logic
+			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
+
 			timer = std::shared_ptr<Timer>(new Timer());
 
 			std::shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
@@ -112,11 +115,11 @@ int Main::run()
 
 			AutoTracker autotracker(timekeeper, database, timer);
 
-			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network());
+			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network(messageCenter));
 			SyncManager syncManager(database, network);
 			syncManager.start();
 
-			Controller controller(guiFactory, timekeeper, database);
+			Controller controller(guiFactory, timekeeper, database, messageCenter);
 			controller.start();
 			//Then start message loop
 			guiFactory->run();

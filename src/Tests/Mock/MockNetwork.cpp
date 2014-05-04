@@ -21,7 +21,7 @@ void MockNetwork::setResponse(std::string& uri, std::string& response)
 	responses[uri] = response;
 }
 
-std::string MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password)
+std::string MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password, bool verifyPassword)
 {
 	std::map<std::string, std::string>::iterator iter;
 	std::string returnValue;

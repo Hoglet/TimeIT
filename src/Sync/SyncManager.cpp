@@ -56,10 +56,11 @@ void SyncManager::stop()
 
 void SyncManager::worker()
 {
-	int secondBetweenSyncs = 15 * 60;
 	while(running)
 	{
 		completeSync();
+		int syncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
+		int secondBetweenSyncs = syncInterval * 60;
 		for(int q=0; q<secondBetweenSyncs; q++)
 		{
 			Glib::usleep(1000*1000); //One second;
@@ -192,7 +193,8 @@ int SyncManager::syncTasks()
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/tasks/" + username + "/";
-	std::string result = network->request(url, jsonString, username, password);
+	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	std::string result = network->request(url, jsonString, username, password, ignoreCertError);
 	if (result.size() > 0)
 	{
 		itemsProcessed = syncTaskToDatabase(result);
@@ -209,7 +211,8 @@ int SyncManager::syncTimes()
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/times/" + username + "/";
-	std::string result = network->request(url, jsonString, username, password);
+	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	std::string result = network->request(url, jsonString, username, password, ignoreCertError);
 
 	if (result.size() > 0)
 	{
