@@ -24,7 +24,7 @@ time_t TimeEntry::getStart() const
 {
 	return start;
 }
-void TimeEntry::setStart(int64_t op_start)
+void TimeEntry::setStart(time_t op_start)
 {
 	if(start != op_start)
 	{
@@ -38,7 +38,7 @@ time_t TimeEntry::getStop() const
 	return stop;
 }
 
-void TimeEntry::setStop(int64_t op_stop)
+void TimeEntry::setStop(time_t op_stop)
 {
 	if(stop!=op_stop)
 	{
