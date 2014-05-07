@@ -14,6 +14,7 @@ Notifier::Notifier()
 {
 	m_enabled = true;
 	m_missedNotification = false;
+	receiving_thread = Glib::Thread::self();
 	signal_message.connect(sigc::mem_fun(*this, &Notifier::messageForwarder));
 }
 
@@ -100,7 +101,16 @@ void Notifier::sendNotification(MessageType type, int64_t taskID)
 	message.taskID = taskID;
 	Glib::Mutex::Lock lock(mutex);
 	messageQue.push_front(message);
-	signal_message();
+	lock.release();
+
+	if (Glib::Thread::self() == receiving_thread )
+	{
+		messageForwarder();
+	}
+	else
+	{
+		signal_message();
+	}
 }
 
 void Notifier::attach(TaskAccessorObserver* observer)

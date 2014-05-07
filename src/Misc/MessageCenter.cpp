@@ -5,9 +5,9 @@ namespace Utils
 
 Message::Message(MessageType op_type, std::string op_header, std::string op_message)
 {
-	type=op_type;
-	header=op_header;
-	message=op_message;
+	type = op_type;
+	header = op_header;
+	message = op_message;
 }
 
 std::string Message::getHeader()
@@ -30,11 +30,9 @@ MessageObserver::~MessageObserver()
 
 }
 
-
-
-
 MessageCenter::MessageCenter()
 {
+	receiving_thread = Glib::Thread::self();
 	signal_message.connect(sigc::mem_fun(*this, &MessageCenter::on_sendMessage));
 }
 
@@ -77,7 +75,15 @@ void MessageCenter::sendMessage(Message message)
 {
 	Glib::Mutex::Lock lock(mutex);
 	messageQue.push_front(message);
-	signal_message();
+	lock.release();
+	if (Glib::Thread::self() == receiving_thread)
+	{
+		on_sendMessage();
+	}
+	else
+	{
+		signal_message();
+	}
 }
 
 } /* namespace Utils */

@@ -48,6 +48,7 @@ private:
 	std::deque<Message> messageQue;
 	Glib::Dispatcher signal_message;
 	Glib::Mutex mutex;
+	Glib::Thread* receiving_thread;
 };
 
 } /* namespace Utils */

@@ -48,6 +48,7 @@ private:
 	bool m_enabled;
 	bool m_missedNotification;
 	Glib::Mutex mutex;
+	Glib::Thread*  receiving_thread;
 };
 
 }
