@@ -32,20 +32,6 @@ void TaskAccessor::createTable()
 			")");
 }
 
-void TaskAccessor::createStatements()
-{
-	statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
-	statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
-	statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
-			" uuid, changed, deleted FROM  tasks WHERE id=?;");
-	statement_getTask = db->prepare("SELECT id, parent, name, completed,"
-			" uuid, changed, deleted FROM  tasks WHERE id=? AND deleted=0;");
-	statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
-			"VALUES (?,?,?,?,?,?);");
-	statement_updateTask = db->prepare(
-			"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
-}
-
 void TaskAccessor::enableNotifications(bool state)
 {
 	notifier->enabled(state);
@@ -91,6 +77,8 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 
 std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 {
+	std::shared_ptr<DBAbstraction::Statement> statement_getTask = db->prepare("SELECT id, parent, name, completed,"
+				" uuid, changed, deleted FROM  tasks WHERE id=? AND deleted=0;");
 	statement_getTask->bindValue(1, taskID);
 	shared_ptr<QueryResult> rows = statement_getTask->execute();
 	shared_ptr<Task> task;
@@ -120,6 +108,8 @@ std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 
 std::shared_ptr<Task> TaskAccessor::getTaskUnlimited(int64_t taskID)
 {
+	std::shared_ptr<DBAbstraction::Statement> statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
+				" uuid, changed, deleted FROM  tasks WHERE id=?;");
 	statement_getCompleteTask->bindValue(1, taskID);
 	std::shared_ptr<QueryResult> rows = statement_getCompleteTask->execute();
 	std::shared_ptr<Task> task;
@@ -192,6 +182,7 @@ int64_t TaskAccessor::uuidToId(std::string uuid)
 {
 
 	int64_t id = 0;
+	std::shared_ptr<DBAbstraction::Statement> statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
 	statement_uuidToId->bindValue(1, uuid);
 	std::shared_ptr<QueryResult> rows = statement_uuidToId->execute();
 	for (std::vector<DataCell> row : *rows)
@@ -205,6 +196,7 @@ std::string TaskAccessor::idToUuid(int64_t id)
 {
 
 	string uuid = "";
+	std::shared_ptr<DBAbstraction::Statement> statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
 	statement_idToUuid->bindValue(1, id);
 	std::shared_ptr<QueryResult> rows = statement_idToUuid->execute();
 	for (vector<DataCell> row : *rows)
@@ -233,6 +225,8 @@ bool TaskAccessor::updateTask(const Task& task)
 	{
 		bool parentChanged = (existingTask->getParentID() != task.getParentID());
 		bool taskDeleted = (existingTask->getDeleted() != task.getDeleted() && task.getDeleted() == true);
+		std::shared_ptr<DBAbstraction::Statement> statement_updateTask = db->prepare(
+					"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
 		statement_updateTask->bindValue(1, task.getName());
 		if (task.getParentID() > 0)
 		{
@@ -280,6 +274,8 @@ int64_t TaskAccessor::newTask(const Task& op_task)
 
 	int64_t id = 0;
 
+	std::shared_ptr<DBAbstraction::Statement> statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
+				"VALUES (?,?,?,?,?,?);");
 	statement_newTask->bindValue(1, name);
 	if (parentID > 0)
 	{
@@ -350,7 +346,6 @@ void TaskAccessor::upgradeToDB5()
 	//Update Tasks to new design
 	db->exe("ALTER TABLE tasks RENAME TO tasks_backup");
 	createTable();
-	createStatements();
 	db->exe("UPDATE tasks_backup SET deleted = 0 WHERE deleted != 1");
 	db->exe("UPDATE tasks_backup SET parent = NULL WHERE parent = 0");
 	shared_ptr<Statement> statement = db->prepare("SELECT id, parent, name, deleted FROM  tasks_backup");
@@ -374,9 +369,6 @@ void TaskAccessor::upgradeToDB5()
 		newTask(task);
 	}
 	db->exe("DROP TABLE tasks_backup");
-
-	//All done
-	createStatements();
 
 }
 

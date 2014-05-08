@@ -62,18 +62,6 @@ void TimeAccessor::createViews()
 			" ON times.taskID = tasks.id");
 }
 
-void TimeAccessor::createStatements()
-{
-	statement_timeCompletelyWithinLimits = db->prepare("SELECT SUM(stop-start) AS time "
-			" FROM times  WHERE taskID = ? AND start>=? AND stop<=? and deleted=0;");
-	statement_getTime = db->prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
-	statement_newEntry = db->prepare(
-			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
-	statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
-	statement_updateTime = db->prepare(
-			"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
-}
-
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 {
 	time_t now = time(0);
@@ -149,6 +137,8 @@ int TimeAccessor::getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start
 	std::shared_ptr<QueryResult> rows;
 	if (stop > 0)
 	{
+		std::shared_ptr<DBAbstraction::Statement> statement_timeCompletelyWithinLimits = db->prepare("SELECT SUM(stop-start) AS time "
+							" FROM times  WHERE taskID = ? AND start>=? AND stop<=? and deleted=0;");
 		statement_timeCompletelyWithinLimits->bindValue(1, taskID);
 		statement_timeCompletelyWithinLimits->bindValue(2, start);
 		statement_timeCompletelyWithinLimits->bindValue(3, stop);
@@ -156,6 +146,7 @@ int TimeAccessor::getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start
 	}
 	else
 	{
+		std::shared_ptr<DBAbstraction::Statement> statement_getTime = db->prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
 		statement_getTime->bindValue(1, taskID);
 		rows = statement_getTime->execute();
 	}
@@ -323,6 +314,7 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 int64_t TimeAccessor::uuidToId(std::string uuid)
 {
 	int64_t id = 0;
+	std::shared_ptr<DBAbstraction::Statement> statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
 	statement_uuidToId->bindValue(1, uuid);
 	std::shared_ptr<QueryResult> rows = statement_uuidToId->execute();
 	for (std::vector<DataCell> row : *rows)
@@ -338,6 +330,8 @@ bool TimeAccessor::update(const TimeEntry& item)
 	TimeEntry existingItem = getByID(id);
 	if (item != existingItem && item.getLastChanged() >= existingItem.getLastChanged())
 	{
+		std::shared_ptr<DBAbstraction::Statement> statement_updateTime = db->prepare(
+				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
 		statement_updateTime->bindValue(1, item.getUUID());
 		statement_updateTime->bindValue(2, item.getTaskID());
 		statement_updateTime->bindValue(3, item.getStart());
@@ -381,6 +375,8 @@ time_t TimeAccessor::getTotalTimeWithChildren(int64_t taskID, time_t start, time
 
 int64_t TimeAccessor::newEntry(const TimeEntry& item)
 {
+	std::shared_ptr<DBAbstraction::Statement> statement_newEntry = db->prepare(
+					"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
 	statement_newEntry->bindValue(1, item.getUUID());
 	statement_newEntry->bindValue(2, item.getTaskID());
 	statement_newEntry->bindValue(3, item.getStart());
@@ -404,7 +400,6 @@ void TimeAccessor::upgradeToDB5()
 	db->exe("ALTER TABLE times RENAME TO times_backup");
 	createTable();
 	createViews();
-	createStatements();
 
 	shared_ptr<Statement> statement = db->prepare("SELECT id, taskID, start, stop FROM  times_backup");
 	shared_ptr<QueryResult> rows = statement->execute();

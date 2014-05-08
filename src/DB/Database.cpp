@@ -108,11 +108,6 @@ Database::Database(const std::string& dbname)
 				"   ON tasks.id=v_running.taskId");
 		m_timeAccessor->createViews();
 
-		//Create statements
-		m_taskAccessor->createStatements();
-		m_timeAccessor->createStatements();
-		m_extendedTaskAccessor->createStatements();
-
 		endTransaction();
 		db->exe("PRAGMA foreign_keys = ON");
 
@@ -133,7 +128,7 @@ Database::~Database()
 
 bool Database::isThreadSafe()
 {
-	return sqlite3_threadsafe();
+	return db->isThreadSafe();
 }
 
 

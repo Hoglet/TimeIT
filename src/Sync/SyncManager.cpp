@@ -4,6 +4,7 @@
 #include <iostream>
 #include "DefaultValues.h"
 #include <glibmm.h>
+#include <Utils.h>
 
 using namespace std;
 using namespace DB;
@@ -74,13 +75,6 @@ void SyncManager::worker()
 		}
 	}
 }
-uint32_t SyncManager::currentTime()
-{
-	struct timeval tv;
-	gettimeofday(&tv, 0);
-
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
-}
 
 bool SyncManager::isActive()
 {
@@ -97,9 +91,9 @@ bool SyncManager::isActive()
 }
 int SyncManager::syncTaskToDatabase(string result)
 {
-	uint32_t start = currentTime();
+	uint32_t start = Utils::currentTime();
 	std::shared_ptr<std::vector<Task> > tasks = json.toTasks(result);
-	uint32_t json_conversion_done = currentTime();
+	uint32_t json_conversion_done = Utils::currentTime();
 
 	std::shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
 	for (Task task : *tasks)
@@ -130,7 +124,7 @@ int SyncManager::syncTaskToDatabase(string result)
 			taskAccessor->newTask(tempTask);
 		}
 	}
-	uint32_t stage1_done = currentTime();
+	uint32_t stage1_done = Utils::currentTime();
 //Update tasks that had missing data earlier
 	for (Task task : *tasksToUpdate)
 	{
@@ -148,7 +142,7 @@ int SyncManager::syncTaskToDatabase(string result)
 			taskAccessor->updateTask(tempTask);
 		}
 	}
-	uint32_t stage2_done = currentTime();
+	uint32_t stage2_done = Utils::currentTime();
 	cout << "Task sync\n";
 	cout << "Json conversion: " << json_conversion_done - start << " ms.\n";
 	cout << "stage1: " << stage1_done - json_conversion_done << " ms.\n";
@@ -160,9 +154,9 @@ int SyncManager::syncTaskToDatabase(string result)
 
 int SyncManager::syncTimesToDatabase(string result)
 {
-	uint32_t start = currentTime();
+	uint32_t start = Utils::currentTime();
 	std::shared_ptr<std::vector<TimeEntry> > times = json.toTimes(result);
-	uint32_t json_conversion_done = currentTime();
+	uint32_t json_conversion_done = Utils::currentTime();
 
 	for (TimeEntry item : *times)
 	{
@@ -191,7 +185,7 @@ int SyncManager::syncTimesToDatabase(string result)
 			timeAccessor->newEntry(te);
 		}
 	}
-	uint32_t stage1_done = currentTime();
+	uint32_t stage1_done = Utils::currentTime();
 
 	cout << "Time sync\n";
 	cout << "Json conversion: " << json_conversion_done - start << " ms.\n";
@@ -240,17 +234,17 @@ int SyncManager::syncTimes()
 
 void SyncManager::completeSync()
 {
-	uint32_t start = currentTime();
+	uint32_t start = Utils::currentTime();
 	db->beginTransaction();
 	taskAccessor->enableNotifications(false);
 	int tasksProcessed = syncTasks();
-	uint32_t tasks_done = currentTime();
+	uint32_t tasks_done = Utils::currentTime();
 	int timesProcessed = syncTimes();
-	uint32_t times_done = currentTime();
+	uint32_t times_done = Utils::currentTime();
 	db->endTransaction();
 	taskAccessor->enableNotifications(true);
 
-	uint32_t totally_finished = currentTime();
+	uint32_t totally_finished = Utils::currentTime();
 	cout << "Processed " << tasksProcessed << " tasks in " << tasks_done - start << " ms.\n";
 	cout << "Processed " << timesProcessed << " times in " << times_done - tasks_done << " ms.\n";
 	cout << "Update UI: " << totally_finished - times_done << "\n";

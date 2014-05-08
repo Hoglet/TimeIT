@@ -27,6 +27,7 @@ namespace Utils
 	std::string seconds2ddhhmm(int64_t s);
 	std::string seconds2hhmm(int64_t s);
 	std::string createDurationString(const time_t& from,const time_t& to);
+	uint32_t currentTime();
 };
 
 #endif /* UTILS_H_ */

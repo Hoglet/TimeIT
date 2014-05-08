@@ -6,6 +6,8 @@
  */
 
 #include "Notifier.h"
+#include "Utils.h"
+#include <iostream>
 
 namespace DB
 {
@@ -62,10 +64,13 @@ void Notifier::messageForwarder()
 			}
 			else if (message.type == COMPLETE_UPDATE)
 			{
+				uint32_t start = Utils::currentTime();
 				for (TaskAccessorObserver* observer : observers)
 				{
 					observer->on_completeUpdate();
 				}
+				uint32_t stop = Utils::currentTime();
+				std::cout << "Complete update of GUI: " << stop - start << " ms.\n";
 			}
 			else
 			{
@@ -100,16 +105,23 @@ void Notifier::sendNotification(MessageType type, int64_t taskID)
 	message.type = type;
 	message.taskID = taskID;
 	Glib::Mutex::Lock lock(mutex);
-	messageQue.push_front(message);
-	lock.release();
-
-	if (Glib::Thread::self() == receiving_thread )
+	if (m_enabled == true)
 	{
-		messageForwarder();
+		messageQue.push_front(message);
+		lock.release();
+
+		if (Glib::Thread::self() == receiving_thread)
+		{
+			messageForwarder();
+		}
+		else
+		{
+			signal_message();
+		}
 	}
 	else
 	{
-		signal_message();
+		m_missedNotification = true;
 	}
 }
 

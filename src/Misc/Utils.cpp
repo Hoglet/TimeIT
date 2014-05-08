@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <langinfo.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 using namespace Glib;
 using namespace std;
@@ -238,4 +239,13 @@ std::string createDurationString(const time_t& from, const time_t& to)
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
 	return retVal.str();
 }
+
+uint32_t currentTime()
+{
+	struct timeval tv;
+	gettimeofday(&tv, 0);
+
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+}
+
 }

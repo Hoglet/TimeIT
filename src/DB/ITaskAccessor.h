@@ -36,8 +36,6 @@ public:
 	virtual void removeTask(int64_t taskID) = 0;
 	virtual int64_t uuidToId(std::string uuid) = 0;
 	virtual void enableNotifications(bool) = 0;
-	virtual void createStatements() = 0;
-
 };
 
 }

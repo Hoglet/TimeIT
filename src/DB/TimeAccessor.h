@@ -61,7 +61,6 @@ public:
 	void createTable();
 	void upgradeToDB5();
     void createViews();
-    void createStatements();
 private:
 	std::shared_ptr<DBAbstraction::CSQL> db;
 	std::shared_ptr<Notifier> notifier;
@@ -69,12 +68,6 @@ private:
     int getTimePassingEndLimit(int64_t & taskID, time_t & start, time_t & stop);
     int getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start, time_t & stop);
     std::shared_ptr<std::vector<int64_t>> getChildrenIDs(int64_t taskID);
-
-    std::shared_ptr<DBAbstraction::Statement> statement_timeCompletelyWithinLimits;
-    std::shared_ptr<DBAbstraction::Statement> statement_getTime;
-    std::shared_ptr<DBAbstraction::Statement> statement_newEntry;
-    std::shared_ptr<DBAbstraction::Statement> statement_uuidToId;
-	std::shared_ptr<DBAbstraction::Statement> statement_updateTime;
 
     dbexception dbe;
 };

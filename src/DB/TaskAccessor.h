@@ -31,7 +31,6 @@ public:
 	virtual void removeTask(int64_t taskID);
 	virtual int64_t uuidToId(std::string uuid);
 	virtual void enableNotifications(bool);
-	virtual void createStatements();
 protected:
 	void createTable();
 	void upgradeToDB5();
@@ -40,14 +39,6 @@ protected:
 	dbexception dbe;
 	std::string idToUuid(int64_t id);
 	std::shared_ptr<Task> getTaskUnlimited(int64_t taskID);
-
-
-	std::shared_ptr<DBAbstraction::Statement> statement_uuidToId;
-	std::shared_ptr<DBAbstraction::Statement> statement_getTask;
-	std::shared_ptr<DBAbstraction::Statement> statement_getCompleteTask;
-	std::shared_ptr<DBAbstraction::Statement> statement_idToUuid;
-	std::shared_ptr<DBAbstraction::Statement> statement_newTask;
-	std::shared_ptr<DBAbstraction::Statement> statement_updateTask;
 };
 
 }

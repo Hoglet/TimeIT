@@ -44,6 +44,7 @@ public:
 	void endTransaction();
 	void tryRollback();
 	std::string getLastErrorMessage();
+	bool isThreadSafe();
 protected:
 	void init(const std::string& databasename);
 private:
@@ -51,6 +52,7 @@ private:
 	sqlite3 *db;
 	dbexception e;
 	bool inTransaction;
+	bool threadsafe;
 };
 
 }

@@ -98,11 +98,6 @@ int64_t MockTaskAccessor::uuidToId(std::string uuid)
 	return 0;
 }
 
-void MockTaskAccessor::createStatements()
-{
-
-}
-
 void MockTaskAccessor::enableNotifications(bool)
 {
 

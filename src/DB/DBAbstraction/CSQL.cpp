@@ -12,6 +12,11 @@ namespace DBAbstraction
 CSQL::CSQL(const string& dbname)
 {
 	db = nullptr;
+	threadsafe=false;
+	if (sqlite3_config(SQLITE_CONFIG_SERIALIZED) == SQLITE_OK)
+	{
+		threadsafe=true;
+	}
 	init(dbname);
 }
 
@@ -35,6 +40,11 @@ void CSQL::init(const std::string& dbname)
 		sqlite3_close(db);
 		throw e;
 	}
+}
+
+bool CSQL::isThreadSafe()
+{
+	return threadsafe;
 }
 
 int64_t CSQL::getIDOfLastInsert()
@@ -115,7 +125,7 @@ Statement::Statement()
 
 Statement::~Statement()
 {
-
+	sqlite3_finalize(stmt);
 }
 
 Statement::Statement(sqlite3_stmt* op_stmt, std::shared_ptr<CSQL> op_db)
