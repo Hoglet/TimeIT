@@ -1,3 +1,12 @@
+ -- Kent Asplund <hoglet@solit.se>  Thu, 08 May 2014 12:07:17 +0200
+
+timeit (1.9.9.5) precise; urgency=low
+
+  * Bugfixes: Removed potential and actual threading problems.
+  * Feature: Improved update speed of GUI after big sync
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 08 May 2014 12:00:09 +0200
+
 timeit (1.9.9.3) precise; urgency=low
 
   * Feature: Ignoring certificate errors
