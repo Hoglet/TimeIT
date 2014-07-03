@@ -1,3 +1,9 @@
+timeit (1.9.9.12) precise; urgency=low
+
+  * Nothing changed
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 03 Jul 2014 16:51:15 +0200
+
 timeit (1.9.9.11) precise; urgency=low
 
   * Bugfix: Adding missing dependency on libnotify in the debian control file
