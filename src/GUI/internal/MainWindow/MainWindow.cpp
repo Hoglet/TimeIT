@@ -284,6 +284,7 @@ void MainWindow::classicLayout()
 void MainWindow::on_show()
 {
 	Gtk::Window::on_show();
+	Gtk::Window::deiconify();
 	setCalendar();
 }
 
