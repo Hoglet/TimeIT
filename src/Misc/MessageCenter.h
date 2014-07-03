@@ -27,24 +27,14 @@ private:
 	std::string message;
 };
 
-class MessageObserver
-{
-public:
-	virtual ~MessageObserver();
-	virtual void on_message(Message& message) = 0;
-};
-
 class MessageCenter
 {
 public:
 	MessageCenter();
 	virtual ~MessageCenter();
-	void attach(MessageObserver*);
-	void detach(MessageObserver*);
 	void sendMessage(Message message);
 private:
-	void on_sendMessage();
-	std::list<MessageObserver*> observers;
+	void manageMessages();
 	std::deque<Message> messageQue;
 	Glib::Dispatcher signal_message;
 	Glib::Mutex mutex;

@@ -14,13 +14,16 @@
 #include <Utils.h>
 #include <DefaultValues.h>
 #include <GUIFactory.h>
+#include <libnotify/notify.h>
+
+#define DUPLICATE_RESHOW_TIME 600
 
 using namespace GUI;
 
 Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory,
                        std::shared_ptr<ITimeKeeper>& timeKeeper,
-                       std::shared_ptr<DB::IDatabase>& database,
-                       std::shared_ptr<Utils::MessageCenter>& mc)
+                       std::shared_ptr<DB::IDatabase>& database
+                       )
 {
 	mainWindow_x=0;
 	mainWindow_y=0;
@@ -30,15 +33,12 @@ Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory,
 	this->timeKeeper = timeKeeper;
 	this->guiFactory = guiFactory;
 	this->timeKeeper->attach(this);
-	this->messageCenter = mc;
-	this->messageCenter->attach(this);
 }
 
 Controller::~Controller()
 {
 	guiFactory->getWidget(MAIN_WINDOW)->detach(this);
 	timeKeeper->detach(this);
-	messageCenter->detach(this);
 }
 
 void Controller::start()
@@ -233,19 +233,6 @@ void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t 
 		detailsDialog->set(taskId,startTime,stopTime);
 		detailsDialog->show();
 	}
-}
-
-void Controller::on_message(Utils::Message& message)
-{
-    Gtk::MessageDialog dlg(message.getMessage(), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_OK, true);
-    dlg.set_title(message.getHeader());
-    dlg.run();
-/*	std::shared_ptr<IMessageDialog> messageDialog = std::dynamic_pointer_cast<IMessageDialog>(guiFactory->getWidget(GUI::MESSAGE_DIALOG));
-	if(messageDialog)
-	{
-		messageDialog->set();
-		messageDialog->show();
-	}*/
 }
 
 //LCOV_EXCL_START

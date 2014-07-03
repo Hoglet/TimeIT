@@ -239,7 +239,11 @@ void SyncManager::completeSync()
 	taskAccessor->enableNotifications(false);
 	int tasksProcessed = syncTasks();
 	uint32_t tasks_done = Utils::currentTime();
-	int timesProcessed = syncTimes();
+	int timesProcessed = 0;
+	if(tasksProcessed>0)
+	{
+		timesProcessed = syncTimes();
+	}
 	uint32_t times_done = Utils::currentTime();
 	db->endTransaction();
 	taskAccessor->enableNotifications(true);

@@ -15,17 +15,13 @@
 #include <ISummary.h>
 #include <ISettingsAccessor.h>
 #include <Database.h>
-#include <MessageCenter.h>
 
-class Controller : public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver, public Utils::MessageObserver
+class Controller : public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
 {
 public:
-	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::IDatabase>& database, std::shared_ptr<Utils::MessageCenter>& mc);
+	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper, std::shared_ptr<DB::IDatabase>& database);
 	virtual ~Controller();
 	void start();
-
-	//Message observers
-	virtual void on_message(Utils::Message& message);
 
 	//Action observers
 	virtual void on_action_task_selection_changed(int selectedTaskID);
@@ -60,11 +56,11 @@ private:
 	std::shared_ptr<IIdleDialog> idleDialog;
 	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
-	std::shared_ptr<Utils::MessageCenter> messageCenter;
 
 	int mainWindow_x;
 	int mainWindow_y;
 	int selectedTaskID;
+
 };
 
 #endif /* CONTROLLER_H_ */

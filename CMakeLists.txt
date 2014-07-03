@@ -34,6 +34,7 @@ pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
 pkg_check_modules(XLIB x11 REQUIRED)
 pkg_check_modules(JANSSON jansson REQUIRED)
 pkg_check_modules(CURL libcurl REQUIRED)
+pkg_check_modules(NOTIFY libnotify REQUIRED)
 
 # make dist target
 # -------------------

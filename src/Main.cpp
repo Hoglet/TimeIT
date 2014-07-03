@@ -119,7 +119,7 @@ int Main::run()
 			SyncManager syncManager(database, network);
 			syncManager.start();
 
-			Controller controller(guiFactory, timekeeper, database, messageCenter);
+			Controller controller(guiFactory, timekeeper, database);
 			controller.start();
 			//Then start message loop
 			guiFactory->run();

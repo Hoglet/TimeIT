@@ -25,6 +25,7 @@ link_directories(${GTKMM_LIBRARY_DIRS}
                  ${SQLITE_LIBRARY_DIRS}
                  ${XSCRNS_LIBRARY_DIRS}
                  ${CURL_LIBRARY_DIRS}
+                 ${NOTIFY_LIBRARY_DIRS}
                  ${JANSSON_LIBRARY_DIRS}
                  )
 
@@ -34,6 +35,7 @@ include_directories(${GTKMM_INCLUDE_DIRS}
                     ${XLIB_INCLUDE_DIRS}
                     ${JANSSON_INCLUDE_DIRS}
                     ${CURL_INCLUDE_DIRS}
+                    ${NOTIFY_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/DB/"
                     "${PROJECT_SOURCE_DIR}/Logic/"
@@ -56,6 +58,7 @@ target_link_libraries(${PROJECT_NAME}
                       ${XLIB_LIBRARIES}
                       ${JANSSON_LIBRARIES}
                       ${CURL_LIBRARIES}
+                      ${NOTIFY_LIBRARIES}
                       )
 
 

@@ -1,4 +1,6 @@
 #include "MessageCenter.h"
+#include "Utils.h"
+#include "libnotify/notify.h"
 
 namespace Utils
 {
@@ -25,38 +27,19 @@ MessageType Message::getType()
 	return type;
 }
 
-MessageObserver::~MessageObserver()
-{
-
-}
 
 MessageCenter::MessageCenter()
 {
 	receiving_thread = Glib::Thread::self();
-	signal_message.connect(sigc::mem_fun(*this, &MessageCenter::on_sendMessage));
+	signal_message.connect(sigc::mem_fun(*this, &MessageCenter::manageMessages));
 }
 
 MessageCenter::~MessageCenter()
 {
 }
 
-void MessageCenter::attach(MessageObserver* observer)
-{
-	if (observer)
-	{
-		observers.push_back(observer);
-	}
-}
 
-void MessageCenter::detach(MessageObserver* observer)
-{
-	if (observer)
-	{
-		observers.remove(observer);
-	}
-}
-
-void MessageCenter::on_sendMessage()
+void MessageCenter::manageMessages()
 {
 	while (!messageQue.empty())
 	{
@@ -64,10 +47,13 @@ void MessageCenter::on_sendMessage()
 		Message message = messageQue.back();
 		messageQue.pop_back();
 		lock.release();
-		for (MessageObserver* observer : observers)
-		{
-			observer->on_message(message);
-		}
+
+		notify_init("Hello world!");
+		NotifyNotification* Hello = notify_notification_new(message.getHeader().c_str(), message.getMessage().c_str(),
+				"dialog-information");
+		notify_notification_show(Hello, NULL);
+		g_object_unref(G_OBJECT(Hello));
+		notify_uninit();
 	}
 }
 
@@ -78,7 +64,7 @@ void MessageCenter::sendMessage(Message message)
 	lock.release();
 	if (Glib::Thread::self() == receiving_thread)
 	{
-		on_sendMessage();
+		manageMessages();
 	}
 	else
 	{
