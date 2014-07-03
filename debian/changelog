@@ -1,3 +1,10 @@
+timeit (1.9.9.7) precise; urgency=low
+
+  * Feature: Error messages shown as notifications
+  * Feature: Toggling main window is forcing window to be uniconified.
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 03 Jul 2014 15:14:56 +0200
+
 timeit (1.9.9.6) precise; urgency=low
 
   * Bugfixes: Removed potential and actual threading problems.
