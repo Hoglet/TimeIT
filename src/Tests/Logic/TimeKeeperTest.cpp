@@ -13,9 +13,18 @@ namespace Test
 class MockIdleDetector: public IIdleDetector
 {
 public:
-	virtual ~MockIdleDetector() {};
-	virtual int minutesIdle() { return m_minutesIdle; }
-	virtual time_t timeIdle() { return m_timeIdle; }
+	virtual ~MockIdleDetector()
+	{
+	}
+	;
+	virtual int minutesIdle()
+	{
+		return m_minutesIdle;
+	}
+	virtual time_t timeIdle()
+	{
+		return m_timeIdle;
+	}
 
 	int m_minutesIdle;
 	time_t m_timeIdle;
@@ -35,7 +44,6 @@ public:
 	bool idleDetected;
 	bool runningChanged;
 };
-
 
 void TimeKeeper_testStartingStopingAndToggling()
 {
@@ -105,7 +113,6 @@ void TimeKeeper_testUpdate()
 	timeKeeper->detach(&observer);
 }
 
-
 void TimeKeeper_testStopAll()
 {
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
@@ -119,7 +126,7 @@ void TimeKeeper_testStopAll()
 	timeKeeper->attach(&observer);
 
 	timeKeeper->StartTask(taskID);
-	observer.runningChanged=false;
+	observer.runningChanged = false;
 	timeKeeper->stopAll();
 	vector<int64_t> runningTasks = timeaccessor->getRunningTasks();
 	ASSERT_EQUALM("Checking number of running tasks after starting ", 0, runningTasks.size());

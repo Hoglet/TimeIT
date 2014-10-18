@@ -16,7 +16,7 @@ public:
 	std::shared_ptr<std::vector<DB::Task>> toTasks(const std::string&);
 	std::shared_ptr<std::vector<DB::TimeEntry> > toTimes(const std::string&);
 
-	std::string toJson(std::shared_ptr<std::vector<DB::Task>>);
+	std::string toJson(std::shared_ptr<std::vector<DB::Task>>, std::string username);
 	std::string toJson(std::shared_ptr<std::vector<DB::TimeEntry>>);
 private:
 	GeneralException ge;

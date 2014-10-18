@@ -17,7 +17,7 @@ Json::~Json()
 {
 }
 
-std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks)
+std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 {
 	json_t *array = json_array();
 	for (Task task : *tasks)
@@ -46,6 +46,10 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks)
 		{
 			json_object_set(obj, "deleted", json_false());
 		}
+
+		json_t *owner = json_object();
+		json_object_set(owner,"username",json_string(username.c_str()));
+		json_object_set(obj, "owner", owner);
 
 		json_array_append(array, obj);
 	}

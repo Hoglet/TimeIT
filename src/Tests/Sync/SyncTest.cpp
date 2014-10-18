@@ -18,6 +18,10 @@ void SyncManager_fullSyncEmptyClient()
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
 	shared_ptr<MockNetwork> mockNetwork = shared_ptr<MockNetwork>(new MockNetwork());
 	shared_ptr<INetwork> network = static_pointer_cast<INetwork>(mockNetwork);
+
+	shared_ptr<ISettingsAccessor> settings = db->getSettingsAccessor();
+	settings->SetStringByName("Username","testman");
+
 	syncing::SyncManager syncManager(db, network);
 
 	std::string taskKey = "/tasks/testman/";
@@ -43,6 +47,7 @@ void SyncManager_fullSyncEmptyClient()
 	syncManager.start();
 
 	Glib::usleep(100*1000);
+	syncManager.completeSync();
 
 	shared_ptr<ITaskAccessor> taskAccessor = db->getTaskAccessor();
 	shared_ptr<vector<Task> > tasks = taskAccessor->getTasksChangedSince();

@@ -3,7 +3,7 @@
 #include <string.h>
 //LCOV_EXCL_START
 #include <MessageCenter.h>
-#include <strstream>
+#include <sstream>
 #include <glibmm/i18n.h>
 
 INetwork::~INetwork()
@@ -22,9 +22,8 @@ size_t send_data(void *ptr, size_t size, size_t nmemb, Network *caller)
 	return caller->sendData(ptr, size, nmemb);
 }
 
-Network::Network(std::shared_ptr<Utils::MessageCenter> mc)
+Network::Network(std::shared_ptr<Utils::MessageCenter> mc): messageCenter(mc)
 {
-	messageCenter = mc;
 	curl_global_init(CURL_GLOBAL_ALL);
 	curSendPosition = 0;
 }
@@ -51,7 +50,7 @@ CURL* Network::init(bool ignoreCertificateErrors)
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
 	curl_easy_setopt(curl, CURLOPT_READDATA, this);
 
-	if(ignoreCertificateErrors)
+	if (ignoreCertificateErrors)
 	{
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -95,7 +94,16 @@ std::string Network::request(const std::string& url, std::string data, std::stri
 	dataToSend = data;
 	receivedData = "";
 	curSendPosition = 0;
+
+    struct curl_slist *headers=NULL; // init to NULL is important
+    headers=curl_slist_append(headers, "Accept: application/json");
+    headers=curl_slist_append( headers, "Content-Type: application/json");
+    headers=curl_slist_append( headers, "charsets: utf-8");
+
 	CURL* curl = init(ignoreCertificateErrors);
+
+
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
 	curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long)CURLAUTH_BASIC);
@@ -104,6 +112,8 @@ std::string Network::request(const std::string& url, std::string data, std::stri
 	CURLcode res = curl_easy_perform(curl);
 	long httpCode = 0;
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+
+	curl_slist_free_all(headers);
 
 	/* Check for errors */
 	if (res != CURLE_OK)

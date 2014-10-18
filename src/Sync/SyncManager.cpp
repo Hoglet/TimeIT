@@ -211,12 +211,12 @@ int SyncManager::syncTasks()
 {
 	int itemsProcessed = 0;
 	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince();
-	std::string jsonString = json.toJson(tasks);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/tasks/" + username + "/";
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	std::string jsonString = json.toJson(tasks, username);
 	std::string result = network->request(url, jsonString, username, password, ignoreCertError);
 	if (result.size() > 0)
 	{

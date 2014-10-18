@@ -70,9 +70,9 @@ void Json_threeWayTaskTest()
 {
 	Json json;
 	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745}]";
+			"\"parent\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
 	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
-	std::string result = json.toJson(tasks);
+	std::string result = json.toJson(tasks, "tester");
 	Task task1 = tasks->at(0);
 	//Convert once more to be able to compare
 	tasks = json.toTasks(result);
@@ -90,9 +90,9 @@ void Json_threeWayTaskTest2()
 {
 	Json json;
 	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745}]";
+			"\"parent\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
 	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
-	std::string result = json.toJson(tasks);
+	std::string result = json.toJson(tasks, "tester");
 	Task task1 = tasks->at(0);
 	//Convert once more to be able to compare
 	tasks = json.toTasks(result);
