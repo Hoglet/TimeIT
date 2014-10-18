@@ -66,7 +66,7 @@ Main::Main(int argc, char *argv[])
 		if (argument == "--test" || argument == "-t")
 		{
 			TestRunner testrunner;
-			testrunner.run();
+			testrunner.run(argc, argv);
 			exit(0);
 		}
 	}

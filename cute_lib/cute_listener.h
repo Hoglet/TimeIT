@@ -21,11 +21,10 @@
 #ifndef CUTE_LISTENER_H_
 #define CUTE_LISTENER_H_
 #include "cute_base.h"
-#include "cute_test.h"
 #include "cute_suite.h"
 namespace cute {
 	struct null_listener{ // defines Contract of runner parameter
-		void begin(suite const &s, char const *info){}
+		void begin(suite const &s, char const *info, size_t n_of_tests){}
 		void end(suite const &s, char const *info){}
 		void start(test const &t){}
 		void success(test const &t,char const *msg){}

@@ -26,6 +26,9 @@
 #include "DB/test_timeEntry.h"
 #include "Sync/test_json.h"
 #include "Sync/SyncTest.h"
+#include "cute_xml_file.h"
+#include "xml_listener.h"
+
 
 namespace Test
 {
@@ -58,10 +61,13 @@ TestRunner::TestRunner()
 	s += make_suite_test_TimeEntry();
 }
 
-void TestRunner::run()
+void TestRunner::run(int argc, char *argv[])
 {
-	cute::ide_listener lis;
-	cute::makeRunner(lis)(s, "Main tests");
-	exit(0);
+	using namespace std;
+
+	cute::xml_file_opener xmlfile(0,argv);
+    cute::xml_listener<cute::ide_listener<> >  lis(xmlfile.out);
+
+    cute::makeRunner(lis,0, argv)(s, "All");
 }
 }

@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with CUTE.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2008-2009 Emanuel Graf, Peter Sommerlad
+ * Copyright 2008-2013 Emanuel Graf, Peter Sommerlad
  *
  *********************************************************************************/
 #ifndef CUTE_VERSION_H_
 #define CUTE_VERSION_H_
 
-#define CUTE_LIB_VERSION "1.6.1"
+#define CUTE_LIB_VERSION "2.0.0"
 
 #endif /*CUTE_VERSION_H_*/

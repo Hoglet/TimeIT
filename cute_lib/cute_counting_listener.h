@@ -26,15 +26,16 @@ namespace cute{
 	struct counting_listener:Listener{
 		counting_listener()
 		:Listener()
-		,numberOfTests(0),successfulTests(0),failedTests(0),errors(0),numberOfSuites(0){}
+		,numberOfTests(0),successfulTests(0),failedTests(0),errors(0),numberOfSuites(0),numberOfTestsInSuites(0){}
 
 		counting_listener(Listener const &s)
 		:Listener(s)
-		,numberOfTests(0),successfulTests(0),failedTests(0),errors(0),numberOfSuites(0){}
+		,numberOfTests(0),successfulTests(0),failedTests(0),errors(0),numberOfSuites(0),numberOfTestsInSuites(0){}
 
-		void begin(suite const &s, char const *info){
+		void begin(suite const &s,char const *info, size_t n_of_tests){
 			++numberOfSuites;
-			Listener::begin(s,info);
+			numberOfTestsInSuites+=n_of_tests;
+			Listener::begin(s,info, n_of_tests);
 		}
 		void start(test const &t){
 			++numberOfTests;
@@ -52,11 +53,13 @@ namespace cute{
 			++errors;
 			Listener::error(t,what);
 		}
-		int numberOfTests;
-		int successfulTests;
-		int failedTests;
-		int errors;
-		int numberOfSuites;
+		size_t numberOfTests;
+		size_t successfulTests;
+		size_t failedTests;
+		size_t errors;
+		size_t numberOfSuites;
+		size_t numberOfTestsInSuites;
+
 	};
 }
 #endif /*CUTE_COUNTING_LISTENER_H_*/

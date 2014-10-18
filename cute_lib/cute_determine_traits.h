@@ -14,27 +14,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with CUTE.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2006 Peter Sommerlad
+ * Copyright 2013 Peter Sommerlad
  *
  *********************************************************************************/
 
-#ifndef CUTE_SUITE_TEST_H_
-#define CUTE_SUITE_TEST_H_
-#include "cute_suite.h"
+#ifndef CUTE_DETERMINE_TRAITS_H_
+#define CUTE_DETERMINE_TRAITS_H_
 #include "cute_determine_version.h"
-#include "cute_determine_library.h"
+#if defined(USE_STD11)
+#include <type_traits>
+#elif defined(USE_TR1)
+#include <tr1/type_traits>
+#else
+#include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/is_floating_point.hpp>
+#include <boost/type_traits/make_signed.hpp>
+#endif
+#if defined(USE_STD11)
+	namespace impl_place_for_traits = std;
+#elif defined(USE_TR1)
+	namespace impl_place_for_traits = std::tr1;
+#else
+	namespace impl_place_for_traits = boost;
+#endif
 
-#include <algorithm>
-namespace cute{
-	// make a whole suite a test, failure stops the suite's execution
-	struct suite_test {
-		suite theSuite;
-		suite_test(suite const &s):theSuite(s){}
-		void operator()(){
-			std::for_each(theSuite.begin(),theSuite.end(),boost_or_tr1::bind(&test::operator(),_1));
-		}
-	};
-}
-#define CUTE_SUITE_TEST(s) cute::test(cute::suite_test((s)),#s)
-#define CUTE_SUITE_TEST_NAME(s, name) cute::test(cute::suite_test((s)),name)
-#endif /*CUTE_SUITE_TEST_H_*/
+#endif /* CUTE_DETERMINE_TRAITS_H_ */

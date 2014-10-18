@@ -17,7 +17,7 @@ class TestRunner
 {
 public:
 	TestRunner();
-	void run();
+	void run(int argc, char *argv[]);
 private:
 	cute::suite s;
 };

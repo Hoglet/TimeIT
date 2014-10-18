@@ -38,8 +38,8 @@ namespace cute {
 		try { \
 			{ code ; } \
 			throw cute::do_not_use_this_namespace::assert_throws_failure_exception(#msg,__FILE__,__LINE__); \
-		} catch(exc &){ \
-		} catch(cute::do_not_use_this_namespace::assert_throws_failure_exception &atf){throw atf.original;} \
+		} catch(exc const &){ \
+		} catch(cute::do_not_use_this_namespace::assert_throws_failure_exception const &atf){throw atf.original;} \
 	} while(0)
 #define ASSERT_THROWS(code,exc) ASSERT_THROWSM(" expecting " #code " to throw " #exc,code,exc)
 

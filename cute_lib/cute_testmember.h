@@ -21,8 +21,6 @@
 #ifndef CUTE_TESTMEMBER_H_
 #define CUTE_TESTMEMBER_H_
 #include "cute_test.h"
-#include "cute_determine_version.h"
-#include "cute_determine_library.h"
 namespace cute {
 	template <typename TestClass>
 	test makeMemberFunctionTest(TestClass &t,void (TestClass::*fun)(),char const *name){
@@ -51,6 +49,9 @@ namespace cute {
 		Context context;
 		incarnate_for_member_function_with_context_object(MemFun f,Context c)
 		:memfun(f),context(c){}
+		incarnate_for_member_function_with_context_object(incarnate_for_member_function_with_context_object const &other)
+		:memfun(other.memfun),context(other.context){} // provide copy-ctor for std::function ctor requirement should be =default on C++11
+
 		void operator()(){
 			TestClass t(context);
 			(t.*memfun)();
