@@ -17,9 +17,8 @@ namespace GUI
 namespace Internal
 {
 
-IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer)
+IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer): 	m_timer(timer)
 {
-	m_timer = timer;
 
 	//Setting start time to now in case nobody will set the idle time later.
 	m_idleStartTime = time(NULL);
@@ -118,7 +117,7 @@ void IdleDialog::responseHandler(int result)
 {
 	std::list<IActionObserver*>::iterator iter;
 	std::list<IActionObserver*> observers = this->observers;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		switch (result)

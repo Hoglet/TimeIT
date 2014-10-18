@@ -15,7 +15,7 @@ SummaryObserver::~SummaryObserver()
 	{
 		ISummary* subject = *iter;
 		subject->detach(this);
-		iter++;
+		++iter;
 	}
 }
 void SummaryObserver::attach(ISummary* subject)

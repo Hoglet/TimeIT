@@ -22,7 +22,7 @@ using namespace std;
 
 namespace Utils
 {
-#define SECOND_PER_DAY 24*60*60
+constexpr auto SECOND_PER_DAY = 24 * 60 * 60;
 
 //LCOV_EXCL_START
 std::string getImagePath()

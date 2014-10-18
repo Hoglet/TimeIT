@@ -19,14 +19,14 @@ namespace GUI
 namespace Internal
 {
 Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::IDatabase>& database) :
-		m_detailsDialog(detailsDialog)
+		m_detailsDialog(detailsDialog), m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(
+				database->getTaskAccessor())
+
 {
 	m_calendar = nullptr;
 	m_startTime = 0;
 	m_stopTime = 0;
 	m_taskID = 0;
-	m_timeAccessor = database->getTimeAccessor();
-	m_taskAccessor = database->getTaskAccessor();
 	m_treeModel = ListStore::create(m_columns);
 	set_model(m_treeModel);
 	append_column("Time", m_columns.m_col_time);
@@ -36,14 +36,15 @@ Details::Details(IDetailsDialog& detailsDialog, std::shared_ptr<DB::IDatabase>& 
 	{
 		Gtk::Menu::MenuList& menulist = m_Menu_Popup.items();
 
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
+		menulist.push_back(
+				Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
+		menulist.push_back(
+				Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	m_Menu_Popup.accelerate(*this);
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Details::on_selection_changed));
 
 }
-
 
 Details::~Details()
 {
@@ -76,7 +77,8 @@ void Details::on_menu_file_popup_edit()
 }
 void Details::on_menu_file_popup_remove()
 {
-	Gtk::MessageDialog dialog( _("Do you really want to remove this?"), false , Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+	Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION,
+			Gtk::BUTTONS_OK_CANCEL);
 	dialog.set_secondary_text(_("Gone, gone will not come again..."));
 
 	int result = dialog.run();
@@ -84,24 +86,24 @@ void Details::on_menu_file_popup_remove()
 	//Handle the response:
 	switch (result)
 	{
-	case (Gtk::RESPONSE_OK):
-	{
-		int64_t selectedID = getSelectedID();
-		if (selectedID > 0)
+		case (Gtk::RESPONSE_OK):
 		{
-			m_timeAccessor->remove(selectedID);
-			empty();
-			populate();
-			//DetailsDialog::instance().show();
+			int64_t selectedID = getSelectedID();
+			if (selectedID > 0)
+			{
+				m_timeAccessor->remove(selectedID);
+				empty();
+				populate();
+				//DetailsDialog::instance().show();
+			}
+			break;
 		}
-		break;
-	}
-	case (Gtk::RESPONSE_CANCEL):
-		std::cout << "Cancel clicked." << std::endl;
-		break;
-	default:
-		std::cout << "Unexpected button clicked." << std::endl;
-		break;
+		case (Gtk::RESPONSE_CANCEL):
+			std::cout << "Cancel clicked." << std::endl;
+			break;
+		default:
+			std::cout << "Unexpected button clicked." << std::endl;
+			break;
 	}
 
 }
@@ -120,7 +122,6 @@ bool Details::on_button_press_event(GdkEventButton* event)
 
 	return return_value;
 }
-
 
 Gtk::TreeModel::iterator Details::findRow(int id)
 {
@@ -160,7 +161,8 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 		m_stopTime = stopTime;
 		empty();
 		populate();
-	} else
+	}
+	else
 	{
 		m_taskID = 0;
 		m_startTime = 0;
@@ -176,14 +178,14 @@ void Details::empty()
 void Details::populate()
 {
 	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
-	std::vector<TimeEntry>::iterator iter=timeList.begin();
-	for(;iter!=timeList.end();iter++)
+	std::vector<TimeEntry>::iterator iter = timeList.begin();
+	for (; iter != timeList.end(); ++iter)
 	{
-		TimeEntry te=*iter;
+		TimeEntry te = *iter;
 		TreeModel::Row row;
 		TreeModel::iterator TMIter;
 		Gtk::TreeIter treeIter = findRow(te.getID());
-		if(treeIter==m_treeModel->children().end())
+		if (treeIter == m_treeModel->children().end())
 		{
 			treeIter = m_treeModel->append();
 		}
@@ -196,7 +198,7 @@ void Details::populate()
 void Details::on_selection_changed()
 {
 	std::list<DetailsObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		DetailsObserver* observer = *iter;
 		observer->on_selected_changed();

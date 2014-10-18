@@ -4,12 +4,12 @@
 
 using namespace std;
 
-#define DATACELL_INTEGER 1
-#define DATACELL_FLOAT 2
-#define DATACELL_TEXT 3
-#define DATACELL_BLOB 4
-#define DATACELL_NULL 5
-#define DATACELL_BOOL 6
+constexpr auto DATACELL_INTEGER = 1;
+constexpr auto DATACELL_FLOAT = 2;
+constexpr auto DATACELL_TEXT = 3;
+constexpr auto DATACELL_BLOB = 4;
+constexpr auto DATACELL_NULL = 5;
+constexpr auto DATACELL_BOOL = 6;
 
 namespace DBAbstraction
 {
@@ -26,9 +26,8 @@ DataCell::DataCell(int op_value)
 	type = DATACELL_INTEGER;
 }
 
-DataCell::DataCell(const char* op_text)
+DataCell::DataCell(const char* op_text): text(op_text)
 {
-	text = op_text;
 	type = DATACELL_TEXT;
 	value=0;
 }

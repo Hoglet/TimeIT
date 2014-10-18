@@ -16,23 +16,16 @@
 #include <GUIFactory.h>
 #include <libnotify/notify.h>
 
-#define DUPLICATE_RESHOW_TIME 600
+constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
 using namespace GUI;
 
-Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory,
-                       std::shared_ptr<ITimeKeeper>& timeKeeper,
-                       std::shared_ptr<DB::IDatabase>& database
-                       )
+Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& op_guiFactory, std::shared_ptr<ITimeKeeper>& op_timeKeeper,
+		std::shared_ptr<DB::IDatabase>& database) :
+		guiFactory(op_guiFactory), timeKeeper(op_timeKeeper), taskAccessor(database->getExtendedTaskAccessor()), settingsAccessor(
+				database->getSettingsAccessor())
 {
-	mainWindow_x=0;
-	mainWindow_y=0;
-	settingsAccessor = database->getSettingsAccessor();
-	taskAccessor = database->getExtendedTaskAccessor();
-	selectedTaskID = -1;
-	this->timeKeeper = timeKeeper;
-	this->guiFactory = guiFactory;
-	this->timeKeeper->attach(this);
+	timeKeeper->attach(this);
 }
 
 Controller::~Controller()
@@ -45,7 +38,7 @@ void Controller::start()
 {
 	guiFactory->getStatusIcon().show();
 	guiFactory->getStatusIcon().attach(this);
-	if(!settingsAccessor->GetBoolByName("StartMinimized",DEFAULT_START_MINIMIZED))
+	if (!settingsAccessor->GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
 	{
 		WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
 		mainWindow->attach(this);
@@ -62,7 +55,6 @@ void Controller::on_action_quit()
 
 void Controller::on_action_toggleMainWindow()
 {
-	static bool firstTime = true;
 	WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
 	if (mainWindow->is_visible())
 	{
@@ -71,6 +63,7 @@ void Controller::on_action_toggleMainWindow()
 	}
 	else
 	{
+		static bool firstTime = true;
 		if (!firstTime)
 		{
 			mainWindow->move(mainWindow_x, mainWindow_y);
@@ -93,24 +86,27 @@ void Controller::on_action_report_bug()
 
 void Controller::on_action_help()
 {
-	std::stringstream translatedHelp;
-	std::stringstream helpToUse;
-	translatedHelp<<PACKAGE_DATA_DIR<<"/doc/timeit/html/"<< Utils::get639LanguageString() <<"/index.html";
-	if(OSAbstraction::fileExists(std::string(translatedHelp.str())))
+	std::stringstream translatedHelp
+		{
+		};
+	std::stringstream helpToUse
+		{
+		};
+	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << Utils::get639LanguageString() << "/index.html";
+	if (OSAbstraction::fileExists(std::string(translatedHelp.str())))
 	{
-		helpToUse<<"file://"<<translatedHelp.str();
+		helpToUse << "file://" << translatedHelp.str();
 	}
 	else
 	{
 		std::stringstream defaultHelp;
-		defaultHelp << PACKAGE_DATA_DIR<<"/doc/timeit/html/C/index.html";
-		if(OSAbstraction::fileExists(std::string(defaultHelp.str())))
+		defaultHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/C/index.html";
+		if (OSAbstraction::fileExists(std::string(defaultHelp.str())))
 		{
-			helpToUse<<"file://"<<defaultHelp.str();
+			helpToUse << "file://" << defaultHelp.str();
 		}
 	}
-	const char * helpfile=helpToUse.str().c_str();
-	OSAbstraction::showURL(helpfile);
+	OSAbstraction::showURL(helpToUse.str().c_str());
 }
 //LCOV_EXCL_STOP
 void Controller::on_action_start_task()
@@ -223,20 +219,23 @@ void Controller::on_action_preferences()
 	preferenceDialog->show();
 }
 
-
-
-void Controller::on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime)
+void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(guiFactory->getWidget(GUI::DETAILS_DIALOG));
-	if(detailsDialog)
+	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(
+			guiFactory->getWidget(GUI::DETAILS_DIALOG));
+	if (detailsDialog)
 	{
-		detailsDialog->set(taskId,startTime,stopTime);
+		detailsDialog->set(taskId, startTime, stopTime);
 		detailsDialog->show();
 	}
 }
 
 //LCOV_EXCL_START
-void Controller::on_runningChanged() {}
-void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime) {}
+void Controller::on_runningChanged()
+{
+}
+void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime)
+{
+}
 
 //LCOV_EXCL_STOP

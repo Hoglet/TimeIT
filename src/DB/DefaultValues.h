@@ -8,14 +8,14 @@
 #ifndef DEFAULTVALUES_H_
 #define DEFAULTVALUES_H_
 
-#define DEFAULT_GZ 1
-#define DEFAULT_GT 7
-#define DEFAULT_COMPACTLAYOUT true
-#define DEFAULT_START_MINIMIZED false
-#define DEFAULT_QUIET_MODE false
-#define DEFAULT_URL ""
-#define DEFAULT_USER ""
-#define DEFAULT_PASSWORD ""
-#define DEFAULT_IGNORE_CERT_ERR false
-#define DEFAULT_SYNC_INTERVAL 10
+constexpr auto DEFAULT_GZ = 1;
+constexpr auto DEFAULT_GT = 7;
+constexpr auto DEFAULT_COMPACTLAYOUT = true;
+constexpr auto DEFAULT_START_MINIMIZED = false;
+constexpr auto DEFAULT_QUIET_MODE = false;
+constexpr auto DEFAULT_URL = "";
+constexpr auto DEFAULT_USER = "";
+constexpr auto DEFAULT_PASSWORD = "";
+constexpr auto DEFAULT_IGNORE_CERT_ERR = false;
+constexpr auto DEFAULT_SYNC_INTERVAL = 10;
 #endif /* DEFAULTVALUES_H_ */

@@ -61,10 +61,6 @@ bool fileExists(std::string filename)
 }
 
 //LCOV_EXCL_START
-int getPID()
-{
-	return getpid();
-}
 
 void showURL(std::string url)
 {

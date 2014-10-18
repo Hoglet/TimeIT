@@ -44,7 +44,7 @@ void AutoTracker::stopTasks(int workspace)
 {
 	std::vector<int64_t> tasksToStop = m_autotrackAccessor->getTaskIDs(workspace);
 	std::vector<int64_t>::iterator iter = tasksToStop.begin();
-	for (; iter != tasksToStop.end(); iter++)
+	for (; iter != tasksToStop.end(); ++iter)
 	{
 		int64_t taskID = *iter;
 		m_timekeeper->StopTask(taskID);
@@ -54,7 +54,7 @@ void AutoTracker::startTasks(int workspace)
 {
 	std::vector<int64_t> tasksToStart = m_autotrackAccessor->getTaskIDs(workspace);
 	std::vector<int64_t>::iterator iter;
-	for (iter = tasksToStart.begin(); iter < tasksToStart.end(); iter++)
+	for (iter = tasksToStart.begin(); iter < tasksToStart.end(); ++iter)
 	{
 		int64_t taskID = *iter;
 		try

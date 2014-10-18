@@ -3,7 +3,8 @@
 namespace DB
 {
 TimeEntry::TimeEntry(int64_t op_id, std::string op_uuid, int64_t op_taskID, std::string op_taskUUID, time_t op_start,
-		time_t op_stop, bool op_deleted, bool op_running, time_t op_changed)
+		time_t op_stop, bool op_deleted, bool op_running, time_t op_changed) :
+		uuid(op_uuid), taskUUID(op_taskUUID)
 {
 	id = op_id;
 	taskID = op_taskID;
@@ -12,8 +13,6 @@ TimeEntry::TimeEntry(int64_t op_id, std::string op_uuid, int64_t op_taskID, std:
 	deleted = op_deleted;
 	running = op_running;
 	changed = op_changed;
-	uuid = op_uuid;
-	taskUUID = op_taskUUID;
 }
 
 int64_t TimeEntry::getID() const
@@ -26,7 +25,7 @@ time_t TimeEntry::getStart() const
 }
 void TimeEntry::setStart(time_t op_start)
 {
-	if(start != op_start)
+	if (start != op_start)
 	{
 		start = op_start;
 		changed = time(0);
@@ -40,7 +39,7 @@ time_t TimeEntry::getStop() const
 
 void TimeEntry::setStop(time_t op_stop)
 {
-	if(stop!=op_stop)
+	if (stop != op_stop)
 	{
 		stop = op_stop;
 		changed = time(0);

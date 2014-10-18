@@ -160,11 +160,8 @@ public:
 	int64_t removedTaskID;
 };
 
-
 void TaskAccessor_updateTask()
 {
-	Gtk::Main* main = Gtk::Main::instance();
-
 	TempDB tempdb;
 	TAObserver observer;
 	Task original_task("Test");
@@ -181,7 +178,7 @@ void TaskAccessor_updateTask()
 	task1->setName("Coding");
 	taskAccessor->updateTask(*task1);
 	shared_ptr<Task> changedTask = taskAccessor->getTask(id);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUAL(task1->getName(), changedTask->getName());
 	ASSERT_EQUALM("Notified TaskID: ", task1->getID(), observer.updatedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", 0, observer.updatedParentTaskID);
@@ -199,13 +196,13 @@ void TaskAccessor_updateTask()
 	shared_ptr<Task> task2 = taskAccessor->getTask(id2);
 	task2->setParent(id);
 	taskAccessor->updateTask(*task2);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUALM("Notified TaskID: ", task2->getID(), observer.updatedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.updatedParentTaskID);
 
 	task2->setDeleted(true);
 	taskAccessor->updateTask(*task2);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.removedTaskID);
 }
 

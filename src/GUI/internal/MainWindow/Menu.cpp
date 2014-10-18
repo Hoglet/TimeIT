@@ -62,7 +62,7 @@ Menu::~Menu()
 void Menu::setTaskIsSelected(bool show)
 {
 	std::list<Gtk::MenuItem*>::iterator iter;
-	for (iter = taskIDDependentMenus.begin(); iter != taskIDDependentMenus.end(); iter++)
+	for (iter = taskIDDependentMenus.begin(); iter != taskIDDependentMenus.end(); ++iter)
 	{
 		Gtk::MenuItem* menuItem = *iter;
 		menuItem->set_sensitive(show);
@@ -73,7 +73,7 @@ void Menu::setTaskIsSelected(bool show)
 void Menu::on_menu_about()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_about();
@@ -83,7 +83,7 @@ void Menu::on_menu_about()
 void Menu::on_menu_help()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_help();
@@ -93,7 +93,7 @@ void Menu::on_menu_help()
 void Menu::on_menu_add_task()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_add_task();
@@ -103,7 +103,7 @@ void Menu::on_menu_add_task()
 void Menu::on_menu_remove_task()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_remove_task();
@@ -113,7 +113,7 @@ void Menu::on_menu_remove_task()
 void Menu::on_menu_add_time()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_add_time();
@@ -122,7 +122,7 @@ void Menu::on_menu_add_time()
 void Menu::on_menu_quit()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_quit();
@@ -132,7 +132,7 @@ void Menu::on_menu_quit()
 void Menu::on_menu_start()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_start_task();
@@ -141,7 +141,7 @@ void Menu::on_menu_start()
 void Menu::on_menu_stop()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stop_task();
@@ -151,7 +151,7 @@ void Menu::on_menu_stop()
 void Menu::on_menu_stop_all()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stopTimers();
@@ -161,7 +161,7 @@ void Menu::on_menu_stop_all()
 void Menu::on_menu_edit()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_edit_task();
@@ -170,7 +170,7 @@ void Menu::on_menu_edit()
 void Menu::on_menu_preferences()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_preferences();
@@ -179,7 +179,7 @@ void Menu::on_menu_preferences()
 void Menu::on_menu_report_bug()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_report_bug();

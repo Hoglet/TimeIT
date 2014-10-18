@@ -1,16 +1,27 @@
 #include "SyncManager.h"
-#include <vector>
-#include "Json.h"
-#include <iostream>
-#include "DefaultValues.h"
-#include <glibmm.h>
+
 #include <Utils.h>
+#include <glibmm.h>
+#include <iostream>
+#include "Json.h"
+#include "DefaultValues.h"
 
-using namespace std;
-using namespace DB;
-
-SyncManager::SyncManager(shared_ptr<DB::IDatabase>& database, shared_ptr<INetwork>& op_network)
+namespace syncing
 {
+
+using std::shared_ptr;
+using std::cout;
+using std::string;
+using std::vector;
+using DB::IDatabase;
+using DB::Task;
+using DB::TimeEntry;
+
+SyncManager::SyncManager(shared_ptr<IDatabase>& database, shared_ptr<INetwork>& op_network)
+{
+	int len=1;
+	auto text = std::unique_ptr<char[]>(new char[len]);
+
 	thread = 0;
 	inited = false;
 	running = false;
@@ -28,7 +39,9 @@ SyncManager::SyncManager(shared_ptr<DB::IDatabase>& database, shared_ptr<INetwor
 //LCOV_EXCL_START
 SyncManager::SyncManager()
 {
-
+	thread = 0;
+	inited = false;
+	running = false;
 }
 //LCOV_EXCL_STOP
 
@@ -47,7 +60,7 @@ void SyncManager::start()
 }
 void SyncManager::stop()
 {
-	if(inited && thread)
+	if(inited && thread!=nullptr)
 	{
 		running = false;
 		thread->join();
@@ -255,3 +268,4 @@ void SyncManager::completeSync()
 
 }
 
+}

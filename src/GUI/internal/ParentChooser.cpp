@@ -16,9 +16,9 @@ namespace GUI
 namespace Internal
 {
 using namespace std;
-ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase>& database)
+ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase>& database) :
+		taskAccessor(database->getTaskAccessor())
 {
-	taskAccessor = database->getTaskAccessor();
 	//Create the Tree model:
 	//m_refTreeModel = Gtk::TreeStore::create(m_Columns);
 	model = Gtk::ListStore::create(Columns);
@@ -57,7 +57,7 @@ void ParentChooser::setID(int ID)
 
 void ParentChooser::setParentID(int parentID)
 {
-	if(parentID>=0)
+	if (parentID >= 0)
 	{
 		this->parentID = parentID;
 	}
@@ -73,7 +73,6 @@ void ParentChooser::setParentID(int parentID)
 		set_active(iter);
 	}
 }
-
 
 int ParentChooser::getParentID()
 {

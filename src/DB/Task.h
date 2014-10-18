@@ -39,13 +39,13 @@ public:
 
 protected:
 	std::string name;
-	int64_t ID;
-	int64_t parentID;
+	int64_t ID = 0;
+	int64_t parentID = 0;
 	std::string uuid;
 	std::string parentUuid;
-	bool completed;
+	bool completed = false;
 	time_t lastChanged;
-	bool deleted;
+	bool deleted = false;
 	Task();
 	static UUID uuidManager;
 private:

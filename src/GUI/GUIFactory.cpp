@@ -15,12 +15,9 @@ using namespace GUI::Internal;
 
 std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<DB::IDatabase>& database,
-		const std::shared_ptr<Timer>& timer)
+GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& op_timekeeper, std::shared_ptr<DB::IDatabase>& op_database,
+		const std::shared_ptr<Timer>& op_timer) : timekeeper(op_timekeeper), database(op_database), timer(op_timer)
 {
-	this->timekeeper = timekeeper;
-	this->timer = timer;
-	this->database = database;
 
 }
 
@@ -171,7 +168,7 @@ IStatusIcon& GUIFactory::getStatusIcon()
 }
 WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 {
-	if (!addTimeInstance)
+	if (addTimeInstance==nullptr)
 	{
 		if (mainWindow == 0)
 		{

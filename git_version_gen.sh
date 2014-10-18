@@ -38,5 +38,5 @@ else
 fi
 test "$VN" = "$VC" || {
 	echo "$VN" > $GVF
-    echo "#define VERSION \"$VN\""> src/version.h
+    echo "constexpr auto VERSION = \"$VN\";" > src/version.h
 }

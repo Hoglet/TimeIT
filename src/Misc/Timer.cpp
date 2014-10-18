@@ -26,13 +26,12 @@ void TimerObserver::on_signal_10_seconds()
 
 Timer::Timer()
 {
-	Glib::signal_timeout().connect( sigc::mem_fun(*this, &Timer::on_signal_1_second), 1000 );
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &Timer::on_signal_1_second), 1000);
 }
 
 Timer::~Timer()
 {
 }
-
 
 void Timer::attach(TimerObserver* observer)
 {
@@ -55,19 +54,23 @@ void Timer::signalSender()
 {
 	static int TenSecondCounter = 10;
 	TenSecondCounter--;
-	bool signal10Seconds=false;
-	if(TenSecondCounter < 1)
+	bool signal10Seconds = false;
+	if (TenSecondCounter < 1)
 	{
-		signal10Seconds=true;
+		signal10Seconds = true;
 		TenSecondCounter = 10;
 	}
-	for (TimerObserver* observer: observers)
+	if (observers.size()>0)
 	{
-		observer->on_signal_1_second();
-		if(signal10Seconds)
+		for (TimerObserver* observer : observers)
 		{
-			observer->on_signal_10_seconds();
+			observer->on_signal_1_second();
+			if (signal10Seconds)
+			{
+				observer->on_signal_10_seconds();
+			}
 		}
 	}
+
 }
 

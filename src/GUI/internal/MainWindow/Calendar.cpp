@@ -35,7 +35,7 @@ void Calendar::get_date(unsigned int& year, unsigned int& month, unsigned int& d
 void Calendar::notify()
 {
 	std::list<CalendarObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		CalendarObserver* observer = *iter;
 		observer->on_date_changed();

@@ -21,7 +21,7 @@ public:
 
 	void run();
 	std::shared_ptr<MockWidget> widget;
-	GUI::EWidget widgetIdentifier;
+	GUI::EWidget widgetIdentifier = GUI::MAX_WIDGETS;
 private:
 	MockStatusIcon msi;
 };

@@ -11,15 +11,9 @@ namespace GUI
 namespace Internal
 {
 
-Summary::Summary(std::shared_ptr<DB::IDatabase>& database)
+Summary::Summary(std::shared_ptr<DB::IDatabase>& database) :
+		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor())
 {
-	needsRePopulation = true;
-	activeDay = 0;
-	startTime = 0;
-	stopTime = 0;
-	calendar = nullptr;
-	timeAccessor = database->getTimeAccessor();
-	taskAccessor = database->getExtendedTaskAccessor();
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column("Name", columns.col_name);
@@ -50,7 +44,8 @@ bool Summary::on_button_press_event(GdkEventButton* event)
 	{
 		Menu_Popup.popup(event->button, event->time);
 		retVal = true; //It has been handled.
-	} else if (event->type == GDK_2BUTTON_PRESS)
+	}
+	else if (event->type == GDK_2BUTTON_PRESS)
 	{
 		on_menu_showDetails();
 		retVal = true; //It has been handled.
@@ -66,7 +61,7 @@ void Summary::on_menu_showDetails()
 	{
 		SummaryObserver* observer = *iter;
 		observer->on_showDetailsClicked(this, id, startTime, stopTime);
-		iter++;
+		++iter;
 	}
 }
 
@@ -82,7 +77,7 @@ void Summary::on_selection_changed()
 	{
 		SummaryObserver* observer = *iter;
 		observer->on_selection_changed(id, startTime, stopTime);
-		iter++;
+		++iter;
 	}
 }
 void Summary::attach(SummaryObserver* observer)
@@ -150,20 +145,22 @@ void Summary::on_taskUpdated(int64_t taskID)
 				{
 					on_taskUpdated(parentID);
 				}
-			} else
+			}
+			else
 			{
 				empty();
 				populate();
 			}
 		}
-	} else
+	}
+	else
 	{
 		needsRePopulation = true;
 	}
 }
 void Summary::on_completeUpdate()
 {
-	if(isVisible())
+	if (isVisible())
 	{
 		empty();
 		populate();
@@ -173,7 +170,6 @@ void Summary::on_completeUpdate()
 		needsRePopulation = true;
 	}
 }
-
 
 void Summary::on_taskRemoved(int64_t taskID)
 {
@@ -200,7 +196,8 @@ void Summary::on_dateChanged()
 		{
 			empty();
 			populate();
-		} else
+		}
+		else
 		{
 			needsRePopulation = true;
 		}
@@ -256,7 +253,8 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 				if (parent)
 				{
 					iter = treeModel->append(parent->children());
-				} else
+				}
+				else
 				{
 					iter = treeModel->append();
 				}
@@ -272,7 +270,8 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 			this->expand_all();
 		}
 		needsRePopulation = false;
-	} else
+	}
+	else
 	{
 		needsRePopulation = true;
 	}

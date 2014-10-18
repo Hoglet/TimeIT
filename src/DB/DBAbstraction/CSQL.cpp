@@ -34,7 +34,6 @@ void CSQL::init(const std::string& dbname)
 	int rc = sqlite3_open(dbname.c_str(), &db);
 	if (rc)
 	{
-		stringstream str;
 		e.setReturnCode(rc);
 		e.setMessage(sqlite3_errmsg(db));
 		sqlite3_close(db);
@@ -128,9 +127,8 @@ Statement::~Statement()
 	sqlite3_finalize(stmt);
 }
 
-Statement::Statement(sqlite3_stmt* op_stmt, std::shared_ptr<CSQL> op_db)
+Statement::Statement(sqlite3_stmt* op_stmt, std::shared_ptr<CSQL> op_db): db(op_db)
 {
-	db = op_db;
 	stmt = op_stmt;
 	ncol = sqlite3_column_count(stmt);
 }

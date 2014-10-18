@@ -12,11 +12,13 @@ namespace Test
 
 TempDB::TempDB() : Database(":memory:")
 {
+	sqlite3_initialize();
 
 }
 
 TempDB::~TempDB()
 {
+	sqlite3_shutdown();
 }
 
 } /* namespace Test */

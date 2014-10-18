@@ -19,8 +19,6 @@ void Json_simpleTaskTest()
 	std::string expectedName = "task1";
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	std::string expectedUUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
-	bool expectedCompleted = false;
-	bool expectedDeleted = false;
 	time_t expectedChangeTime = 1374263745;
 	int numberOfTasks = tasks->size();
 	ASSERT_EQUALM("Number of tasks", 1, numberOfTasks);
@@ -28,6 +26,8 @@ void Json_simpleTaskTest()
 	if (numberOfTasks == 1)
 	{
 		Task task = tasks->at(0);
+		bool expectedCompleted = false;
+		bool expectedDeleted = false;
 		ASSERT_EQUALM("Name: ", expectedName, task.getName());
 		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID());
 		ASSERT_EQUALM("Parent: ", expectedParent, task.getParentUUID());
@@ -47,8 +47,6 @@ void Json_simpleTaskTest2()
 	std::string expectedName = "task1";
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	std::string expectedUUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
-	bool expectedCompleted = true;
-	bool expectedDeleted = true;
 	time_t expectedChangeTime = 1374263745;
 	int numberOfTasks = tasks->size();
 	ASSERT_EQUALM("Number of tasks", 1, numberOfTasks);
@@ -56,6 +54,8 @@ void Json_simpleTaskTest2()
 	if (numberOfTasks == 1)
 	{
 		Task task = tasks->at(0);
+		bool expectedCompleted = true;
+		bool expectedDeleted = true;
 		ASSERT_EQUALM("Name: ", expectedName, task.getName());
 		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID());
 		ASSERT_EQUALM("Parent: ", expectedParent, task.getParentUUID());
@@ -115,7 +115,6 @@ void Json_simpleTimeTest()
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
-	bool expectedDeleted = false;
 	time_t expectedStart = 1363339855;
 	time_t expectedStop = 1363342626;
 	time_t expectedChange = 1376059170;
@@ -125,6 +124,7 @@ void Json_simpleTimeTest()
 	if (numberOfItems == 1)
 	{
 		TimeEntry item = times->at(0);
+		bool expectedDeleted = false;
 		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID());
 		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.getTaskUUID());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.getDeleted());
@@ -141,7 +141,6 @@ void Json_simpleTimeTest2()
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
-	bool expectedDeleted = true;
 	time_t expectedStart = 1363339855;
 	time_t expectedStop = 1363342626;
 	time_t expectedChange = 1376059170;
@@ -151,6 +150,7 @@ void Json_simpleTimeTest2()
 	if (numberOfItems == 1)
 	{
 		TimeEntry item = times->at(0);
+		bool expectedDeleted = true;
 		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID());
 		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.getTaskUUID());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.getDeleted());

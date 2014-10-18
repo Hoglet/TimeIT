@@ -15,7 +15,6 @@ namespace OSAbstraction
 	void mkDir(std::string path);
 	bool fileExists(std::string filename);
 	void unlink(std::string filename);
-	int getPID();
 	void showURL(std::string url);
 };
 

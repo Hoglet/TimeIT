@@ -16,8 +16,7 @@ namespace GUI
 {
 namespace Internal
 {
-std::shared_ptr<DetailsDialog> DetailsDialog::create(std::shared_ptr<
-		DB::IDatabase>& database)
+std::shared_ptr<DetailsDialog> DetailsDialog::create(std::shared_ptr<DB::IDatabase>& database)
 {
 	std::shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
 	retVal->weak_this_ptr = std::weak_ptr<DetailsDialog>(retVal);
@@ -27,10 +26,9 @@ std::shared_ptr<DetailsDialog> DetailsDialog::create(std::shared_ptr<
 DetailsDialog::DetailsDialog(std::shared_ptr<DB::IDatabase>& database) :
 	detailList(*this, database), table(4, 4), startTimeLabel(_("Start time")),
 			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
-					"gtk-revert-to-saved")),
-			OKButton(Gtk::StockID("gtk-apply"))
+		"gtk-revert-to-saved")),
+OKButton(Gtk::StockID("gtk-apply")), timeAccessor(database->getTimeAccessor())
 {
-	timeAccessor = database->getTimeAccessor();
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
 	stopTimeHour.set_range(0, 23);
@@ -140,8 +138,7 @@ void DetailsDialog::setValues()
 	stopTimeMinute.set_value(stopTimeInfo.tm_min);
 }
 
-void DetailsDialog::on_selection_changed(int64_t ID, time_t startTime,
-		time_t stopTime)
+void DetailsDialog::on_selection_changed(int64_t ID, time_t startTime, time_t stopTime)
 {
 	set(ID, startTime, stopTime);
 }
@@ -188,8 +185,7 @@ void DetailsDialog::setTimeEntryID(int64_t id)
 
 void DetailsDialog::checkForChanges()
 {
-	if (timeEntryID > 0 && (oldStartTime != startTime || oldStopTime
-			!= stopTime))
+	if (timeEntryID > 0 && (oldStartTime != startTime || oldStopTime != stopTime))
 	{
 		OKButton.set_sensitive(true);
 		CancelButton.set_sensitive(true);

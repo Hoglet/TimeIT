@@ -42,9 +42,6 @@ Main::Main(int argc, char *argv[])
 	GUI::GUIFactory::init(argc, argv);
 	signal(SIGINT, &sighandler);
 
-	stringstream mkdirCommand;
-	stringstream dbCreateString;
-
 	std::string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
 	OSAbstraction::mkDir(dbPath);
 
@@ -116,7 +113,7 @@ int Main::run()
 			AutoTracker autotracker(timekeeper, database, timer);
 
 			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network(messageCenter));
-			SyncManager syncManager(database, network);
+			syncing::SyncManager syncManager(database, network);
 			syncManager.start();
 
 			Controller controller(guiFactory, timekeeper, database);

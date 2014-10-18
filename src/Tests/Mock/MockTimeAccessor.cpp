@@ -58,7 +58,9 @@ void MockTimeAccessor::remove(int64_t id)
 
 std::vector<TimeEntry> MockTimeAccessor::getDetailTimeList(int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::vector<TimeEntry> list;
+	std::vector<TimeEntry> list
+		{
+		};
 	return list;
 }
 

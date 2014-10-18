@@ -215,12 +215,11 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 	statement << "SELECT DISTINCT times.taskid FROM times WHERE times.deleted=0 ORDER BY times.stop DESC LIMIT "
 			<< amount;
 
-	int id;
 	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
 
 	for (vector<DataCell> row : *rows)
 	{
-		id = row[0].getInt();
+		int id = row[0].getInt();
 		resultList.push_back(id);
 	}
 	return resultList;

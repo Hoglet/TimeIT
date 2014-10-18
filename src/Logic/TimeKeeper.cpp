@@ -12,11 +12,10 @@ void Timekeeper::on_signal_1_second()
 }
 //LCOV_EXCL_STOP
 
+Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer) :
+		m_timeAccessor(database->getTimeAccessor()),m_timer(timer)
 
-Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer)
 {
-	m_timer = timer;
-	m_timeAccessor = database->getTimeAccessor();
 	m_timeAccessor->stopAllRunning();
 	m_taskAccessor = database->getTaskAccessor();
 	m_settingsAccessor = database->getSettingsAccessor();
@@ -42,12 +41,12 @@ Timekeeper::~Timekeeper()
 
 void Timekeeper::on_settingsChanged(const std::string& name)
 {
-	if(name.length() < 1 || name == "Gt")
+	if (name.length() < 1 || name == "Gt")
 	{
 		long idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
 		m_idleDetector.setIdleTimeout(idleGt);
 	}
-	if (name.length()<1 || name == "Gz")
+	if (name.length() < 1 || name == "Gz")
 	{
 		m_idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
 	}
@@ -68,7 +67,7 @@ void Timekeeper::on_signal_10_seconds()
 		else if (m_idleDetector.minutesIdle() < m_idleGz)
 		{
 			//Only saving time when being certain that somebody is working
-			for (it = activeTasks.begin(); it != activeTasks.end(); it++)
+			for (it = activeTasks.begin(); it != activeTasks.end(); ++it)
 			{
 				TaskTime tt = it->second;
 				UpdateTask(tt.taskID);
@@ -111,7 +110,6 @@ void Timekeeper::ToggleTask(int64_t id)
 	}
 }
 
-
 void Timekeeper::StopTask(int64_t id)
 {
 	map<int64_t, TaskTime>::iterator it;
@@ -122,12 +120,12 @@ void Timekeeper::StopTask(int64_t id)
 		activeTasks.erase(it);
 		m_timeAccessor->setRunning(task.dbHandle, false);
 
-		if (activeTasks.size() <= 0)
+		if (activeTasks.empty() == true)
 		{
 			notifyRunningChanged();
 		}
 	}
-	m_idleDetector.setEnabled(activeTasks.size()>0);
+	m_idleDetector.setEnabled(activeTasks.empty() == false);
 }
 
 void Timekeeper::on_taskRemoved(int64_t id)
@@ -137,7 +135,7 @@ void Timekeeper::on_taskRemoved(int64_t id)
 	if (it != activeTasks.end())
 	{
 		activeTasks.erase(it);
-		if (activeTasks.size() <= 0)
+		if (activeTasks.empty())
 		{
 			notifyRunningChanged();
 		}
@@ -147,7 +145,6 @@ void Timekeeper::on_completeUpdate()
 {
 	//TODO Detect task removal during syncing
 }
-
 
 void Timekeeper::UpdateTask(int64_t id, time_t now)
 {
@@ -171,15 +168,14 @@ void Timekeeper::UpdateTask(int64_t id)
 }
 bool Timekeeper::hasRunningTasks()
 {
-	return (activeTasks.size() > 0);
+	return (activeTasks.empty() == false);
 }
-
 
 void Timekeeper::stopAll()
 {
 	map<int64_t, TaskTime>::iterator it;
 	map<int64_t, TaskTime> copyOfActiveTasks = activeTasks;
-	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); it++)
+	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
 	{
 		TaskTime tt = it->second;
 		StopTask(tt.taskID);
@@ -190,7 +186,7 @@ void Timekeeper::stopAllAndContinue()
 {
 	map<int64_t, TaskTime>::iterator it;
 	map<int64_t, TaskTime> copyOfActiveTasks = activeTasks;
-	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); it++)
+	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
 	{
 		TaskTime tt = it->second;
 		StopTask(tt.taskID);
@@ -207,12 +203,11 @@ time_t Timekeeper::timeIdle()
 	return m_idleDetector.timeIdle();
 }
 
-
 void Timekeeper::notifyRunningChanged()
 {
-	m_idleDetector.setEnabled(activeTasks.size()>0);
+	m_idleDetector.setEnabled(activeTasks.empty() == false);
 	std::list<TimekeeperObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		TimekeeperObserver* observer = *iter;
 		observer->on_runningChanged();
@@ -222,7 +217,7 @@ void Timekeeper::notifyRunningChanged()
 void Timekeeper::notifyIdleDetected()
 {
 	std::list<TimekeeperObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		TimekeeperObserver* observer = *iter;
 		observer->on_idleDetected();
@@ -232,7 +227,7 @@ void Timekeeper::notifyIdleDetected()
 void Timekeeper::enable(bool enable)
 {
 	m_enabled = enable;
-	if(m_enabled)
+	if (m_enabled)
 	{
 		m_idleDetector.reset();
 	}

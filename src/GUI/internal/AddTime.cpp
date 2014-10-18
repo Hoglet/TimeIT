@@ -21,10 +21,8 @@ namespace Internal
 AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::IDatabase>& database) :
 		table(4, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")), taskNameLabel(
 				_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), calendar(
-				op_calendar), taskID(op_taskID)
+				op_calendar), taskID(op_taskID), m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
 {
-	m_timeAccessor = database->getTimeAccessor();
-	m_taskAccessor = database->getTaskAccessor();
 
 	set_deletable(false);
 	//OKButton.set_sensitive(false);

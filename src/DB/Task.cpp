@@ -7,13 +7,7 @@ namespace DB
 
 Task::Task()
 {
-	ID = 0;
-	parentID = 0;
-	name = "";
-	uuid = "";
-	completed = false;
 	lastChanged = time(0);
-	deleted = false;
 }
 
 Task::~Task()

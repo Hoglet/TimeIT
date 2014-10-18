@@ -5,16 +5,14 @@ using namespace GUI;
 namespace Test
 {
 
-MockGuiFactory::MockGuiFactory()
+MockGuiFactory::MockGuiFactory() :
+		widget(std::shared_ptr<MockWidget>(new MockWidget()))
 {
-	widgetIdentifier = MAX_WIDGETS;
-	widget= std::shared_ptr<MockWidget>(new MockWidget());
 }
 
 MockGuiFactory::~MockGuiFactory()
 {
 }
-
 
 WidgetPtr MockGuiFactory::getWidget(EWidget wi)
 {
@@ -37,6 +35,5 @@ void MockGuiFactory::run()
 {
 
 }
-
 
 } /* namespace Test */

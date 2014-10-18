@@ -116,7 +116,7 @@ Database::Database(const std::string& dbname)
 	{
 		tryRollback();
 		cerr << "Initiating DB with " << dbname << " caused: " << e.what() << endl;
-		throw e;
+		throw;
 	}
 	//LCOV_EXCL_STOP
 

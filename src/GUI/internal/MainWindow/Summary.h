@@ -82,16 +82,16 @@ protected:
 	};
 	Glib::RefPtr<Gtk::TreeSelection> refTreeSelection;
 	ModelColumns columns;
-	Gtk::Calendar* calendar;
-	time_t activeDay;
-	time_t startTime;
-	time_t stopTime;
+	Gtk::Calendar* calendar = nullptr;
+	time_t activeDay = 0;
+	time_t startTime = 0;
+	time_t stopTime = 0;
 	std::list<SummaryObserver* > observers;
 	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
 	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
 private:
 	bool isVisible();
-	bool needsRePopulation;
+	bool needsRePopulation = true;
 };
 
 }

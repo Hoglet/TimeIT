@@ -26,8 +26,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTasks(int
 	for (unsigned int i = 0; i < tasks->size(); i++)
 	{
 		ExtendedTask& task = tasks->at(i);
-		int totalTime = task.getTime();
-		totalTime = timeAccessor->getTotalTimeWithChildren(task.getID(), start, stop);
+		int totalTime = timeAccessor->getTotalTimeWithChildren(task.getID(), start, stop);
 		task.setTotalTime(totalTime);
 	}
 	return tasks;
@@ -62,7 +61,6 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(in
 		bool onlyRunning, time_t start, time_t stop)
 {
 	shared_ptr<vector<ExtendedTask>> retVal = shared_ptr<vector<ExtendedTask>>(new vector<ExtendedTask>);
-	int time = 0;
 	stringstream statement;
 
 	statement << "SELECT id, parent, name, expanded, running "
@@ -102,7 +100,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(in
 		string name = row[2].getString();
 		bool expanded = row[3].getBool();
 		bool running = row[4].getBool();
-		time = timeAccessor->getTime(id, start, stop);
+		int time = timeAccessor->getTime(id, start, stop);
 		ExtendedTask task(id, parent, name, time, expanded, running);
 		retVal->push_back(task);
 	}

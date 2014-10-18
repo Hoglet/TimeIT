@@ -14,9 +14,9 @@ namespace GUI
 {
 
 PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase>& database) :
-		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply"))
+		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(database->getSettingsAccessor())
+
 {
-	settingsAccessor = database->getSettingsAccessor();
 	CompactLayoutButton.set_label(_("Compact layout"));
 	StartMinimizedButton.set_label(_("Start minimized"));
 	PasswordEntry.set_visibility(false);

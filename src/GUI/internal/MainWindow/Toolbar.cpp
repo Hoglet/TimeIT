@@ -48,7 +48,7 @@ void Toolbar::setTaskIsSelected(bool sensitive)
 void Toolbar::on_add_clicked()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_add_task();
@@ -58,7 +58,7 @@ void Toolbar::on_add_clicked()
 void Toolbar::on_start_clicked()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_start_task();
@@ -68,7 +68,7 @@ void Toolbar::on_start_clicked()
 void Toolbar::on_stop_clicked()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stop_task();
@@ -78,7 +78,7 @@ void Toolbar::on_stop_clicked()
 void Toolbar::on_edit_clicked()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_edit_task();
@@ -88,7 +88,7 @@ void Toolbar::on_edit_clicked()
 void Toolbar::on_remove_clicked()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_remove_task();

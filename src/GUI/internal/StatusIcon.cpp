@@ -77,7 +77,8 @@ void StatusIcon::populateContextMenu()
 				if (task.getRunning() == true)
 				{
 					menuIcon->set(runningIconSmall);
-				} else
+				}
+				else
 				{
 					menuIcon->set(idleIconSmall);
 				}
@@ -111,7 +112,8 @@ void StatusIcon::populateContextMenu()
 						break;
 				}
 			}
-		} catch (...)
+		}
+		catch (...)
 		{
 			//Ignore all errors
 		}
@@ -137,7 +139,7 @@ void StatusIcon::populateContextMenu()
 
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
-	std::string taskName;
+	std::string taskName = "";
 	std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
 	if (task)
 	{
@@ -186,8 +188,8 @@ void StatusIcon::on_activate()
 }
 void StatusIcon::toggleMainWindow()
 {
-	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	std::list<IActionObserver*>::iterator iter = observers.begin();
+	for (; iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_toggleMainWindow();
@@ -213,8 +215,8 @@ void StatusIcon::on_menu_file_popup_quit()
 }
 void StatusIcon::on_menu_stop_all_timers()
 {
-	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	std::list<IActionObserver*>::iterator iter = observers.begin();
+	for (; iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stopTimers();
@@ -223,8 +225,8 @@ void StatusIcon::on_menu_stop_all_timers()
 
 void StatusIcon::on_menu_about()
 {
-	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	std::list<IActionObserver*>::iterator iter = observers.begin();
+	for (; iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_about();
@@ -233,8 +235,8 @@ void StatusIcon::on_menu_about()
 
 void StatusIcon::on_menu_preferences()
 {
-	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	std::list<IActionObserver*>::iterator iter = observers.begin();
+	for (; iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_preferences();
@@ -266,7 +268,9 @@ void StatusIcon::on_runningChanged()
 }
 void StatusIcon::setTooltip()
 {
-	std::stringstream message;
+	std::stringstream message
+		{
+		};
 	if (m_timekeeper->hasRunningTasks())
 	{
 		std::shared_ptr<std::vector<ExtendedTask>> tasks = m_taskaccessor->getRunningTasks();
@@ -283,7 +287,8 @@ void StatusIcon::setTooltip()
 			message << setw(15) << setiosflags(ios::left) << task.getName();
 			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
 		}
-	} else
+	}
+	else
 	{
 		message << _("TimeIt. the unobtrusive time tracker");
 	}
@@ -296,7 +301,8 @@ void StatusIcon::setIcon()
 	{
 		m_statusIcon->set(m_runningIcon);
 		Gtk::Window::set_default_icon(m_runningIcon);
-	} else
+	}
+	else
 	{
 		m_statusIcon->set(m_defaultIcon);
 		Gtk::Window::set_default_icon(m_defaultIcon);

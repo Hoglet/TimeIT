@@ -47,12 +47,11 @@ MainWindow::~MainWindow()
 }
 
 MainWindow::MainWindow(std::shared_ptr<DB::IDatabase>& database) :
-	taskList(database), daySummary(database), weekSummary(database),
-			monthSummary(database),yearSummary(database), labelDay(_("Day")), labelWeek(_("Week")),
-			labelMonth(_("Month")), labelYear(_("Year"))
+		taskList(database), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
+				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")), taskAccessor(
+				database->getExtendedTaskAccessor()), settingsAccessor(database->getSettingsAccessor())
+
 {
-	taskAccessor = database->getExtendedTaskAccessor();
-	settingsAccessor = database->getSettingsAccessor();
 	settingsAccessor->attach(this);
 	createLayout();
 	relateWidgets();
@@ -70,7 +69,7 @@ void MainWindow::attach(SummaryObserver* observer)
 {
 	std::vector<Summary*>::iterator iter;
 
-	for (iter = summaries.begin(); iter != summaries.end(); iter++)
+	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
 		Summary *summary = *iter;
 		summary->attach(observer);
@@ -80,7 +79,7 @@ void MainWindow::detach(SummaryObserver* observer)
 {
 	std::vector<Summary*>::iterator iter;
 
-	for (iter = summaries.begin(); iter != summaries.end(); iter++)
+	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
 		Summary *summary = *iter;
 		summary->detach(observer);
@@ -93,7 +92,7 @@ void MainWindow::attach(IActionObserver* observer)
 	taskList.attach(observer);
 	toolbar.attach(observer);
 	menubar.attach(observer);
-	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*> (observer);
+	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*>(observer);
 	if (sObserver)
 	{
 		attach(sObserver);
@@ -105,7 +104,7 @@ void MainWindow::detach(IActionObserver* observer)
 	taskList.detach(observer);
 	toolbar.detach(observer);
 	menubar.detach(observer);
-	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*> (observer);
+	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*>(observer);
 	if (sObserver)
 	{
 		detach(sObserver);
@@ -121,7 +120,7 @@ void MainWindow::relateWidgets()
 	summaries.push_back(&yearSummary);
 
 	std::vector<Summary*>::iterator iter;
-	for (iter = summaries.begin(); iter != summaries.end(); iter++)
+	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
 		Summary *summary = *iter;
 		summary->setReferences(calendar);
@@ -136,23 +135,20 @@ void MainWindow::createLayout()
 	TaskListContainer.set_shadow_type(Gtk::SHADOW_NONE);
 	TaskListContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	calendar.set_flags(Gtk::CAN_FOCUS);
-	calendar.display_options(Gtk::CALENDAR_SHOW_HEADING
-			| Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
+	calendar.display_options(
+			Gtk::CALENDAR_SHOW_HEADING | Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
 	DaySummaryContainer.set_flags(Gtk::CAN_FOCUS);
 	DaySummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
 	DaySummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	WeekSummaryContainer.set_flags(Gtk::CAN_FOCUS);
 	WeekSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	WeekSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC,
-			Gtk::POLICY_AUTOMATIC);
+	WeekSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	MonthSummaryContainer.set_flags(Gtk::CAN_FOCUS);
 	MonthSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	MonthSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC,
-			Gtk::POLICY_AUTOMATIC);
+	MonthSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	YearSummaryContainer.set_flags(Gtk::CAN_FOCUS);
 	YearSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	YearSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC,
-			Gtk::POLICY_AUTOMATIC);
+	YearSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 	hPaned.set_flags(Gtk::CAN_FOCUS);
 	summaryTabs.set_flags(Gtk::CAN_FOCUS);
@@ -169,7 +165,7 @@ void MainWindow::removeChildren(Container& container)
 {
 	Glib::ListHandle<Gtk::Widget*> listh = container.get_children();
 	Glib::ListHandle<Gtk::Widget*>::iterator iter(listh.begin());
-	for(iter = listh.begin(); iter != listh.end(); iter++)
+	for (iter = listh.begin(); iter != listh.end(); ++iter)
 	{
 		Gtk::Widget* widget = (*iter);
 		container.remove(*widget);
@@ -219,7 +215,7 @@ void MainWindow::defaultLayout()
 		{
 			mainVBox.pack_start(menubar, Gtk::PACK_SHRINK, 0);
 			mainVBox.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
-			mainVBox.pack_start(TaskListContainer);// Gtk::AttachOptions(0));
+			mainVBox.pack_start(TaskListContainer); // Gtk::AttachOptions(0));
 
 			{
 				TaskListContainer.add(taskList);
@@ -255,7 +251,7 @@ void MainWindow::classicLayout()
 		mainVBox.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
 		mainVBox.pack_start(hPaned);
 		{
-			hPaned.pack1(TaskListContainer, Gtk::EXPAND | Gtk::SHRINK);// Gtk::AttachOptions(0));
+			hPaned.pack1(TaskListContainer, Gtk::EXPAND | Gtk::SHRINK); // Gtk::AttachOptions(0));
 
 			{
 				TaskListContainer.add(taskList);
@@ -310,9 +306,8 @@ void MainWindow::on_action_remove_task()
 {
 	int selectedTaskID = taskList.getSelectedID();
 	//Confirm dialog when removing task!
-	Gtk::MessageDialog dialog(*this,
-			_("Are you sure you want to delete this task"), false,
-			Gtk::MESSAGE_WARNING, Gtk::BUTTONS_OK_CANCEL);
+	Gtk::MessageDialog dialog(*this, _("Are you sure you want to delete this task"), false, Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_OK_CANCEL);
 	dialog.set_secondary_text(_("There is not undelete function"));
 	dialog.set_deletable(false);
 
@@ -321,21 +316,21 @@ void MainWindow::on_action_remove_task()
 	//Handle the response:
 	switch (result)
 	{
-	case (Gtk::RESPONSE_OK):
-	{
-		//Remove task
-		taskAccessor->removeTask(selectedTaskID);
-		break;
-	}
-	case (Gtk::RESPONSE_CANCEL):
-	{
-		break;
-	}
-	default:
-	{
-		std::cerr << "Unexpected button clicked." << std::endl;
-		break;
-	}
+		case (Gtk::RESPONSE_OK):
+		{
+			//Remove task
+			taskAccessor->removeTask(selectedTaskID);
+			break;
+		}
+		case (Gtk::RESPONSE_CANCEL):
+		{
+			break;
+		}
+		default:
+		{
+			std::cerr << "Unexpected button clicked." << std::endl;
+			break;
+		}
 	}
 
 }

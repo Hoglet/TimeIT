@@ -12,11 +12,11 @@ namespace Internal
 using namespace DB;
 using namespace std;
 EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase>& database) :
-	CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database)
+		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database), autoTrackAccessor(
+				database->getAutotrackAccessor()), taskAccessor(database->getTaskAccessor())
+
 {
 	parentID = 0;
-	autoTrackAccessor = database->getAutotrackAccessor();
-	taskAccessor = database->getTaskAccessor();
 	taskID = 0;
 	numRows = workspace.get_numberOfRows();
 	numColumns = workspace.get_numberOfColumns();
@@ -35,11 +35,11 @@ EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase>& database) :
 	taskNameEntry.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
 	parentChooser.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
 
-	std::vector<Gtk::CheckButton*>::iterator iter=checkbutton.begin();
+	std::vector<Gtk::CheckButton*>::iterator iter = checkbutton.begin();
 	while (iter != checkbutton.end())
 	{
 		(*iter)->signal_toggled().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
-		iter++;
+		++iter;
 	}
 }
 void EditTaskDialog::createLayout()
@@ -98,7 +98,7 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 	Gtk::CheckButton* workspaceCheckButton;
 	std::vector<int> workspaces;
 
-	for(unsigned int i = 0; i< checkbutton.size(); i++)
+	for (unsigned int i = 0; i < checkbutton.size(); i++)
 	{
 		try
 		{
@@ -108,9 +108,9 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 				workspaces.push_back(i);
 			}
 		}
-		catch(...)
+		catch (...)
 		{
-			cerr<< " vector (checkbutton) contains less than size() says!\n";
+			cerr << " vector (checkbutton) contains less than size() says!\n";
 		}
 	}
 	return workspaces;
@@ -119,11 +119,11 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 void EditTaskDialog::setTaskID(int64_t ID)
 {
 	taskID = ID;
-	std::shared_ptr<Task > task = taskAccessor->getTask(taskID);
-	if(task)
+	std::shared_ptr<Task> task = taskAccessor->getTask(taskID);
+	if (task)
 	{
 		name = task->getName();
-		setParent( task->getParentID() );
+		setParent(task->getParentID());
 		taskNameEntry.set_text(name);
 		std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
 		setTickedWorkspaces(workspaces);
@@ -143,21 +143,21 @@ void EditTaskDialog::setTickedWorkspaces(std::vector<int> workspaces)
 {
 
 	std::vector<Gtk::CheckButton*>::iterator chbiter = checkbutton.begin();
-	while(chbiter!=checkbutton.end())
+	while (chbiter != checkbutton.end())
 	{
 		(*chbiter)->set_active(false);
 		chbiter++;
 	}
 	std::vector<int>::iterator iter = workspaces.begin();
-	while( iter != workspaces.end())
+	while (iter != workspaces.end())
 	{
 		try
 		{
 			checkbutton.at(*iter)->set_active(true);
 		}
-		catch(...)
+		catch (...)
 		{
-			cerr<<"#workspace != #checkbutton!\n";
+			cerr << "#workspace != #checkbutton!\n";
 		}
 		iter++;
 	}
@@ -171,15 +171,15 @@ void EditTaskDialog::on_OKButton_clicked()
 	name = taskNameEntry.get_text();
 	parentID = parentChooser.getParentID();
 
-	if(taskID<1)
+	if (taskID < 1)
 	{
-		taskID=taskAccessor->newTask(name, parentID);
+		taskID = taskAccessor->newTask(name, parentID);
 	}
 	else
 	{
 		taskAccessor->setParentID(taskID, parentID);
 		shared_ptr<Task> task = taskAccessor->getTask(taskID);
-		if(task)
+		if (task)
 		{
 			task->setName(name);
 			taskAccessor->updateTask(*task);
@@ -200,8 +200,7 @@ void EditTaskDialog::check4changes()
 {
 	std::vector<int> tickedWorkspaces = getTickedWorkspaces();
 
-	if (taskNameEntry.get_text() != name || tickedWorkspaces != workspaces
-			|| parentChooser.getParentID() != parentID)
+	if (taskNameEntry.get_text() != name || tickedWorkspaces != workspaces || parentChooser.getParentID() != parentID)
 	{
 		OKButton.set_sensitive(true);
 	}

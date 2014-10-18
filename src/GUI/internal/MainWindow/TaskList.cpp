@@ -12,9 +12,8 @@ using namespace DB;
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(std::shared_ptr<DB::IDatabase>& database)
+TaskList::TaskList(std::shared_ptr<DB::IDatabase>& database): 	taskAccessor(database->getExtendedTaskAccessor())
 {
-	taskAccessor = database->getExtendedTaskAccessor();
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"),
 			24, 24, true);
 	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "blank.svg"), 24,
@@ -55,7 +54,7 @@ TaskList::~TaskList()
 {
 	int64_t selectedID = 0;
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_task_selection_changed(selectedID);
@@ -157,7 +156,7 @@ void TaskList::on_selection_changed()
 {
 	int64_t selectedID = getSelectedID();
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_task_selection_changed(selectedID);
@@ -279,7 +278,7 @@ void TaskList::populate(TreeModel::Row* parent, int parentID)
 void TaskList::on_menu_start()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_start_task();
@@ -288,7 +287,7 @@ void TaskList::on_menu_start()
 void TaskList::on_menu_stop()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_stop_task();
@@ -297,7 +296,7 @@ void TaskList::on_menu_stop()
 void TaskList::on_menu_edit()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_edit_task();
@@ -306,7 +305,7 @@ void TaskList::on_menu_edit()
 void TaskList::on_menu_add_time()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_add_time();
@@ -315,7 +314,7 @@ void TaskList::on_menu_add_time()
 void TaskList::on_menu_add_task()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_add_task();
@@ -325,7 +324,7 @@ void TaskList::on_menu_add_task()
 void TaskList::on_menu_remove_task()
 {
 	std::list<IActionObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); iter++)
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		IActionObserver* observer = *iter;
 		observer->on_action_remove_task();

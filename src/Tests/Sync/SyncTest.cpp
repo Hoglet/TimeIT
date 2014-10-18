@@ -18,7 +18,7 @@ void SyncManager_fullSyncEmptyClient()
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
 	shared_ptr<MockNetwork> mockNetwork = shared_ptr<MockNetwork>(new MockNetwork());
 	shared_ptr<INetwork> network = static_pointer_cast<INetwork>(mockNetwork);
-	SyncManager syncManager(db, network);
+	syncing::SyncManager syncManager(db, network);
 
 	std::string taskKey = "/tasks/testman/";
 	std::string taskResponse = "[{\"name\": \"Child\", "

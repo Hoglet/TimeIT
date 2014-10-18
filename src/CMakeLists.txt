@@ -42,7 +42,6 @@ include_directories(${GTKMM_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}/GUI/"
                     "${PROJECT_SOURCE_DIR}/Misc/"
                     "${PROJECT_SOURCE_DIR}/Sync/"
-                    "${PROJECT_SOURCE_DIR}/cute_lib/"
                     "${PROJECT_SOURCE_DIR}/Tests/"
                     "${PROJECT_SOURCE_DIR}/DB/DBAbstraction/"
                     "${PROJECT_SOURCE_DIR}/../cute_lib/"

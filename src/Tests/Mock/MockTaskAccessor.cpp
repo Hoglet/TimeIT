@@ -1,5 +1,6 @@
 #include "MockTaskAccessor.h"
 
+using namespace DB;
 namespace Test
 {
 

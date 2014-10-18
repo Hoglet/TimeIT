@@ -7,6 +7,8 @@
 #include "Network.h"
 #include "Json.h"
 
+namespace syncing
+{
 class SyncManager
 {
 public:
@@ -35,5 +37,5 @@ private:
 	Glib::Thread *thread;
 
 };
-
+}
 #endif /* SYNCMANAGER_H_ */
