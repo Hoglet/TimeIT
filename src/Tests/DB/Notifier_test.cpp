@@ -63,12 +63,10 @@ public:
 
 void NotifyTaskUpdated()
 {
-	Gtk::Main* main = Gtk::Main::instance();
-
 	NotifyTester test;
-	main->iteration();
+	Gtk::Main::iteration(false);
 	test.notifier.sendNotification(TASK_UPDATED, 1);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUAL(0, test.task_id_added);
 	ASSERT_EQUAL(0, test.task_id_parent);
 	ASSERT_EQUAL(0, test.task_id_removed);
@@ -77,10 +75,9 @@ void NotifyTaskUpdated()
 
 void NotifyTaskAdded()
 {
-	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_ADDED, 2);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUAL(0, test.task_id_updated);
 	ASSERT_EQUAL(0, test.task_id_parent);
 	ASSERT_EQUAL(0, test.task_id_removed);
@@ -89,10 +86,9 @@ void NotifyTaskAdded()
 
 void NotifyTaskRemoved()
 {
-	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_REMOVED, 3);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUAL(0, test.task_id_updated);
 	ASSERT_EQUAL(0, test.task_id_added);
 	ASSERT_EQUAL(0, test.task_id_parent);
@@ -100,10 +96,9 @@ void NotifyTaskRemoved()
 }
 void NotifyTaskParentChanged()
 {
-	Gtk::Main* main = Gtk::Main::instance();
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_PARENT_CHANGED, 4);
-	main->iteration();
+	Gtk::Main::iteration(false);
 	ASSERT_EQUAL(0, test.task_id_updated);
 	ASSERT_EQUAL(0, test.task_id_added);
 	ASSERT_EQUAL(0, test.task_id_removed);

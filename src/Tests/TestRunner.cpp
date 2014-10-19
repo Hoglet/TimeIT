@@ -1,4 +1,3 @@
-
 #include "TestRunner.h"
 #include "ide_listener.h"
 #include "cute_runner.h"
@@ -29,6 +28,7 @@
 #include "cute_xml_file.h"
 #include "xml_listener.h"
 
+#include <gtkmm.h>
 
 namespace Test
 {
@@ -64,10 +64,10 @@ TestRunner::TestRunner()
 void TestRunner::run(int argc, char *argv[])
 {
 	using namespace std;
+	Gtk::Main main(argc, argv);
+	cute::xml_file_opener xmlfile(0, argv);
+	cute::xml_listener<cute::ide_listener<> > lis(xmlfile.out);
 
-	cute::xml_file_opener xmlfile(0,argv);
-    cute::xml_listener<cute::ide_listener<> >  lis(xmlfile.out);
-
-    cute::makeRunner(lis,0, argv)(s, "All");
+	cute::makeRunner(lis, 0, argv)(s, "All");
 }
 }
