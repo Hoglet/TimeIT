@@ -140,7 +140,9 @@ void ParentChooser::on_combo_changed()
 		}
 	}
 	else
+	{
 		std::cout << "invalid iter" << std::endl;
+	}
 }
 
 }
