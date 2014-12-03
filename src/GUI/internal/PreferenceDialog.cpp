@@ -14,7 +14,8 @@ namespace GUI
 {
 
 PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase>& database) :
-		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(database->getSettingsAccessor())
+		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(
+				database->getSettingsAccessor())
 
 {
 	CompactLayoutButton.set_label(_("Compact layout"));
@@ -148,6 +149,14 @@ void PreferenceDialog::get_values()
 	gt = GtEntry.get_value_as_int();
 	quietMode = QuietButton.get_active();
 	URL = UrlEntry.get_text();
+	if (URL.length() > 0)
+	{
+		char lastCharacter = URL[URL.length() - 1];
+		if (lastCharacter != '/')
+		{
+			URL += '/';
+		}
+	}
 	User = UserEntry.get_text();
 	Password = PasswordEntry.get_text();
 	ignoreCertErr = IgnoreCertErrorButton.get_active();
@@ -158,15 +167,9 @@ void PreferenceDialog::on_data_changed()
 {
 	get_values();
 	if (gz < gt
-			&& (gz != oldGz ||
-			    gt != oldGt ||
-			    compactLayout != oldCompactLayout ||
-			    startMinimized != oldStartMinimized ||
-			    oldPassword != Password ||
-			    oldUser != User ||
-			    oldURL != URL ||
-			    oldIgnoreCertErr != ignoreCertErr ||
-			    oldSyncInterval != syncInterval))
+			&& (gz != oldGz || gt != oldGt || compactLayout != oldCompactLayout || startMinimized != oldStartMinimized
+					|| oldPassword != Password || oldUser != User || oldURL != URL || oldIgnoreCertErr != ignoreCertErr
+					|| oldSyncInterval != syncInterval))
 	{
 		OKButton.set_sensitive(true);
 	}
@@ -192,62 +195,44 @@ void PreferenceDialog::on_CancelButton_clicked()
 {
 	hide();
 }
+
+void PreferenceDialog::save()
+{
+	compactLayout = settingsAccessor->SetBoolByName("CompactLayout", compactLayout);
+	oldCompactLayout = compactLayout;
+
+	settingsAccessor->SetIntByName("Gz", gz);
+	oldGz = gz;
+
+	settingsAccessor->SetIntByName("Gt", gt);
+	oldGt = gt;
+
+	settingsAccessor->SetBoolByName("StartMinimized", startMinimized);
+	oldStartMinimized = startMinimized;
+
+	settingsAccessor->SetBoolByName("Quiet", quietMode);
+	quietMode = oldQuietMode;
+
+	settingsAccessor->SetStringByName("Username", User);
+	oldUser = User;
+
+	settingsAccessor->SetStringByName("Password", Password);
+	oldPassword = Password;
+
+	settingsAccessor->SetStringByName("URL", URL);
+	oldURL = URL;
+
+	settingsAccessor->SetBoolByName("IgnoreCertErr", ignoreCertErr);
+	oldIgnoreCertErr = ignoreCertErr;
+
+	settingsAccessor->SetIntByName("SyncInterval", syncInterval);
+	oldSyncInterval = syncInterval;
+}
+
 void PreferenceDialog::on_OKButton_clicked()
 {
 	get_values();
-	if (compactLayout != oldCompactLayout)
-	{
-		compactLayout = settingsAccessor->SetBoolByName("CompactLayout", compactLayout);
-		oldCompactLayout = compactLayout;
-	}
-	if (gz != oldGz)
-	{
-		settingsAccessor->SetIntByName("Gz", gz);
-		oldGz = gz;
-	}
-	if (gt != oldGt)
-	{
-		settingsAccessor->SetIntByName("Gt", gt);
-		oldGt = gt;
-	}
-	if (startMinimized != oldStartMinimized)
-	{
-		settingsAccessor->SetBoolByName("StartMinimized", startMinimized);
-		oldStartMinimized = startMinimized;
-	}
-	if (quietMode != oldQuietMode)
-	{
-		settingsAccessor->SetBoolByName("Quiet", quietMode);
-		quietMode = oldQuietMode;
-	}
-	if (oldUser != User)
-	{
-		settingsAccessor->SetStringByName("Username", User);
-	}
-	if (oldPassword != Password)
-	{
-		settingsAccessor->SetStringByName("Password", Password);
-	}
-	if (oldURL != URL)
-	{
-		if (URL.length() > 0)
-		{
-			char lastCharacter = URL[URL.length() - 1];
-			if (lastCharacter != '/')
-			{
-				URL += '/';
-			}
-		}
-		settingsAccessor->SetStringByName("URL", URL);
-	}
-	if (oldIgnoreCertErr != ignoreCertErr)
-	{
-		settingsAccessor->SetBoolByName("IgnoreCertErr", ignoreCertErr);
-	}
-	if (oldSyncInterval != syncInterval)
-	{
-		settingsAccessor->SetIntByName("SyncInterval", syncInterval);
-	}
+	save();
 	hide();
 }
 

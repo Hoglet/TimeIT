@@ -92,6 +92,7 @@ private:
 	void on_data_changed();
 	bool on_focus_changed(GdkEventFocus*);
 	bool on_button_released(GdkEventButton* event);
+	void save();
 
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 };
