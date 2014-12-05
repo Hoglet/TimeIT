@@ -25,11 +25,13 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string userna
 		json_t *obj = json_object();
 		json_object_set(obj, "name", json_string(task.getName().c_str()));
 		json_object_set(obj, "id", json_string(task.getUUID().c_str()));
-		if(task.getParentUUID().length()>0)
+		if (task.getParentUUID().length() > 0)
 		{
-			json_object_set(obj, "parent", json_string(task.getParentUUID().c_str()));
+			json_t *parent = json_object();
+			json_object_set(parent, "id", json_string(task.getParentUUID().c_str()));
+			json_object_set(obj, "parent", parent);
 		}
-		if(task.getCompleted())
+		if (task.getCompleted())
 		{
 			json_object_set(obj, "completed", json_true());
 		}
@@ -38,7 +40,7 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string userna
 			json_object_set(obj, "completed", json_false());
 		}
 		json_object_set(obj, "lastChange", json_integer(task.getLastChanged()));
-		if(task.getDeleted())
+		if (task.getDeleted())
 		{
 			json_object_set(obj, "deleted", json_true());
 		}
@@ -48,7 +50,7 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string userna
 		}
 
 		json_t *owner = json_object();
-		json_object_set(owner,"username",json_string(username.c_str()));
+		json_object_set(owner, "username", json_string(username.c_str()));
 		json_object_set(obj, "owner", owner);
 
 		json_array_append(array, obj);
@@ -69,14 +71,14 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string userna
 std::string Json::toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
 {
 	json_t *array = json_array();
-	for (TimeEntry task : *times)
+	for (TimeEntry time : *times)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "id", json_string(task.getUUID().c_str()));
-		json_object_set(obj, "task", json_string(task.getTaskUUID().c_str()));
-		json_object_set(obj, "start", json_integer(task.getStart()));
-		json_object_set(obj, "stop", json_integer(task.getStop()));
-		if(task.getDeleted())
+		json_object_set(obj, "id", json_string(time.getUUID().c_str()));
+		json_object_set(obj, "task", json_string(time.getTaskUUID().c_str()));
+		json_object_set(obj, "start", json_integer(time.getStart()));
+		json_object_set(obj, "stop", json_integer(time.getStop()));
+		if (time.getDeleted())
 		{
 			json_object_set(obj, "deleted", json_true());
 		}
@@ -84,7 +86,12 @@ std::string Json::toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
 		{
 			json_object_set(obj, "deleted", json_false());
 		}
-		json_object_set(obj, "changed", json_integer(task.getLastChanged()));
+		json_object_set(obj, "changed", json_integer(time.getLastChanged()));
+
+		json_t *task = json_object();
+		json_object_set(task, "id", json_string(time.getTaskUUID().c_str()));
+		json_object_set(obj, "task", task);
+
 		json_array_append(array, obj);
 	}
 	char *str = json_dumps(array, 0);
@@ -136,13 +143,17 @@ std::shared_ptr<std::vector<Task>> Json::toTasks(const std::string& text)
 		{
 			uuid = json_string_value(j_id);
 		}
-		if (json_is_string(j_parent))
+		if (json_is_object(j_parent))
 		{
-			parent = json_string_value(j_parent);
+			json_t * j_parentID = json_object_get(j_parent, "id");
+			if (json_is_string(j_parentID))
+			{
+				parent = json_string_value(j_parentID);
+			}
 		}
 		if (json_is_boolean(j_completed))
 		{
-			if (json_is_true (j_completed))
+			if (json_is_true(j_completed))
 			{
 				completed = true;
 			}
@@ -157,7 +168,7 @@ std::shared_ptr<std::vector<Task>> Json::toTasks(const std::string& text)
 		}
 		if (json_is_boolean(j_deleted))
 		{
-			if ( json_is_true(j_deleted))
+			if (json_is_true(j_deleted))
 			{
 				deleted = true;
 			}
@@ -193,16 +204,20 @@ std::shared_ptr<std::vector<DB::TimeEntry> > Json::toTimes(const std::string& in
 		bool deleted;
 
 		json_t *object = json_array_get(root, i);
-		json_t *j_taskID = json_object_get(object, "task");
+		json_t *j_task = json_object_get(object, "task");
 		json_t *j_id = json_object_get(object, "id");
 		json_t *j_start = json_object_get(object, "start");
 		json_t *j_stop = json_object_get(object, "stop");
 		json_t *j_changed = json_object_get(object, "changed");
 		json_t *j_deleted = json_object_get(object, "deleted");
 
-		if (json_is_string(j_taskID))
+		if (json_is_object(j_task))
 		{
-			taskID = json_string_value(j_taskID);
+			json_t * j_taskID = json_object_get(j_task, "id");
+			if (json_is_string(j_taskID))
+			{
+				taskID = json_string_value(j_taskID);
+			}
 		}
 		if (json_is_string(j_id))
 		{
@@ -222,7 +237,7 @@ std::shared_ptr<std::vector<DB::TimeEntry> > Json::toTimes(const std::string& in
 		}
 		if (json_is_boolean(j_deleted))
 		{
-			if ( json_is_true(j_deleted))
+			if (json_is_true(j_deleted))
 			{
 				deleted = true;
 			}

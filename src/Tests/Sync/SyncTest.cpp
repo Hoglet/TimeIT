@@ -27,7 +27,7 @@ void SyncManager_fullSyncEmptyClient()
 	std::string taskKey = "/tasks/testman/";
 	std::string taskResponse = "[{\"name\": \"Child\", "
 			"\"id\": \"00b3015e-00d6-418e-81c8-0125012d0172\", "
-			"\"parent\": \"013900e6-00dd-40f7-b0d6-00de00bf006b\", "
+			"\"parent\": {\"id\": \"013900e6-00dd-40f7-b0d6-00de00bf006b\"}, "
 			"\"lastChange\": 1375358093, "
 			"\"completed\": false,"
 			"\"deleted\": true},"
@@ -37,8 +37,13 @@ void SyncManager_fullSyncEmptyClient()
 			"\"deleted\": false, "
 			"\"completed\": false}]";
 	std::string timesKey = "/times/testman/";
+
+
+	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+
+
 	std::string timesResponse = "[{\"id\": \"010c012c-00b9-40f6-80dd-018e011d0191\","
-			"\"task\": \"00b3015e-00d6-418e-81c8-0125012d0172\","
+			"\"task\":{\"id\":\"00b3015e-00d6-418e-81c8-0125012d0172\"},"
 			"\"start\": 1363597429, \"stop\": 1363597541, \"deleted\": false,"
 			"\"changed\": 1376388171}]";
 	mockNetwork->setResponse( taskKey, taskResponse);
