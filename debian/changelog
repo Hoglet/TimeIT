@@ -1,3 +1,10 @@
+timeit (1.9.9.13) precise; urgency=medium
+
+  * Change of json format to be able to connect  to TimeIT-server
+  * Bugfix: Tasktree was not updated when new task were added
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 20:42:26 +0100
+
 timeit (1.9.9.12) precise; urgency=low
 
   * Nothing changed
