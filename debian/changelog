@@ -1,3 +1,9 @@
+timeit (1.9.9.16) trusty; urgency=medium
+
+  * Bugfix: Readded TODO.tasks 
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 21:32:08 +0100
+
 timeit (1.9.9.15) trusty; urgency=medium
 
   * New try to deliver
