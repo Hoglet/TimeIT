@@ -1,3 +1,9 @@
+timeit (1.9.9.14) trusty ; urgency=medium
+
+  * Building in trusty
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 20:54:30 +0100
+
 timeit (1.9.9.13) precise; urgency=medium
 
   * Change of json format to be able to connect  to TimeIT-server
