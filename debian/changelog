@@ -1,3 +1,9 @@
+timeit (1.9.9.15) trusty; urgency=medium
+
+  * New try to deliver
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 21:04:48 +0100
+
 timeit (1.9.9.14) trusty; urgency=medium
 
   * Nothing changed
