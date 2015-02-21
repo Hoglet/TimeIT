@@ -47,7 +47,7 @@ AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::
 	stopTimeHour.set_increments(1, 1);
 	stopTimeMinute.set_increments(1, 1);
 
-	time_t now = time(NULL);
+	time_t now = Utils::now();
 	struct tm* timeInfo = localtime(&now);
 	startTimeHour.set_value(timeInfo->tm_hour);
 	stopTimeHour.set_value(timeInfo->tm_hour);

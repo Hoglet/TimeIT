@@ -12,6 +12,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
 #include <memory>
+#include <Utils.h>
 
 namespace
 {
@@ -42,7 +43,7 @@ IdleDetector::IdleDetector()
 		IdleDetectionPossible = true;
 	}
 	idleSeconds = 0;
-	lastPoll = time(NULL);
+	lastPoll = Utils::now();
 	idleTimeout = 2000;
 	lastActivity = lastPoll;
 	isIdle = false;
@@ -66,14 +67,14 @@ void IdleDetector::setIdleTimeout(int minutes)
 void IdleDetector::reset()
 {
 	isIdle = false;
-	lastPoll = time(NULL);
+	lastPoll = Utils::now();
 }
 
 void IdleDetector::pollStatus()
 {
 	if (IdleDetectionPossible)
 	{
-		time_t now = time(NULL);
+		time_t now = Utils::now();
 		if (isIdle)
 		{
 			idleSeconds = now - lastActivity;
@@ -93,7 +94,7 @@ void IdleDetector::pollStatus()
 				{
 					lastActivity = now;
 				}
-				time_t executionTime = time(NULL) -now;
+				time_t executionTime = Utils::now() -now;
 				if( executionTime > 10)
 				{
 					//We have been suspended for more than 10 seconds inside this function

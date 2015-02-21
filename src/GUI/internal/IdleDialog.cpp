@@ -11,6 +11,7 @@
 #include <sstream>
 #include <glibmm/i18n.h>
 #include "Timer.h"
+#include <Utils.h>
 
 namespace GUI
 {
@@ -21,7 +22,7 @@ IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer): 	m_timer(timer)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
-	m_idleStartTime = time(NULL);
+	m_idleStartTime = Utils::now();
 
 	set_deletable(false);
 	setText();
@@ -95,7 +96,7 @@ void IdleDialog::show()
 void IdleDialog::setText()
 {
 	std::stringstream str;
-	int minutesIdle = (time(NULL) - m_idleStartTime) / 60;
+	int minutesIdle = (Utils::now() - m_idleStartTime) / 60;
 	// Note to translators: This is the first part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
 	str << _("No activity has been detected for") << " "<<minutesIdle;

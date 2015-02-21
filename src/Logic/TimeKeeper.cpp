@@ -3,6 +3,7 @@
 #include <iostream>
 #include <DefaultValues.h>
 #include "TimeKeeper.h"
+#include <Utils.h>
 
 using namespace std;
 
@@ -83,8 +84,8 @@ void Timekeeper::StartTask(int64_t id)
 	if (it == activeTasks.end())
 	{
 		TaskTime task;
-		task.startTime = time(NULL);
-		task.stopTime = time(NULL);
+		task.startTime = Utils::now();
+		task.stopTime = Utils::now();
 		task.dbHandle = m_timeAccessor->newTime(id, task.startTime, task.stopTime);
 		task.taskID = id;
 		activeTasks[id] = task;
@@ -152,7 +153,7 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 	it = activeTasks.find(id);
 	if (it != activeTasks.end())
 	{
-		it->second.stopTime = time(NULL);
+		it->second.stopTime = Utils::now();
 		TaskTime task = it->second;
 
 		DB::TimeEntry te = m_timeAccessor->getByID(task.dbHandle);
@@ -163,7 +164,7 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 
 void Timekeeper::UpdateTask(int64_t id)
 {
-	time_t now = time(NULL);
+	time_t now = Utils::now();
 	UpdateTask(id, now);
 }
 bool Timekeeper::hasRunningTasks()

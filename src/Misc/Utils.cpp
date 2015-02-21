@@ -240,12 +240,17 @@ std::string createDurationString(const time_t& from, const time_t& to)
 	return retVal.str();
 }
 
-uint32_t currentTime()
+time_t now()
+{
+	return time(NULL);
+}
+
+uint64_t millisecondsSinceEpoch()
 {
 	struct timeval tv;
 	gettimeofday(&tv, 0);
 
-	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return uint64_t(tv.tv_sec) * 1000 + tv.tv_usec / 1000;
 }
 
 }

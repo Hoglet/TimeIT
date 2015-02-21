@@ -3,12 +3,14 @@
 #include <iostream>
 #include <iomanip>
 #include <random>
+#include <Utils.h>
+
 
 using namespace std;
 
 void UUID::init()
 {
-	srand(time(NULL));
+	srand(Utils::now());
 }
 
 int UUID::random4hex()

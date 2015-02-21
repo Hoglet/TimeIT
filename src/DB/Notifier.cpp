@@ -64,12 +64,12 @@ void Notifier::messageForwarder()
 			}
 			else if (message.type == COMPLETE_UPDATE)
 			{
-				uint32_t start = Utils::currentTime();
+				uint32_t start = Utils::millisecondsSinceEpoch();
 				for (TaskAccessorObserver* observer : observers)
 				{
 					observer->on_completeUpdate();
 				}
-				uint32_t stop = Utils::currentTime();
+				uint32_t stop = Utils::millisecondsSinceEpoch();
 				std::cout << "Complete update of GUI: " << stop - start << " ms.\n";
 			}
 			else

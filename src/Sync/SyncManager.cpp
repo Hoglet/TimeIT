@@ -6,6 +6,7 @@
 #include "Json.h"
 #include "DefaultValues.h"
 #include <glibmm/i18n.h>
+#include <Utils.h>
 
 
 namespace syncing
@@ -78,16 +79,17 @@ void SyncManager::worker()
 	{
 		if(isActive())
 		{
-			if(nextFullSync < time(NULL))
+			time_t now=Utils::now();
+			if(nextFullSync < now)
 			{
 				if(doSync(0))
 				{
-					nextFullSync = time(NULL) + ONE_DAY;
+					nextFullSync = now + ONE_DAY;
 				}
 			}
 			else
 			{
-				time_t	pointInTime = time(NULL)-ONE_DAY;
+				time_t	pointInTime = now-ONE_DAY;
 				doSync(pointInTime);
 			}
 		}
@@ -119,9 +121,9 @@ bool SyncManager::isActive()
 }
 int SyncManager::syncTaskToDatabase(string result)
 {
-	uint32_t start = Utils::currentTime();
+	uint32_t start = Utils::millisecondsSinceEpoch();
 	std::shared_ptr<std::vector<Task> > tasks = json.toTasks(result);
-	uint32_t json_conversion_done = Utils::currentTime();
+	uint32_t json_conversion_done = Utils::millisecondsSinceEpoch();
 
 	std::shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
 	for (Task task : *tasks)
@@ -152,7 +154,7 @@ int SyncManager::syncTaskToDatabase(string result)
 			taskAccessor->newTask(tempTask);
 		}
 	}
-	uint32_t stage1_done = Utils::currentTime();
+	uint32_t stage1_done = Utils::millisecondsSinceEpoch();
 //Update tasks that had missing data earlier
 	for (Task task : *tasksToUpdate)
 	{
@@ -170,7 +172,7 @@ int SyncManager::syncTaskToDatabase(string result)
 			taskAccessor->updateTask(tempTask);
 		}
 	}
-	uint32_t stage2_done = Utils::currentTime();
+	uint32_t stage2_done = Utils::millisecondsSinceEpoch();
 	cout << "Task sync\n";
 	cout << "Json conversion: " << json_conversion_done - start << " ms.\n";
 	cout << "stage1: " << stage1_done - json_conversion_done << " ms.\n";
@@ -182,9 +184,9 @@ int SyncManager::syncTaskToDatabase(string result)
 
 int SyncManager::syncTimesToDatabase(string result)
 {
-	uint32_t start = Utils::currentTime();
+	uint32_t start = Utils::millisecondsSinceEpoch();
 	std::shared_ptr<std::vector<TimeEntry> > times = json.toTimes(result);
-	uint32_t json_conversion_done = Utils::currentTime();
+	uint32_t json_conversion_done = Utils::millisecondsSinceEpoch();
 
 	for (TimeEntry item : *times)
 	{
@@ -213,7 +215,7 @@ int SyncManager::syncTimesToDatabase(string result)
 			timeAccessor->newEntry(te);
 		}
 	}
-	uint32_t stage1_done = Utils::currentTime();
+	uint32_t stage1_done = Utils::millisecondsSinceEpoch();
 
 	cout << "Time sync\n";
 	cout << "Json conversion: " << json_conversion_done - start << " ms.\n";
@@ -246,7 +248,6 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 
 bool SyncManager::syncTimes(time_t pointInTime)
 {
-	bool success=false;
 	std::shared_ptr<std::vector<TimeEntry> > times = timeAccessor->getTimesChangedSince(pointInTime);
 	std::string jsonString = json.toJson(times);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
@@ -255,9 +256,9 @@ bool SyncManager::syncTimes(time_t pointInTime)
 	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(pointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
-	uint32_t start = Utils::currentTime();
+	uint32_t start = Utils::millisecondsSinceEpoch();
 	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
-	uint32_t end = Utils::currentTime();
+	uint32_t end = Utils::millisecondsSinceEpoch();
 	cout << "Server request " << end - start << " ms.\n";
 
 	if (result.statusOK && result.httpCode == 200)
@@ -275,24 +276,24 @@ bool SyncManager::syncTimes(time_t pointInTime)
 bool SyncManager::doSync(time_t pointInTime)
 {
 	bool success = false;
-	uint32_t start = Utils::currentTime();
+	uint32_t start = Utils::millisecondsSinceEpoch();
 	db->beginTransaction();
 	taskAccessor->enableNotifications(false);
 	uint32_t tasks_done;
 	if(syncTasks(pointInTime))
 	{
-		tasks_done = Utils::currentTime();
+		tasks_done = Utils::millisecondsSinceEpoch();
 		if( syncTimes(pointInTime))
 		{
 			success = true;
 		}
 	}
 
-	uint32_t times_done = Utils::currentTime();
+	uint32_t times_done = Utils::millisecondsSinceEpoch();
 	db->endTransaction();
 	taskAccessor->enableNotifications(true);
 
-	uint32_t totally_finished = Utils::currentTime();
+	uint32_t totally_finished = Utils::millisecondsSinceEpoch();
 	cout << "Processed the tasks in " << tasks_done - start << " ms.\n";
 	cout << "Processed the times in " << times_done - tasks_done << " ms.\n";
 	cout << "Update UI: " << totally_finished - times_done << "\n";
