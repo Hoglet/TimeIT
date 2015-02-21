@@ -7,20 +7,29 @@
 #include <MessageCenter.h>
 //LCOV_EXCL_START
 
+struct NetworkResponse
+{
+	std::string url;
+	std::string response;
+	bool statusOK;
+	int httpCode;
+	std::string errorMessage;
+};
+
 class INetwork
 {
 public:
 	virtual ~INetwork();
-	virtual std::string request(const std::string& url, std::string data, std::string username, std::string password, bool ignoreCertificateErrors) = 0;
+	virtual struct NetworkResponse request(const std::string& url, std::string data, std::string username, std::string password, bool ignoreCertificateErrors) = 0;
 };
 
 
 class Network: public INetwork
 {
 public:
-	Network(std::shared_ptr<Utils::MessageCenter> messageCenter);
+	Network();
 	virtual ~Network();
-	virtual std::string request(const std::string& url, std::string data, std::string username, std::string password, bool ignoreCertificateErrors);
+	virtual struct NetworkResponse request(const std::string& url, std::string data, std::string username, std::string password, bool ignoreCertificateErrors);
 	void receiveData(void *ptr, size_t size, size_t nmemb);
 	size_t sendData(void *ptr, size_t size, size_t nmemb);
 private:
@@ -29,7 +38,6 @@ private:
 	std::string receivedData;
 	std::string dataToSend;
 	int curSendPosition;
-	std::shared_ptr<Utils::MessageCenter> messageCenter;
 };
 //LCOV_EXCL_STOP
 

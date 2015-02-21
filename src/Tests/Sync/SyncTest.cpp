@@ -21,8 +21,9 @@ void SyncManager_fullSyncEmptyClient()
 
 	shared_ptr<ISettingsAccessor> settings = db->getSettingsAccessor();
 	settings->SetStringByName("Username","testman");
+	std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
 
-	syncing::SyncManager syncManager(db, network);
+	syncing::SyncManager syncManager(db, network,messageCenter);
 
 	std::string taskKey = "/tasks/testman/";
 	std::string taskResponse = "[{\"name\": \"Child\", "
@@ -36,7 +37,7 @@ void SyncManager_fullSyncEmptyClient()
 			"\"lastChange\": 1375358076, "
 			"\"deleted\": false, "
 			"\"completed\": false}]";
-	std::string timesKey = "/times/testman/";
+	std::string timesKey = "/times/testman/0";
 
 
 	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
@@ -52,7 +53,7 @@ void SyncManager_fullSyncEmptyClient()
 	syncManager.start();
 
 	Glib::usleep(100*1000);
-	syncManager.completeSync();
+	syncManager.doSync(0);
 
 	shared_ptr<ITaskAccessor> taskAccessor = db->getTaskAccessor();
 	shared_ptr<vector<Task> > tasks = taskAccessor->getTasksChangedSince();
@@ -71,7 +72,7 @@ void SyncManager_fullSyncEmptyClient()
 		}
 		else
 		{
-			ASSERTM("Unkown task in list", false);
+			ASSERTM("Unknown task in list", false);
 		}
 	}
 	shared_ptr<ITimeAccessor> timeAccessor = db->getTimeAccessor();
@@ -89,7 +90,7 @@ void SyncManager_fullSyncEmptyClient()
 	}
 
 
-	syncManager.completeSync();
+	syncManager.doSync(0);
 
 	tasks = taskAccessor->getTasksChangedSince();
 	times = timeAccessor->getTimesChangedSince();

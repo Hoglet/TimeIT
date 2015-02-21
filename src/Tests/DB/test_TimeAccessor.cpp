@@ -1,6 +1,7 @@
 #include "test_TimeAccessor.h"
 #include "cute.h"
 #include "TempDB.h"
+#include "Utils.h"
 
 using namespace DB;
 
@@ -192,10 +193,30 @@ void TimeAccessor_GetTotalTimeWithChildren_test()
 	ASSERT_EQUAL(1000, childTotalTime);
 }
 
+void TimeAccessor_getTimesChangedSince()
+{
+	TempDB tempdb;
+	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
+	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
+
+	const int64_t taskId = taskAccessor->newTask("test", 0);
+	int64_t timeid=timeAccessor->newTime(taskId, 0, 1000);
+
+	TimeEntry item = timeAccessor->getByID(timeid);
+	std::shared_ptr<std::vector<TimeEntry> > result = timeAccessor->getTimesChangedSince(0);
+	ASSERT_EQUAL(1, (*result).size());
+	result = timeAccessor->getTimesChangedSince(item.getLastChanged());
+	ASSERT_EQUAL(1, (*result).size());
+	result = timeAccessor->getTimesChangedSince(item.getLastChanged()+1);
+	ASSERT_EQUAL(0, (*result).size());
+
+}
+
 
 cute::suite make_suite_TimeAccessor_test()
 {
 	cute::suite s;
+	s.push_back(CUTE(TimeAccessor_getTimesChangedSince));
 	s.push_back(CUTE(TimeAccessor_simpleTest));
 	s.push_back(CUTE(TimeAccessor_ChangeEndTime));
 	s.push_back(CUTE(TimeAccessor_ChangeStartTime));

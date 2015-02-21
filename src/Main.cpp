@@ -112,8 +112,8 @@ int Main::run()
 
 			AutoTracker autotracker(timekeeper, database, timer);
 
-			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network(messageCenter));
-			syncing::SyncManager syncManager(database, network);
+			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network());
+			syncing::SyncManager syncManager(database, network, messageCenter);
 			syncManager.start();
 
 			Controller controller(guiFactory, timekeeper, database);

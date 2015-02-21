@@ -5,6 +5,8 @@
 #include <iostream>
 #include "Json.h"
 #include "DefaultValues.h"
+#include <glibmm/i18n.h>
+
 
 namespace syncing
 {
@@ -17,7 +19,7 @@ using DB::IDatabase;
 using DB::Task;
 using DB::TimeEntry;
 
-SyncManager::SyncManager(shared_ptr<IDatabase>& database, shared_ptr<INetwork>& op_network)
+SyncManager::SyncManager(shared_ptr<IDatabase>& database, shared_ptr<INetwork>& op_network, std::shared_ptr<Utils::MessageCenter> messageCenter)
 {
 	int len=1;
 	auto text = std::unique_ptr<char[]>(new char[len]);
@@ -25,6 +27,7 @@ SyncManager::SyncManager(shared_ptr<IDatabase>& database, shared_ptr<INetwork>& 
 	thread = 0;
 	inited = false;
 	running = false;
+	this->messageCenter = messageCenter;
 	if(Glib::thread_supported() && database->isThreadSafe())
 	{
 		db = database;
@@ -70,11 +73,23 @@ void SyncManager::stop()
 
 void SyncManager::worker()
 {
+	time_t nextFullSync = 0;
 	while(running)
 	{
 		if(isActive())
 		{
-			completeSync();
+			if(nextFullSync < time(NULL))
+			{
+				if(doSync(0))
+				{
+					nextFullSync = time(NULL) + ONE_DAY;
+				}
+			}
+			else
+			{
+				time_t	pointInTime = time(NULL)-ONE_DAY;
+				doSync(pointInTime);
+			}
 		}
 		int syncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
 		int secondBetweenSyncs = syncInterval * 60;
@@ -207,65 +222,100 @@ int SyncManager::syncTimesToDatabase(string result)
 	return times->size();
 }
 
-int SyncManager::syncTasks()
+bool SyncManager::syncTasks(time_t sincePointInTime)
 {
-	int itemsProcessed = 0;
-	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince();
+	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince(sincePointInTime);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
-	string url = baseUrl + "sync/tasks/" + username + "/";
+	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 	std::string jsonString = json.toJson(tasks, username);
-	std::string result = network->request(url, jsonString, username, password, ignoreCertError);
-	if (result.size() > 0)
+	NetworkResponse result= network->request(url, jsonString, username, password, ignoreCertError);
+	if (result.statusOK && result.httpCode == 200)
 	{
-		itemsProcessed = syncTaskToDatabase(result);
+		syncTaskToDatabase(result.response);
+		return true;
 	}
-	return itemsProcessed;
+	else
+	{
+		manageNetworkProblems(result);
+		return false;
+	}
 }
 
-int SyncManager::syncTimes()
+bool SyncManager::syncTimes(time_t pointInTime)
 {
-	int itemsProcessed = 0;
-	std::shared_ptr<std::vector<TimeEntry> > times = timeAccessor->getTimesChangedSince();
+	bool success=false;
+	std::shared_ptr<std::vector<TimeEntry> > times = timeAccessor->getTimesChangedSince(pointInTime);
 	std::string jsonString = json.toJson(times);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
-	string url = baseUrl + "sync/times/" + username + "/";
+	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(pointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	std::string result = network->request(url, jsonString, username, password, ignoreCertError);
 
-	if (result.size() > 0)
+	uint32_t start = Utils::currentTime();
+	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
+	uint32_t end = Utils::currentTime();
+	cout << "Server request " << end - start << " ms.\n";
+
+	if (result.statusOK && result.httpCode == 200)
 	{
-		itemsProcessed = syncTimesToDatabase(result);
+		syncTimesToDatabase(result.response);
+		return true;
 	}
-	return itemsProcessed;
-
+	else
+	{
+		manageNetworkProblems(result);
+		return false;
+	}
 }
 
-void SyncManager::completeSync()
+bool SyncManager::doSync(time_t pointInTime)
 {
+	bool success = false;
 	uint32_t start = Utils::currentTime();
 	db->beginTransaction();
 	taskAccessor->enableNotifications(false);
-	int tasksProcessed = syncTasks();
-	uint32_t tasks_done = Utils::currentTime();
-	int timesProcessed = 0;
-	if(tasksProcessed>0)
+	uint32_t tasks_done;
+	if(syncTasks(pointInTime))
 	{
-		timesProcessed = syncTimes();
+		tasks_done = Utils::currentTime();
+		if( syncTimes(pointInTime))
+		{
+			success = true;
+		}
 	}
+
 	uint32_t times_done = Utils::currentTime();
 	db->endTransaction();
 	taskAccessor->enableNotifications(true);
 
 	uint32_t totally_finished = Utils::currentTime();
-	cout << "Processed " << tasksProcessed << " tasks in " << tasks_done - start << " ms.\n";
-	cout << "Processed " << timesProcessed << " times in " << times_done - tasks_done << " ms.\n";
+	cout << "Processed the tasks in " << tasks_done - start << " ms.\n";
+	cout << "Processed the times in " << times_done - tasks_done << " ms.\n";
 	cout << "Update UI: " << totally_finished - times_done << "\n";
 
+	return success;
+}
+
+void SyncManager::manageNetworkProblems(NetworkResponse result)
+{
+	if (result.statusOK == false || result.httpCode != 200 )
+	{
+		std::stringstream text;
+		text << _("Failed connection to ");
+		text << result.url << ":\n";
+		text << _("HTTP error ") << result.httpCode << " ";
+		if (result.httpCode == 401)
+		{
+			text << _("Username or password is wrong.");
+		}
+		text << result.errorMessage;
+		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
+		messageCenter->sendMessage(message);
+	}
 }
 
 }

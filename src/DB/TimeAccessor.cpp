@@ -283,9 +283,7 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 {
 	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr < std::vector < TimeEntry >> (new vector<TimeEntry> );
 
-	std::shared_ptr<Statement> statement =
-			db->prepare(
-					"SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed >= ?");
+	std::shared_ptr<Statement> statement = 	db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
 	statement->bindValue(1, timestamp);
 
 	std::shared_ptr<QueryResult> rows = statement->execute();

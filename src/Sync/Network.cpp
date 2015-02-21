@@ -4,7 +4,6 @@
 //LCOV_EXCL_START
 #include <MessageCenter.h>
 #include <sstream>
-#include <glibmm/i18n.h>
 
 INetwork::~INetwork()
 {
@@ -22,7 +21,7 @@ size_t send_data(void *ptr, size_t size, size_t nmemb, Network *caller)
 	return caller->sendData(ptr, size, nmemb);
 }
 
-Network::Network(std::shared_ptr<Utils::MessageCenter> mc): messageCenter(mc)
+Network::Network()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	curSendPosition = 0;
@@ -88,7 +87,7 @@ size_t Network::sendData(void *ptr, size_t size, size_t nmemb)
 	return charactersToSend;
 }
 
-std::string Network::request(const std::string& url, std::string data, std::string username, std::string password,
+struct NetworkResponse Network::request(const std::string& url, std::string data, std::string username, std::string password,
 		bool ignoreCertificateErrors)
 {
 	dataToSend = data;
@@ -115,39 +114,14 @@ std::string Network::request(const std::string& url, std::string data, std::stri
 
 	curl_slist_free_all(headers);
 
-	/* Check for errors */
-	if (res != CURLE_OK)
-	{
-		std::stringstream text;
-		text << _("Failed connection to ");
-		text << url << ":\n";
-		text << curl_easy_strerror(res);
-		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
-		messageCenter->sendMessage(message);
-	}
-	else if (httpCode == 401)
-	{
-		std::stringstream text;
-		text << _("Failed connection to ");
-		text << url << ":\n";
-		text << _("HTTP error ") << httpCode << " ";
-		text << _("Username or password is wrong.");
-		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
-		messageCenter->sendMessage(message);
-	}
-	else if (httpCode != 200)
-	{
-		std::stringstream text;
-		text << _("Failed connection to ");
-		text << url << ":\n";
-		text << _("HTTP error ") << httpCode << " ";
-		text << curl_easy_strerror(res);
-		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
-		messageCenter->sendMessage(message);
-	}
-	fprintf(stderr, "%s", receivedData.c_str());
+	struct NetworkResponse result;
+	result.response = receivedData;
+	result.statusOK = (res == CURLE_OK);
+	result.httpCode = httpCode;
+	result.errorMessage = curl_easy_strerror(res);
+	result.url = url;
 	close(curl);
-	return receivedData;
+	return result;
 }
 
 //LCOV_EXCL_STOP

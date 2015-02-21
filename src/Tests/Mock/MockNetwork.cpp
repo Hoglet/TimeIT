@@ -21,11 +21,13 @@ void MockNetwork::setResponse(std::string& uri, std::string& response)
 	responses[uri] = response;
 }
 
-std::string MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password,
+struct NetworkResponse MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password,
 		bool verifyPassword)
 {
 	std::map<std::string, std::string>::iterator iter;
-	std::string returnValue;
+	NetworkResponse returnValue;
+	returnValue.statusOK = false;
+	returnValue.url = url;
 	int urlLen = url.size();
 
 	for (iter = responses.begin(); iter != responses.end(); ++iter)
@@ -37,7 +39,9 @@ std::string MockNetwork::request(const std::string& url, std::string data, std::
 			std::string urlTail = url.substr(pos, std::string::npos);
 			if (urlTail == key)
 			{
-				returnValue = iter->second;
+				returnValue.response = iter->second;
+				returnValue.statusOK = true;
+				returnValue.httpCode = 200;
 				break;
 			}
 		}
