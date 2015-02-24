@@ -25,7 +25,7 @@ void SyncManager_fullSyncEmptyClient()
 
 	syncing::SyncManager syncManager(db, network,messageCenter);
 
-	std::string taskKey = "/tasks/testman/";
+	std::string taskKey = "/tasks/testman/0";
 	std::string taskResponse = "[{\"name\": \"Child\", "
 			"\"id\": \"00b3015e-00d6-418e-81c8-0125012d0172\", "
 			"\"parent\": {\"id\": \"013900e6-00dd-40f7-b0d6-00de00bf006b\"}, "
