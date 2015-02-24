@@ -64,4 +64,5 @@ _CPack_Packages
 *.rpm
 *.out
 *.data
+src/version.h
 
