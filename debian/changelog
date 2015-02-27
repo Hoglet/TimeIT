@@ -1,8 +1,9 @@
-timeit (1.9.9.17) UNRELEASED; urgency=medium
+timeit (1.9.9.18) trusty; urgency=medium
 
-  * New try to deliver
+  * Partial sync to reduce network traffic
+  * Removing small timespans on start
 
- -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 21:39:28 +0100
+ -- Kent Asplund <hoglet@solit.se>  Fri, 27 Feb 2015 14:11:16 +0100
 
 timeit (1.9.9.16) trusty; urgency=medium
 
