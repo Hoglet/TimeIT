@@ -144,40 +144,6 @@ void TimeAccessor_newItem()
 	//TimeEntry faultyItem1(0, uuidManager.randomUUID(), taskId + 1, "", 100, 200, false, false, 200);
 
 }
-/*	void TimeAccessor_getChangedSince()
- {
- TempDB db;
- std::shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
- std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
- const int64_t taskId = taskAccessor->newTask("test", 0);
- int64_t timeEntryID = timeAccessor->newTime(taskId, 10, 100);
- TimeEntry item1 = timeAccessor->getByID(timeEntryID);
-
- //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
-
- //	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
-
- //	TimeEntry item2( item1.getID(), item1.getUUID(), item1.getTaskID(), item1.getTaskUUID(), item1.getStart(),   )
-
- }
-
- void TimeAccessor_update()
- {
- TempDB db;
- std::shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
- std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
- const int64_t taskId = taskAccessor->newTask("test", 0);
- int64_t timeEntryID = timeAccessor->newTime(taskId, 10, 100);
- TimeEntry item1 = timeAccessor->getByID(timeEntryID);
-
- ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
-
- //	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
-
- TimeEntry item2( item1.getID(), item1.getUUID(), item1.getTaskID(), item1.getTaskUUID(), item1.getStart(), )
-
- }
- */
 
 void TimeAccessor_GetTotalTimeWithChildren_test()
 {
@@ -212,10 +178,29 @@ void TimeAccessor_getTimesChangedSince()
 
 }
 
+void TimeAccessor_removeShortTimeSpans()
+{
+	TempDB db;
+	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
+	const int64_t taskId = taskAccessor->newTask("test", 0);
+	TimeEntry item1(0, UUID::randomUUID(), taskId, "", 100, 110, false, false, 200);
+	TimeEntry item2(0, UUID::randomUUID(), taskId, "", 100, 160, false, false, 200);
+
+	timeAccessor->newEntry(item1);
+	timeAccessor->newEntry(item2);
+	timeAccessor->removeShortTimeSpans();
+
+	std::vector<TimeEntry> items = timeAccessor->getDetailTimeList(taskId, 0, 1000);
+
+	ASSERT_EQUAL(1, items.size());
+}
+
 
 cute::suite make_suite_TimeAccessor_test()
 {
 	cute::suite s;
+	s.push_back(CUTE(TimeAccessor_removeShortTimeSpans));
 	s.push_back(CUTE(TimeAccessor_getTimesChangedSince));
 	s.push_back(CUTE(TimeAccessor_simpleTest));
 	s.push_back(CUTE(TimeAccessor_ChangeEndTime));
@@ -229,5 +214,6 @@ cute::suite make_suite_TimeAccessor_test()
 	s.push_back(CUTE(TimeAccessor_GetTotalTimeWithChildren_test));
 	return s;
 }
+
 
 } /* namespace test_TimeAcessor */

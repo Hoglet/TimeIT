@@ -17,11 +17,6 @@ TimeAccessor::TimeAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<Notifier>& n
 {
 	db = op_db;
 	this->notifier = notifier;
-
-	//Remove short times;
-	//TODO: Should be handled differently or not at all?
-	//statement << "DELETE FROM times WHERE stop < (start + 60)";
-	//db->exe(statement.str());
 }
 
 TimeAccessor::~TimeAccessor()
@@ -33,34 +28,6 @@ void TimeAccessor::stopAllRunning()
 	 db->exe("UPDATE times SET running = 0");
 }
 
-void TimeAccessor::createTable()
-{
-	db->exe("CREATE TABLE IF NOT EXISTS times "
-			"(id          INTEGER PRIMARY KEY,"
-			" uuid        TEXT UNIQUE,"
-			" taskID      INTEGER,"
-			" start       INTEGER,"
-			" stop        INTEGER,"
-			" changed     INTEGER,"
-			" deleted     BOOL    DEFAULT 0,"
-			" running     BOOL    DEFAULT 0,"
-			" FOREIGN KEY(taskID) REFERENCES tasks(id) "
-			") ");
-	/*	db->exe("CREATE INDEX IF NOT EXISTS ndx_start ON times (start)");
-	 db->exe("CREATE INDEX IF NOT EXISTS ndx_stop ON times (stop)");*/
-	//db->exe("CREATE INDEX IF NOT EXISTS ndx_uuid ON times (uuid)");
-}
-
-void TimeAccessor::createViews()
-{
-	db->exe("DROP VIEW IF EXISTS v_times");
-
-	db->exe("CREATE VIEW v_times AS"
-			" SELECT times.*, tasks.uuid AS taskUUID "
-			" FROM times "
-			" LEFT JOIN tasks "
-			" ON times.taskID = tasks.id");
-}
 
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 {
@@ -411,4 +378,37 @@ void TimeAccessor::upgradeToDB5()
 		newEntry(item);
 	}
 }
+
+void TimeAccessor::createTable()
+{
+	db->exe("CREATE TABLE IF NOT EXISTS times "
+			"(id          INTEGER PRIMARY KEY,"
+			" uuid        TEXT UNIQUE,"
+			" taskID      INTEGER,"
+			" start       INTEGER,"
+			" stop        INTEGER,"
+			" changed     INTEGER,"
+			" deleted     BOOL    DEFAULT 0,"
+			" running     BOOL    DEFAULT 0,"
+			" FOREIGN KEY(taskID) REFERENCES tasks(id) "
+			") ");
+}
+
+void TimeAccessor::createViews()
+{
+	db->exe("DROP VIEW IF EXISTS v_times");
+
+	db->exe("CREATE VIEW v_times AS"
+			" SELECT times.*, tasks.uuid AS taskUUID "
+			" FROM times "
+			" LEFT JOIN tasks "
+			" ON times.taskID = tasks.id");
+}
+
+void TimeAccessor::removeShortTimeSpans()
+{
+	db->exe("DELETE FROM times WHERE stop-start < 30");
+}
+
+
 }

@@ -61,6 +61,7 @@ public:
 	void createTable();
 	void upgradeToDB5();
     void createViews();
+    void removeShortTimeSpans();
 private:
 	std::shared_ptr<DBAbstraction::CSQL> db;
 	std::shared_ptr<Notifier> notifier;

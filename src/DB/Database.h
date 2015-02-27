@@ -36,6 +36,12 @@ private:
 	std::shared_ptr<ISettingsAccessor> m_settingsAccessor;
 	std::shared_ptr<Notifier> m_notifier;
 	std::shared_ptr<DBAbstraction::CSQL> db;
+
+	void createTablesPartOne();
+	void createAccessors();
+	int getCurrentDBVersion();
+	void upgradeIfNeeded(int DBVersion, const int expectedDBVersion);
+	void createViews();
 };
 
 }
