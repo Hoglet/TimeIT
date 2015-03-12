@@ -9,6 +9,7 @@
 #define TEMPDB_H_
 
 #include <Database.h>
+#include <string>
 
 namespace Test
 {
@@ -18,6 +19,7 @@ class TempDB: public DB::Database
 public:
 	TempDB();
 	virtual ~TempDB();
+	void execute(std::string statement);
 };
 
 } /* namespace Test */

@@ -1,8 +1,8 @@
 #include "TimeAccessor.h"
-#include "internal/AutotrackAccessor.h"
+#include "AutotrackAccessor.h"
 #include "ExtendedTaskAccessor.h"
 #include "TaskAccessor.h"
-#include "internal/SettingsAccessor.h"
+#include "SettingsAccessor.h"
 #include "CSQL.h"
 #include "Database.h"
 

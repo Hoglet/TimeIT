@@ -3,9 +3,10 @@
 #include "cute_runner.h"
 #include "test_AutotrackAccessor.h"
 #include "TempDB.h"
-#include "IAutotrackAccessor.h"
+#include "AutotrackAccessor.h"
 #include <vector>
 #include "dbexception.h"
+#include <sstream>
 
 using namespace DB;
 
@@ -30,19 +31,27 @@ void AutotrackAccessor_getTaskIDs()
 {
 	TempDB tempdb;
 	std::shared_ptr<IAutotrackAccessor> autotrackAccessor = tempdb.getAutotrackAccessor();
+	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
+	Task task("test");
+	int taskID = taskAccessor->newTask(task);
 	std::vector<int> workspaces;
+
 	workspaces.push_back(1);
-	autotrackAccessor->setWorkspaces(1, workspaces);
+	autotrackAccessor->setWorkspaces(taskID, workspaces);
 	std::vector<int64_t> result = autotrackAccessor->getTaskIDs(0);
-	ASSERT_EQUAL(0, result.size());
+	ASSERT_EQUALM("Number of ids on workspace 0 ", 0, result.size());
 	result = autotrackAccessor->getTaskIDs(1);
-	ASSERT_EQUAL(1, result.size());
+	ASSERT_EQUALM("Number of ids on workspace 1 ", 1, result.size());
+
+	std::stringstream statement;
+	statement << "UPDATE tasks SET deleted = 1 ";
+	statement << " ,changed = 0";
+	statement << " WHERE id = " << taskID;
+	tempdb.execute(statement.str());
+
+	result = autotrackAccessor->getTaskIDs(1);
+	ASSERT_EQUALM("Number of ids on workspace 1 when task is deleted ", 0, result.size());
 }
-/*
- virtual std::vector<int64_t> getTaskIDs(int workspace) = 0;
- virtual std::vector<int> getWorkspaces(int64_t taskID) = 0;
- virtual void setWorkspaces(int64_t taskID, std::vector<int> workspaces) = 0;
- */
 
 cute::suite make_suite_test_AutotrackAccessor()
 {

@@ -2,7 +2,7 @@
 #define DATABASE_H_
 
 #include "IDatabase.h"
-#include <IAutotrackAccessor.h>
+#include <AutotrackAccessor.h>
 #include "TimeAccessor.h"
 #include <ExtendedTaskAccessor.h>
 #include <ISettingsAccessor.h>
@@ -28,7 +28,7 @@ public:
 	void beginTransaction();
 	void tryRollback();
 	void endTransaction();
-private:
+protected:
 	std::shared_ptr<IAutotrackAccessor> m_autotrackAccessor;
 	std::shared_ptr<TimeAccessor> m_timeAccessor;
 	std::shared_ptr<IExtendedTaskAccessor> m_extendedTaskAccessor;

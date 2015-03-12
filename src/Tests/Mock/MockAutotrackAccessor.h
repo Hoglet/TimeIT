@@ -8,7 +8,7 @@
 #ifndef MOCKAUTOTRACKACCESSOR_H_
 #define MOCKAUTOTRACKACCESSOR_H_
 
-#include "IAutotrackAccessor.h"
+#include "AutotrackAccessor.h"
 
 namespace Test
 {

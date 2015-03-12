@@ -21,4 +21,9 @@ TempDB::~TempDB()
 	sqlite3_shutdown();
 }
 
+void TempDB::execute(std::string statement)
+{
+	db->exe(statement);
+}
+
 } /* namespace Test */

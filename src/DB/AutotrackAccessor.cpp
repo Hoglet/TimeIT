@@ -13,17 +13,21 @@ using namespace std;
 using namespace DBAbstraction;
 namespace DB
 {
+
+IAutotrackAccessor::~IAutotrackAccessor()
+{
+}
+
 AutotrackAccessor::AutotrackAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<IExtendedTaskAccessor>& taskAccessor)
 {
 	db = op_db;
 	m_taskAccessor = taskAccessor;
-	m_taskAccessor->attach(this);
 }
 
 AutotrackAccessor::~AutotrackAccessor()
 {
-	m_taskAccessor->detach(this);
 }
+
 std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 {
 	std::vector<int64_t> retVal;
@@ -33,7 +37,10 @@ std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 	for (vector<DataCell> row : *rows)
 	{
 		int64_t id = row[0].getInt();
-		retVal.push_back(id);
+		if(m_taskAccessor->getTask(id).get() != nullptr)
+		{
+			retVal.push_back(id);
+		}
 	}
 	return retVal;
 }
@@ -66,15 +73,4 @@ void AutotrackAccessor::setWorkspaces(int64_t taskID, std::vector<int> workspace
 	}
 }
 
-void AutotrackAccessor::on_taskRemoved(int64_t taskID)
-{
-	stringstream statement;
-	statement << "DELETE FROM autotrack WHERE taskID = " << taskID;
-	db->exe(statement.str());
-}
-
-void AutotrackAccessor::on_completeUpdate()
-{
-	//TODO Detect if syncing removed task and remove from autotrack
-}
 }
