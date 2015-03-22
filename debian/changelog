@@ -1,3 +1,10 @@
+timeit (1.9.9.19) trusty; urgency=medium
+  * Bugfix: Autotracker is no longer starting deleted tasks. 
+  * Bugfix: Deleting a task also removed times from summaries
+  * Feature: Support for Compiz viewports
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 22 Mar 2015 16:28:11 +0100
+
 timeit (1.9.9.18) trusty; urgency=medium
 
   * Partial sync to reduce network traffic
