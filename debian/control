@@ -2,12 +2,12 @@ Source: timeit
 Section: utils
 Priority: optional
 Maintainer: Kent Asplund <hoglet@solit.se>
-Build-Depends: debhelper (>= 8), cmake, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libxss-dev, libc6-dev (>=2.0), libjansson-dev, libcurl-dev, libnotify-dev
+Build-Depends: debhelper (>= 8), cmake, intltool (>=0.35), pkg-config, libgtkmm-2.4-dev (>= 2.8), libsqlite3-dev, libxss-dev, libc6-dev (>=2.0), libjansson-dev, libcurl-dev, libnotify-dev,libwnck-1.0
 Standards-Version: 3.9.3
 
 Package: timeit
 Architecture: any
-Depends: libgtkmm-2.4-1c2a (>= 2.8), libsqlite3-0, libxss1, libnotify-bin, ${shlibs:Depends}, ${misc:Depends}
+Depends: libgtkmm-2.4-1c2a (>= 2.8), libsqlite3-0, libxss1, libnotify-bin,libwnck-1, ${shlibs:Depends}, ${misc:Depends}
 Description: An uniobtrusive time tracker.
  TimeIT is a time tracker that aims to be unobtrusive and simple to use.
  It has Workspace tracking, Idle detection, hierarchical tasks and can 

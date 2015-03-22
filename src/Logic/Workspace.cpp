@@ -10,111 +10,105 @@
 #include <string.h>
 #include <string>
 
-using std::vector;
 using std::string;
 
 //LCOV_EXCL_START
 Workspace::Workspace()
 {
-	numWorkspaces=0;
+	screen = wnck_screen_get_default();
+	findLayout();
 }
 
 Workspace::~Workspace()
 {
 }
 
+void Workspace::findLayout()
+{
+	GList* workspaces = wnck_screen_get_workspaces(screen);
+	rows = 1;
+	columns = 1;
+	while (workspaces != nullptr)
+	{
+		WnckWorkspace* workspace = (WnckWorkspace*) workspaces->data;
+		if (wnck_workspace_is_virtual(workspace))
+		{
+			int WSHeight = wnck_workspace_get_height(workspace);
+			int WSWidth = wnck_workspace_get_width(workspace);
+			int SCHeight = wnck_screen_get_height(screen);
+			int SCWidth = wnck_screen_get_width(screen);
+			columns = WSWidth / SCWidth;
+			rows = WSHeight / SCHeight;
+			numWorkspaces = columns * rows;
+			isVirtual = true;
+		}
+		else
+		{
+			int r = wnck_workspace_get_layout_row(workspace);
+			if (r > rows)
+			{
+				rows = r;
+			}
+			int c = wnck_workspace_get_layout_row(workspace);
+			if (c > columns)
+			{
+				columns = c;
+			}
+			isVirtual = false;
+		}
+		workspaces = workspaces->next;
+	}
+	if (isVirtual == false)
+	{
+		numWorkspaces = wnck_screen_get_workspace_count(screen);
+	}
+}
+
 int Workspace::get_active()
 {
-	int active=0;
-	try
+	int returnValue = 0;
+	WnckWorkspace* workspace = wnck_screen_get_active_workspace(screen);
+	if(wnck_workspace_is_virtual(workspace))
 	{
-	  active = x11property.get_cardinal("_NET_CURRENT_DESKTOP", 0);
+		isVirtual = true;
+		int x=wnck_workspace_get_viewport_x(workspace);
+		int y=wnck_workspace_get_viewport_y(workspace);
+
+		int scrnWidth = wnck_screen_get_width(screen);
+		int scrnHeight = wnck_screen_get_height(screen);
+		int currentColumn = x / scrnWidth + 1;
+		int currentRow =  y / scrnHeight + 1;
+		returnValue = currentColumn*currentRow -1;
 	}
-	catch(const GeneralException& e)
+	else
 	{
-		std::cerr<<e.what();
+		returnValue = wnck_workspace_get_number(workspace);
 	}
-	return active;
+	return returnValue;
 }
 std::string Workspace::get_name(int workspaceNR)
 {
-	std::string retVal;
-	try
+	if (isVirtual)
 	{
-		vector<string> names = x11property.get_strings("_NET_DESKTOP_NAMES");
-
-		if ((int)names.size() >= workspaceNR)
-		{
-			retVal = names[workspaceNR];
-		}
-	} catch ( const GeneralException& e)
-	{
-		std::cerr << e.what();
+		workspaceNR = 0;
 	}
-	return retVal;
+	WnckWorkspace* wnckWorkspace = wnck_screen_get_workspace(screen, workspaceNR);
+	return wnck_workspace_get_name(wnckWorkspace);
 }
 int Workspace::get_numberOfColumns()
 {
-	int columns = 0;
-	try
-	{
-		/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
-		columns = x11property.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
-		if (columns == 0)
-		{
-			int rows = x11property.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
-			if (rows != 0)
-			{
-				columns = (x11property.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0) + 1) / rows;
-			}
-			else
-			{
-				columns = 1;
-			}
-		}
-	} catch (const GeneralException& e)
-	{
-		std::cerr << e.what();
-	}
+	findLayout();
 	return columns;
-
 }
 int Workspace::get_numberOfRows()
 {
-	int rows = 1;
-	try
-	{
-		rows = x11property.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
-		if (rows == 0)
-		{
-			int columns = x11property.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
-			if (columns != 0)
-			{
-				rows = (x11property.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0) + 1) / columns;
-			}
-			else
-			{
-				rows = 1;
-			}
-		}
-	} catch (const GeneralException& e)
-	{
-		std::cerr << e.what();
-	}
+	findLayout();
 	return rows;
 }
 int Workspace::get_numberOfWorkspaces()
 {
-	int retVal = 1;
-	try
-	{
-		retVal = x11property.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0);
-	}
-	catch(const GeneralException& e)
-	{
-		std::cerr<<e.what();
-	}
-	return retVal;
+	findLayout();
+	return numWorkspaces;
 }
 
 //LCOV_EXCL_STOP

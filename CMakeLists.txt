@@ -12,7 +12,7 @@ if(NOT CONFIGURED)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
 endif()
 add_custom_target(version ALL
-                  COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .                  
+                  COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 file (STRINGS "version" PACKAGE_VERSION)
 
@@ -35,6 +35,7 @@ pkg_check_modules(XLIB x11 REQUIRED)
 pkg_check_modules(JANSSON jansson REQUIRED)
 pkg_check_modules(CURL libcurl REQUIRED)
 pkg_check_modules(NOTIFY libnotify REQUIRED)
+pkg_check_modules(WNCK libwnck-1.0 REQUIRED)
 
 # make dist target
 # -------------------
@@ -51,8 +52,8 @@ set(CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
 set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 SET(CPACK_GENERATOR "DEB;RPM")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Kent Asplund")
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-2.4-1c2a (>=2.8), libsqlite3-0, libxss1,libnotify-bin")
-set(CPACK_RPM_PACKAGE_REQUIRES "libgtkmm-2.4-1c2a >= 2.8, libsqlite3-0, libxss1, libnotify-bin")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-2.4-1c2a (>=2.8), libsqlite3-0, libxss1,libnotify-bin, libwnck")
+set(CPACK_RPM_PACKAGE_REQUIRES "libgtkmm-2.4-1c2a >= 2.8, libsqlite3-0, libxss1, libnotify-bin, libwnck")
 set(CPACK_PACKAGE_DESCRIPTION "TimeIT is a time tracker somewhat similar to ktimetracker and gnotime written in C++ using gtkmm. It aims to be unobtrusive and simple to use.  It has Workspace tracking, Idle detection, hierarchical tasks and can show summaries over day/week/month")
 set(CPACK_PACKAGE_CONTACT "Kent Asplund hoglet@solit.se")
 set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})

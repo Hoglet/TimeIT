@@ -27,6 +27,7 @@ link_directories(${GTKMM_LIBRARY_DIRS}
                  ${CURL_LIBRARY_DIRS}
                  ${NOTIFY_LIBRARY_DIRS}
                  ${JANSSON_LIBRARY_DIRS}
+                 ${WNCK_LIBRARY_DIRS}
                  )
 
 include_directories(${GTKMM_INCLUDE_DIRS}
@@ -36,6 +37,7 @@ include_directories(${GTKMM_INCLUDE_DIRS}
                     ${JANSSON_INCLUDE_DIRS}
                     ${CURL_INCLUDE_DIRS}
                     ${NOTIFY_INCLUDE_DIRS}
+	                ${WNCK_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/DB/"
                     "${PROJECT_SOURCE_DIR}/Logic/"
@@ -58,6 +60,7 @@ target_link_libraries(${PROJECT_NAME}
                       ${JANSSON_LIBRARIES}
                       ${CURL_LIBRARIES}
                       ${NOTIFY_LIBRARIES}
+                      ${WNCK_LIBRARIES}
                       )
 
 

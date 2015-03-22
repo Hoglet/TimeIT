@@ -8,7 +8,8 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 #include <string>
-#include <X11Property.h>
+#define WNCK_I_KNOW_THIS_IS_UNSTABLE 1
+#include <libwnck/libwnck.h>
 
 class Workspace
 {
@@ -22,8 +23,12 @@ public:
 	int get_numberOfRows();
 	int get_numberOfWorkspaces();
 private:
+	void findLayout();
 	int numWorkspaces;
-	X11Property x11property;
+	int rows;
+	int columns;
+	WnckScreen* screen;
+	bool isVirtual;
 };
 
 #endif /* WORKSPACE_H_ */
