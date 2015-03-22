@@ -38,6 +38,7 @@ public:
 	void detach(SummaryObserver*);
 	virtual bool on_focus(Gtk::DirectionType direction);
 protected:
+	Gtk::TreeModel::Row add(int64_t id);
 	Gtk::Menu Menu_Popup;
 
 	bool on_button_press_event(GdkEventButton* event);
@@ -63,6 +64,7 @@ protected:
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
 	void assignValuesToRow(Gtk::TreeModel::Row& row, const DB::ExtendedTask& task);
+	void assignValuesToRow(Gtk::TreeModel::Row& row, std::shared_ptr<DB::Task> task, time_t totalTime);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord

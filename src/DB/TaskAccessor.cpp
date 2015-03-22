@@ -77,7 +77,7 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 {
 	std::shared_ptr<DBAbstraction::Statement> statement_getTask = db->prepare("SELECT id, parent, name, completed,"
-			" uuid, changed, deleted FROM  tasks WHERE id=? AND deleted=0;");
+			" uuid, changed, deleted FROM  tasks WHERE id=?");
 	statement_getTask->bindValue(1, taskID);
 	shared_ptr<QueryResult> rows = statement_getTask->execute();
 	shared_ptr<Task> task;

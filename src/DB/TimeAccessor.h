@@ -34,7 +34,7 @@ public:
 	virtual int64_t newEntry(const TimeEntry& item) = 0;
 	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop) = 0;
 	virtual std::vector<int64_t> getRunningTasks() = 0;
-
+	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop) = 0;
 };
 
 class TimeAccessor : public ITimeAccessor
@@ -57,6 +57,7 @@ public:
 	virtual int64_t newEntry(const TimeEntry& item);
 	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop);
 	virtual std::vector<int64_t> getRunningTasks();
+	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop) ;
 
 	void createTable();
 	void upgradeToDB5();

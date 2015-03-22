@@ -24,7 +24,6 @@ Summary::Summary(std::shared_ptr<DB::IDatabase>& database) :
 	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
 	taskAccessor->attach(this);
 
-	//Popup menu
 	Gtk::Menu::MenuList& menulist = Menu_Popup.items();
 
 	menulist.push_back(
@@ -48,7 +47,7 @@ bool Summary::on_button_press_event(GdkEventButton* event)
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
 		on_menu_showDetails();
-		retVal = true; //It has been handled.
+		retVal = true;
 	}
 	return retVal;
 }
@@ -102,7 +101,6 @@ int64_t Summary::getSelectedID()
 		TreeModel::Row row;
 		row = *iter;
 		retVal = row[columns.col_id];
-		//Do something with the row.
 	}
 	return retVal;
 }
@@ -234,6 +232,37 @@ bool Summary::isVisible()
 	}
 	return true;
 }
+
+TreeModel::Row Summary::add(int64_t id)
+{
+	std::shared_ptr<Task> task = taskAccessor->getTask(id);
+
+	TreeModel::Row row;
+	int64_t parentID = task->getParentID();
+	if (parentID)
+	{
+		TreeModel::iterator parent = findRow(parentID);
+		Gtk::TreeIter iter = findRow(parentID);
+		if (iter != treeModel->children().end())
+		{
+			row = *iter;
+		}
+		else
+		{
+			row = add(parentID);
+		}
+		row = *(treeModel->append((row).children()));
+	}
+	else
+	{
+		TreeModel::iterator iter = treeModel->append();
+		row = *iter;
+	}
+	time_t totalTime = timeAccessor->getTotalTimeWithChildren(id, startTime, stopTime);
+	assignValuesToRow(row, task, totalTime);
+	return row;
+}
+
 /*
  * Populate is filling the list, updating existing and adding elements not in list
  */
@@ -241,33 +270,11 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 {
 	if (isVisible())
 	{
-		shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTasks(parentID, startTime, stopTime);
+		std::vector<int64_t> taskIDs = timeAccessor->getActiveTasks(startTime, stopTime);
 
-		for (int i = 0; i < (int) tasks->size(); i++)
+		for (int64_t id : taskIDs)
 		{
-			ExtendedTask& task = tasks->at(i);
-			if (task.getTotalTime() > 0)
-			{
-				TreeModel::Row row;
-				TreeModel::iterator iter;
-				if (parent)
-				{
-					iter = treeModel->append(parent->children());
-				}
-				else
-				{
-					iter = treeModel->append();
-				}
-				row = *iter;
-
-				assignValuesToRow(row, task);
-
-				populate(&row, task.getID());
-			}
-		}
-		if (parentID == 0)
-		{
-			this->expand_all();
+			add(id);
 		}
 		needsRePopulation = false;
 	}
@@ -275,6 +282,13 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 	{
 		needsRePopulation = true;
 	}
+}
+
+void Summary::assignValuesToRow(TreeModel::Row& row, std::shared_ptr<Task> task, time_t totalTime)
+{
+	row[columns.col_id] = task->getID();
+	row[columns.col_name] = task->getName();
+	row[columns.col_time] = Utils::seconds2hhmm(totalTime);
 }
 
 void Summary::assignValuesToRow(TreeModel::Row& row, const ExtendedTask& task)
@@ -293,7 +307,6 @@ Gtk::TreeModel::iterator Summary::findRow(int id)
 Gtk::TreeModel::iterator Summary::subSearch(int id, TreeModel::Children children)
 {
 	TreeIter iter;
-
 	for (iter = children.begin(); iter != children.end(); iter++)
 	{
 		TreeModel::Row row = *iter;

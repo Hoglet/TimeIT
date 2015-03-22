@@ -410,5 +410,25 @@ void TimeAccessor::removeShortTimeSpans()
 	db->exe("DELETE FROM times WHERE stop-start < 30");
 }
 
+std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
+{
+	std::vector<int64_t> resultList;
+	std::shared_ptr<Statement> statement_getTasks = db->prepare(
+			"SELECT DISTINCT times.taskid FROM times WHERE (start>=? AND start<=?) OR (stop>=? AND stop<=?) and deleted=0;");
+	statement_getTasks->bindValue(1, start);
+	statement_getTasks->bindValue(2, stop);
+	statement_getTasks->bindValue(3, start);
+	statement_getTasks->bindValue(4, stop);
+
+	std::shared_ptr<QueryResult> rows = statement_getTasks->execute();
+
+	for (std::vector<DataCell> row : *rows)
+	{
+		int id = row[0].getInt();
+		resultList.push_back(id);
+	}
+	return resultList;
+}
+
 
 }

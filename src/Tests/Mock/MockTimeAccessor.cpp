@@ -104,4 +104,10 @@ std::vector<int64_t> MockTimeAccessor::getRunningTasks()
 	return result;
 }
 
+std::vector<int64_t> MockTimeAccessor::getActiveTasks(time_t start, time_t stop)
+{
+	std::vector<int64_t> result;
+	return result;
+}
+
 } /* namespace Test */

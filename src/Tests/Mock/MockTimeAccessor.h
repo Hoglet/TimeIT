@@ -34,6 +34,7 @@ public:
 	virtual int64_t newEntry(const DB::TimeEntry& item);
 	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop);
 	virtual std::vector<int64_t> getRunningTasks();
+	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop);
 };
 
 } /* namespace Test */
