@@ -7,7 +7,7 @@
 
 #ifndef IMAINWINDOW_H_
 #define IMAINWINDOW_H_
-#include "internal/ICalendar.h"
+#include "ICalendar.h"
 
 class IMainWindow
 {

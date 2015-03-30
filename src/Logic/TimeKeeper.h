@@ -4,11 +4,42 @@
 #include <list>
 #include <Task.h>
 #include <Timer.h>
-#include <ITimeKeeper.h>
+#include <TimeKeeper.h>
 #include <Database.h>
 #include <IdleDetector.h>
 #include <ITaskAccessor.h>
+#include <IGUIFactory.h>
 
+class TimekeeperObserver
+{
+public:
+	virtual ~TimekeeperObserver();
+	virtual void on_idleDetected() = 0;
+	virtual void on_runningChanged() = 0;
+};
+
+class ITimeKeeper
+{
+public:
+	virtual ~ITimeKeeper();
+	virtual void StartTask(int64_t id) = 0;
+	virtual void StopTask(int64_t id) = 0;
+	virtual void ToggleTask(int64_t id) = 0;
+
+	virtual bool hasRunningTasks() = 0;
+	virtual time_t timeIdle() = 0;
+
+	//Enable (or disable) automatic time keeping.
+	virtual void enable(bool) = 0;
+	//Stop all tasks without saving new time records
+	virtual void stopAll() = 0;
+	//Stop all tasks, without saving new time records, and then start them again
+	virtual void stopAllAndContinue() = 0;
+
+	//
+	virtual void attach(TimekeeperObserver*) = 0;
+	virtual void detach(TimekeeperObserver*) = 0;
+};
 
 class Timekeeper : public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
 {

@@ -2,8 +2,7 @@
 #define MOCKWIDGET_H_
 
 #include "IWidget.h"
-#include "IAddTaskDIalog.h"
-#include "IEditTaskDialog.h"
+#include "EditTaskDialog.h"
 
 namespace Test
 {

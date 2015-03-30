@@ -12,7 +12,7 @@
 
 #include <Database.h>
 
-#include <ITimeKeeper.h>
+#include <TimeKeeper.h>
 #include <IGUIFactory.h>
 #include <Timer.h>
 #include <gtkmm.h>

@@ -6,7 +6,7 @@
 #include "Mock/MockDatabase.h"
 #include "DB/TempDB.h"
 #include "Timer.h"
-#include "ITimeKeeper.h"
+#include "TimeKeeper.h"
 #include "Controller.h"
 
 using namespace std;

@@ -9,10 +9,10 @@
 #define CONTROLLER_H_
 #include <IActionObserver.h>
 #include <IGUIFactory.h>
-#include <IIdleDialog.h>
-#include <ITimeKeeper.h>
+#include <IdleDialog.h>
+#include <TimeKeeper.h>
 #include <ExtendedTaskAccessor.h>
-#include <ISummary.h>
+#include <MainWindow/Summary.h>
 #include <ISettingsAccessor.h>
 #include <Database.h>
 
@@ -54,7 +54,7 @@ public:
 private:
 	std::shared_ptr<GUI::IGUIFactory> guiFactory;
 	std::shared_ptr<ITimeKeeper> timeKeeper;
-	std::shared_ptr<IIdleDialog> idleDialog;
+	std::shared_ptr<GUI::IdleDialog> idleDialog;
 	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 

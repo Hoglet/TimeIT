@@ -5,10 +5,9 @@
  *      Author: hoglet
  */
 
-#include <IEditTaskDialog.h>
-#include <IAddTaskDIalog.h>
+#include <EditTaskDialog.h>
 #include "Controller.h"
-#include <IDetailsDialog.h>
+#include <DetailsDialog.h>
 #include <OSAbstraction.h>
 #include <iostream>
 #include <Utils.h>
@@ -157,7 +156,7 @@ void Controller::on_idleDetected()
 	}
 	else
 	{
-		idleDialog = std::dynamic_pointer_cast<IIdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
+		idleDialog = std::dynamic_pointer_cast<IdleDialog>(guiFactory->getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
 		std::shared_ptr<std::vector<DB::ExtendedTask> > activeTasks = taskAccessor->getRunningTasks();

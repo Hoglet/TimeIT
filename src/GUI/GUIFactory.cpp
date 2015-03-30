@@ -1,17 +1,16 @@
 #include "GUIFactory.h"
-#include "internal/MainWindow/MainWindow.h"
-#include "internal/TimeItAboutDialog.h"
-#include "internal/EditTaskDialog.h"
-#include "internal/AddTime.h"
-#include "internal/IdleDialog.h"
-#include "internal/StatusIcon.h"
-#include "internal/DetailsDialog.h"
-#include "internal/PreferenceDialog.h"
+#include "MainWindow/MainWindow.h"
+#include "TimeItAboutDialog.h"
+#include "EditTaskDialog.h"
+#include "AddTime.h"
+#include "IdleDialog.h"
+#include "StatusIcon.h"
+#include "DetailsDialog.h"
+#include "PreferenceDialog.h"
 #include <memory>
 
 namespace GUI
 {
-using namespace GUI::Internal;
 
 std::shared_ptr<Gtk::Main> GUIFactory::main;
 

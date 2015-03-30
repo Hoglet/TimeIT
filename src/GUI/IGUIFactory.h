@@ -9,7 +9,7 @@
 #define IGUIFACTORY_H_
 
 #include "IStatusIcon.h"
-#include "internal/ICalendar.h"
+#include "ICalendar.h"
 #include <IWidget.h>
 #include <memory>
 #include <stdint.h>

@@ -1,4 +1,4 @@
-#include <IIdleDialog.h>
+#include <IdleDialog.h>
 #include <Timer.h>
 #include <iostream>
 #include <DefaultValues.h>
@@ -6,6 +6,16 @@
 #include <Utils.h>
 
 using namespace std;
+
+TimekeeperObserver::~TimekeeperObserver()
+{
+
+}
+
+ITimeKeeper::~ITimeKeeper()
+{
+
+}
 
 //LCOV_EXCL_START
 void Timekeeper::on_signal_1_second()
