@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 
 #include "TimeKeeper.h"
-#include "ExtendedTaskAccessor.h"
+#include "TaskAccessor.h"
 #include "TimeAccessor.h"
 #include "IActionObserver.h"
 
@@ -22,7 +22,7 @@ class StatusIcon :  public TimekeeperObserver, public IStatusIcon, public DB::Ta
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::IExtendedTaskAccessor>&, std::shared_ptr<DB::ITimeAccessor>&);
+	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::ITaskAccessor>&, std::shared_ptr<DB::ITimeAccessor>&);
 	virtual void show() {}; //Shown directly on creation. Might change
 	virtual void attach(IActionObserver* observer);
 	virtual void detach(IActionObserver* observer);
@@ -60,7 +60,7 @@ private:
 
 	Gtk::Menu m_Menu_Popup;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
-	std::shared_ptr<DB::IExtendedTaskAccessor> m_taskaccessor;
+	std::shared_ptr<DB::ITaskAccessor> m_taskaccessor;
 	std::shared_ptr<DB::ITimeAccessor> m_timeaccessor;
 	std::list<IActionObserver*> observers;
 	std::vector<int64_t> latestTasks;

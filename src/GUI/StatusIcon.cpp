@@ -17,7 +17,7 @@ namespace GUI
 using namespace std;
 using namespace DB;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<IExtendedTaskAccessor>& taskaccessor,
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<ITaskAccessor>& taskaccessor,
 		std::shared_ptr<ITimeAccessor>& timeaccessor)
 {
 	m_timekeeper = timekeeper;
@@ -60,55 +60,52 @@ void StatusIcon::populateContextMenu()
 	menulist.clear();
 
 	latestTasks = m_timeaccessor->getLatestTasks(5);
-
+	std::vector<int64_t> runningTasks = m_timeaccessor->getRunningTasks();
 	for (int i = 0; i < (int) latestTasks.size(); i++)
 	{
 		try
 		{
-			std::shared_ptr<std::vector<ExtendedTask> > tasks = m_taskaccessor->getExtendedTask(latestTasks[i]);
-			if (tasks->size() > 0)
+			int64_t id = latestTasks[i];
+			std::shared_ptr<DB::Task> task = m_taskaccessor->getTask(id);
+			std::string menuLine = completeTaskPath(latestTasks[i]);
+
+			Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
+			if (std::find(runningTasks.begin(), runningTasks.end(), id) != runningTasks.end() )
 			{
-				ExtendedTask& task = tasks->at(0);
-				std::string menuLine = completeTaskPath(latestTasks[i]);
+				menuIcon->set(runningIconSmall);
+			}
+			else
+			{
+				menuIcon->set(idleIconSmall);
+			}
 
-				Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
-				if (task.getRunning() == true)
-				{
-					menuIcon->set(runningIconSmall);
-				}
-				else
-				{
-					menuIcon->set(idleIconSmall);
-				}
-
-				switch (i)
-				{
-					case 0:
-						menulist.push_back(
-								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
-						break;
-					case 1:
-						menulist.push_back(
-								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
-						break;
-					case 2:
-						menulist.push_back(
-								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
-						break;
-					case 3:
-						menulist.push_back(
-								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
-						break;
-					case 4:
-						menulist.push_back(
-								Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-										sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
-						break;
-				}
+			switch (i)
+			{
+				case 0:
+					menulist.push_back(
+							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
+					break;
+				case 1:
+					menulist.push_back(
+							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
+					break;
+				case 2:
+					menulist.push_back(
+							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
+					break;
+				case 3:
+					menulist.push_back(
+							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
+					break;
+				case 4:
+					menulist.push_back(
+							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+					break;
 			}
 		}
 		catch (...)
@@ -269,21 +266,17 @@ void StatusIcon::setTooltip()
 	std::stringstream message
 		{
 		};
-	if (m_timekeeper->hasRunningTasks())
+	std::vector<int64_t> taskIDs = m_timeaccessor->getRunningTasks();
+	if (taskIDs.size() > 0)
 	{
-		std::shared_ptr<std::vector<ExtendedTask>> tasks = m_taskaccessor->getRunningTasks();
 		//Figure out start and end of today
 		time_t startTime = Utils::getBeginingOfDay(time(0));
 		time_t stopTime = Utils::getEndOfDay(time(0));
-		for (int i = 0; i < (int) tasks->size(); i++)
+		for (int64_t id : taskIDs)
 		{
-			ExtendedTask& task = tasks->at(i);
-			if (i > 0)
-			{
-				message << endl;
-			}
-			message << setw(15) << setiosflags(ios::left) << task.getName();
-			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(task.getID(), startTime, stopTime));
+			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
+			message << setw(15) << setiosflags(ios::left) << task->getName();
+			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(id, startTime, stopTime));
 		}
 	}
 	else

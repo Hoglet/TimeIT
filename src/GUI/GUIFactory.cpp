@@ -158,7 +158,7 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon* statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		std::shared_ptr<DB::IExtendedTaskAccessor> taskaccessor=database->getExtendedTaskAccessor();
+		std::shared_ptr<DB::ITaskAccessor> taskaccessor=database->getTaskAccessor();
 		std::shared_ptr<DB::ITimeAccessor> timeaccessor=database->getTimeAccessor();
 
 		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor ));
