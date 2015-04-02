@@ -7,7 +7,6 @@
 
 #include "AddTime.h"
 #include <Utils.h>
-#include <ExtendedTask.h>
 #include <time.h>
 #include <glibmm/i18n.h>
 

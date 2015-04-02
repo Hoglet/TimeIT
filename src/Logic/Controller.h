@@ -56,6 +56,7 @@ private:
 	std::shared_ptr<ITimeKeeper> timeKeeper;
 	std::shared_ptr<GUI::IdleDialog> idleDialog;
 	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 
 	int mainWindow_x = 0;

@@ -7,6 +7,19 @@ using namespace std;
 namespace DB
 {
 
+TaskAccessorObserver::~TaskAccessorObserver()
+{
+}
+
+void TaskAccessorObserver::on_taskParentChanged(int64_t)
+{
+}
+
+ITaskAccessor::~ITaskAccessor()
+{
+}
+
+
 TaskAccessor::TaskAccessor(std::shared_ptr<DBAbstraction::CSQL>& op_db, std::shared_ptr<Notifier> op_notifier) :
 		 notifier(op_notifier), db(op_db)
 {
@@ -371,5 +384,14 @@ void TaskAccessor::upgradeToDB5()
 	db->exe("DROP TABLE tasks_backup");
 
 }
+
+void TaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
+{
+	stringstream statement;
+	statement << "UPDATE tasks SET expanded = " << expanded;
+	statement << " WHERE id=" << taskID;
+	db->exe(statement.str());
+}
+
 
 }

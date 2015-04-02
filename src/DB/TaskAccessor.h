@@ -2,13 +2,36 @@
 #define TASKACCESSOR_H_
 
 #include "CSQL.h"
-#include "ITaskAccessor.h"
+#include "TaskAccessorObserver.h"
 
 #include <Notifier.h>
 #include <string>
 
 namespace DB
 {
+
+
+
+class ITaskAccessor
+{
+public:
+	virtual ~ITaskAccessor();
+	virtual void attach(TaskAccessorObserver*) = 0;
+	virtual void detach(TaskAccessorObserver*) = 0;
+
+	virtual std::shared_ptr<Task> getTask(int64_t taskID) = 0;
+	virtual std::shared_ptr<std::vector<Task>> getTasks(int64_t parentID = 0) = 0;
+	virtual std::shared_ptr<std::vector<Task>> getTasksChangedSince(time_t timestamp = 0) = 0;
+	virtual int64_t newTask(const Task& task) = 0;
+	virtual bool updateTask(const Task& task) = 0;
+	virtual int64_t newTask(std::string name, int64_t parentID) = 0;
+	virtual void setParentID(int64_t taskID, int parentID) = 0;
+	virtual void removeTask(int64_t taskID) = 0;
+	virtual int64_t uuidToId(std::string uuid) = 0;
+	virtual void enableNotifications(bool) = 0;
+	virtual void setTaskExpanded(int64_t taskID, bool expanded) = 0;
+
+};
 
 class Database;
 
@@ -31,6 +54,7 @@ public:
 	virtual void removeTask(int64_t taskID);
 	virtual int64_t uuidToId(std::string uuid);
 	virtual void enableNotifications(bool);
+	virtual void setTaskExpanded(int64_t taskID, bool expanded);
 protected:
 	void createTable();
 	void upgradeToDB5();

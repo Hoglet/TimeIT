@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include "TimeAccessor.h"
 #include "Database.h"
-#include "ExtendedTaskAccessor.h"
+#include "TaskAccessor.h"
 
 namespace GUI
 {
@@ -81,7 +81,6 @@ protected:
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row& row, const DB::ExtendedTask& task);
 	void assignValuesToRow(Gtk::TreeModel::Row& row, std::shared_ptr<DB::Task> task, time_t totalTime);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
@@ -108,7 +107,7 @@ protected:
 	time_t stopTime = 0;
 	std::list<SummaryObserver* > observers;
 	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
-	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 private:
 	bool isVisible();
 	bool needsRePopulation = true;

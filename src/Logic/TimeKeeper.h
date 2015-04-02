@@ -7,7 +7,7 @@
 #include <TimeKeeper.h>
 #include <Database.h>
 #include <IdleDetector.h>
-#include <ITaskAccessor.h>
+#include <TaskAccessor.h>
 #include <IGUIFactory.h>
 
 class TimekeeperObserver

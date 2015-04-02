@@ -11,7 +11,6 @@
 #include <gtkmm.h>
 #include <signal.h>
 
-#include "ExtendedTask.h"
 #include "MainWindow/Summary.h"
 
 #include "Database.h"

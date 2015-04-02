@@ -124,13 +124,6 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTask(int6
 	return tasks;
 }
 
-void ExtendedTaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
-{
-	stringstream statement;
-	statement << "UPDATE tasks SET expanded = " << expanded;
-	statement << " WHERE id=" << taskID;
-	db->exe(statement.str());
-}
 
 
 }

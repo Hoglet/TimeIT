@@ -12,7 +12,7 @@
 #include <Timer.h>
 #include <IWidget.h>
 #include <memory>
-#include <ExtendedTask.h>
+#include <TaskAccessor.h>
 
 namespace GUI
 {
@@ -21,7 +21,7 @@ class IIdleDialog
 public:
 	virtual ~IIdleDialog() {};
 	virtual void setIdleStartTime(time_t idleStartTime) = 0;
-	virtual void setActiveTaskList(std::shared_ptr<std::vector<DB::ExtendedTask>> activeTasks) = 0;
+	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs) = 0;
 	virtual void show() = 0;
 	virtual void attach(IActionObserver*) = 0;
 	virtual void detach(IActionObserver*) = 0;
@@ -36,9 +36,9 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
 {
 public:
-	IdleDialog(std::shared_ptr<Timer>& timer);
+	IdleDialog(std::shared_ptr<Timer>& timer, std::shared_ptr<DB::ITaskAccessor> accessor);
 	virtual void setIdleStartTime(time_t idleStartTime);
-	virtual void setActiveTaskList(std::shared_ptr<std::vector<DB::ExtendedTask>> activeTasks);
+	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
 	virtual ~IdleDialog();
 	virtual void attach(IActionObserver*);
 	virtual void detach(IActionObserver*);
@@ -61,6 +61,7 @@ private:
 	std::shared_ptr<Timer> m_timer;
 	time_t m_idleStartTime;
 	std::string taskString;
+	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 
 	std::list<IActionObserver*> observers;
 	void responseHandler(int result);

@@ -36,7 +36,7 @@ void SummaryObserver::detach(ISummary* subject)
 }
 
 Summary::Summary(std::shared_ptr<DB::IDatabase>& database) :
-		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor())
+		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getTaskAccessor())
 {
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
@@ -153,26 +153,23 @@ void Summary::on_taskUpdated(int64_t taskID)
 {
 	if (isVisible())
 	{
-		shared_ptr<vector<ExtendedTask>> result = taskAccessor->getExtendedTask(taskID, startTime, stopTime);
-		if (result->size() > 0)
+		shared_ptr<Task> task = taskAccessor->getTask(taskID);
+		Gtk::TreeIter iter = findRow(taskID);
+		if (iter != treeModel->children().end())
 		{
-			Gtk::TreeIter iter = findRow(taskID);
-			if (iter != treeModel->children().end())
+			TreeModel::Row row = *iter;
+			time_t totalTime = timeAccessor->getTotalTimeWithChildren(taskID, startTime, stopTime);
+			assignValuesToRow(row, task, totalTime);
+			int64_t parentID = task->getParentID();
+			if (parentID > 0)
 			{
-				ExtendedTask& filteredTask = result->at(0);
-				TreeModel::Row row = *iter;
-				assignValuesToRow(row, filteredTask);
-				int64_t parentID = filteredTask.getParentID();
-				if (parentID > 0)
-				{
-					on_taskUpdated(parentID);
-				}
+				on_taskUpdated(parentID);
 			}
-			else
-			{
-				empty();
-				populate();
-			}
+		}
+		else
+		{
+			empty();
+			populate();
 		}
 	}
 	else
@@ -312,13 +309,6 @@ void Summary::assignValuesToRow(TreeModel::Row& row, std::shared_ptr<Task> task,
 	row[columns.col_id] = task->getID();
 	row[columns.col_name] = task->getName();
 	row[columns.col_time] = Utils::seconds2hhmm(totalTime);
-}
-
-void Summary::assignValuesToRow(TreeModel::Row& row, const ExtendedTask& task)
-{
-	row[columns.col_id] = task.getID();
-	row[columns.col_name] = task.getName();
-	row[columns.col_time] = Utils::seconds2hhmm(task.getTotalTime());
 }
 
 Gtk::TreeModel::iterator Summary::findRow(int id)

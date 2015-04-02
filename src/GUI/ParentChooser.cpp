@@ -7,7 +7,6 @@
 
 #include "ParentChooser.h"
 #include <iostream>
-#include <ExtendedTask.h>
 
 using namespace DB;
 

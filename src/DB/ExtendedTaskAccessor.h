@@ -23,7 +23,6 @@ public:
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getExtendedTask(int64_t taskID, time_t start = 0, time_t stop = 0, bool calculateTotalTime=true) = 0;
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getExtendedTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0) = 0;
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getRunningTasks(int64_t parentID = 0) = 0;
-	virtual void setTaskExpanded(int64_t taskID, bool expanded) = 0;
 };
 
 
@@ -37,7 +36,6 @@ public:
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getExtendedTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getRunningTasks(int64_t parentID = 0);
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getExtendedTask(int64_t taskID, time_t start = 0, time_t stop = 0, bool calculateTotalTime=true );
-	virtual void setTaskExpanded(int64_t taskID, bool expanded);
 private:
 	std::shared_ptr<std::vector<ExtendedTask>> _getExtendedTasks(int64_t taskID, int64_t parentID = 0, bool onlyRunning = false, time_t start = 0, time_t stop = 0);
 	int getTotalChildTime(int64_t id, time_t start = 0 , time_t stop = 0);

@@ -8,7 +8,7 @@
 #ifndef NOTIFIER_H_
 #define NOTIFIER_H_
 
-#include "ITaskAccessor.h"
+#include "TaskAccessorObserver.h"
 #include <stdint.h>
 #include <list>
 #include <deque>

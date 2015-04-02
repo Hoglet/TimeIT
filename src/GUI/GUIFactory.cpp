@@ -87,7 +87,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case IDLE_DIALOG:
 		if (idleDialogInstance == 0)
 		{
-			std::shared_ptr<IdleDialog> dialog(new IdleDialog(timer));
+			std::shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database->getTaskAccessor()));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_idleDialog_hide));
 			idleDialogInstance = dialog;
 		}

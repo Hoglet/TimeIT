@@ -16,7 +16,7 @@
 namespace GUI
 {
 
-IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer): 	m_timer(timer)
+IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer, std::shared_ptr<DB::ITaskAccessor> accessor): 	m_timer(timer), taskAccessor(accessor)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
@@ -63,17 +63,18 @@ void IdleDialog::setIdleStartTime(time_t idleStartTime)
 	m_idleStartTime = idleStartTime;
 }
 
-void IdleDialog::setActiveTaskList(std::shared_ptr<std::vector<DB::ExtendedTask>> activeTasks)
+void IdleDialog::setActiveTaskList(std::vector<int64_t> activeTaskIDs)
 {
 	std::stringstream text;
 	int i=0;
-	for ( DB::ExtendedTask task: *activeTasks)
+	for ( int64_t taskID: activeTaskIDs)
 	{
+		std::shared_ptr<DB::Task> task = taskAccessor->getTask(taskID);
 		if(i++>0)
 		{
 			text<<", ";
 		}
-		text<<task.getName();
+		text<<task->getName();
 	}
 	taskString = text.str();
 }

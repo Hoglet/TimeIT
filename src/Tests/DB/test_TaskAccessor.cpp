@@ -2,7 +2,7 @@
 #include "ide_listener.h"
 #include "cute_runner.h"
 #include "TempDB.h"
-#include "ITaskAccessor.h"
+#include "TaskAccessor.h"
 #include "dbexception.h"
 #include "test_TaskAccessor.h"
 #include "UUID.h"

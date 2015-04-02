@@ -104,5 +104,4 @@ void MockTaskAccessor::enableNotifications(bool)
 
 }
 
-
 } /* namespace Test */
