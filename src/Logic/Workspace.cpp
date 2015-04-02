@@ -44,12 +44,12 @@ void Workspace::findLayout()
 		}
 		else
 		{
-			int r = wnck_workspace_get_layout_row(workspace);
+			int r = wnck_workspace_get_layout_row(workspace) + 1;
 			if (r > rows)
 			{
 				rows = r;
 			}
-			int c = wnck_workspace_get_layout_row(workspace);
+			int c = wnck_workspace_get_layout_column(workspace) + 1;
 			if (c > columns)
 			{
 				columns = c;
