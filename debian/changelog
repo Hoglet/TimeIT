@@ -1,3 +1,10 @@
+timeit (1.9.9.21) trusty; urgency=medium
+
+  * Bugfix: Support for Compiz viewports caused regression for other window managers.
+  * Misc: Cleaned up code and partial work on removing ExtendedTaskAccessor.
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 02 Apr 2015 14:03:45 +0200
+
 timeit (1.9.9.20) trusty; urgency=medium
 
   * Bugfix: Build and install dependencies.
@@ -5,7 +12,7 @@ timeit (1.9.9.20) trusty; urgency=medium
  -- Kent Asplund <hoglet@solit.se>  Sun, 22 Mar 2015 16:50:00 +0100
 
 timeit (1.9.9.19) trusty; urgency=medium
-  * Bugfix: Autotracker is no longer starting deleted tasks. 
+  * Bugfix: Autotracker is no longer starting deleted tasks.
   * Bugfix: Deleting a task also removed times from summaries
   * Feature: Support for Compiz viewports
 
@@ -20,7 +27,7 @@ timeit (1.9.9.18) trusty; urgency=medium
 
 timeit (1.9.9.16) trusty; urgency=medium
 
-  * Bugfix: Readded TODO.tasks 
+  * Bugfix: Readded TODO.tasks
 
  -- Kent Asplund <hoglet@solit.se>  Fri, 13 Feb 2015 21:32:08 +0100
 
