@@ -9,13 +9,14 @@
 #include <iostream>
 #include <string.h>
 #include <string>
+#include <vector>
 
 using std::string;
+using std::vector;
 
 //LCOV_EXCL_START
 Workspace::Workspace()
 {
-	screen = wnck_screen_get_default();
 	findLayout();
 }
 
@@ -25,66 +26,91 @@ Workspace::~Workspace()
 
 void Workspace::findLayout()
 {
-	GList* workspaces = wnck_screen_get_workspaces(screen);
-	rows = 1;
-	columns = 1;
-	while (workspaces != nullptr)
+	try
 	{
-		WnckWorkspace* workspace = (WnckWorkspace*) workspaces->data;
-		if (wnck_workspace_is_virtual(workspace))
+		isVirtual = false;
+		desktopWidth = x11.getCardinal("_NET_DESKTOP_GEOMETRY", 0);
+		desktopHeight = x11.getCardinal("_NET_DESKTOP_GEOMETRY", 1);
+		viewportWidth = x11.getViewportWidth();
+		viewportHeight = x11.getViewportHeight();
+		numWorkspaces = x11.getCardinal("_NET_NUMBER_OF_DESKTOPS", 0);
+		columns = 1;
+		rows = 2;
+
+		if (numWorkspaces > 1)
 		{
-			int WSHeight = wnck_workspace_get_height(workspace);
-			int WSWidth = wnck_workspace_get_width(workspace);
-			int SCHeight = wnck_screen_get_height(screen);
-			int SCWidth = wnck_screen_get_width(screen);
-			columns = WSWidth / SCWidth;
-			rows = WSHeight / SCHeight;
-			numWorkspaces = columns * rows;
-			isVirtual = true;
+			/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
+			columns = x11.getCardinal("_NET_DESKTOP_LAYOUT", 1);
+			if (columns == 0)
+			{
+				rows = x11.getCardinal("_NET_DESKTOP_LAYOUT", 2);
+				if (rows != 0)
+				{
+					columns = (numWorkspaces + 1) / rows;
+				}
+				else
+				{
+					columns = 1;
+				}
+			}
+			rows = x11.getCardinal("_NET_DESKTOP_LAYOUT", 2);
+			if (rows == 0)
+			{
+				int columns = x11.getCardinal("_NET_DESKTOP_LAYOUT", 1);
+				if (columns != 0)
+				{
+					rows = (numWorkspaces + 1) / columns;
+				}
+				else
+				{
+					rows = 1;
+				}
+			}
 		}
 		else
 		{
-			int r = wnck_workspace_get_layout_row(workspace) + 1;
-			if (r > rows)
+			columns = desktopWidth / viewportWidth;
+			rows = desktopHeight / viewportHeight;
+			numWorkspaces = columns * rows;
+			if (numWorkspaces > 1)
 			{
-				rows = r;
+				isVirtual = true;
 			}
-			int c = wnck_workspace_get_layout_column(workspace) + 1;
-			if (c > columns)
-			{
-				columns = c;
-			}
-			isVirtual = false;
 		}
-		workspaces = workspaces->next;
 	}
-	if (isVirtual == false)
+	catch (const GeneralException& e)
 	{
-		numWorkspaces = wnck_screen_get_workspace_count(screen);
+		std::cerr << e.what();
 	}
 }
 
 int Workspace::get_active()
 {
-	int returnValue = 0;
-	WnckWorkspace* workspace = wnck_screen_get_active_workspace(screen);
-	if(wnck_workspace_is_virtual(workspace))
+	int active = 0;
+	findLayout();
+	if (numWorkspaces != x11.getCardinal("_NET_NUMBER_OF_DESKTOPS", 0))
 	{
-		isVirtual = true;
-		int x=wnck_workspace_get_viewport_x(workspace);
-		int y=wnck_workspace_get_viewport_y(workspace);
+		int x = x11.getCardinal("_NET_DESKTOP_VIEWPORT", 0);
+		int y = x11.getCardinal("_NET_DESKTOP_VIEWPORT", 1);
 
-		int scrnWidth = wnck_screen_get_width(screen);
-		int scrnHeight = wnck_screen_get_height(screen);
-		int currentColumn = x / scrnWidth + 1;
-		int currentRow =  y / scrnHeight + 1;
-		returnValue = currentColumn*currentRow -1;
+		int currentColumn = x / viewportWidth + 1;
+		int currentRow = y / viewportHeight + 1;
+		active = currentColumn * currentRow - 1;
 	}
 	else
 	{
-		returnValue = wnck_workspace_get_number(workspace);
+		try
+		{
+			active = x11.getCardinal("_NET_CURRENT_DESKTOP", 0);
+		}
+		catch (const GeneralException& e)
+		{
+			std::cerr << e.what();
+		}
+
+		//active = wnck_workspace_get_number(workspace);
 	}
-	return returnValue;
+	return active;
 }
 std::string Workspace::get_name(int workspaceNR)
 {
@@ -92,8 +118,21 @@ std::string Workspace::get_name(int workspaceNR)
 	{
 		workspaceNR = 0;
 	}
-	WnckWorkspace* wnckWorkspace = wnck_screen_get_workspace(screen, workspaceNR);
-	return wnck_workspace_get_name(wnckWorkspace);
+	std::string retVal;
+	try
+	{
+		vector<string> names = x11.getStrings("_NET_DESKTOP_NAMES");
+
+		if ((int) names.size() >= workspaceNR)
+		{
+			retVal = names[workspaceNR];
+		}
+	}
+	catch (const GeneralException& e)
+	{
+		std::cerr << e.what();
+	}
+	return retVal;
 }
 int Workspace::get_numberOfColumns()
 {
