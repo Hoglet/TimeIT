@@ -8,7 +8,7 @@ Standards-Version: 3.9.3
 Package: timeit
 Architecture: any
 Depends: libgtkmm-2.4-1c2a (>= 2.8), libsqlite3-0, libxss1, libnotify-bin, ${shlibs:Depends}, ${misc:Depends}
-Description: An uniobtrusive time tracker.
+Description: The unobtrusive time tracker.
  TimeIT is a time tracker that aims to be unobtrusive and simple to use.
- It has Workspace tracking, Idle detection, hierarchical tasks and can 
+ It has Workspace tracking, Idle detection, hierarchical tasks and can
  show summaries over day/week/month
