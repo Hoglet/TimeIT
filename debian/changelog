@@ -1,3 +1,9 @@
+timeit (1.9.9.22) trusty; urgency=medium
+
+  * Bugfix: Multi monitor setups was not working reliably.
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 05 Apr 2015 15:39:18 +0200
+
 timeit (1.9.9.21) trusty; urgency=medium
 
   * Bugfix: Support for Compiz viewports caused regression for other window managers.
