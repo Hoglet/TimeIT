@@ -15,16 +15,17 @@ dbexception::~dbexception() throw()
 
 const char* dbexception::what() const throw()
 {
-	static stringstream str;
+	stringstream str;
 	str << rc2string() <<" "<< message.c_str() <<endl;
-	return str.str().c_str();
+	static std::string result=str.str();
+	return result.c_str();
 }
 
 
 
 void dbexception::setMessage(std::string op1)
 {
-	message=op1;	
+	message=op1;
 }
 
 void dbexception::setReturnCode(int op1)
