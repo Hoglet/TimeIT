@@ -3,6 +3,7 @@
 #include "Json.h"
 #include "Task.h"
 #include "cute_runner.h"
+#include <jansson.h>
 
 using namespace DB;
 
@@ -202,8 +203,6 @@ void Json_threeWayTimeTest2()
 void Json_testTaskStringGenerationTest()
 {
 	Json json;
-	std::string expected_json_string =
-			"[{\"parent\": {\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", \"owner\": {\"username\": \"tester\"}, \"lastChange\": 1374263745, \"completed\": false, \"deleted\": false}]";
 
 	std::string name = "task1";
 	std::string parentID = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
@@ -216,7 +215,32 @@ void Json_testTaskStringGenerationTest()
 	tasks->push_back(task);
 	std::string result = json.toJson(tasks, "tester");
 
-	ASSERT_EQUALM("Testing json string creation", expected_json_string, result);
+	json_t *root;
+	json_error_t error;
+
+	root = json_loads(result.c_str(), 0, &error);
+
+	ASSERT_EQUALM("Number if tasks are wrong ", 1, json_array_size(root));
+
+	json_t *object = json_array_get(root, 0);
+
+	ASSERT_EQUALM("Number of fields are wrong ", 7, json_object_size(object));
+
+	json_t *j_name = json_object_get(object, "name");
+	json_t *j_id = json_object_get(object, "id");
+	json_t *j_parent = json_object_get(object, "parent");
+	json_t *j_completed = json_object_get(object, "completed");
+	json_t *j_lastChanged = json_object_get(object, "lastChange");
+	json_t *j_deleted = json_object_get(object, "deleted");
+	json_t *j_owner = json_object_get(object, "owner");
+
+	ASSERT_EQUALM("Name is incorrect", name, json_string_value(j_name));
+	ASSERT_EQUALM("id is incorrect", UUID, json_string_value(j_id));
+	ASSERT_EQUALM("Parent id is incorrect", parentID, json_string_value(json_object_get(j_parent, "id")));
+	ASSERT_EQUALM("Completed is incorrect", false, json_is_true(j_completed));
+	ASSERT_EQUALM("Last changed is incorrect", changeTime, json_integer_value(j_lastChanged));
+	ASSERT_EQUALM("Deleted is incorrect", false, json_is_true(j_deleted));
+	ASSERT_EQUALM("Owner id is incorrect", "tester", json_string_value(json_object_get(j_owner, "username")));
 
 }
 
