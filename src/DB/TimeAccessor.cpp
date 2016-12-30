@@ -179,7 +179,7 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 {
 	vector<int64_t> resultList;
 	stringstream statement;
-	statement << "SELECT DISTINCT times.taskid FROM times WHERE times.deleted=0 ORDER BY times.stop DESC LIMIT "
+	statement << "SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' ORDER BY times.stop DESC LIMIT "
 			<< amount;
 
 	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
@@ -251,6 +251,7 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr < std::vector < TimeEntry >> (new vector<TimeEntry> );
 
 	std::shared_ptr<Statement> statement = 	db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
+
 	statement->bindValue(1, timestamp);
 
 	std::shared_ptr<QueryResult> rows = statement->execute();
@@ -414,11 +415,13 @@ std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
 {
 	std::vector<int64_t> resultList;
 	std::shared_ptr<Statement> statement_getTasks = db->prepare(
-			"SELECT DISTINCT times.taskid FROM times WHERE (start>=? AND start<=?) OR (stop>=? AND stop<=?) and deleted=0;");
+			"SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' WHERE (times.start>=? AND times.start<=?) OR (times.stop>=? AND times.stop<=?) OR (times.start<? AND times.stop>?)  AND times.deleted=0;");
 	statement_getTasks->bindValue(1, start);
 	statement_getTasks->bindValue(2, stop);
 	statement_getTasks->bindValue(3, start);
 	statement_getTasks->bindValue(4, stop);
+	statement_getTasks->bindValue(5, start);
+	statement_getTasks->bindValue(6, stop);
 
 	std::shared_ptr<QueryResult> rows = statement_getTasks->execute();
 

@@ -85,6 +85,9 @@ void TimeAccessor_GetLatestTasks()
 	std::vector<int64_t> result = timeAccessor->getLatestTasks(10);
 	ASSERT_EQUAL(1, result.size());
 	ASSERT_EQUAL(taskId, result[0]);
+	taskAccessor->removeTask(taskId);
+	result = timeAccessor->getLatestTasks(10);
+	ASSERT_EQUAL(0, result.size());
 }
 
 void TimeAccessor_GetDetailTimeList()
@@ -175,6 +178,40 @@ void TimeAccessor_getTimesChangedSince()
 	ASSERT_EQUAL(1, (*result).size());
 	result = timeAccessor->getTimesChangedSince(item.getLastChanged()+1);
 	ASSERT_EQUAL(0, (*result).size());
+}
+
+void TimeAccessor_getActiveTasks()
+{
+	TempDB db;
+	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
+	const int64_t taskId = taskAccessor->newTask("test", 0);
+	TimeEntry item(0, UUID::randomUUID(), taskId, "", 100, 600, false, false, 200);
+
+	timeAccessor->newEntry(item);
+
+	std::vector<long int> result = timeAccessor->getActiveTasks(0,50000);
+	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+
+	result = timeAccessor->getActiveTasks(110,500);
+	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+
+
+	result = timeAccessor->getActiveTasks(90,100);
+	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+
+	result = timeAccessor->getActiveTasks(600,800);
+	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+
+	result = timeAccessor->getActiveTasks(0,99);
+	ASSERT_EQUALM("Number of tasks are wrong", 0, result.size());
+
+	result = timeAccessor->getActiveTasks(601,8000);
+	ASSERT_EQUALM("Number of tasks are wrong", 0, result.size());
+
+	taskAccessor->removeTask(taskId);
+	result = timeAccessor->getActiveTasks(110,500);
+	ASSERT_EQUALM("Deleted task is shown", 0, result.size());
 
 }
 
@@ -212,6 +249,7 @@ cute::suite make_suite_TimeAccessor_test()
 	s.push_back(CUTE(TimeAccessor_testGetByID));
 	s.push_back(CUTE(TimeAccessor_newItem));
 	s.push_back(CUTE(TimeAccessor_GetTotalTimeWithChildren_test));
+	s.push_back(CUTE(TimeAccessor_getActiveTasks));
 	return s;
 }
 
