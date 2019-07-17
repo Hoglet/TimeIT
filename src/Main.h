@@ -12,20 +12,19 @@
 #include <Timer.h>
 #include <IGUIFactory.h>
 
-
-
 class Main
 {
 public:
 	Main(int argc, char *argv[]);
 	virtual ~Main();
 	void printHelp();
-	int run();
+	int run(int argc, char *argv[]);
 private:
 	std::shared_ptr<DB::IDatabase> database;
 	std::shared_ptr<Timer> timer;
 	std::shared_ptr<GUI::IGUIFactory> guiFactory;
 	std::string dbName;
+	std::string socketName = "timeit.socket";
 	bool test;
 };
 

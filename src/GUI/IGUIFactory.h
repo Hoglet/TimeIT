@@ -30,7 +30,6 @@ enum EWidget
 	MAX_WIDGETS
 };
 
-
 typedef std::shared_ptr<IWidget> WidgetPtr;
 
 class IGUIFactory
@@ -40,8 +39,7 @@ public:
 	virtual WidgetPtr getWidget(EWidget) = 0;
 	virtual IStatusIcon& getStatusIcon() = 0;
 	virtual WidgetPtr getAddTime(int64_t taskID) = 0;
-
-	virtual void run() = 0;
+	virtual void quit() = 0;
 };
 }
 #endif /* IGUIFACTORY_H_ */

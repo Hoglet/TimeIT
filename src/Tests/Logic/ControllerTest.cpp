@@ -9,6 +9,8 @@
 #include "TimeKeeper.h"
 #include "Controller.h"
 
+#include "../../Misc/IpcServer.h"
+
 using namespace std;
 
 namespace Test
@@ -20,15 +22,17 @@ void Controller_startSequence()
 	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
 	shared_ptr<Timer> timer = std::shared_ptr<Timer>(new Timer());
 	shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new MockTimeKeeper());
-	shared_ptr<MockGuiFactory> guiFactory= std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
-	MockStatusIcon& statusIcon = static_cast<MockStatusIcon&>(guiFactory->getStatusIcon());
+	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
+	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket"));
+	MockStatusIcon &statusIcon = static_cast<MockStatusIcon&>(guiFactory->getStatusIcon());
 
 	ASSERT_EQUALM("Checking status of status icon before start sequence ", false, statusIcon.visible);
 	ASSERT_EQUALM("Checking status of widgetIdentifier before start sequence ", GUI::MAX_WIDGETS, guiFactory->widgetIdentifier);
 	ASSERT_EQUALM("Checking status of mockWidget before start sequence ", false, guiFactory->widget->is_visible());
 
 	shared_ptr<GUI::IGUIFactory> gfactory = std::static_pointer_cast<GUI::IGUIFactory>(guiFactory);
-	Controller controller(gfactory, timekeeper, database);
+
+	Controller controller(gfactory, timekeeper, database, ipc);
 	controller.start();
 	ASSERT_EQUALM("Checking status of status icon after start sequence ", true, statusIcon.visible);
 	ASSERT_EQUALM("Checking status of widgetIdentifier after start sequence ", GUI::MAIN_WINDOW, guiFactory->widgetIdentifier);
@@ -42,12 +46,13 @@ void Controller_testActions()
 	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
 	shared_ptr<Timer> timer = std::shared_ptr<Timer>(new Timer());
 	shared_ptr<MockTimeKeeper> timekeeper = std::shared_ptr<MockTimeKeeper>(new MockTimeKeeper());
-	shared_ptr<MockGuiFactory> guiFactory= std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
+	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
+	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket"));
 
 	shared_ptr<GUI::IGUIFactory> gfactory = std::static_pointer_cast<GUI::IGUIFactory>(guiFactory);
 	shared_ptr<ITimeKeeper> tkeeper = std::shared_ptr<ITimeKeeper>(timekeeper);
 
-	Controller controller(gfactory, tkeeper, database);
+	Controller controller(gfactory, tkeeper, database, ipc);
 
 	ASSERT_EQUALM("Checking status of widgetIdentifier before about event ", GUI::MAX_WIDGETS, guiFactory->widgetIdentifier);
 	ASSERT_EQUALM("Checking status of mockWidget before about event ", false, guiFactory->widget->is_visible());
@@ -93,7 +98,6 @@ void Controller_testActions()
 	ASSERT_EQUALM("Check that controller is starting the correct task ", selectedTaskId, timekeeper->stopedTask );
 
 }
-
 
 cute::suite make_suite_ControllerTest()
 {

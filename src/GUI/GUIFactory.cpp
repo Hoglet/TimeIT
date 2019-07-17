@@ -12,34 +12,22 @@
 namespace GUI
 {
 
-std::shared_ptr<Gtk::Main> GUIFactory::main;
+//std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper>& op_timekeeper, std::shared_ptr<DB::IDatabase>& op_database,
-		const std::shared_ptr<Timer>& op_timer) : timekeeper(op_timekeeper), database(op_database), timer(op_timer)
+GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper> &op_timekeeper, std::shared_ptr<DB::IDatabase> &op_database, const std::shared_ptr<Timer> &op_timer) :
+		timekeeper(op_timekeeper), database(op_database), timer(op_timer)
 {
 
 }
 
 GUIFactory::~GUIFactory()
 {
-	main.reset();
+
 }
 
-void GUIFactory::init(int argc, char *argv[])
-{
-	main = std::shared_ptr<Gtk::Main>(new Gtk::Main(argc, argv));
-}
 void GUIFactory::quit()
 {
 	Gtk::Main::quit();
-}
-
-void GUIFactory::run()
-{
-	if (main)
-	{
-		main->run();
-	}
 }
 
 WidgetPtr GUIFactory::getWidget(EWidget widget)
@@ -50,7 +38,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case MAIN_WINDOW:
 		if (mainWindow == 0)
 		{
-			std::shared_ptr<MainWindow> window(new MainWindow( database));
+			std::shared_ptr<MainWindow> window(new MainWindow(database));
 			window->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_mainWindow_hide));
 			this->mainWindow = window;
 
@@ -58,14 +46,6 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 		retVal = mainWindow;
 		break;
 	case ADD_TASK_DIALOG:
-/*		if (addTaskInstance == 0)
-		{
-			std::shared_ptr<AddTaskDialog> dialog(new AddTaskDialog(database));
-			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_addTaskDialog_hide));
-			addTaskInstance = dialog;
-		}
-		retVal = addTaskInstance;
-		break;*/
 	case EDIT_TASK_DIALOG:
 		if (editTaskDialogInstace == 0)
 		{
@@ -103,7 +83,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 		retVal = detailsDialogInstance;
 		break;
 	case PREFERENCE_DIALOG:
-		if(preferenceDialogInstance == 0)
+		if (preferenceDialogInstance == 0)
 		{
 			std::shared_ptr<PreferenceDialog> dialog(new PreferenceDialog(database));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_preferenceDialog_hide));
@@ -152,28 +132,27 @@ void GUIFactory::on_preferenceDialog_hide()
 	preferenceDialogInstance.reset();
 }
 
-
 IStatusIcon& GUIFactory::getStatusIcon()
 {
-	static IStatusIcon* statusIcon = 0;
+	static IStatusIcon *statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		std::shared_ptr<DB::ITaskAccessor> taskaccessor=database->getTaskAccessor();
-		std::shared_ptr<DB::ITimeAccessor> timeaccessor=database->getTimeAccessor();
+		std::shared_ptr<DB::ITaskAccessor> taskaccessor = database->getTaskAccessor();
+		std::shared_ptr<DB::ITimeAccessor> timeaccessor = database->getTimeAccessor();
 
-		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor ));
+		statusIcon = (IStatusIcon*) (new StatusIcon(timekeeper, taskaccessor, timeaccessor));
 	}
 	return *statusIcon;
 }
 WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 {
-	if (addTimeInstance==nullptr)
+	if (addTimeInstance == nullptr)
 	{
 		if (mainWindow == 0)
 		{
 			getWidget(MAIN_WINDOW);
 		}
-		ICalendar& calendar = std::dynamic_pointer_cast<IMainWindow>(mainWindow)->getCalendar();
+		ICalendar &calendar = std::dynamic_pointer_cast<IMainWindow>(mainWindow)->getCalendar();
 		std::shared_ptr<AddTime> addTime(new AddTime(taskID, calendar, database));
 		addTime->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_addTime_response));
 		addTimeInstance = addTime;

@@ -5,7 +5,6 @@
 #include "Mock/MockStatusIcon.h"
 #include "MockWidget.h"
 
-
 namespace Test
 {
 
@@ -20,6 +19,7 @@ public:
 	GUI::WidgetPtr getAddTime(int64_t taskID) ;
 
 	void run();
+	void quit();
 	std::shared_ptr<MockWidget> widget;
 	GUI::EWidget widgetIdentifier = GUI::MAX_WIDGETS;
 private:

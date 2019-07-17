@@ -35,5 +35,9 @@ void MockGuiFactory::run()
 {
 
 }
+void MockGuiFactory::quit()
+{
+
+}
 
 } /* namespace Test */

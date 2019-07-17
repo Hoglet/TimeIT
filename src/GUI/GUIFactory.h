@@ -8,8 +8,6 @@
 #ifndef GUIFACTORY_H_
 #define GUIFACTORY_H_
 
-
-
 #include <Database.h>
 
 #include <TimeKeeper.h>
@@ -23,15 +21,15 @@ namespace GUI
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer);
+	GUIFactory(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::IDatabase> &database,
+			const std::shared_ptr<Timer> &timer);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual IStatusIcon& getStatusIcon();
 	virtual WidgetPtr getAddTime(int64_t taskID);
 
-	virtual void run();
-	static void quit();
-	static void init(int argc, char *argv[]);
+	void quit();
+	void init(int argc, char *argv[]);
 private:
 	WidgetPtr addTimeInstance;
 	WidgetPtr addTaskInstance;
@@ -56,7 +54,6 @@ private:
 
 	std::shared_ptr<DB::IDatabase> database;
 	std::shared_ptr<Timer> timer;
-	static std::shared_ptr<Gtk::Main> main;
 };
 }
 #endif /* GUIFACTORY_H_ */

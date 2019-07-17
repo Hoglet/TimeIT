@@ -32,7 +32,6 @@
 #include "Toolbar.h"
 #include "Calendar.h"
 
-
 namespace GUI
 {
 
@@ -44,17 +43,35 @@ public:
 
 
 	// IWidget interface
-	virtual void show() { Gtk::Window::show(); }
-	virtual void hide() { Gtk::Window::hide(); }
-	virtual bool is_visible() { return Gtk::Window::is_visible(); } ;
-	virtual void move(int x, int y) { Gtk::Window::move(x,y); };
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Window::get_position(Window_x, Window_y); };
+	virtual void show()
+	{
+		Gtk::Window::deiconify();
+		Gtk::Window::show();
+	}
+	virtual void hide()
+	{
+		Gtk::Window::hide();
+	}
+	virtual bool is_visible()
+	{
+		return Gtk::Window::is_visible();
+	}
+	;
+	virtual void move(int x, int y)
+	{
+		Gtk::Window::move(x, y);
+	}
+	;
+	virtual void get_position(int &Window_x, int &Window_y)
+	{
+		Gtk::Window::get_position(Window_x, Window_y);
+	}
+	;
 
 	virtual void attach(SummaryObserver* observer);
 	virtual void detach(SummaryObserver* observer);
 	virtual void attach(IActionObserver*);
 	virtual void detach(IActionObserver*);
-
 
 	virtual ICalendar& getCalendar();
 

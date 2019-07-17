@@ -15,12 +15,13 @@
 #include <MainWindow/Summary.h>
 #include <ISettingsAccessor.h>
 #include <Database.h>
+#include <IpcServer.h>
 
 class Controller: public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
 {
 public:
-	Controller(std::shared_ptr<GUI::IGUIFactory>& guiFactory, std::shared_ptr<ITimeKeeper>& timeKeeper,
-			std::shared_ptr<DB::IDatabase>& database);
+	Controller(std::shared_ptr<GUI::IGUIFactory> &guiFactory, std::shared_ptr<ITimeKeeper> &timeKeeper,
+			std::shared_ptr<DB::IDatabase> &database, std::shared_ptr<Utils::IpcServer>&);
 	virtual ~Controller();
 	void start();
 
@@ -46,6 +47,7 @@ public:
 	virtual void on_idleDetected();
 	virtual void on_runningChanged();
 	virtual void on_action_toggleMainWindow();
+	virtual void on_action_showMainWindow();
 	virtual void on_action_revertAndContinue();
 	virtual void on_action_revertAndStop();
 	virtual void on_action_continue();

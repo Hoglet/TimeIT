@@ -19,12 +19,13 @@ constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
 using namespace GUI;
 
-Controller::Controller(std::shared_ptr<GUI::IGUIFactory>& op_guiFactory, std::shared_ptr<ITimeKeeper>& op_timeKeeper,
-		std::shared_ptr<DB::IDatabase>& database) :
-		guiFactory(op_guiFactory), timeKeeper(op_timeKeeper), taskAccessor(database->getExtendedTaskAccessor()), timeAccessor(database->getTimeAccessor()), settingsAccessor(
-				database->getSettingsAccessor())
+Controller::Controller(std::shared_ptr<GUI::IGUIFactory> &op_guiFactory, std::shared_ptr<ITimeKeeper> &op_timeKeeper,
+		std::shared_ptr<DB::IDatabase> &database, std::shared_ptr<Utils::IpcServer> &ipc) :
+		guiFactory(op_guiFactory), timeKeeper(op_timeKeeper), taskAccessor(database->getExtendedTaskAccessor()), timeAccessor(
+				database->getTimeAccessor()), settingsAccessor(database->getSettingsAccessor())
 {
 	timeKeeper->attach(this);
+	ipc->attach(this);
 }
 
 Controller::~Controller()
@@ -48,7 +49,7 @@ void Controller::start()
 //LCOV_EXCL_START
 void Controller::on_action_quit()
 {
-	GUI::GUIFactory::quit();
+	guiFactory->quit();
 }
 //LCOV_EXCL_STOP
 
@@ -72,6 +73,11 @@ void Controller::on_action_toggleMainWindow()
 		mainWindow->show();
 	}
 }
+void Controller::on_action_showMainWindow()
+{
+	WidgetPtr mainWindow = guiFactory->getWidget(MAIN_WINDOW);
+	mainWindow->show();
+}
 
 void Controller::on_action_about()
 {
@@ -85,12 +91,8 @@ void Controller::on_action_report_bug()
 
 void Controller::on_action_help()
 {
-	std::stringstream translatedHelp
-		{
-		};
-	std::stringstream helpToUse
-		{
-		};
+	std::stringstream translatedHelp { };
+	std::stringstream helpToUse { };
 	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << Utils::get639LanguageString() << "/index.html";
 	if (OSAbstraction::fileExists(std::string(translatedHelp.str())))
 	{

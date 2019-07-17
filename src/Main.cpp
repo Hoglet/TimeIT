@@ -24,22 +24,23 @@
 #include <TestRunner.h>
 #include <SyncManager.h>
 #include <MessageCenter.h>
+#include <IpcServer.h>
+#include <IpcClient.h>
 
 using namespace std;
 using namespace Test;
 
-extern "C"
-{
+extern "C" {
 void sighandler(int sig)
 {
 	printf("signal %d caught...\n", sig);
-	GUI::GUIFactory::quit();
+	//GUI::GUIFactory::quit();
+	Gtk::Main::quit();
 }
 }
 
 Main::Main(int argc, char *argv[])
 {
-	GUI::GUIFactory::init(argc, argv);
 	signal(SIGINT, &sighandler);
 
 	std::string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
@@ -61,6 +62,10 @@ Main::Main(int argc, char *argv[])
 			if (filename.length() > 0)
 			{
 				dbName = filename;
+				std::string tmp = dbName;
+				std::replace(tmp.begin(), tmp.end(), ' ', '.');
+				std::replace(tmp.begin(), tmp.end(), '/', '_');
+				socketName = tmp + ".socket";
 			}
 		}
 		if (argument == "--test" || argument == "-t")
@@ -79,31 +84,38 @@ Main::~Main()
 
 void Main::printHelp()
 {
-	cout << _("Usage:")<<endl;
-	cout << _("timeit [OPTION...]")<<endl;
+	cout << _("Usage:") << endl;
+	cout << _("timeit [OPTION...]") << endl;
 	cout << endl;
-	cout << _("Help Options:")<<endl;
-	cout << _(" -?, --help                                Show help")<<endl;
-	cout << _(" -t, --test                                Run tests and exit")<<endl;
-	cout << _("--db=[FILENAME]")<<endl;
+	cout << _("Help Options:") << endl;
+	cout << _(" -?, --help                                Show help") << endl;
+	cout << _(" -t, --test                                Run tests and exit") << endl;
+	cout << _("--db=[FILENAME]") << endl;
 }
 
-int Main::run()
+int Main::run(int argc, char *argv[])
 {
 	try
 	{
 		bindtextdomain(GETTEXT_PACKAGE, PROGRAMNAME_LOCALEDIR);
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-		textdomain(GETTEXT_PACKAGE);
+		textdomain (GETTEXT_PACKAGE);
 
 		ApplicationLock lock(dbName);
 		if (lock.lockAquired())
 		{
+
+			Gtk::Main application(argc, argv);
+			Gtk::Main::init_gtkmm_internals();
+
+
+
 			//Create a database object
 			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));
 
 			//Initiate all logic
-			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
+			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(
+					new Utils::MessageCenter());
 
 			timer = std::shared_ptr<Timer>(new Timer());
 
@@ -116,16 +128,24 @@ int Main::run()
 			syncing::SyncManager syncManager(database, network, messageCenter);
 			syncManager.start();
 
-			Controller controller(guiFactory, timekeeper, database);
+			std::shared_ptr<Utils::IpcServer> ipcServer = std::shared_ptr<Utils::IpcServer>(
+					new Utils::IpcServer(socketName));
+			ipcServer->connectToTimer(timer);
+
+			Controller controller(guiFactory, timekeeper, database, ipcServer);
 			controller.start();
+
 			//Then start message loop
-			guiFactory->run();
+			application.run();
+			guiFactory.reset();
 		}
 		else
 		{
-			cerr << _("Application already running!\n");
+			Utils::IpcClient ipcClient(socketName);
+			ipcClient.window2front();
 		}
-	} catch (exception& e)
+	}
+	catch (exception &e)
 	{
 		cerr << _(e.what()) << endl;
 		return 1;
@@ -137,5 +157,5 @@ int Main::run()
 int main(int argc, char *argv[])
 {
 	Main program(argc, argv);
-	return program.run();
+	return program.run(argc, argv);
 }

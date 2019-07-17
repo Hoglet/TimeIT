@@ -30,7 +30,6 @@
 #include "DetailsDialog.h"
 #include <DefaultValues.h>
 #include <glibmm.h>
-#include <gtkmm.h>
 
 using namespace Gtk;
 
