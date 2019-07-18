@@ -17,7 +17,6 @@ export PREFIX=/usr
 export CMAKE_INSTALL_PREFIX=/usr
 export CPACK_PACKAGING_INSTALL_PREFIX=/usr
 %:
-	dh $@ --parallel --with autoreconf
+	./git_version_gen.sh
+	dh $@ --buildsystem=cmake
 
-override_dh_auto_configure:
-	cmake .
