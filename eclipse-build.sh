@@ -5,6 +5,6 @@
 # will be called
 # ------------
 cd Debug
+find . -name '*.gcda' | xargs rm
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 /usr/bin/make $@
-find . -name '*.gcda' | xargs rm

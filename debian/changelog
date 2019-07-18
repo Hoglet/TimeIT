@@ -1,3 +1,12 @@
+timeit (1.9.9.23) stable UNRELEASED; urgency=medium
+
+  * IPC - Showing/maximizing window if application is started again
+  * Bugfix: Deleted task continued to be shown
+  * Bugfix: Returned volatile memory
+  * Fixed build for Debian/Ubuntu/Devuan
+
+ -- Kent Asplund <hoglet@solit.se>  Thu, 18 Jul 2019 15:09:09 +0200
+
 timeit (1.9.9.22) trusty; urgency=medium
 
   * Bugfix: Multi monitor setups was not working reliably.

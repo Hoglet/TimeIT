@@ -1,0 +1,9 @@
+
+Making new version:
+* dch -i
+* checking files
+* tag version with git
+
+Making  package:
+* pkg-buildpackage -us -uc
+

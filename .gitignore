@@ -60,6 +60,7 @@ install_manifest.txt
 version
 src/version.h
 _CPack_Packages
+debian/timeit
 *.deb
 *.rpm
 *.out
@@ -68,3 +69,5 @@ src/version.h
 
 /.settings/org.sonar.ide.eclipse.core.prefs
 /testresult.xml
+/debian/files
+/obj-x86_64-linux-gnu/src/timeit

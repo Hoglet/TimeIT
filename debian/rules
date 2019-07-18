@@ -17,4 +17,4 @@ export PREFIX=/usr
 export CMAKE_INSTALL_PREFIX=/usr
 export CPACK_PACKAGING_INSTALL_PREFIX=/usr
 %:
-	dh $@
+	dh $@ --parallel --with autoreconf
