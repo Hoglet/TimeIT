@@ -35,7 +35,7 @@ void Workspace::findLayout()
 		viewportHeight = x11.getViewportHeight();
 		numWorkspaces = x11.getCardinal("_NET_NUMBER_OF_DESKTOPS", 0);
 		columns = 1;
-		rows = 2;
+		rows = numWorkspaces;
 
 		if (numWorkspaces > 1)
 		{
@@ -123,9 +123,9 @@ std::string Workspace::get_name(int workspaceNR)
 	{
 		vector<string> names = x11.getStrings("_NET_DESKTOP_NAMES");
 
-		if ((int) names.size() >= workspaceNR)
+		if ((int) names.size() > workspaceNR)
 		{
-			retVal = names[workspaceNR];
+			retVal = names.at(workspaceNR);
 		}
 	}
 	catch (const GeneralException& e)
