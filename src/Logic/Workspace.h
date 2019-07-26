@@ -21,7 +21,9 @@ public:
 	int get_numberOfColumns();
 	int get_numberOfRows();
 	int get_numberOfWorkspaces();
+
 private:
+	bool supportsLayout = true;
 	bool isVirtual;
 	void findLayout();
 	int numWorkspaces;
@@ -32,6 +34,7 @@ private:
 	int viewportWidth;
 	int viewportHeight;
 	X11 x11;
+
 };
 
 #endif /* WORKSPACE_H_ */

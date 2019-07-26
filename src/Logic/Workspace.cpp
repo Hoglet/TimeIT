@@ -17,6 +17,14 @@ using std::vector;
 //LCOV_EXCL_START
 Workspace::Workspace()
 {
+	try
+	{
+		x11.getCardinal("_NET_DESKTOP_LAYOUT", 1);
+	}
+	catch (const GeneralException &e)
+	{
+		supportsLayout = false;
+	}
 	findLayout();
 }
 
@@ -37,8 +45,9 @@ void Workspace::findLayout()
 		columns = 1;
 		rows = numWorkspaces;
 
-		if (numWorkspaces > 1)
+		if (supportsLayout && numWorkspaces > 1)
 		{
+
 			/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
 			columns = x11.getCardinal("_NET_DESKTOP_LAYOUT", 1);
 			if (columns == 0)
@@ -78,7 +87,7 @@ void Workspace::findLayout()
 			}
 		}
 	}
-	catch (const GeneralException& e)
+	catch (const GeneralException &e)
 	{
 		std::cerr << e.what();
 	}
@@ -103,7 +112,7 @@ int Workspace::get_active()
 		{
 			active = x11.getCardinal("_NET_CURRENT_DESKTOP", 0);
 		}
-		catch (const GeneralException& e)
+		catch (const GeneralException &e)
 		{
 			std::cerr << e.what();
 		}
@@ -128,7 +137,7 @@ std::string Workspace::get_name(int workspaceNR)
 			retVal = names.at(workspaceNR);
 		}
 	}
-	catch (const GeneralException& e)
+	catch (const GeneralException &e)
 	{
 		std::cerr << e.what();
 	}
