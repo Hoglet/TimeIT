@@ -29,7 +29,17 @@ Ipc::~Ipc()
 
 std::string Ipc::prepareSocketDir()
 {
-	string runtimeDir = getenv("XDG_RUNTIME_DIR");
+	string runtimeDir;
+	char *s = getenv("XDG_RUNTIME_DIR");
+	if (s != NULL)
+	{
+		runtimeDir = s;
+	}
+	else
+	{
+		std::cerr << "XDG_RUNTIME_DIR is not defined, fallback to /tmp\n";
+		runtimeDir = "/tmp";
+	}
 	runtimeDir = runtimeDir + "/timeit/";
 
 	mkdir(runtimeDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
