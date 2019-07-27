@@ -7,21 +7,17 @@
 #include <AutotrackAccessor.h>
 #include <Workspace.h>
 
-
-class AutoTracker:  public TimerObserver
+class AutoTracker: public TimerObserver
 {
 public:
-	AutoTracker(std::shared_ptr<ITimeKeeper>& timekeeper, const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer);
+	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database, const std::shared_ptr<Timer> &timer);
 	virtual ~AutoTracker();
-private:
+	private:
 	void check4Changes();
-
+	void doTaskSwitching(int oldWorkspace, int newWorkspace);
 	//TimerObserver
-	virtual void on_signal_1_second() ;
+	virtual void on_signal_1_second();
 
-	//
-	void stopTasks(int workspace);
-	void startTasks(int workspace);
 	int oldWorkspace;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
 	std::shared_ptr<DB::IAutotrackAccessor> m_autotrackAccessor;
