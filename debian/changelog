@@ -1,4 +1,14 @@
-timeit (1.9.9.23) stable UNRELEASED; urgency=medium
+timeit (1.9.9.24) testing; urgency=medium
+
+  * Updated how to build
+  * Help text for server syncing
+  * Improvement of timeslice creation
+  * Bugfix: get_cardinal failed
+  * Bugfix - crash on add task
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 28 Jul 2019 19:11:21 +0200
+
+timeit (1.9.9.23) testing; urgency=medium
 
   * IPC - Showing/maximizing window if application is started again
   * Bugfix: Deleted task continued to be shown
