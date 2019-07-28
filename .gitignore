@@ -35,6 +35,7 @@ timeit-*.tar.gz
 build
 configure
 Debug
+Release
 Profiling
 .anjuta/associations
 *~

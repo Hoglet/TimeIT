@@ -21,12 +21,12 @@ Basic Installation
 ======================
 If runing in debian derived environments:
 
-Run shell commands `cmake .; make package` and install 
+Run shell commands `cd Release; cmake ..; make package` and install 
 the produced installation package:
 dpkg -i timeit-<version>.deb
 
 In redhat derived environments:
-Run shell commands `cmake .; make package` and install 
+Run shell commands `cd Release; cmake ..; make package` and install 
 the produced installation package:
 rpm -i timeit-<version>.rpm
 

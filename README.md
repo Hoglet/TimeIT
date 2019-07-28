@@ -8,6 +8,17 @@ It features workspace tracking, idle detection, editing of
 time records and has summary views grouped by day, week, month,
 and year.
 
+## Build
+
+### Making debian and redhat packages:
+> cd Release
+> cmake ..
+> make package
+
+### Making a debian package the debian way:
+> debian/rules build
+> fakeroot debian/rules binary
+
 ## Working environments
 
 TimeIT should work in any X11 environment, theoretically even on Windows (not tested)
