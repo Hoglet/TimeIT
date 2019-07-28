@@ -50,7 +50,7 @@ void IpcClient::window2front()
 		}
 		else
 		{
-			const char *DATA = "Window to front please";
+			const char *DATA = "{ \"command\": \"SHOW_APPLICATION\" }";
 			if (write(sock, DATA, sizeof(DATA)) < 0)
 			{
 				perror("writing on stream socket");
