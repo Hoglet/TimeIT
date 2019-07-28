@@ -107,9 +107,26 @@ Here you can set how TimeIt behaves.
 <dd>Shorter than this time will not be counted.</dd>
 <dt>Quiet mode</dt>
 <dd>Idle detection is not presenting a dialog questioning why the computer has been idle. No idle periods are registered as work.</dd>
+<dt>Sync server</dt>
+<dd>
+If you have access to a <a href="http://github.com/Hoglet/TimeIT-Server">TimeIT-Server</a> then you can sync data between all instances of TimeIT.
+<p>
+<dl>
+<dt>URI</dt>
+<dd>base URI of the server</dd>
+<dt>User</dt>
+<dd>Username as written in the server. Se TimeIT-Server.</dd>
+<dt>Password</dt>
+<dd>Use a good password</dd>
+<dt>Ignore certificate errors</dt>
+<dd>If you are using a self signed certificate then this is needed. Remember; if enabled then you become vulnerable to Man-In-The-Middle attacks.<dd>
+<dt>Sync interval</dt>
+<dd>How often you want to merge the databases.</dd>
 </dl>
+</p>
+</dd>
 </td>
-<td><img src="MainWindow-Preferences.png" width="146" height="139" border="0" alt="" align="right">
+<td><img src="MainWindow-Preferences.png" width="331" height="344" border="0" alt="" align="right">
 </td>
 </tr>
 </table>
@@ -137,6 +154,8 @@ Here you can edit or remove times.
 </td>
 </tr>
 </table>
+
+
 <H2>Reporting bugs</H2>
 Any found bugs are preferably reported on <a href="https://github.com/Hoglet/TimeIT/issues/new">github</a>
 </body>
