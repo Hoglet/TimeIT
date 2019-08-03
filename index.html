@@ -47,6 +47,12 @@ those workspaces your projects are timed. </p>
 <p>It features workspace tracking, idle detection, editing of 
 time records and has summary views grouped by day, week, month,
 and year.</p>
+<p>
+For people with multiple computers it will be a nice surprise that it is possible
+to run instances on all computers and have the recorded time distributed to them.
+See <a href="https://github.com/Hoglet/TimeIT-Server">TimeIT-Server</a>
+</p>
+
 <h3>
 <a name="Pre built packages" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Pre built packages</h3>
 <p>
@@ -67,7 +73,8 @@ git clone https://github.com/Hoglet/TimeIT.git
 
 Run following shell commands in root of source directory:
 <pre>
-cmake .
+cd Release
+cmake ..
 make package
 </pre>
 Install the produced installation package:
@@ -78,7 +85,8 @@ dpkg -i timeit-&lt;version&gt;.deb
 <h4>In redhat derived environments</h4>
 Run following shell commands in root of source directory:
 <pre>
-cmake .
+cd Release
+cmake ..
 make package
 </pre>
 Install the produced installation package with:
@@ -90,7 +98,8 @@ rpm -i timeit-&lt;Version&gt;.rpm
 
 Run following shell commands in source root:
 <pre>
-cmake .
+cd Release
+cmake ..
 make
 make install
 </pre>
