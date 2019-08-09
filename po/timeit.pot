@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-05 19:09+0200\n"
+"POT-Creation-Date: 2019-08-09 09:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/GUI/IdleDialog.cpp:109
-msgid ""
-"\n"
-"\n"
-"Tasks affected: "
-msgstr ""
-
-#: src/Main.cpp:91
+#. Command line help, Line4. Two columns
+#: src/Main.cpp:95
 msgid " -?, --help                                Show help"
 msgstr ""
 
-#: src/Main.cpp:92
+#. Command line help, Line5. Two columns
+#: src/Main.cpp:97
 msgid " -t, --test                                Run tests and exit"
 msgstr ""
 
-#: src/Main.cpp:93
+#. Command line help, Line6.
+#: src/Main.cpp:99
 msgid "--db=[FILENAME]"
 msgstr ""
 
 #. This text is the headline for the area where you choose
-#. * on what workspace the task should be automatically started
+#. on what workspace the task should be automatically started
 #: src/GUI/EditTaskDialog.cpp:28
 msgid "<b>Workspace tracking</b>"
 msgstr ""
@@ -66,7 +62,7 @@ msgstr ""
 
 #. This is one answer to the question "No activity has
 #. been detected for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:36
+#: src/GUI/IdleDialog.cpp:37
 msgid "Continue"
 msgstr ""
 
@@ -86,8 +82,10 @@ msgstr ""
 msgid "Edit task"
 msgstr ""
 
+#. %s is replaced with the URI on which the connection failed
 #: src/Sync/SyncManager.cpp:309
-msgid "Failed connection to "
+#, c-format
+msgid "Failed connection to %s:\n"
 msgstr ""
 
 #: src/GUI/Details.cpp:71
@@ -98,15 +96,16 @@ msgstr ""
 msgid "HTTP error "
 msgstr ""
 
-#: src/Main.cpp:90
+#. Command line help, Line3.
+#: src/Main.cpp:93
 msgid "Help Options:"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:54
+#: src/GUI/PreferenceDialog.cpp:55
 msgid "Idle time (m)"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:77
+#: src/GUI/PreferenceDialog.cpp:78
 msgid "Ignore certificate errors"
 msgstr ""
 
@@ -122,13 +121,13 @@ msgstr ""
 msgid "Name: "
 msgstr ""
 
-#: src/Sync/SyncManager.cpp:317
+#: src/Sync/SyncManager.cpp:320
 msgid "Network error"
 msgstr ""
 
 #. Note to translators: This is the first part of the sentence "No activity has been detected
 #. for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:101
+#: src/GUI/IdleDialog.cpp:100
 msgid "No activity has been detected for"
 msgstr ""
 
@@ -137,11 +136,11 @@ msgstr ""
 msgid "Parent: "
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:76
+#: src/GUI/PreferenceDialog.cpp:77
 msgid "Password: "
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:57
+#: src/GUI/PreferenceDialog.cpp:58
 msgid "Quiet mode"
 msgstr ""
 
@@ -155,13 +154,13 @@ msgstr ""
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:33
+#: src/GUI/IdleDialog.cpp:34
 msgid "Revert and continue"
 msgstr ""
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:30
+#: src/GUI/IdleDialog.cpp:31
 msgid "Revert and stop"
 msgstr ""
 
@@ -198,24 +197,32 @@ msgstr ""
 msgid "Stop time"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:78
+#: src/GUI/PreferenceDialog.cpp:79
 msgid "Sync interval (minutes)"
 msgstr ""
 
 #. **The title for the TimeIT server related settings**
-#: src/GUI/PreferenceDialog.cpp:70
+#: src/GUI/PreferenceDialog.cpp:71
 msgid "Sync server:"
 msgstr ""
 
+#. After this text it will be a list of tasks
+#: src/GUI/IdleDialog.cpp:110
+msgid "Tasks affected: "
+msgstr ""
+
+#. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
 msgid "The unobtrusive time tracker\n"
 msgstr ""
 
-#: src/GUI/MainWindow/MainWindow.cpp:307
-msgid "There is not undelete function"
+#. Line after "Are you sure you want to delete this task"
+#: src/GUI/MainWindow/MainWindow.cpp:308
+msgid "There is no undelete function"
 msgstr ""
 
-#: src/GUI/TimeItAboutDialog.cpp:34
+#. This is the licence text
+#: src/GUI/TimeItAboutDialog.cpp:35
 msgid ""
 "This program is licenced under GNU General Public Licence (GPL) version 2."
 msgstr ""
@@ -224,11 +231,12 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-#: src/GUI/TimeItAboutDialog.cpp:41
+#: src/GUI/TimeItAboutDialog.cpp:42
 msgid "TimeIT website"
 msgstr ""
 
-#: src/GUI/StatusIcon.cpp:284
+#. Tagline
+#: src/GUI/StatusIcon.cpp:285
 msgid "TimeIt. the unobtrusive time tracker"
 msgstr ""
 
@@ -236,15 +244,16 @@ msgstr ""
 msgid "Toggle main window"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:74
+#: src/GUI/PreferenceDialog.cpp:75
 msgid "URI: "
 msgstr ""
 
-#: src/Main.cpp:87
+#. Command line help, line1.
+#: src/Main.cpp:88
 msgid "Usage:"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:75
+#: src/GUI/PreferenceDialog.cpp:76
 msgid "User: "
 msgstr ""
 
@@ -260,7 +269,8 @@ msgstr ""
 msgid "Year"
 msgstr ""
 
-#: src/GUI/PreferenceDialog.cpp:50
+#. "Zero time" is the minimum activity time that will be counted at work. Anything less will be ignored
+#: src/GUI/PreferenceDialog.cpp:51
 msgid "Zero time (m)"
 msgstr ""
 
@@ -290,14 +300,16 @@ msgstr ""
 
 #. Note to translators: This is the second part of the sentence "No activity has been detected
 #. for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:105
+#: src/GUI/IdleDialog.cpp:104
 msgid "minutes. What should we do?"
 msgstr ""
 
-#: src/Main.cpp:88
+#. Command line help, Line2. Showing how to call the program
+#: src/Main.cpp:90
 msgid "timeit [OPTION...]"
 msgstr ""
 
-#: src/GUI/TimeItAboutDialog.cpp:47
+#. This is where you add your name so you will be credited as translator
+#: src/GUI/TimeItAboutDialog.cpp:49
 msgid "translator-credits"
 msgstr ""

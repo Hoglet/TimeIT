@@ -84,12 +84,18 @@ Main::~Main()
 
 void Main::printHelp()
 {
+	// Command line help, line1.
 	cout << _("Usage:") << endl;
+	// Command line help, Line2. Showing how to call the program
 	cout << _("timeit [OPTION...]") << endl;
 	cout << endl;
+	// Command line help, Line3. 
 	cout << _("Help Options:") << endl;
+	// Command line help, Line4. Two columns 
 	cout << _(" -?, --help                                Show help") << endl;
+	// Command line help, Line5. Two columns 
 	cout << _(" -t, --test                                Run tests and exit") << endl;
+	// Command line help, Line6. 
 	cout << _("--db=[FILENAME]") << endl;
 }
 
@@ -107,8 +113,6 @@ int Main::run(int argc, char *argv[])
 
 			Gtk::Main application(argc, argv);
 			Gtk::Main::init_gtkmm_internals();
-
-
 
 			//Create a database object
 			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));

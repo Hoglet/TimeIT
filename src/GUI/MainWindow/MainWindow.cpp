@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(std::shared_ptr<DB::IDatabase>& database) :
+MainWindow::MainWindow(std::shared_ptr<DB::IDatabase> &database) :
 		taskList(database), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
 				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")), taskAccessor(
 				database->getExtendedTaskAccessor()), settingsAccessor(database->getSettingsAccessor())
@@ -61,7 +61,7 @@ ICalendar& MainWindow::getCalendar()
 	return calendar;
 }
 
-void MainWindow::attach(SummaryObserver* observer)
+void MainWindow::attach(SummaryObserver *observer)
 {
 	std::vector<Summary*>::iterator iter;
 
@@ -71,7 +71,7 @@ void MainWindow::attach(SummaryObserver* observer)
 		summary->attach(observer);
 	}
 }
-void MainWindow::detach(SummaryObserver* observer)
+void MainWindow::detach(SummaryObserver *observer)
 {
 	std::vector<Summary*>::iterator iter;
 
@@ -82,25 +82,25 @@ void MainWindow::detach(SummaryObserver* observer)
 	}
 }
 
-void MainWindow::attach(IActionObserver* observer)
+void MainWindow::attach(IActionObserver *observer)
 {
 	detach(observer); //To avoid duplicates
 	taskList.attach(observer);
 	toolbar.attach(observer);
 	menubar.attach(observer);
-	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*>(observer);
+	SummaryObserver *sObserver = dynamic_cast<SummaryObserver*>(observer);
 	if (sObserver)
 	{
 		attach(sObserver);
 	}
 }
 
-void MainWindow::detach(IActionObserver* observer)
+void MainWindow::detach(IActionObserver *observer)
 {
 	taskList.detach(observer);
 	toolbar.detach(observer);
 	menubar.detach(observer);
-	SummaryObserver* sObserver = dynamic_cast<SummaryObserver*>(observer);
+	SummaryObserver *sObserver = dynamic_cast<SummaryObserver*>(observer);
 	if (sObserver)
 	{
 		detach(sObserver);
@@ -157,13 +157,13 @@ void MainWindow::createLayout()
 }
 
 using namespace Glib::Container_Helpers;
-void MainWindow::removeChildren(Container& container)
+void MainWindow::removeChildren(Container &container)
 {
 	Glib::ListHandle<Gtk::Widget*> listh = container.get_children();
 	Glib::ListHandle<Gtk::Widget*>::iterator iter(listh.begin());
 	for (iter = listh.begin(); iter != listh.end(); ++iter)
 	{
-		Gtk::Widget* widget = (*iter);
+		Gtk::Widget *widget = (*iter);
 		container.remove(*widget);
 	}
 }
@@ -182,7 +182,7 @@ void MainWindow::emptyContainers()
 	removeChildren(summaryTabs);
 }
 
-void MainWindow::on_settingsChanged(const std::string& name)
+void MainWindow::on_settingsChanged(const std::string &name)
 {
 	if (name == "CompactLayout")
 	{
@@ -282,7 +282,7 @@ void MainWindow::on_show()
 
 void MainWindow::setCalendar()
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	time_t now = Utils::now();
 	timeInfo = localtime(&now);
 	int month = timeInfo->tm_mon;
@@ -304,7 +304,8 @@ void MainWindow::on_action_remove_task()
 	//Confirm dialog when removing task!
 	Gtk::MessageDialog dialog(*this, _("Are you sure you want to delete this task"), false, Gtk::MESSAGE_WARNING,
 			Gtk::BUTTONS_OK_CANCEL);
-	dialog.set_secondary_text(_("There is not undelete function"));
+	//Line after "Are you sure you want to delete this task"
+	dialog.set_secondary_text(_("There is no undelete function"));
 	dialog.set_deletable(false);
 
 	int result = dialog.run();
@@ -312,21 +313,21 @@ void MainWindow::on_action_remove_task()
 	//Handle the response:
 	switch (result)
 	{
-		case (Gtk::RESPONSE_OK):
+	case (Gtk::RESPONSE_OK):
 		{
-			//Remove task
-			taskAccessor->removeTask(selectedTaskID);
-			break;
-		}
-		case (Gtk::RESPONSE_CANCEL):
+		//Remove task
+		taskAccessor->removeTask(selectedTaskID);
+		break;
+	}
+	case (Gtk::RESPONSE_CANCEL):
 		{
-			break;
-		}
-		default:
+		break;
+	}
+	default:
 		{
-			std::cerr << "Unexpected button clicked." << std::endl;
-			break;
-		}
+		std::cerr << "Unexpected button clicked." << std::endl;
+		break;
+	}
 	}
 
 }

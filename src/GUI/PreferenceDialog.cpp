@@ -13,12 +13,14 @@
 namespace GUI
 {
 
-PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase>& database) :
+PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase> &database) :
 		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(
 				database->getSettingsAccessor())
 
 {
+	//The compact layout option is reducing the size of the toolbar in the main window
 	CompactLayoutButton.set_label(_("Compact layout"));
+	//This option will make that no window is opened on first start of application. Only an icon in the system tray will be visible
 	StartMinimizedButton.set_label(_("Start minimized"));
 	PasswordEntry.set_visibility(false);
 
@@ -41,10 +43,11 @@ PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase>& database) :
 	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
 	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
 	this->set_events(Gdk::BUTTON_RELEASE_MASK);
-	/******/
+
 	TimeConstantTable.set_border_width(2);
 	TimeConstantTable.resize(3, 2);
 	{
+		// "Zero time" is the minimum activity time that will be counted at work. Anything less will be ignored
 		GzLabel.set_text(_("Zero time (m)"));
 		GzEntry.set_range(1, 60);
 		GzEntry.set_increments(1, 10);
@@ -63,7 +66,8 @@ PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase>& database) :
 		TimeConstantTable.attach(QuietButton, 1, 2, 2, 3);
 	}
 	get_vbox()->pack_start(TimeConstantTable, Gtk::PACK_EXPAND_WIDGET, 3);
-	/*******/
+
+	/***The title for the TimeIT server related settings***/
 	ServerLabel.set_text(_("Sync server:"));
 	ServerTable.set_border_width(5);
 	ServerTable.resize(3, 2);
@@ -185,7 +189,7 @@ bool PreferenceDialog::on_focus_changed(GdkEventFocus*)
 	return false;
 }
 
-bool PreferenceDialog::on_button_released(GdkEventButton* event)
+bool PreferenceDialog::on_button_released(GdkEventButton *event)
 {
 	on_data_changed();
 	return false;

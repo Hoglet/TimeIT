@@ -17,13 +17,13 @@ namespace GUI
 using namespace std;
 using namespace DB;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper>& timekeeper, std::shared_ptr<ITaskAccessor>& taskaccessor,
-		std::shared_ptr<ITimeAccessor>& timeaccessor)
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, std::shared_ptr<ITaskAccessor> &taskaccessor,
+		std::shared_ptr<ITimeAccessor> &timeaccessor)
 {
 	m_timekeeper = timekeeper;
 	m_taskaccessor = taskaccessor;
 	m_timeaccessor = timeaccessor;
-	const std::string& imagePath = Utils::getImagePath();
+	const std::string &imagePath = Utils::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
 	std::string blankIconPath = Glib::build_filename(imagePath, "blank.png");
@@ -56,7 +56,7 @@ StatusIcon::~StatusIcon()
 
 void StatusIcon::populateContextMenu()
 {
-	Gtk::Menu::MenuList& menulist = m_Menu_Popup.items();
+	Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 	menulist.clear();
 
 	latestTasks = m_timeaccessor->getLatestTasks(5);
@@ -69,8 +69,8 @@ void StatusIcon::populateContextMenu()
 			std::shared_ptr<DB::Task> task = m_taskaccessor->getTask(id);
 			std::string menuLine = completeTaskPath(latestTasks[i]);
 
-			Gtk::Image* menuIcon = Gtk::manage(new Gtk::Image());
-			if (std::find(runningTasks.begin(), runningTasks.end(), id) != runningTasks.end() )
+			Gtk::Image *menuIcon = Gtk::manage(new Gtk::Image());
+			if (std::find(runningTasks.begin(), runningTasks.end(), id) != runningTasks.end())
 			{
 				menuIcon->set(runningIconSmall);
 			}
@@ -81,31 +81,31 @@ void StatusIcon::populateContextMenu()
 
 			switch (i)
 			{
-				case 0:
-					menulist.push_back(
-							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
-					break;
-				case 1:
-					menulist.push_back(
-							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
-					break;
-				case 2:
-					menulist.push_back(
-							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
-					break;
-				case 3:
-					menulist.push_back(
-							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
-					break;
-				case 4:
-					menulist.push_back(
-							Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-									sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
-					break;
+			case 0:
+				menulist.push_back(
+						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
+				break;
+			case 1:
+				menulist.push_back(
+						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
+				break;
+			case 2:
+				menulist.push_back(
+						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
+				break;
+			case 3:
+				menulist.push_back(
+						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
+				break;
+			case 4:
+				menulist.push_back(
+						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
+								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+				break;
 			}
 		}
 		catch (...)
@@ -186,16 +186,16 @@ void StatusIcon::toggleMainWindow()
 	std::list<IActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		IActionObserver *observer = *iter;
 		observer->on_action_toggleMainWindow();
 	}
 }
 
-void StatusIcon::attach(IActionObserver* observer)
+void StatusIcon::attach(IActionObserver *observer)
 {
 	observers.push_back(observer);
 }
-void StatusIcon::detach(IActionObserver* observer)
+void StatusIcon::detach(IActionObserver *observer)
 {
 	observers.remove(observer);
 }
@@ -213,7 +213,7 @@ void StatusIcon::on_menu_stop_all_timers()
 	std::list<IActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		IActionObserver *observer = *iter;
 		observer->on_action_stopTimers();
 	}
 }
@@ -223,7 +223,7 @@ void StatusIcon::on_menu_about()
 	std::list<IActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		IActionObserver *observer = *iter;
 		observer->on_action_about();
 	}
 }
@@ -233,7 +233,7 @@ void StatusIcon::on_menu_preferences()
 	std::list<IActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		IActionObserver *observer = *iter;
 		observer->on_action_preferences();
 	}
 }
@@ -264,8 +264,8 @@ void StatusIcon::on_runningChanged()
 void StatusIcon::setTooltip()
 {
 	std::stringstream message
-		{
-		};
+	{
+	};
 	std::vector<int64_t> taskIDs = m_timeaccessor->getRunningTasks();
 	if (taskIDs.size() > 0)
 	{
@@ -281,6 +281,7 @@ void StatusIcon::setTooltip()
 	}
 	else
 	{
+		//Tagline
 		message << _("TimeIt. the unobtrusive time tracker");
 	}
 	m_statusIcon->set_tooltip(message.str());

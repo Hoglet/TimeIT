@@ -16,7 +16,8 @@
 namespace GUI
 {
 
-IdleDialog::IdleDialog(std::shared_ptr<Timer>& timer, std::shared_ptr<DB::ITaskAccessor> accessor): 	m_timer(timer), taskAccessor(accessor)
+IdleDialog::IdleDialog(std::shared_ptr<Timer> &timer, std::shared_ptr<DB::ITaskAccessor> accessor) :
+		m_timer(timer), taskAccessor(accessor)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
@@ -49,11 +50,11 @@ IdleDialog::~IdleDialog()
 	m_timer->detach(this);
 }
 
-void IdleDialog::attach(IActionObserver* observer)
+void IdleDialog::attach(IActionObserver *observer)
 {
 	observers.push_back(observer);
 }
-void IdleDialog::detach(IActionObserver* observer)
+void IdleDialog::detach(IActionObserver *observer)
 {
 	observers.remove(observer);
 }
@@ -66,19 +67,18 @@ void IdleDialog::setIdleStartTime(time_t idleStartTime)
 void IdleDialog::setActiveTaskList(std::vector<int64_t> activeTaskIDs)
 {
 	std::stringstream text;
-	int i=0;
-	for ( int64_t taskID: activeTaskIDs)
+	int i = 0;
+	for (int64_t taskID : activeTaskIDs)
 	{
 		std::shared_ptr<DB::Task> task = taskAccessor->getTask(taskID);
-		if(i++>0)
+		if (i++ > 0)
 		{
-			text<<", ";
+			text << ", ";
 		}
-		text<<task->getName();
+		text << task->getName();
 	}
 	taskString = text.str();
 }
-
 
 void IdleDialog::on_signal_10_seconds()
 {
@@ -91,23 +91,24 @@ void IdleDialog::show()
 	Gtk::Dialog::show();
 }
 
-
 void IdleDialog::setText()
 {
 	std::stringstream str;
 	int minutesIdle = (Utils::now() - m_idleStartTime) / 60;
 	// Note to translators: This is the first part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
-	str << _("No activity has been detected for") << " "<<minutesIdle;
+	str << _("No activity has been detected for") << " " << minutesIdle;
 
 	// Note to translators: This is the second part of the sentence "No activity has been detected
 	// for X minutes. What should we do?"
-	str<< " "<<_("minutes. What should we do?");
+	str << " " << _("minutes. What should we do?");
 
-	if(taskString.size()>0)
+	if (taskString.size() > 0)
 	{
-		str<<_("\n\nTasks affected: ");
-		str<<taskString<<std::endl;
+		str << "\n\n";
+		//After this text it will be a list of tasks
+		str << _("Tasks affected: ");
+		str << taskString << std::endl;
 	}
 
 	text.set_text(str.str());
@@ -119,7 +120,7 @@ void IdleDialog::responseHandler(int result)
 	std::list<IActionObserver*> observers = this->observers;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		IActionObserver *observer = *iter;
 		switch (result)
 		{
 		case (RESPONSE_REVERT):

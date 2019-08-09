@@ -8,7 +8,6 @@
 #include <glibmm/i18n.h>
 #include <Utils.h>
 
-
 namespace syncing
 {
 
@@ -20,23 +19,23 @@ using DB::IDatabase;
 using DB::Task;
 using DB::TimeEntry;
 
-SyncManager::SyncManager(shared_ptr<IDatabase>& database, shared_ptr<INetwork>& op_network, std::shared_ptr<Utils::MessageCenter> messageCenter)
+SyncManager::SyncManager(shared_ptr<IDatabase> &database, shared_ptr<INetwork> &op_network, std::shared_ptr<Utils::MessageCenter> messageCenter)
 {
-	int len=1;
+	int len = 1;
 	auto text = std::unique_ptr<char[]>(new char[len]);
 
 	thread = 0;
 	inited = false;
 	running = false;
 	this->messageCenter = messageCenter;
-	if(Glib::thread_supported() && database->isThreadSafe())
+	if (Glib::thread_supported() && database->isThreadSafe())
 	{
 		db = database;
 		taskAccessor = database->getTaskAccessor();
 		timeAccessor = database->getTimeAccessor();
 		settingsAccessor = database->getSettingsAccessor();
 		network = op_network;
-		inited=true;
+		inited = true;
 	}
 }
 
@@ -56,49 +55,49 @@ SyncManager::~SyncManager()
 
 void SyncManager::start()
 {
-	if(inited)
+	if (inited)
 	{
-		running=true;
+		running = true;
 		thread = Glib::Thread::create(sigc::mem_fun(*this, &SyncManager::worker), true);
 	}
 }
 void SyncManager::stop()
 {
-	if(inited && thread!=nullptr)
+	if (inited && thread != nullptr)
 	{
 		running = false;
 		thread->join();
-		thread=0;
+		thread = 0;
 	}
 }
 
 void SyncManager::worker()
 {
 	time_t nextFullSync = 0;
-	while(running)
+	while (running)
 	{
-		if(isActive())
+		if (isActive())
 		{
-			time_t now=Utils::now();
-			if(nextFullSync < now)
+			time_t now = Utils::now();
+			if (nextFullSync < now)
 			{
-				if(doSync(0))
+				if (doSync(0))
 				{
 					nextFullSync = now + ONE_DAY;
 				}
 			}
 			else
 			{
-				time_t	pointInTime = now-ONE_DAY;
+				time_t pointInTime = now - ONE_DAY;
 				doSync(pointInTime);
 			}
 		}
 		int syncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
 		int secondBetweenSyncs = syncInterval * 60;
-		for(int q=0; q<secondBetweenSyncs; q++)
+		for (int q = 0; q < secondBetweenSyncs; q++)
 		{
-			Glib::usleep(1000*1000); //One second;
-			if(!running)
+			Glib::usleep(1000 * 1000); //One second;
+			if (!running)
 			{
 				break;
 			}
@@ -110,7 +109,7 @@ bool SyncManager::isActive()
 {
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
-	if(baseUrl.length()>0 && username.length()>0 )
+	if (baseUrl.length() > 0 && username.length() > 0)
 	{
 		return true;
 	}
@@ -233,7 +232,7 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 	std::string jsonString = json.toJson(tasks, username);
-	NetworkResponse result= network->request(url, jsonString, username, password, ignoreCertError);
+	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
 	if (result.statusOK && result.httpCode == 200)
 	{
 		syncTaskToDatabase(result.response);
@@ -280,10 +279,10 @@ bool SyncManager::doSync(time_t pointInTime)
 	db->beginTransaction();
 	taskAccessor->enableNotifications(false);
 	uint32_t tasks_done;
-	if(syncTasks(pointInTime))
+	if (syncTasks(pointInTime))
 	{
 		tasks_done = Utils::millisecondsSinceEpoch();
-		if( syncTimes(pointInTime))
+		if (syncTimes(pointInTime))
 		{
 			success = true;
 		}
@@ -303,17 +302,21 @@ bool SyncManager::doSync(time_t pointInTime)
 
 void SyncManager::manageNetworkProblems(NetworkResponse result)
 {
-	if (result.statusOK == false || result.httpCode != 200 )
+	if (result.statusOK == false || result.httpCode != 200)
 	{
 		std::stringstream text;
-		text << _("Failed connection to ");
-		text << result.url << ":\n";
+		// %s is replaced with the URI on which the connection failed
+		text << Utils::string_printf(_("Failed connection to %s:\n"), result.url.c_str());
+
 		text << _("HTTP error ") << result.httpCode << " ";
 		if (result.httpCode == 401)
 		{
 			text << _("Username or password is wrong.");
 		}
-		text << result.errorMessage;
+		else
+		{
+			text << result.errorMessage;
+		}
 		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
 		messageCenter->sendMessage(message);
 	}

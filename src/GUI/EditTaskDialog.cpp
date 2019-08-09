@@ -9,7 +9,7 @@ namespace GUI
 {
 using namespace DB;
 using namespace std;
-EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase>& database) :
+EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase> &database) :
 		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database), autoTrackAccessor(
 				database->getAutotrackAccessor()), taskAccessor(database->getTaskAccessor())
 
@@ -24,7 +24,7 @@ EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase>& database) :
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
 	/* This text is the headline for the area where you choose
-	 * on what workspace the task should be automatically started */
+	 on what workspace the task should be automatically started */
 	label1.set_text(_("<b>Workspace tracking</b>"));
 
 	createLayout();
@@ -79,7 +79,7 @@ void EditTaskDialog::createLayout()
 			if ((row * numColumns + column) < numberOfWorkspaces)
 			{
 				std::string buttonText = workspace.get_name(row * numColumns + column);
-				Gtk::CheckButton* newWorkspace = new class Gtk::CheckButton(buttonText);
+				Gtk::CheckButton *newWorkspace = new class Gtk::CheckButton(buttonText);
 				newWorkspace->set_flags(Gtk::CAN_FOCUS);
 				newWorkspace->set_mode(true);
 				workspaceTable.attach(*newWorkspace, column, column + 1, row, row + 1);
@@ -93,7 +93,7 @@ void EditTaskDialog::createLayout()
 
 std::vector<int> EditTaskDialog::getTickedWorkspaces()
 {
-	Gtk::CheckButton* workspaceCheckButton;
+	Gtk::CheckButton *workspaceCheckButton;
 	std::vector<int> workspaces;
 
 	for (unsigned int i = 0; i < checkbutton.size(); i++)
@@ -218,7 +218,7 @@ EditTaskDialog::~EditTaskDialog()
 	std::vector<Gtk::CheckButton*>::iterator iter = checkbutton.end();
 	for (; iter != checkbutton.end(); iter++)
 	{
-		Gtk::CheckButton* button = *iter;
+		Gtk::CheckButton *button = *iter;
 		delete button;
 	}
 
