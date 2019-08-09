@@ -95,13 +95,9 @@ void IdleDialog::setText()
 {
 	std::stringstream str;
 	int minutesIdle = (Utils::now() - m_idleStartTime) / 60;
-	// Note to translators: This is the first part of the sentence "No activity has been detected
-	// for X minutes. What should we do?"
-	str << _("No activity has been detected for") << " " << minutesIdle;
 
-	// Note to translators: This is the second part of the sentence "No activity has been detected
-	// for X minutes. What should we do?"
-	str << " " << _("minutes. What should we do?");
+	// %d represents the time
+	str << Utils::string_printf(_("No activity has been detected for %d minutes. What should we do?"), minutesIdle);
 
 	if (taskString.size() > 0)
 	{

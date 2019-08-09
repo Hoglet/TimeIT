@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-09 09:09+0200\n"
-"PO-Revision-Date: 2019-08-09 09:19+0200\n"
+"POT-Creation-Date: 2019-08-09 09:43+0200\n"
+"PO-Revision-Date: 2019-08-09 09:44+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Swedish <hoglet@solit.se>\n"
 "Language: sv\n"
@@ -127,11 +127,11 @@ msgstr "Namn: "
 msgid "Network error"
 msgstr "Nätverksfel"
 
-#. Note to translators: This is the first part of the sentence "No activity has been detected
-#. for X minutes. What should we do?"
+#. %d represents the time
 #: src/GUI/IdleDialog.cpp:100
-msgid "No activity has been detected for"
-msgstr "Ingen aktivitet detekterad de senaste"
+#, c-format
+msgid "No activity has been detected for %d minutes. What should we do?"
+msgstr "Ingen aktivitet detekterad de senaste %d minuterna. Vad ska vi göra?"
 
 #. This is the Parent in the context "Parent task"
 #: src/GUI/EditTaskDialog.cpp:24
@@ -209,7 +209,7 @@ msgid "Sync server:"
 msgstr "Synkningsserver:"
 
 #. After this text it will be a list of tasks
-#: src/GUI/IdleDialog.cpp:110
+#: src/GUI/IdleDialog.cpp:106
 msgid "Tasks affected: "
 msgstr "Påverkade uppgifter: "
 
@@ -302,12 +302,6 @@ msgstr "_Starta"
 msgid "_Task"
 msgstr "_Uppgift"
 
-#. Note to translators: This is the second part of the sentence "No activity has been detected
-#. for X minutes. What should we do?"
-#: src/GUI/IdleDialog.cpp:104
-msgid "minutes. What should we do?"
-msgstr "minuterna. Vad ska vi göra?"
-
 #. Command line help, Line2. Showing how to call the program
 #: src/Main.cpp:90
 msgid "timeit [OPTION...]"
@@ -317,6 +311,12 @@ msgstr "timeit [OPTION...]"
 #: src/GUI/TimeItAboutDialog.cpp:49
 msgid "translator-credits"
 msgstr "Kent Asplund"
+
+#~ msgid "No activity has been detected for"
+#~ msgstr "Ingen aktivitet detekterad de senaste"
+
+#~ msgid "minutes. What should we do?"
+#~ msgstr "minuterna. Vad ska vi göra?"
 
 #~ msgid "Application already running!\n"
 #~ msgstr "Programmet körs redan!\n"
