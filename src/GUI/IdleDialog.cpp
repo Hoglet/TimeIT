@@ -97,13 +97,16 @@ void IdleDialog::setText()
 	int minutesIdle = (Utils::now() - m_idleStartTime) / 60;
 
 	// %d represents the time
-	str << Utils::string_printf(_("No activity has been detected for %d minutes. What should we do?"), minutesIdle);
+	std::string format_str = ngettext("No activity has been detected for %d minute. What should we do?",
+			"No activity has been detected for %d minutes. What should we do?",
+			minutesIdle);
+	str << Utils::string_printf(format_str, minutesIdle);
 
 	if (taskString.size() > 0)
 	{
 		str << "\n\n";
-		//After this text it will be a list of tasks
-		str << _("Tasks affected: ");
+		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+		str << ngettext("Task affected: ", "Tasks affected: ", taskString.size());
 		str << taskString << std::endl;
 	}
 

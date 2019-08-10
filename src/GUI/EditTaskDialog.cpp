@@ -4,7 +4,7 @@
 #include <iostream>
 #include <Workspace.h>
 #include <glibmm/i18n.h>
-
+#include <Utils.h>
 namespace GUI
 {
 using namespace DB;
@@ -25,7 +25,8 @@ EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase> &database) :
 	NameLabel.set_text(_("Name: "));
 	/* This text is the headline for the area where you choose
 	 on what workspace the task should be automatically started */
-	label1.set_text(_("<b>Workspace tracking</b>"));
+	std::string text = Utils::string_printf("<b>%s<b>", _("Workspace tracking"));
+	label1.set_text(text);
 
 	createLayout();
 	OKButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_OKButton_clicked));

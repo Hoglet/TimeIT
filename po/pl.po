@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-09 09:43+0200\n"
-"PO-Revision-Date: 2019-08-09 09:46+0200\n"
+"POT-Creation-Date: 2019-08-10 15:35+0200\n"
+"PO-Revision-Date: 2019-08-10 19:26+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Language: pl\n"
 "Language: pl\n"
@@ -18,6 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2011-07-21 04:47+0000\n"
 "X-Generator: Poedit 1.8.11\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
 #. Command line help, Line4. Two columns
 #: src/Main.cpp:95
@@ -33,12 +35,6 @@ msgstr " -t, --test                                Uruchom testy i wyjdź"
 #: src/Main.cpp:99
 msgid "--db=[FILENAME]"
 msgstr "--db=[NAZWA ZBIORU]"
-
-#. This text is the headline for the area where you choose
-#. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
-msgid "<b>Workspace tracking</b>"
-msgstr ""
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -129,9 +125,12 @@ msgstr "Błąd sieci"
 
 #. %d represents the time
 #: src/GUI/IdleDialog.cpp:100
-#, fuzzy, c-format
-msgid "No activity has been detected for %d minutes. What should we do?"
-msgstr "Brak aktywności przez %d minut. Co mam zrobić?"
+#, c-format
+msgid "No activity has been detected for %d minute. What should we do?"
+msgid_plural "No activity has been detected for %d minutes. What should we do?"
+msgstr[0] "Brak aktywności przez %d minut. Co mam zrobić?"
+msgstr[1] "Brak aktywności przez %d minut. Co mam zrobić?"
+msgstr[2] "Brak aktywności przez %d minut. Co mam zrobić?"
 
 #. This is the Parent in the context "Parent task"
 #: src/GUI/EditTaskDialog.cpp:24
@@ -208,10 +207,13 @@ msgstr ""
 msgid "Sync server:"
 msgstr ""
 
-#. After this text it will be a list of tasks
-#: src/GUI/IdleDialog.cpp:106
-msgid "Tasks affected: "
-msgstr ""
+#. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+#: src/GUI/IdleDialog.cpp:109
+msgid "Task affected: "
+msgid_plural "Tasks affected: "
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
@@ -226,8 +228,9 @@ msgstr "Nie ma funkcji kasującej  usunięcie"
 
 #. This is the licence text
 #: src/GUI/TimeItAboutDialog.cpp:35
-msgid "This program is licenced under GNU General Public Licence (GPL) version 2."
-msgstr "Ten porgram ma licencje GNU Public Licence (GPL) wersja 2."
+msgid ""
+"This program is licenced under GNU General Public Licence (GPL) version 2."
+msgstr "Ten program ma licencje GNU Public Licence (GPL) wersja 2."
 
 #: src/GUI/MainWindow/TaskList.cpp:23
 msgid "Time"
@@ -248,7 +251,7 @@ msgstr "Przełącz główne okno"
 
 #: src/GUI/PreferenceDialog.cpp:75
 msgid "URI: "
-msgstr "URI>"
+msgstr "URI:"
 
 #. Command line help, line1.
 #: src/Main.cpp:88
@@ -266,6 +269,12 @@ msgstr "Nazwa użytkownik lub hasło jest nieprawidłowe."
 #: src/GUI/MainWindow/MainWindow.cpp:47
 msgid "Week"
 msgstr "Tydzień"
+
+#. This text is the headline for the area where you choose
+#. on what workspace the task should be automatically started
+#: src/GUI/EditTaskDialog.cpp:28
+msgid "Workspace tracking"
+msgstr "Obszar roboczy"
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Year"
@@ -321,9 +330,6 @@ msgstr "Jarosław Ogrodnik"
 
 #~ msgid "Quit"
 #~ msgstr "Wyjdź"
-
-#~ msgid "Workspace tracking"
-#~ msgstr "Obszar roboczy"
 
 #~ msgid "<b>Workspace</b>"
 #~ msgstr "<b>Obszar roboczy</b>"

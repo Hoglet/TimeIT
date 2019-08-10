@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: timeit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-09 09:43+0200\n"
-"PO-Revision-Date: 2019-08-09 09:38+0200\n"
+"POT-Creation-Date: 2019-08-10 15:35+0200\n"
+"PO-Revision-Date: 2019-08-09 23:05+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "Language: ru\n"
@@ -17,6 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2012-10-27 05:17+0000\n"
 "X-Generator: Poedit 1.8.11\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. Command line help, Line4. Two columns
 #: src/Main.cpp:95
@@ -25,20 +27,13 @@ msgstr " -?, --help                                Показать справк
 
 #. Command line help, Line5. Two columns
 #: src/Main.cpp:97
-#, fuzzy
 msgid " -t, --test                                Run tests and exit"
-msgstr " -?, --help                                Показать справку"
+msgstr ""
 
 #. Command line help, Line6.
 #: src/Main.cpp:99
 msgid "--db=[FILENAME]"
 msgstr "--db=[ИМЯ_ФАЙЛА]"
-
-#. This text is the headline for the area where you choose
-#. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
-msgid "<b>Workspace tracking</b>"
-msgstr ""
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -129,9 +124,12 @@ msgstr ""
 
 #. %d represents the time
 #: src/GUI/IdleDialog.cpp:100
-#, c-format
-msgid "No activity has been detected for %d minutes. What should we do?"
-msgstr "Бездействие в течении %d минут. Что мы должны сделать?"
+#, fuzzy, c-format
+msgid "No activity has been detected for %d minute. What should we do?"
+msgid_plural "No activity has been detected for %d minutes. What should we do?"
+msgstr[0] "Бездействие в течении %d минут. Что мы должны сделать?"
+msgstr[1] "Бездействие в течении %d минут. Что мы должны сделать?"
+msgstr[2] ""
 
 #. This is the Parent in the context "Parent task"
 #: src/GUI/EditTaskDialog.cpp:24
@@ -208,10 +206,13 @@ msgstr ""
 msgid "Sync server:"
 msgstr ""
 
-#. After this text it will be a list of tasks
-#: src/GUI/IdleDialog.cpp:106
-msgid "Tasks affected: "
-msgstr ""
+#. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+#: src/GUI/IdleDialog.cpp:109
+msgid "Task affected: "
+msgid_plural "Tasks affected: "
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
@@ -267,6 +268,12 @@ msgstr ""
 #: src/GUI/MainWindow/MainWindow.cpp:47
 msgid "Week"
 msgstr "Неделя"
+
+#. This text is the headline for the area where you choose
+#. on what workspace the task should be automatically started
+#: src/GUI/EditTaskDialog.cpp:28
+msgid "Workspace tracking"
+msgstr ""
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Year"

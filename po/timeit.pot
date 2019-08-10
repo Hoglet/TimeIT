@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-09 09:43+0200\n"
+"POT-Creation-Date: 2019-08-10 15:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. Command line help, Line4. Two columns
 #: src/Main.cpp:95
@@ -30,12 +31,6 @@ msgstr ""
 #. Command line help, Line6.
 #: src/Main.cpp:99
 msgid "--db=[FILENAME]"
-msgstr ""
-
-#. This text is the headline for the area where you choose
-#. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
-msgid "<b>Workspace tracking</b>"
 msgstr ""
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
@@ -128,8 +123,10 @@ msgstr ""
 #. %d represents the time
 #: src/GUI/IdleDialog.cpp:100
 #, c-format
-msgid "No activity has been detected for %d minutes. What should we do?"
-msgstr ""
+msgid "No activity has been detected for %d minute. What should we do?"
+msgid_plural "No activity has been detected for %d minutes. What should we do?"
+msgstr[0] ""
+msgstr[1] ""
 
 #. This is the Parent in the context "Parent task"
 #: src/GUI/EditTaskDialog.cpp:24
@@ -206,10 +203,12 @@ msgstr ""
 msgid "Sync server:"
 msgstr ""
 
-#. After this text it will be a list of tasks
-#: src/GUI/IdleDialog.cpp:106
-msgid "Tasks affected: "
-msgstr ""
+#. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+#: src/GUI/IdleDialog.cpp:109
+msgid "Task affected: "
+msgid_plural "Tasks affected: "
+msgstr[0] ""
+msgstr[1] ""
 
 #. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
@@ -263,6 +262,12 @@ msgstr ""
 
 #: src/GUI/MainWindow/MainWindow.cpp:47
 msgid "Week"
+msgstr ""
+
+#. This text is the headline for the area where you choose
+#. on what workspace the task should be automatically started
+#: src/GUI/EditTaskDialog.cpp:28
+msgid "Workspace tracking"
 msgstr ""
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
