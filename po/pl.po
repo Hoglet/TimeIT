@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-10 15:35+0200\n"
-"PO-Revision-Date: 2019-08-10 19:26+0200\n"
+"POT-Creation-Date: 2019-08-15 20:56+0200\n"
+"PO-Revision-Date: 2019-08-15 21:15+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Language: pl\n"
 "Language: pl\n"
@@ -20,21 +20,6 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-
-#. Command line help, Line4. Two columns
-#: src/Main.cpp:95
-msgid " -?, --help                                Show help"
-msgstr " -?, --help                                Pokaz pomoc"
-
-#. Command line help, Line5. Two columns
-#: src/Main.cpp:97
-msgid " -t, --test                                Run tests and exit"
-msgstr " -t, --test                                Uruchom testy i wyjdź"
-
-#. Command line help, Line6.
-#: src/Main.cpp:99
-msgid "--db=[FILENAME]"
-msgstr "--db=[NAZWA ZBIORU]"
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -80,6 +65,11 @@ msgstr "Edytuj"
 msgid "Edit task"
 msgstr "Edytuj zadanie"
 
+#. Command line help, Line6. Will expand to "--db=[FILENAME]"
+#: src/Main.cpp:99
+msgid "FILENAME"
+msgstr "NAZWA ZBIORU"
+
 #. %s is replaced with the URI on which the connection failed
 #: src/Sync/SyncManager.cpp:309
 #, c-format
@@ -115,7 +105,7 @@ msgstr "Miesiąc"
 msgid "Name"
 msgstr "Nazwa"
 
-#: src/GUI/EditTaskDialog.cpp:25
+#: src/GUI/EditTaskDialog.cpp:27
 msgid "Name: "
 msgstr "Nazwa: "
 
@@ -132,10 +122,17 @@ msgstr[0] "Brak aktywności przez %d minut. Co mam zrobić?"
 msgstr[1] "Brak aktywności przez %d minut. Co mam zrobić?"
 msgstr[2] "Brak aktywności przez %d minut. Co mam zrobić?"
 
+#. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+#: src/Main.cpp:90
+msgid "OPTION..."
+msgstr "OPCJA"
+
 #. This is the Parent in the context "Parent task"
-#: src/GUI/EditTaskDialog.cpp:24
+#. The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+#. Parent task and child task.
+#: src/GUI/EditTaskDialog.cpp:26
 msgid "Parent: "
-msgstr ""
+msgstr "zadanie nadzrędne:"
 
 #: src/GUI/PreferenceDialog.cpp:77
 msgid "Password: "
@@ -165,9 +162,19 @@ msgstr "Powróć i kontynuuj"
 msgid "Revert and stop"
 msgstr "Powróć i zatrzymaj"
 
+#. Command line help, how to run internal test
+#: src/Main.cpp:97
+msgid "Run tests and exit"
+msgstr "Uruchom testy i wyjdź"
+
 #: src/GUI/MainWindow/Summary.cpp:54
 msgid "Show details"
-msgstr ""
+msgstr "pokaż szczegóły"
+
+#. Command line help, Line4. How to show help
+#: src/Main.cpp:95
+msgid "Show help"
+msgstr "pokaż pomoc"
 
 #: src/GUI/MainWindow/TaskList.cpp:35
 msgid "Start"
@@ -205,7 +212,7 @@ msgstr ""
 #. **The title for the TimeIT server related settings**
 #: src/GUI/PreferenceDialog.cpp:71
 msgid "Sync server:"
-msgstr ""
+msgstr "serwer synchronizujący"
 
 #. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
 #: src/GUI/IdleDialog.cpp:109
@@ -272,7 +279,7 @@ msgstr "Tydzień"
 
 #. This text is the headline for the area where you choose
 #. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
+#: src/GUI/EditTaskDialog.cpp:30
 msgid "Workspace tracking"
 msgstr "Obszar roboczy"
 
@@ -309,15 +316,16 @@ msgstr "_Rozpocznij"
 msgid "_Task"
 msgstr "_Zadanie"
 
-#. Command line help, Line2. Showing how to call the program
-#: src/Main.cpp:90
-msgid "timeit [OPTION...]"
-msgstr "timeit [OPCJA]"
-
 #. This is where you add your name so you will be credited as translator
 #: src/GUI/TimeItAboutDialog.cpp:49
 msgid "translator-credits"
-msgstr "Jarosław Ogrodnik"
+msgstr "Jarosław Ogrodnik, Maciej Mizgajski, Joanna Porankiewicz Asplund "
+
+#~ msgid " -?, --help                                Show help"
+#~ msgstr " -?, --help                                Pokaz pomoc"
+
+#~ msgid " -t, --test                                Run tests and exit"
+#~ msgstr " -t, --test                                Uruchom testy i wyjdź"
 
 #~ msgid "No activity has been detected for"
 #~ msgstr "Brak aktywności przez"

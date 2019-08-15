@@ -21,6 +21,8 @@ EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase> &database) :
 	numberOfWorkspaces = workspace.get_numberOfWorkspaces();
 
 	// This is the Parent in the context "Parent task"
+	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+	// Parent task and child task.
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
 	/* This text is the headline for the area where you choose

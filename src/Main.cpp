@@ -86,17 +86,17 @@ void Main::printHelp()
 {
 	// Command line help, line1.
 	cout << _("Usage:") << endl;
-	// Command line help, Line2. Showing how to call the program
-	cout << _("timeit [OPTION...]") << endl;
+	// Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+	cout << "timeit [" << _("OPTION...") << "]" << endl;
 	cout << endl;
-	// Command line help, Line3. 
+	// Command line help, Line3.
 	cout << _("Help Options:") << endl;
-	// Command line help, Line4. Two columns 
-	cout << _(" -?, --help                                Show help") << endl;
-	// Command line help, Line5. Two columns 
-	cout << _(" -t, --test                                Run tests and exit") << endl;
-	// Command line help, Line6. 
-	cout << _("--db=[FILENAME]") << endl;
+	// Command line help, Line4. How to show help
+	cout << " -?, --help                                " << _("Show help") << endl;
+	// Command line help, how to run internal test
+	cout << " -t, --test                                " << _("Run tests and exit") << endl;
+	// Command line help, Line6. Will expand to "--db=[FILENAME]"
+	cout << "--db=[" << _("FILENAME") << "]" << endl;
 }
 
 int Main::run(int argc, char *argv[])

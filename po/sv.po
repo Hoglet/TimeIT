@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-10 15:35+0200\n"
-"PO-Revision-Date: 2019-08-09 23:03+0200\n"
+"POT-Creation-Date: 2019-08-15 20:56+0200\n"
+"PO-Revision-Date: 2019-08-15 20:59+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Swedish <hoglet@solit.se>\n"
 "Language: sv\n"
@@ -19,21 +19,6 @@ msgstr ""
 "X-Launchpad-Export-Date: 2011-07-21 04:47+0000\n"
 "X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#. Command line help, Line4. Two columns
-#: src/Main.cpp:95
-msgid " -?, --help                                Show help"
-msgstr " -?, --help                                Visa hjälp"
-
-#. Command line help, Line5. Two columns
-#: src/Main.cpp:97
-msgid " -t, --test                                Run tests and exit"
-msgstr " -?, --help                                Visa hjälp"
-
-#. Command line help, Line6.
-#: src/Main.cpp:99
-msgid "--db=[FILENAME]"
-msgstr "--db=[FILNAMN]"
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -79,6 +64,11 @@ msgstr "Redigera"
 msgid "Edit task"
 msgstr "Redigera"
 
+#. Command line help, Line6. Will expand to "--db=[FILENAME]"
+#: src/Main.cpp:99
+msgid "FILENAME"
+msgstr "FILNAMN"
+
 #. %s is replaced with the URI on which the connection failed
 #: src/Sync/SyncManager.cpp:309
 #, c-format
@@ -114,7 +104,7 @@ msgstr "Månad"
 msgid "Name"
 msgstr "Namn"
 
-#: src/GUI/EditTaskDialog.cpp:25
+#: src/GUI/EditTaskDialog.cpp:27
 msgid "Name: "
 msgstr "Namn: "
 
@@ -131,8 +121,15 @@ msgstr[0] "Ingen aktivitet detekterad den senaste minuten. Vad ska vi göra?"
 msgstr[1] ""
 "Ingen aktivitet detekterad de senaste %d minuterna. Vad ska vi göra?"
 
+#. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+#: src/Main.cpp:90
+msgid "OPTION..."
+msgstr "OPTION..."
+
 #. This is the Parent in the context "Parent task"
-#: src/GUI/EditTaskDialog.cpp:24
+#. The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+#. Parent task and child task.
+#: src/GUI/EditTaskDialog.cpp:26
 msgid "Parent: "
 msgstr "Förälder: "
 
@@ -164,9 +161,19 @@ msgstr "Återställ och fortsätt"
 msgid "Revert and stop"
 msgstr "Återställ och avbryt"
 
+#. Command line help, how to run internal test
+#: src/Main.cpp:97
+msgid "Run tests and exit"
+msgstr "Kör tester och avsluta"
+
 #: src/GUI/MainWindow/Summary.cpp:54
 msgid "Show details"
 msgstr "Visa detaljer"
+
+#. Command line help, Line4. How to show help
+#: src/Main.cpp:95
+msgid "Show help"
+msgstr "Visa hjälp"
 
 #: src/GUI/MainWindow/TaskList.cpp:35
 msgid "Start"
@@ -271,7 +278,7 @@ msgstr "Vecka"
 
 #. This text is the headline for the area where you choose
 #. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
+#: src/GUI/EditTaskDialog.cpp:30
 msgid "Workspace tracking"
 msgstr "Automatisk på/av på arbetyta"
 
@@ -308,15 +315,16 @@ msgstr "_Starta"
 msgid "_Task"
 msgstr "_Uppgift"
 
-#. Command line help, Line2. Showing how to call the program
-#: src/Main.cpp:90
-msgid "timeit [OPTION...]"
-msgstr "timeit [OPTION...]"
-
 #. This is where you add your name so you will be credited as translator
 #: src/GUI/TimeItAboutDialog.cpp:49
 msgid "translator-credits"
 msgstr "Kent Asplund"
+
+#~ msgid " -?, --help                                Show help"
+#~ msgstr " -?, --help                                Visa hjälp"
+
+#~ msgid " -t, --test                                Run tests and exit"
+#~ msgstr " -?, --help                                Visa hjälp"
 
 #~ msgid "<b>Workspace tracking</b>"
 #~ msgstr "<b>Arbetsyta</b>"

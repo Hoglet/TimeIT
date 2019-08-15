@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-10 15:35+0200\n"
+"POT-Creation-Date: 2019-08-15 20:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-
-#. Command line help, Line4. Two columns
-#: src/Main.cpp:95
-msgid " -?, --help                                Show help"
-msgstr ""
-
-#. Command line help, Line5. Two columns
-#: src/Main.cpp:97
-msgid " -t, --test                                Run tests and exit"
-msgstr ""
-
-#. Command line help, Line6.
-#: src/Main.cpp:99
-msgid "--db=[FILENAME]"
-msgstr ""
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -77,6 +62,11 @@ msgstr ""
 msgid "Edit task"
 msgstr ""
 
+#. Command line help, Line6. Will expand to "--db=[FILENAME]"
+#: src/Main.cpp:99
+msgid "FILENAME"
+msgstr ""
+
 #. %s is replaced with the URI on which the connection failed
 #: src/Sync/SyncManager.cpp:309
 #, c-format
@@ -112,7 +102,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: src/GUI/EditTaskDialog.cpp:25
+#: src/GUI/EditTaskDialog.cpp:27
 msgid "Name: "
 msgstr ""
 
@@ -128,8 +118,15 @@ msgid_plural "No activity has been detected for %d minutes. What should we do?"
 msgstr[0] ""
 msgstr[1] ""
 
+#. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+#: src/Main.cpp:90
+msgid "OPTION..."
+msgstr ""
+
 #. This is the Parent in the context "Parent task"
-#: src/GUI/EditTaskDialog.cpp:24
+#. The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+#. Parent task and child task.
+#: src/GUI/EditTaskDialog.cpp:26
 msgid "Parent: "
 msgstr ""
 
@@ -161,8 +158,18 @@ msgstr ""
 msgid "Revert and stop"
 msgstr ""
 
+#. Command line help, how to run internal test
+#: src/Main.cpp:97
+msgid "Run tests and exit"
+msgstr ""
+
 #: src/GUI/MainWindow/Summary.cpp:54
 msgid "Show details"
+msgstr ""
+
+#. Command line help, Line4. How to show help
+#: src/Main.cpp:95
+msgid "Show help"
 msgstr ""
 
 #: src/GUI/MainWindow/TaskList.cpp:35
@@ -266,7 +273,7 @@ msgstr ""
 
 #. This text is the headline for the area where you choose
 #. on what workspace the task should be automatically started
-#: src/GUI/EditTaskDialog.cpp:28
+#: src/GUI/EditTaskDialog.cpp:30
 msgid "Workspace tracking"
 msgstr ""
 
@@ -301,11 +308,6 @@ msgstr ""
 
 #: src/GUI/MainWindow/Menu.cpp:50
 msgid "_Task"
-msgstr ""
-
-#. Command line help, Line2. Showing how to call the program
-#: src/Main.cpp:90
-msgid "timeit [OPTION...]"
 msgstr ""
 
 #. This is where you add your name so you will be credited as translator
