@@ -1,4 +1,12 @@
-timeit (1.9.9.25) UNRELEASED; urgency=medium
+timeit (1.9.9.26) testing; urgency=medium
+
+  * Improved for translations
+  * Correct management of plural forms
+  * Spanish and Dutch translations
+
+ -- Kent Asplund <hoglet@solit.se>  Fri, 16 Aug 2019 16:53:05 +0200
+
+timeit (1.9.9.25) testing; urgency=medium
 
   * Changed dependency from intltool to gettext
   * Translation work
