@@ -76,5 +76,7 @@ set_source_files_properties(tags PROPERTIES GENERATED true)
 add_custom_target(tags
     COMMAND ctags -R --c++-kinds=+p --fields=+iaS --extra=+q src
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
-add_dependencies(timeit tags)
+find_program(CTAGS_PATH ctags)
+if(CTAGS_PATH)
+	add_dependencies(timeit tags)
+endif(CTAGS_PATH)
