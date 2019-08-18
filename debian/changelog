@@ -1,3 +1,12 @@
+timeit (2.0.0) released; urgency=medium
+
+	* Romanian translation
+	* Updates to German translation
+	* Creation of ctags
+	* Removed project files
+
+ -- Kent Asplund <hoglet@solit.se>  Sun, 18 Aug 2019 21:19:46 +0200
+
 timeit (1.9.9.26) testing; urgency=medium
 
   * Improved for translations
