@@ -1,0 +1,321 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-08-18 16:21+0200\n"
+"PO-Revision-Date: 2019-08-18 16:41+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"X-Generator: Poedit 1.8.11\n"
+"Last-Translator: Kent Asplund <hoglet@solit.se>\n"
+"Language: ro\n"
+
+#: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
+msgid "Add task"
+msgstr "Adaugă sarcină"
+
+#: src/GUI/MainWindow/Menu.cpp:35 src/GUI/MainWindow/TaskList.cpp:39
+msgid "Add time"
+msgstr "Adaugă timp"
+
+#: src/GUI/AddTime.cpp:20
+msgid "Adding time to:"
+msgstr "Adaugă timp la:"
+
+#. Confirm dialog when removing task!
+#: src/GUI/MainWindow/MainWindow.cpp:305
+msgid "Are you sure you want to delete this task"
+msgstr "Doriți să ștergeți această sarcină"
+
+#. The compact layout option is reducing the size of the toolbar in the main window
+#: src/GUI/PreferenceDialog.cpp:22
+#, fuzzy
+msgid "Compact layout"
+msgstr "Layout compact"
+
+#. This is one answer to the question "No activity has
+#. been detected for X minutes. What should we do?"
+#: src/GUI/IdleDialog.cpp:37
+msgid "Continue"
+msgstr "Continuă"
+
+#: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
+msgid "Day"
+msgstr "Zi"
+
+#: src/GUI/Details.cpp:69
+msgid "Do you really want to remove this?"
+msgstr "Doriți să ștergeți?"
+
+#: src/GUI/MainWindow/Menu.cpp:27
+msgid "Edit"
+msgstr "Editează"
+
+#: src/GUI/MainWindow/TaskList.cpp:44
+msgid "Edit task"
+msgstr "Editează sarcină"
+
+#. Command line help, Line6. Will expand to "--db=[FILENAME]"
+#: src/Main.cpp:99
+msgid "FILENAME"
+msgstr "NUME_FIȘIER"
+
+#. %s is replaced with the URI on which the connection failed
+#: src/Sync/SyncManager.cpp:309
+#, c-format
+msgid "Failed connection to %s:\n"
+msgstr "Eroare la conectare către %s:\n"
+
+#: src/GUI/Details.cpp:71
+msgid "Gone, gone will not come again..."
+msgstr "A dispărut și nu va reapărea..."
+
+#: src/Sync/SyncManager.cpp:311
+msgid "HTTP error "
+msgstr "Eroare HTTP"
+
+#. Command line help, Line3.
+#: src/Main.cpp:93
+#, fuzzy
+msgid "Help Options:"
+msgstr "Opțiuni ajutor:"
+
+#: src/GUI/PreferenceDialog.cpp:55
+msgid "Idle time (m)"
+msgstr "Timp inactiv (m)"
+
+#: src/GUI/PreferenceDialog.cpp:78
+msgid "Ignore certificate errors"
+msgstr "Ignoră erori de certificat"
+
+#: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
+msgid "Month"
+msgstr "Lună"
+
+#: src/GUI/MainWindow/TaskList.cpp:21
+msgid "Name"
+msgstr "Nume"
+
+#: src/GUI/EditTaskDialog.cpp:27
+msgid "Name: "
+msgstr "Nume:"
+
+#: src/Sync/SyncManager.cpp:320
+msgid "Network error"
+msgstr "Eroare de rețea"
+
+#. %d represents the time
+#: src/GUI/IdleDialog.cpp:100
+#, c-format
+msgid "No activity has been detected for %d minute. What should we do?"
+msgid_plural "No activity has been detected for %d minutes. What should we do?"
+msgstr[0] "Nu s-a detectat nicio activitate pentru %d minut. Ce să se facă?"
+msgstr[1] "Nu s-a detectat nicio activitate pentru %d minute. Ce să se facă?"
+msgstr[2] "Nu s-a detectat nicio activitate pentru %d de minute. Ce să se facă?"
+
+#. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+#: src/Main.cpp:90
+msgid "OPTION..."
+msgstr "OPȚÎUNI..."
+
+#. This is the Parent in the context "Parent task"
+#. The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+#. Parent task and child task.
+#: src/GUI/EditTaskDialog.cpp:26
+msgid "Parent: "
+msgstr "Părinte:"
+
+#: src/GUI/PreferenceDialog.cpp:77
+msgid "Password: "
+msgstr "Parolă:"
+
+#: src/GUI/PreferenceDialog.cpp:58
+msgid "Quiet mode"
+msgstr "Mod liniștit"
+
+#: src/GUI/MainWindow/Menu.cpp:41 src/GUI/MainWindow/TaskList.cpp:46
+msgid "Remove task"
+msgstr "Șterge sarcină"
+
+#: src/GUI/MainWindow/Menu.cpp:45
+msgid "Report bug"
+msgstr "Raportează bug"
+
+#. This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: src/GUI/IdleDialog.cpp:34
+#, fuzzy
+msgid "Revert and continue"
+msgstr "Revino și continuă"
+
+#. This is one answer to the question "No activity have
+#. been detected for X minutes. What should we do?"
+#: src/GUI/IdleDialog.cpp:31
+#, fuzzy
+msgid "Revert and stop"
+msgstr "Revino și oprește"
+
+#. Command line help, how to run internal test
+#: src/Main.cpp:97
+msgid "Run tests and exit"
+msgstr "Rulează testele și ieși din program"
+
+#: src/GUI/MainWindow/Summary.cpp:54
+msgid "Show details"
+msgstr "Arată detalii"
+
+#. Command line help, Line4. How to show help
+#: src/Main.cpp:95
+msgid "Show help"
+msgstr "Arată ajutor"
+
+#: src/GUI/MainWindow/TaskList.cpp:35
+msgid "Start"
+msgstr "Pornește"
+
+#. This option will make that no window is opened on first start of application. Only an icon in the system tray will be visible
+#: src/GUI/PreferenceDialog.cpp:24
+msgid "Start minimized"
+msgstr "Pornește minimizat"
+
+#: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:25
+msgid "Start time"
+msgstr "Pornește timp"
+
+#: src/GUI/MainWindow/Menu.cpp:22 src/GUI/MainWindow/TaskList.cpp:36
+msgid "Stop"
+msgstr "Oprește"
+
+#: src/GUI/MainWindow/Menu.cpp:25
+msgid "Stop all"
+msgstr "Oprește tot"
+
+#: src/GUI/StatusIcon.cpp:121
+msgid "Stop all timers"
+msgstr "Oprește toate timărele"
+
+#: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:26
+msgid "Stop time"
+msgstr "Oprește timpul"
+
+#: src/GUI/PreferenceDialog.cpp:79
+msgid "Sync interval (minutes)"
+msgstr "Interval de sincronizare (minute)"
+
+#. **The title for the TimeIT server related settings**
+#: src/GUI/PreferenceDialog.cpp:71
+msgid "Sync server:"
+msgstr "Server de sincronizare:"
+
+#. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+#: src/GUI/IdleDialog.cpp:109
+msgid "Task affected: "
+msgid_plural "Tasks affected: "
+msgstr[0] "Sarcină afectată:"
+msgstr[1] "Sarcini afectate:"
+msgstr[2] "Sarcini afectate:"
+
+#. Tagline
+#: src/GUI/TimeItAboutDialog.cpp:33
+msgid "The unobtrusive time tracker\n"
+msgstr "Trackerul de timp neintrusive\n"
+
+#. Line after "Are you sure you want to delete this task"
+#: src/GUI/MainWindow/MainWindow.cpp:308
+msgid "There is no undelete function"
+msgstr "No există funcția de deștergere"
+
+#. This is the licence text
+#: src/GUI/TimeItAboutDialog.cpp:35
+msgid "This program is licenced under GNU General Public Licence (GPL) version 2."
+msgstr "Acest program este licențiat sub GNU General Public Licence (GPL) version 2."
+
+#: src/GUI/MainWindow/TaskList.cpp:23
+msgid "Time"
+msgstr "Timp"
+
+#: src/GUI/TimeItAboutDialog.cpp:42
+msgid "TimeIT website"
+msgstr "Site web TimeIT"
+
+#. Tagline
+#: src/GUI/StatusIcon.cpp:285
+msgid "TimeIt. the unobtrusive time tracker"
+msgstr "TimeIt. Trackerul de timp neintrusiv"
+
+#: src/GUI/StatusIcon.cpp:118
+msgid "Toggle main window"
+msgstr "Comută fereastra principală"
+
+#: src/GUI/PreferenceDialog.cpp:75
+msgid "URI: "
+msgstr "URI:"
+
+#. Command line help, line1.
+#: src/Main.cpp:88
+msgid "Usage:"
+msgstr "Utilizare:"
+
+#: src/GUI/PreferenceDialog.cpp:76
+msgid "User: "
+msgstr "Utilizator:"
+
+#: src/Sync/SyncManager.cpp:314
+msgid "Username or password is wrong."
+msgstr "Utilizatorul sau parola este greșită."
+
+#: src/GUI/MainWindow/MainWindow.cpp:47
+msgid "Week"
+msgstr "Săptămână"
+
+#. This text is the headline for the area where you choose
+#. on what workspace the task should be automatically started
+#: src/GUI/EditTaskDialog.cpp:30
+msgid "Workspace tracking"
+msgstr "Urmărirea spațiului de lucru (workspace tracking)"
+
+#: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
+msgid "Year"
+msgstr "An"
+
+#. "Zero time" is the minimum activity time that will be counted at work. Anything less will be ignored
+#: src/GUI/PreferenceDialog.cpp:51
+msgid "Zero time (m)"
+msgstr "Timp minim (m)"
+
+#: src/GUI/Details.cpp:38
+msgid "_Edit"
+msgstr "_Editare"
+
+#: src/GUI/MainWindow/Menu.cpp:48
+msgid "_File"
+msgstr "_Fișier"
+
+#: src/GUI/MainWindow/Menu.cpp:52
+msgid "_Help"
+msgstr "_Ajutor"
+
+#: src/GUI/Details.cpp:40
+msgid "_Remove"
+msgstr "_Șterge"
+
+#: src/GUI/MainWindow/Menu.cpp:19
+msgid "_Start"
+msgstr "_Pornește"
+
+#: src/GUI/MainWindow/Menu.cpp:50
+msgid "_Task"
+msgstr "_Sarcină"
+
+#. This is where you add your name so you will be credited as translator
+#: src/GUI/TimeItAboutDialog.cpp:49
+msgid "translator-credits"
+msgstr "Cristian Klein"
