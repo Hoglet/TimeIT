@@ -75,3 +75,5 @@ src/version.h
 /po/POTFILES.in
 /po/timeit-temp.pot
 /tags
+/.cproject
+/.project
