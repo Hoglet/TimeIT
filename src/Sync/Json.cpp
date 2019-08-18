@@ -9,15 +9,12 @@
 using namespace std;
 using namespace DB;
 
-Json::Json()
+namespace Json
 {
-}
 
-Json::~Json()
-{
-}
+GeneralException ge;
 
-std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
+std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 {
 	json_t *array = json_array();
 	for (Task task : *tasks)
@@ -68,7 +65,7 @@ std::string Json::toJson(std::shared_ptr<std::vector<Task>> tasks, string userna
 
 	return result;
 }
-std::string Json::toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
+std::string toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
 {
 	json_t *array = json_array();
 	for (TimeEntry time : *times)
@@ -108,7 +105,7 @@ std::string Json::toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
 	return result;
 }
 
-std::shared_ptr<std::vector<Task>> Json::toTasks(const std::string& text)
+std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 {
 
 	json_t *root;
@@ -145,7 +142,7 @@ std::shared_ptr<std::vector<Task>> Json::toTasks(const std::string& text)
 		}
 		if (json_is_object(j_parent))
 		{
-			json_t * j_parentID = json_object_get(j_parent, "id");
+			json_t *j_parentID = json_object_get(j_parent, "id");
 			if (json_is_string(j_parentID))
 			{
 				parent = json_string_value(j_parentID);
@@ -183,7 +180,7 @@ std::shared_ptr<std::vector<Task>> Json::toTasks(const std::string& text)
 	return retVal;
 }
 
-std::shared_ptr<std::vector<DB::TimeEntry> > Json::toTimes(const std::string& input)
+std::shared_ptr<std::vector<DB::TimeEntry> > toTimes(const std::string &input)
 {
 
 	json_t *root;
@@ -213,7 +210,7 @@ std::shared_ptr<std::vector<DB::TimeEntry> > Json::toTimes(const std::string& in
 
 		if (json_is_object(j_task))
 		{
-			json_t * j_taskID = json_object_get(j_task, "id");
+			json_t *j_taskID = json_object_get(j_task, "id");
 			if (json_is_string(j_taskID))
 			{
 				taskID = json_string_value(j_taskID);
@@ -251,4 +248,4 @@ std::shared_ptr<std::vector<DB::TimeEntry> > Json::toTimes(const std::string& in
 	}
 	return retVal;
 }
-
+}

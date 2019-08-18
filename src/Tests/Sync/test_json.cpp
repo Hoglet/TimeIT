@@ -12,10 +12,10 @@ namespace Test
 
 void Json_simpleTaskTest()
 {
-	Json json;
-	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\":{\"id\" : \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
+	std::string json_string =
+			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
+					"\"parent\":{\"id\" : \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<Task>> tasks = Json::toTasks(json_string);
 
 	std::string expectedName = "task1";
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
@@ -40,10 +40,10 @@ void Json_simpleTaskTest()
 
 void Json_simpleTaskTest2()
 {
-	Json json;
-	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
+	std::string json_string =
+			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
+					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<Task>> tasks = Json::toTasks(json_string);
 
 	std::string expectedName = "task1";
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
@@ -66,17 +66,16 @@ void Json_simpleTaskTest2()
 	}
 }
 
-
 void Json_threeWayTaskTest()
 {
-	Json json;
-	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
-	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
-	std::string result = json.toJson(tasks, "tester");
+	std::string json_string =
+			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
+					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
+	std::shared_ptr<std::vector<Task>> tasks = Json::toTasks(json_string);
+	std::string result = Json::toJson(tasks, "tester");
 	Task task1 = tasks->at(0);
 	//Convert once more to be able to compare
-	tasks = json.toTasks(result);
+	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
 	ASSERT_EQUALM("Name ", task1.getName(), task2.getName());
@@ -89,14 +88,14 @@ void Json_threeWayTaskTest()
 }
 void Json_threeWayTaskTest2()
 {
-	Json json;
-	std::string json_string = "[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
-			"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
-	std::shared_ptr<std::vector<Task>> tasks = json.toTasks(json_string);
-	std::string result = json.toJson(tasks, "tester");
+	std::string json_string =
+			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
+					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
+	std::shared_ptr<std::vector<Task>> tasks = Json::toTasks(json_string);
+	std::string result = Json::toJson(tasks, "tester");
 	Task task1 = tasks->at(0);
 	//Convert once more to be able to compare
-	tasks = json.toTasks(result);
+	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
 	ASSERT_EQUALM("Name ", task1.getName(), task2.getName());
@@ -110,9 +109,9 @@ void Json_threeWayTaskTest2()
 
 void Json_simpleTimeTest()
 {
-	Json json;
-	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> times = json.toTimes(json_string);
+	std::string json_string =
+			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<DB::TimeEntry>> times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -136,9 +135,9 @@ void Json_simpleTimeTest()
 }
 void Json_simpleTimeTest2()
 {
-	Json json;
-	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> times = json.toTimes(json_string);
+	std::string json_string =
+			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<DB::TimeEntry>> times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -163,13 +162,13 @@ void Json_simpleTimeTest2()
 
 void Json_threeWayTimeTest()
 {
-	Json json;
-	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> items = json.toTimes(json_string);
+	std::string json_string =
+			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<DB::TimeEntry>> items = Json::toTimes(json_string);
 	TimeEntry item1 = items->at(0);
 	//Convert once more to be able to compare
-	std::string result = json.toJson(items);
-	items = json.toTimes(result);
+	std::string result = Json::toJson(items);
+	items = Json::toTimes(result);
 	TimeEntry item2 = items->at(0);
 
 	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
@@ -182,13 +181,13 @@ void Json_threeWayTimeTest()
 }
 void Json_threeWayTimeTest2()
 {
-	Json json;
-	std::string json_string = "[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> items = json.toTimes(json_string);
+	std::string json_string =
+			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+	std::shared_ptr<std::vector<DB::TimeEntry>> items = Json::toTimes(json_string);
 	TimeEntry item1 = items->at(0);
 	//Convert once more to be able to compare
-	std::string result = json.toJson(items);
-	items = json.toTimes(result);
+	std::string result = Json::toJson(items);
+	items = Json::toTimes(result);
 	TimeEntry item2 = items->at(0);
 
 	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
@@ -202,18 +201,15 @@ void Json_threeWayTimeTest2()
 
 void Json_testTaskStringGenerationTest()
 {
-	Json json;
-
 	std::string name = "task1";
 	std::string parentID = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	std::string UUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	time_t changeTime = 1374263745;
 
-
-	Task task(name, 1, UUID, false, 1,changeTime, parentID, false  );
+	Task task(name, 1, UUID, false, 1, changeTime, parentID, false);
 	std::shared_ptr<std::vector<Task>> tasks = std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
 	tasks->push_back(task);
-	std::string result = json.toJson(tasks, "tester");
+	std::string result = Json::toJson(tasks, "tester");
 
 	json_t *root;
 	json_error_t error;

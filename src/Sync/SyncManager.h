@@ -12,12 +12,12 @@ namespace syncing
 class SyncManager
 {
 public:
-	SyncManager(std::shared_ptr<DB::IDatabase>&, std::shared_ptr<INetwork>& network,std::shared_ptr<Utils::MessageCenter> messageCenter);
+	SyncManager(std::shared_ptr<DB::IDatabase>&, std::shared_ptr<INetwork> &network, std::shared_ptr<Utils::MessageCenter> messageCenter);
 	virtual ~SyncManager();
 	void start();
 	void stop();
 	bool doSync(time_t pointInTime);
-private:
+	private:
 	SyncManager();
 	bool isActive();
 	void worker();
@@ -33,12 +33,11 @@ private:
 	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
 	std::shared_ptr<Utils::MessageCenter> messageCenter;
 	std::shared_ptr<INetwork> network;
-	Json json;
 	bool running;
 	bool inited;
 	Glib::Thread *thread;
-	int partialSync=0;
-	const int ONE_DAY=60*60*24;
+	int partialSync = 0;
+	const int ONE_DAY = 60 * 60 * 24;
 
 };
 }

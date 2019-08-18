@@ -121,7 +121,7 @@ bool SyncManager::isActive()
 int SyncManager::syncTaskToDatabase(string result)
 {
 	uint32_t start = Utils::millisecondsSinceEpoch();
-	std::shared_ptr<std::vector<Task> > tasks = json.toTasks(result);
+	std::shared_ptr<std::vector<Task> > tasks = Json::toTasks(result);
 	uint32_t json_conversion_done = Utils::millisecondsSinceEpoch();
 
 	std::shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
@@ -184,7 +184,7 @@ int SyncManager::syncTaskToDatabase(string result)
 int SyncManager::syncTimesToDatabase(string result)
 {
 	uint32_t start = Utils::millisecondsSinceEpoch();
-	std::shared_ptr<std::vector<TimeEntry> > times = json.toTimes(result);
+	std::shared_ptr<std::vector<TimeEntry> > times = Json::toTimes(result);
 	uint32_t json_conversion_done = Utils::millisecondsSinceEpoch();
 
 	for (TimeEntry item : *times)
@@ -231,7 +231,7 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	std::string jsonString = json.toJson(tasks, username);
+	std::string jsonString = Json::toJson(tasks, username);
 	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
 	if (result.statusOK && result.httpCode == 200)
 	{
@@ -248,7 +248,7 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 bool SyncManager::syncTimes(time_t pointInTime)
 {
 	std::shared_ptr<std::vector<TimeEntry> > times = timeAccessor->getTimesChangedSince(pointInTime);
-	std::string jsonString = json.toJson(times);
+	std::string jsonString = Json::toJson(times);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
 	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
