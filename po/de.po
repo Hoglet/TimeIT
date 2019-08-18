@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: timeit\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-08-15 20:56+0200\n"
-"PO-Revision-Date: 2019-08-15 21:19+0200\n"
+"PO-Revision-Date: 2019-08-18 16:18+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: German <de@li.org>\n"
 "Language: de\n"
@@ -25,16 +25,16 @@ msgstr "Aufgabe hinzufügen"
 
 #: src/GUI/MainWindow/Menu.cpp:35 src/GUI/MainWindow/TaskList.cpp:39
 msgid "Add time"
-msgstr "Zeit Hinzufügen"
+msgstr "Zeit hinzufügen"
 
 #: src/GUI/AddTime.cpp:20
 msgid "Adding time to:"
-msgstr "Zeit Hinzufügen zu:"
+msgstr "Zeit hinzufügen zu:"
 
 #. Confirm dialog when removing task!
 #: src/GUI/MainWindow/MainWindow.cpp:305
 msgid "Are you sure you want to delete this task"
-msgstr "Sind sie sicher das sie diese Anwendung löschen wollen"
+msgstr "Sind sie sicher das sie diese Aufgabe löschen wollen"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
 #: src/GUI/PreferenceDialog.cpp:22
@@ -61,22 +61,22 @@ msgstr "Bearbeiten"
 
 #: src/GUI/MainWindow/TaskList.cpp:44
 msgid "Edit task"
-msgstr "Anwendung überarbeiten"
+msgstr "Aufgabe bearbeiten"
 
 #. Command line help, Line6. Will expand to "--db=[FILENAME]"
 #: src/Main.cpp:99
 msgid "FILENAME"
-msgstr "DATEIORDNERNAME"
+msgstr "DATEINAME"
 
 #. %s is replaced with the URI on which the connection failed
 #: src/Sync/SyncManager.cpp:309
 #, c-format
 msgid "Failed connection to %s:\n"
-msgstr "Fehlgeschlagen zu %s verbinden:\n"
+msgstr "Verbindung zu %s fehlgeschlagen:\n"
 
 #: src/GUI/Details.cpp:71
 msgid "Gone, gone will not come again..."
-msgstr "Vorbei, es ist vorbei und es wird nicht wiederkehren."
+msgstr "Weg, es ist weg und es wird nicht wiederkommen..."
 
 #: src/Sync/SyncManager.cpp:311
 msgid "HTTP error "
@@ -85,15 +85,15 @@ msgstr "HTTP Fehler "
 #. Command line help, Line3.
 #: src/Main.cpp:93
 msgid "Help Options:"
-msgstr "Hilfe Optionen:"
+msgstr "Hilfsoptionen:"
 
 #: src/GUI/PreferenceDialog.cpp:55
 msgid "Idle time (m)"
-msgstr "Wartezeit (m)"
+msgstr "Pausenzeit (m)"
 
 #: src/GUI/PreferenceDialog.cpp:78
 msgid "Ignore certificate errors"
-msgstr "Ignoriere anerkannte Fehler"
+msgstr "Ignoriere Zertifikat Fehler"
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Month"
@@ -116,21 +116,22 @@ msgstr "Netzwerk Fehler"
 #, c-format
 msgid "No activity has been detected for %d minute. What should we do?"
 msgid_plural "No activity has been detected for %d minutes. What should we do?"
-msgstr[0] "Keine Aktivitäten gefunden für %d Minut. Was sollen wir den machen?"
+msgstr[0] ""
+"Keine Aktivitäten wurde für %d Minute entdeckt. Was sollen wir machen?"
 msgstr[1] ""
-"Keine Aktivitäten gefunden für %d Minuten. Was sollen wir den machen?"
+"Keine Aktivitäten wurde für %d Minuten entdeckt. Was sollen wir machen?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
 #: src/Main.cpp:90
 msgid "OPTION..."
-msgstr "OPTION..."
+msgstr "OPTIONEN..."
 
 #. This is the Parent in the context "Parent task"
 #. The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
 #. Parent task and child task.
 #: src/GUI/EditTaskDialog.cpp:26
 msgid "Parent: "
-msgstr "Übergeordnet "
+msgstr "Haptordner: "
 
 #: src/GUI/PreferenceDialog.cpp:77
 msgid "Password: "
@@ -138,51 +139,50 @@ msgstr "Passwort:"
 
 #: src/GUI/PreferenceDialog.cpp:58
 msgid "Quiet mode"
-msgstr "Modus leise"
+msgstr "Leisemodus"
 
 #: src/GUI/MainWindow/Menu.cpp:41 src/GUI/MainWindow/TaskList.cpp:46
 msgid "Remove task"
-msgstr "Entferne Anwendung"
+msgstr "Entferne Aufgabe"
 
 #: src/GUI/MainWindow/Menu.cpp:45
 msgid "Report bug"
-msgstr "Bug Melden"
+msgstr "Melde Fehler"
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
 #: src/GUI/IdleDialog.cpp:34
 msgid "Revert and continue"
-msgstr "Zurückkehren und Fortsetzen"
+msgstr "Zurückgreifen und fortsetzen"
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
 #: src/GUI/IdleDialog.cpp:31
 msgid "Revert and stop"
-msgstr "Zurückkehren und Stoppen"
+msgstr "Zurückgreifen und Stoppen"
 
 #. Command line help, how to run internal test
 #: src/Main.cpp:97
-#, fuzzy
 msgid "Run tests and exit"
-msgstr "Führt ein Test durch und schließt"
+msgstr "Führe Tests und schließe"
 
 #: src/GUI/MainWindow/Summary.cpp:54
 msgid "Show details"
-msgstr "Details anzeigen"
+msgstr "Zeige Details"
 
 #. Command line help, Line4. How to show help
 #: src/Main.cpp:95
 msgid "Show help"
-msgstr "Hilfe anzeigen"
+msgstr "Zeige Hilfe"
 
 #: src/GUI/MainWindow/TaskList.cpp:35
 msgid "Start"
-msgstr "Start"
+msgstr "Starte"
 
 #. This option will make that no window is opened on first start of application. Only an icon in the system tray will be visible
 #: src/GUI/PreferenceDialog.cpp:24
 msgid "Start minimized"
-msgstr "Start minimiert"
+msgstr "Starte minimiert"
 
 #: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:25
 msgid "Start time"
@@ -190,11 +190,11 @@ msgstr "Starte Zeit"
 
 #: src/GUI/MainWindow/Menu.cpp:22 src/GUI/MainWindow/TaskList.cpp:36
 msgid "Stop"
-msgstr "Stop"
+msgstr "Stopp"
 
 #: src/GUI/MainWindow/Menu.cpp:25
 msgid "Stop all"
-msgstr "Alles Stoppen"
+msgstr "Stoppe Alles"
 
 #: src/GUI/StatusIcon.cpp:121
 msgid "Stop all timers"
@@ -206,20 +206,19 @@ msgstr "Stoppe Zeit"
 
 #: src/GUI/PreferenceDialog.cpp:79
 msgid "Sync interval (minutes)"
-msgstr "Synchronisiere Intervalle (Minuten)"
+msgstr "Synchronisierungsinterval (Minuten)"
 
 #. **The title for the TimeIT server related settings**
 #: src/GUI/PreferenceDialog.cpp:71
 msgid "Sync server:"
-msgstr "Server synchronisieren:"
+msgstr "Synchronisierungs-server:"
 
 #. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
 #: src/GUI/IdleDialog.cpp:109
-#, fuzzy
 msgid "Task affected: "
 msgid_plural "Tasks affected: "
-msgstr[0] "Anwendung betroffen "
-msgstr[1] "Anwendung betroffen "
+msgstr[0] "Betroffene Aufgabe: "
+msgstr[1] "Betroffene Aufgaben: "
 
 #. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
@@ -229,15 +228,15 @@ msgstr "Der unauffällige Zeit Tracker\n"
 #. Line after "Are you sure you want to delete this task"
 #: src/GUI/MainWindow/MainWindow.cpp:308
 msgid "There is no undelete function"
-msgstr "Hier gibt es kein Wiederherstellen Funktion"
+msgstr "Hier gibt es keine Wiederherstellensfunktion"
 
 #. This is the licence text
 #: src/GUI/TimeItAboutDialog.cpp:35
 msgid ""
 "This program is licenced under GNU General Public Licence (GPL) version 2."
 msgstr ""
-"Dieser Programm ist lizensiert unter den Namen GNU General Public Licence "
-"(GPL) Version 2."
+"Dieser Programm ist lizenziert unter der GNU General Public Licence (GPL) "
+"Version 2."
 
 #: src/GUI/MainWindow/TaskList.cpp:23
 msgid "Time"
@@ -254,7 +253,7 @@ msgstr "TimeIT. Der unauffälligste Zeit Tracker"
 
 #: src/GUI/StatusIcon.cpp:118
 msgid "Toggle main window"
-msgstr "Wechsele zum Hauptfenster"
+msgstr "Schalte Hauptfenster um"
 
 #: src/GUI/PreferenceDialog.cpp:75
 msgid "URI: "
@@ -263,15 +262,15 @@ msgstr "URI:"
 #. Command line help, line1.
 #: src/Main.cpp:88
 msgid "Usage:"
-msgstr "Verwendungszweck:"
+msgstr "Verwendung:"
 
 #: src/GUI/PreferenceDialog.cpp:76
 msgid "User: "
-msgstr "Nutzer:"
+msgstr "User:"
 
 #: src/Sync/SyncManager.cpp:314
 msgid "Username or password is wrong."
-msgstr "Nutzername oder Passwort sind falsch."
+msgstr "Username oder Passwort ist falsch."
 
 #: src/GUI/MainWindow/MainWindow.cpp:47
 msgid "Week"
@@ -281,7 +280,7 @@ msgstr "Woche"
 #. on what workspace the task should be automatically started
 #: src/GUI/EditTaskDialog.cpp:30
 msgid "Workspace tracking"
-msgstr "Workspace verfolgen"
+msgstr "Workspace verfolgung"
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Year"
@@ -314,12 +313,12 @@ msgstr "_Start"
 
 #: src/GUI/MainWindow/Menu.cpp:50
 msgid "_Task"
-msgstr "_Anwendung"
+msgstr "_Aufgabe"
 
 #. This is where you add your name so you will be credited as translator
 #: src/GUI/TimeItAboutDialog.cpp:49
 msgid "translator-credits"
-msgstr "Jan Leonhard, Armen Mnatsakanyan"
+msgstr "Jan Leonhard, Armen Mnatsakanyan, Barbara Terebieniec, Cristian Klein"
 
 #~ msgid " -?, --help                                Show help"
 #~ msgstr " -?, --help                                Hilfe anzeigen"
