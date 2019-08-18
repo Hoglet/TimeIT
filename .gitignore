@@ -74,3 +74,4 @@ src/version.h
 /obj-x86_64-linux-gnu/src/timeit
 /po/POTFILES.in
 /po/timeit-temp.pot
+/tags

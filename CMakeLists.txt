@@ -7,6 +7,8 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 # ---------------
 project(timeit)
 
+message(${CMAKE_SOURCE_DIR})
+
 if(NOT CONFIGURED)
 	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/git_version_gen.sh)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
@@ -68,3 +70,11 @@ add_subdirectory(doc)
 add_subdirectory(po)
 add_subdirectory(misc)
 
+#  make ctags
+# --------------
+set_source_files_properties(tags PROPERTIES GENERATED true)
+add_custom_target(tags
+    COMMAND ctags -R --c++-kinds=+p --fields=+iaS --extra=+q src
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+add_dependencies(timeit tags)
