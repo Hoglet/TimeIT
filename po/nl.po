@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-16 16:36+0200\n"
-"PO-Revision-Date: 2019-08-16 16:46+0200\n"
+"POT-Creation-Date: 2019-08-29 15:11+0200\n"
+"PO-Revision-Date: 2019-08-29 15:14+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -30,10 +30,10 @@ msgstr "Voeg tijd toe"
 msgid "Adding time to:"
 msgstr "Tijd toevoegen aan:"
 
-#. Confirm dialog when removing task!
+#. Confirm dialog when removing task, headline!
 #: src/GUI/MainWindow/MainWindow.cpp:305
-msgid "Are you sure you want to delete this task"
-msgstr "Weet u zeker dat u deze taak wilt verwijderen"
+msgid "Are you sure you want to delete this task?"
+msgstr "Weet u zeker dat u deze taak wilt verwijderen?"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
 #: src/GUI/PreferenceDialog.cpp:22
@@ -63,7 +63,7 @@ msgid "Edit task"
 msgstr "Taak aanpassen"
 
 #. Command line help, Line6. Will expand to "--db=[FILENAME]"
-#: src/Main.cpp:99
+#: src/Main.cpp:100
 msgid "FILENAME"
 msgstr "Bestandsnaam"
 
@@ -84,7 +84,7 @@ msgid "HTTP error "
 msgstr "HTTP fout "
 
 #. Command line help, Line3.
-#: src/Main.cpp:93
+#: src/Main.cpp:94
 msgid "Help Options:"
 msgstr "Help opties:"
 
@@ -123,7 +123,7 @@ msgstr[1] ""
 "Er is geen activiteit gedetecteerd gedurende %d minuten. Wat moeten we doen?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
-#: src/Main.cpp:90
+#: src/Main.cpp:91
 msgid "OPTION..."
 msgstr "OPTIES..."
 
@@ -163,7 +163,7 @@ msgid "Revert and stop"
 msgstr "Keer terug en stop"
 
 #. Command line help, how to run internal test
-#: src/Main.cpp:97
+#: src/Main.cpp:98
 msgid "Run tests and exit"
 msgstr "Voer testen uit en sluit af"
 
@@ -172,7 +172,7 @@ msgid "Show details"
 msgstr "Toon details"
 
 #. Command line help, Line4. How to show help
-#: src/Main.cpp:95
+#: src/Main.cpp:96
 msgid "Show help"
 msgstr "Hulp laten zien"
 
@@ -226,7 +226,7 @@ msgstr[1] "Taken beïnvloed"
 msgid "The unobtrusive time tracker\n"
 msgstr "De onopvallende tijd tracker\n"
 
-#. Line after "Are you sure you want to delete this task"
+#. Line after "Are you sure you want to delete this task?" inside the dialog
 #: src/GUI/MainWindow/MainWindow.cpp:308
 msgid "There is no undelete function"
 msgstr "Er is geen functie ongedaan maken"
@@ -261,7 +261,7 @@ msgid "URI: "
 msgstr "URI "
 
 #. Command line help, line1.
-#: src/Main.cpp:88
+#: src/Main.cpp:89
 msgid "Usage:"
 msgstr "Verbruik:"
 
