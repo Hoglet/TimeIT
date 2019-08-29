@@ -301,10 +301,10 @@ void MainWindow::on_action_task_selection_changed(int selectedTaskID)
 void MainWindow::on_action_remove_task()
 {
 	int selectedTaskID = taskList.getSelectedID();
-	//Confirm dialog when removing task!
-	Gtk::MessageDialog dialog(*this, _("Are you sure you want to delete this task"), false, Gtk::MESSAGE_WARNING,
-			Gtk::BUTTONS_OK_CANCEL);
-	//Line after "Are you sure you want to delete this task"
+	//Confirm dialog when removing task, headline!
+	const char *headline = _("Are you sure you want to delete this task?");
+	Gtk::MessageDialog dialog(*this, headline, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_OK_CANCEL);
+	//Line after "Are you sure you want to delete this task?" inside the dialog
 	dialog.set_secondary_text(_("There is no undelete function"));
 	dialog.set_deletable(false);
 
@@ -314,22 +314,15 @@ void MainWindow::on_action_remove_task()
 	switch (result)
 	{
 	case (Gtk::RESPONSE_OK):
-		{
 		//Remove task
 		taskAccessor->removeTask(selectedTaskID);
 		break;
-	}
 	case (Gtk::RESPONSE_CANCEL):
-		{
 		break;
-	}
 	default:
-		{
 		std::cerr << "Unexpected button clicked." << std::endl;
 		break;
 	}
-	}
-
 }
 
 }

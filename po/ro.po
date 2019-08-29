@@ -7,16 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-18 16:21+0200\n"
-"PO-Revision-Date: 2019-08-18 16:41+0200\n"
+"POT-Creation-Date: 2019-08-29 15:11+0200\n"
+"PO-Revision-Date: 2019-08-29 15:14+0200\n"
+"Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: \n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1));\n"
 "X-Generator: Poedit 1.8.11\n"
-"Last-Translator: Kent Asplund <hoglet@solit.se>\n"
-"Language: ro\n"
 
 #: src/GUI/MainWindow/Menu.cpp:40 src/GUI/MainWindow/TaskList.cpp:42
 msgid "Add task"
@@ -30,10 +31,10 @@ msgstr "Adaugă timp"
 msgid "Adding time to:"
 msgstr "Adaugă timp la:"
 
-#. Confirm dialog when removing task!
+#. Confirm dialog when removing task, headline!
 #: src/GUI/MainWindow/MainWindow.cpp:305
-msgid "Are you sure you want to delete this task"
-msgstr "Doriți să ștergeți această sarcină"
+msgid "Are you sure you want to delete this task?"
+msgstr "Doriți să ștergeți această sarcină?"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
 #: src/GUI/PreferenceDialog.cpp:22
@@ -64,7 +65,7 @@ msgid "Edit task"
 msgstr "Editează sarcină"
 
 #. Command line help, Line6. Will expand to "--db=[FILENAME]"
-#: src/Main.cpp:99
+#: src/Main.cpp:100
 msgid "FILENAME"
 msgstr "NUME_FIȘIER"
 
@@ -83,7 +84,7 @@ msgid "HTTP error "
 msgstr "Eroare HTTP"
 
 #. Command line help, Line3.
-#: src/Main.cpp:93
+#: src/Main.cpp:94
 #, fuzzy
 msgid "Help Options:"
 msgstr "Opțiuni ajutor:"
@@ -119,10 +120,11 @@ msgid "No activity has been detected for %d minute. What should we do?"
 msgid_plural "No activity has been detected for %d minutes. What should we do?"
 msgstr[0] "Nu s-a detectat nicio activitate pentru %d minut. Ce să se facă?"
 msgstr[1] "Nu s-a detectat nicio activitate pentru %d minute. Ce să se facă?"
-msgstr[2] "Nu s-a detectat nicio activitate pentru %d de minute. Ce să se facă?"
+msgstr[2] ""
+"Nu s-a detectat nicio activitate pentru %d de minute. Ce să se facă?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
-#: src/Main.cpp:90
+#: src/Main.cpp:91
 msgid "OPTION..."
 msgstr "OPȚÎUNI..."
 
@@ -164,7 +166,7 @@ msgid "Revert and stop"
 msgstr "Revino și oprește"
 
 #. Command line help, how to run internal test
-#: src/Main.cpp:97
+#: src/Main.cpp:98
 msgid "Run tests and exit"
 msgstr "Rulează testele și ieși din program"
 
@@ -173,7 +175,7 @@ msgid "Show details"
 msgstr "Arată detalii"
 
 #. Command line help, Line4. How to show help
-#: src/Main.cpp:95
+#: src/Main.cpp:96
 msgid "Show help"
 msgstr "Arată ajutor"
 
@@ -228,15 +230,17 @@ msgstr[2] "Sarcini afectate:"
 msgid "The unobtrusive time tracker\n"
 msgstr "Trackerul de timp neintrusive\n"
 
-#. Line after "Are you sure you want to delete this task"
+#. Line after "Are you sure you want to delete this task?" inside the dialog
 #: src/GUI/MainWindow/MainWindow.cpp:308
 msgid "There is no undelete function"
 msgstr "No există funcția de deștergere"
 
 #. This is the licence text
 #: src/GUI/TimeItAboutDialog.cpp:35
-msgid "This program is licenced under GNU General Public Licence (GPL) version 2."
-msgstr "Acest program este licențiat sub GNU General Public Licence (GPL) version 2."
+msgid ""
+"This program is licenced under GNU General Public Licence (GPL) version 2."
+msgstr ""
+"Acest program este licențiat sub GNU General Public Licence (GPL) version 2."
 
 #: src/GUI/MainWindow/TaskList.cpp:23
 msgid "Time"
@@ -260,7 +264,7 @@ msgid "URI: "
 msgstr "URI:"
 
 #. Command line help, line1.
-#: src/Main.cpp:88
+#: src/Main.cpp:89
 msgid "Usage:"
 msgstr "Utilizare:"
 

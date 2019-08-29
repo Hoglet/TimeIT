@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: timeit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-15 20:56+0200\n"
-"PO-Revision-Date: 2019-08-15 20:57+0200\n"
+"POT-Creation-Date: 2019-08-29 15:11+0200\n"
+"PO-Revision-Date: 2019-08-29 15:12+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "Language: tr\n"
@@ -31,10 +31,10 @@ msgstr "Zaman ekle"
 msgid "Adding time to:"
 msgstr "Zaman şuna ekleniyor:"
 
-#. Confirm dialog when removing task!
+#. Confirm dialog when removing task, headline!
 #: src/GUI/MainWindow/MainWindow.cpp:305
-msgid "Are you sure you want to delete this task"
-msgstr "Bu işi silmek istediğinizden emin misiniz"
+msgid "Are you sure you want to delete this task?"
+msgstr "Bu işi silmek istediğinizden emin misiniz?"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
 #: src/GUI/PreferenceDialog.cpp:22
@@ -64,7 +64,7 @@ msgid "Edit task"
 msgstr "İşi düzenle"
 
 #. Command line help, Line6. Will expand to "--db=[FILENAME]"
-#: src/Main.cpp:99
+#: src/Main.cpp:100
 msgid "FILENAME"
 msgstr "DOSYAADI"
 
@@ -83,7 +83,7 @@ msgid "HTTP error "
 msgstr ""
 
 #. Command line help, Line3.
-#: src/Main.cpp:93
+#: src/Main.cpp:94
 msgid "Help Options:"
 msgstr "Yardım Seçenekleri:"
 
@@ -120,7 +120,7 @@ msgstr[0] "Şunun için bir çalışma algılanmadı %d dakikadır. Ne yapmalıy
 msgstr[1] "Şunun için bir çalışma algılanmadı %d dakikadır. Ne yapmalıyız?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
-#: src/Main.cpp:90
+#: src/Main.cpp:91
 msgid "OPTION..."
 msgstr "SEÇENEK..."
 
@@ -160,7 +160,7 @@ msgid "Revert and stop"
 msgstr "Ters çevir ve dur"
 
 #. Command line help, how to run internal test
-#: src/Main.cpp:97
+#: src/Main.cpp:98
 msgid "Run tests and exit"
 msgstr ""
 
@@ -169,7 +169,7 @@ msgid "Show details"
 msgstr ""
 
 #. Command line help, Line4. How to show help
-#: src/Main.cpp:95
+#: src/Main.cpp:96
 msgid "Show help"
 msgstr "Yardımı göster"
 
@@ -223,7 +223,7 @@ msgstr[1] ""
 msgid "The unobtrusive time tracker\n"
 msgstr "Sade zaman izleyici\n"
 
-#. Line after "Are you sure you want to delete this task"
+#. Line after "Are you sure you want to delete this task?" inside the dialog
 #: src/GUI/MainWindow/MainWindow.cpp:308
 #, fuzzy
 msgid "There is no undelete function"
@@ -259,7 +259,7 @@ msgid "URI: "
 msgstr ""
 
 #. Command line help, line1.
-#: src/Main.cpp:88
+#: src/Main.cpp:89
 msgid "Usage:"
 msgstr "Kullanım:"
 

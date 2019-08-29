@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-15 20:56+0200\n"
-"PO-Revision-Date: 2019-08-15 20:59+0200\n"
+"POT-Creation-Date: 2019-08-29 15:11+0200\n"
+"PO-Revision-Date: 2019-08-29 15:13+0200\n"
 "Last-Translator: Kent Asplund <hoglet@solit.se>\n"
 "Language-Team: Swedish <hoglet@solit.se>\n"
 "Language: sv\n"
@@ -32,9 +32,9 @@ msgstr "Lägg till tid"
 msgid "Adding time to:"
 msgstr "Lägg till tid till:"
 
-#. Confirm dialog when removing task!
+#. Confirm dialog when removing task, headline!
 #: src/GUI/MainWindow/MainWindow.cpp:305
-msgid "Are you sure you want to delete this task"
+msgid "Are you sure you want to delete this task?"
 msgstr "Vill du verkligen ta bort uppgiften?"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
@@ -65,7 +65,7 @@ msgid "Edit task"
 msgstr "Redigera"
 
 #. Command line help, Line6. Will expand to "--db=[FILENAME]"
-#: src/Main.cpp:99
+#: src/Main.cpp:100
 msgid "FILENAME"
 msgstr "FILNAMN"
 
@@ -84,7 +84,7 @@ msgid "HTTP error "
 msgstr "HTTP error "
 
 #. Command line help, Line3.
-#: src/Main.cpp:93
+#: src/Main.cpp:94
 msgid "Help Options:"
 msgstr "Hjälpflaggor:"
 
@@ -122,7 +122,7 @@ msgstr[1] ""
 "Ingen aktivitet detekterad de senaste %d minuterna. Vad ska vi göra?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
-#: src/Main.cpp:90
+#: src/Main.cpp:91
 msgid "OPTION..."
 msgstr "OPTION..."
 
@@ -162,7 +162,7 @@ msgid "Revert and stop"
 msgstr "Återställ och avbryt"
 
 #. Command line help, how to run internal test
-#: src/Main.cpp:97
+#: src/Main.cpp:98
 msgid "Run tests and exit"
 msgstr "Kör tester och avsluta"
 
@@ -171,7 +171,7 @@ msgid "Show details"
 msgstr "Visa detaljer"
 
 #. Command line help, Line4. How to show help
-#: src/Main.cpp:95
+#: src/Main.cpp:96
 msgid "Show help"
 msgstr "Visa hjälp"
 
@@ -225,7 +225,7 @@ msgstr[1] "Påverkade uppgifter: "
 msgid "The unobtrusive time tracker\n"
 msgstr "Den diskreta tidsassistenten.\n"
 
-#. Line after "Are you sure you want to delete this task"
+#. Line after "Are you sure you want to delete this task?" inside the dialog
 #: src/GUI/MainWindow/MainWindow.cpp:308
 msgid "There is no undelete function"
 msgstr "Det går inte att återställa det som raderas"
@@ -260,7 +260,7 @@ msgid "URI: "
 msgstr "URI: "
 
 #. Command line help, line1.
-#: src/Main.cpp:88
+#: src/Main.cpp:89
 msgid "Usage:"
 msgstr "Användning:"
 
