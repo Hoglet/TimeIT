@@ -1,3 +1,10 @@
+timeit (2.0.1) UNRELEASED; urgency=medium
+
+  * Reverted to automatic dependencies in the binary ( ${shlibs:Depends}, ${misc:Depends} )
+  * Translation to Portuguese
+
+ -- Kent Asplund <hoglet@solit.se>  Sat, 31 Aug 2019 17:43:29 +0200
+
 timeit (2.0.0) released; urgency=medium
 
 	* Romanian translation
