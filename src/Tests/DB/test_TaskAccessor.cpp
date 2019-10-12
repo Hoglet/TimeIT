@@ -48,7 +48,7 @@ void TaskAccessor_testGetTasks()
 	taskAccessor->newTask("Test2", 0);
 
 	tasks = taskAccessor->getTasks();
-	Task& task = tasks->at(0);
+	Task &task = tasks->at(0);
 	ASSERT_EQUAL("Test", task.getName());
 
 	tasks = taskAccessor->getTasks(taskId);
@@ -113,7 +113,7 @@ void TaskAccessor_newTask()
 	taskAccessor->newTask(task);
 	std::shared_ptr<std::vector<Task>> tasks = taskAccessor->getTasks();
 	ASSERT_EQUAL(1, tasks->size());
-	Task* taskp = &(tasks->at(0));
+	Task *taskp = &(tasks->at(0));
 	ASSERTM("UUID should be set", taskp->getUUID().length() != 0);
 	ASSERTM("UUID should be valid", UUID::isValid(taskp->getUUID()));
 
@@ -200,8 +200,7 @@ void TaskAccessor_updateTask()
 	ASSERT_EQUALM("Notified TaskID: ", task2->getID(), observer.updatedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.updatedParentTaskID);
 
-	task2->setDeleted(true);
-	taskAccessor->updateTask(*task2);
+	taskAccessor->removeTask(task2->getID());
 	Gtk::Main::iteration(false);
 	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.removedTaskID);
 }

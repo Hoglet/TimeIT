@@ -40,19 +40,19 @@ void Task::setParent(int64_t op1)
 	lastChanged = time(0);
 }
 
-Task::Task(const std::string& op_name, int64_t op_parentID)
+Task::Task(const std::string &op_name, int64_t op_parentID)
 {
 	init(op_name, op_parentID, "", false, 0, 0, "", false);
 }
 
-Task::Task(const std::string& op_name, int64_t op_parentID, const std::string& op_uuid, bool op_completed,
-		int64_t op_ID, time_t op_lastChange, const std::string& op_parentUUID, bool op_deleted)
+Task::Task(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed,
+		int64_t op_ID, time_t op_lastChange, const std::string &op_parentUUID, bool op_deleted)
 {
 	init(op_name, op_parentID, op_uuid, op_completed, op_ID, op_lastChange, op_parentUUID, op_deleted);
 }
 
-void Task::init(const std::string& op_name, int64_t op_parentID, const std::string& op_uuid, bool op_completed,
-		int64_t op_ID, time_t op_lastChange, const std::string& op_parentUUID, bool op_deleted)
+void Task::init(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed,
+		int64_t op_ID, time_t op_lastChange, const std::string &op_parentUUID, bool op_deleted)
 {
 	if (op_uuid.length() != 0 && uuidManager.isValid(op_uuid) == false)
 	{
@@ -65,7 +65,8 @@ void Task::init(const std::string& op_name, int64_t op_parentID, const std::stri
 	if (op_lastChange == 0)
 	{
 		lastChanged = time(0);
-	} else
+	}
+	else
 	{
 		lastChanged = op_lastChange;
 	}
@@ -107,13 +108,6 @@ bool Task::getDeleted() const
 {
 	return deleted;
 }
-
-void Task::setDeleted(bool state)
-{
-	deleted = state;
-	lastChanged = time(0);
-}
-
 
 bool operator==(const Task &op1, const Task &op2)
 {
