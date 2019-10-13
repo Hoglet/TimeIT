@@ -9,11 +9,12 @@
 #define TIMER_H_
 
 #include <list>
+#include <gtkmm.h>
 
 namespace Test
 {
-	class TimerTest;
-	class DummyTimerTest;
+class TimerTest;
+class DummyTimerTest;
 }
 
 class TimerObserver
@@ -30,16 +31,17 @@ class Timer
 {
 	friend class Test::TimerTest;
 	friend class Test::DummyTimerTest;
-public:
+	public:
 	Timer();
 	virtual ~Timer();
-	void attach(TimerObserver* observer);
-	void detach(TimerObserver* observer);
-protected:
+	void attach(TimerObserver *observer);
+	void detach(TimerObserver *observer);
+	protected:
 	bool on_signal_1_second();
-private:
+	private:
 	void signalSender();
 	std::list<TimerObserver*> observers;
+	sigc::connection connection;
 };
 
 #endif /* TIMER_H_ */

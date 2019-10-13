@@ -19,7 +19,7 @@ namespace Utils
 {
 using namespace std;
 
-IpcServer::IpcServer(string name)
+IpcServer::IpcServer(string name, shared_ptr<Timer> op_timer)
 {
 	socketName = prepareSocketDir() + name;
 
@@ -51,6 +51,8 @@ IpcServer::IpcServer(string name)
 			listen(sock, 5);
 		}
 	}
+	timer = op_timer;
+	timer->attach(this);
 }
 
 IpcServer::~IpcServer()
@@ -95,11 +97,6 @@ void IpcServer::on_signal_1_second()
 	poll();
 }
 
-void IpcServer::connectToTimer(shared_ptr<Timer> op_timer)
-{
-	timer = op_timer;
-	timer->attach(this);
-}
 void IpcServer::attach(IActionObserver *observer)
 {
 	observers.push_back(observer);

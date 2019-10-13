@@ -21,14 +21,13 @@ namespace Utils
 class IpcServer: public Ipc, public TimerObserver
 {
 public:
-	IpcServer(std::string socketName);
+	IpcServer(std::string socketName, std::shared_ptr<Timer>);
 	virtual ~IpcServer();
 	void poll();
-	void connectToTimer(std::shared_ptr<Timer>);
 	virtual void on_signal_1_second();
 	void attach(IActionObserver*);
 	void detach(IActionObserver*);
-private:
+	private:
 	void on_show_menu();
 	std::string socketName;
 	std::shared_ptr<Timer> timer;

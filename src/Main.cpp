@@ -105,7 +105,7 @@ int Main::run(int argc, char *argv[])
 	{
 		bindtextdomain(GETTEXT_PACKAGE, PROGRAMNAME_LOCALEDIR);
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-		textdomain (GETTEXT_PACKAGE);
+		textdomain(GETTEXT_PACKAGE);
 
 		ApplicationLock lock(dbName);
 		if (lock.lockAquired())
@@ -133,8 +133,7 @@ int Main::run(int argc, char *argv[])
 			syncManager.start();
 
 			std::shared_ptr<Utils::IpcServer> ipcServer = std::shared_ptr<Utils::IpcServer>(
-					new Utils::IpcServer(socketName));
-			ipcServer->connectToTimer(timer);
+					new Utils::IpcServer(socketName, timer));
 
 			Controller controller(guiFactory, timekeeper, database, ipcServer);
 			controller.start();
