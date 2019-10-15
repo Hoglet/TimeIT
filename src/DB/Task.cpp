@@ -18,10 +18,12 @@ std::string Task::getName() const
 {
 	return name;
 }
-void Task::setName(std::string newName)
+
+Task Task::withName(std::string newName) const
 {
-	name = newName;
-	lastChanged = time(0);
+	Task newTask(*this);
+	newTask.name = newName;
+	return newTask;
 }
 
 int64_t Task::getID() const
@@ -34,10 +36,11 @@ int64_t Task::getParentID() const
 	return parentID;
 }
 
-void Task::setParent(int64_t op1)
+Task Task::withParent(int64_t op1) const
 {
-	parentID = op1;
-	lastChanged = time(0);
+	Task newTask(*this);
+	newTask.parentID = op1;
+	return newTask;
 }
 
 Task::Task(const std::string &op_name, int64_t op_parentID)
@@ -45,14 +48,14 @@ Task::Task(const std::string &op_name, int64_t op_parentID)
 	init(op_name, op_parentID, "", false, 0, 0, "", false);
 }
 
-Task::Task(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed,
-		int64_t op_ID, time_t op_lastChange, const std::string &op_parentUUID, bool op_deleted)
+Task::Task(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed, int64_t op_ID, time_t op_lastChange,
+		const std::string &op_parentUUID, bool op_deleted)
 {
 	init(op_name, op_parentID, op_uuid, op_completed, op_ID, op_lastChange, op_parentUUID, op_deleted);
 }
 
-void Task::init(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed,
-		int64_t op_ID, time_t op_lastChange, const std::string &op_parentUUID, bool op_deleted)
+void Task::init(const std::string &op_name, int64_t op_parentID, const std::string &op_uuid, bool op_completed, int64_t op_ID, time_t op_lastChange,
+		const std::string &op_parentUUID, bool op_deleted)
 {
 	if (op_uuid.length() != 0 && uuidManager.isValid(op_uuid) == false)
 	{
@@ -98,10 +101,18 @@ time_t Task::getLastChanged() const
 	return lastChanged;
 }
 
-void Task::setCompleted(bool state)
+Task Task::withCompleted(bool state) const
 {
-	completed = state;
-	lastChanged = time(0);
+	Task newTask(*this);
+	newTask.completed = state;
+	return newTask;
+}
+
+Task Task::withDeleted(bool state) const
+{
+	Task newTask(*this);
+	newTask.deleted = state;
+	return newTask;
 }
 
 bool Task::getDeleted() const
@@ -111,9 +122,8 @@ bool Task::getDeleted() const
 
 bool operator==(const Task &op1, const Task &op2)
 {
-	return (op1.name == op2.name && op1.ID == op2.ID && op1.parentID == op2.parentID && op1.uuid == op2.uuid
-			&& op1.parentUuid == op2.parentUuid && op1.completed == op2.completed && op1.deleted == op2.deleted
-			&& op1.lastChanged == op2.lastChanged);
+	return (op1.name == op2.name && op1.ID == op2.ID && op1.parentID == op2.parentID && op1.uuid == op2.uuid && op1.parentUuid == op2.parentUuid
+			&& op1.completed == op2.completed && op1.deleted == op2.deleted && op1.lastChanged == op2.lastChanged);
 }
 
 bool operator!=(const Task &op1, const Task &op2)
