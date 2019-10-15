@@ -18,20 +18,26 @@
 namespace GUI
 {
 
-class StatusIcon :  public TimekeeperObserver, public IStatusIcon, public DB::TaskAccessorObserver
+class StatusIcon: public TimekeeperObserver, public IStatusIcon, public DB::TaskAccessorObserver
 {
 public:
 	virtual ~StatusIcon();
 	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::ITaskAccessor>&, std::shared_ptr<DB::ITimeAccessor>&);
-	virtual void show() {}; //Shown directly on creation. Might change
-	virtual void attach(IActionObserver* observer);
-	virtual void detach(IActionObserver* observer);
+	virtual void show()
+	{
+	}
+	; //Shown directly on creation. Might change
+	virtual void attach(IActionObserver *observer);
+	virtual void detach(IActionObserver *observer);
 private:
 	void on_activate();
 	void setIcon();
 	void setTooltip();
 	void on_runningChanged();
-	void on_idleDetected(){};
+	void on_idleDetected()
+	{
+	}
+	;
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();
 	void on_menu_file_popup_quit();
@@ -48,9 +54,18 @@ private:
 	void toggleTask(int64_t id);
 	std::string completeTaskPath(int64_t id);
 
-	virtual void on_taskAdded(int64_t)  {};
-	virtual void on_taskUpdated(int64_t) ;
-	virtual void on_taskRemoved(int64_t) {};
+	virtual void on_taskAdded(int64_t)
+	{
+	}
+	;
+	virtual void on_taskUpdated(int64_t);
+	virtual void on_taskNameChanged(int64_t);
+	virtual void on_taskTimeChanged(int64_t);
+
+	virtual void on_taskRemoved(int64_t)
+	{
+	}
+	;
 	virtual void on_completeUpdate();
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;

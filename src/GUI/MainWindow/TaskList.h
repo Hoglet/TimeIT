@@ -30,41 +30,44 @@ namespace GUI
 class TaskList: public Gtk::TreeView, public DB::TaskAccessorObserver
 {
 public:
-	TaskList(std::shared_ptr<DB::IDatabase>& database);
+	TaskList(std::shared_ptr<DB::IDatabase> &database);
 	virtual ~TaskList();
-	void populate (Gtk::TreeModel::Row* parent=0, int parentID=0);
+	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
 	virtual void on_taskAdded(int64_t);
 	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
 	virtual void on_taskParentChanged(int64_t);
 	virtual void on_completeUpdate();
+	virtual void on_taskNameChanged(int64_t);
+	virtual void on_taskTimeChanged(int64_t);
 
-	void on_row_expanded(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
-	void on_row_collapsed(const Gtk::TreeModel::iterator& iter,const Gtk::TreeModel::Path& path);
-	void attach(IActionObserver* observer);
-	void detach(IActionObserver* observer);
+	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
+	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
+	void attach(IActionObserver *observer);
+	void detach(IActionObserver *observer);
 private:
 	void on_selection_changed();
 	void empty();
-	Gtk::TreeModel::iterator subSearch(int id,Gtk::TreeModel::Children children);
+	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
 	Gtk::TreeModel::iterator findRow(int id);
-	Glib::RefPtr<Gtk::TreeStore>    treeModel;
-	class	ModelColumns:	public	Gtk::TreeModel::ColumnRecord
+	Glib::RefPtr<Gtk::TreeStore> treeModel;
+	class ModelColumns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		ModelColumns ()
+		ModelColumns()
 		{
 
-			add (col_id);
-			add (col_name);
-			add (col_pixbuf);
-			add (col_time);
-		};
-		Gtk::TreeModelColumn <int>   col_id;
-		Gtk::TreeModelColumn <Glib::ustring>    col_name;
-		Gtk::TreeModelColumn <Glib::RefPtr<Gdk::Pixbuf> > 		col_pixbuf;
-		Gtk::TreeModelColumn <Glib::ustring>    col_time;
+			add(col_id);
+			add(col_name);
+			add(col_pixbuf);
+			add(col_time);
+		}
+		;
+		Gtk::TreeModelColumn<int> col_id;
+		Gtk::TreeModelColumn<Glib::ustring> col_name;
+		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > col_pixbuf;
+		Gtk::TreeModelColumn<Glib::ustring> col_time;
 	};
 	ModelColumns columns;
 	//
@@ -75,8 +78,8 @@ private:
 	void on_menu_add_task();
 	void on_menu_remove_task();
 	void on_menu_add_time();
-	virtual bool on_button_press_event(GdkEventButton* event);
-	void assignValuesToRow(Gtk::TreeModel::Row& row,const DB::ExtendedTask& task);
+	virtual bool on_button_press_event(GdkEventButton *event);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, const DB::ExtendedTask &task);
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();

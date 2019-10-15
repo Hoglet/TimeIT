@@ -16,9 +16,8 @@ using namespace DB;
 namespace GUI
 {
 
-Details::Details(std::shared_ptr<DB::IDatabase>& database) :
-		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(
-				database->getTaskAccessor())
+Details::Details(std::shared_ptr<DB::IDatabase> &database) :
+		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
 
 {
 	m_calendar = nullptr;
@@ -32,12 +31,10 @@ Details::Details(std::shared_ptr<DB::IDatabase>& database) :
 	set_headers_visible(false);
 	//Fill the popup menu:
 	{
-		Gtk::Menu::MenuList& menulist = m_Menu_Popup.items();
+		Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 
-		menulist.push_back(
-				Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
-		menulist.push_back(
-				Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
+		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
+		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	m_Menu_Popup.accelerate(*this);
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Details::on_selection_changed));
@@ -66,8 +63,7 @@ int64_t Details::getSelectedID()
 
 void Details::on_menu_file_popup_remove()
 {
-	Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION,
-			Gtk::BUTTONS_OK_CANCEL);
+	Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 	dialog.set_secondary_text(_("Gone, gone will not come again..."));
 
 	int result = dialog.run();
@@ -75,29 +71,29 @@ void Details::on_menu_file_popup_remove()
 	//Handle the response:
 	switch (result)
 	{
-		case (Gtk::RESPONSE_OK):
+	case (Gtk::RESPONSE_OK):
+	{
+		int64_t selectedID = getSelectedID();
+		if (selectedID > 0)
 		{
-			int64_t selectedID = getSelectedID();
-			if (selectedID > 0)
-			{
-				m_timeAccessor->remove(selectedID);
-				empty();
-				populate();
-				//DetailsDialog::instance().show();
-			}
-			break;
+			m_timeAccessor->remove(selectedID);
+			empty();
+			populate();
+			//DetailsDialog::instance().show();
 		}
-		case (Gtk::RESPONSE_CANCEL):
-			std::cout << "Cancel clicked." << std::endl;
-			break;
-		default:
-			std::cout << "Unexpected button clicked." << std::endl;
-			break;
+		break;
+	}
+	case (Gtk::RESPONSE_CANCEL):
+		std::cout << "Cancel clicked." << std::endl;
+		break;
+	default:
+		std::cout << "Unexpected button clicked." << std::endl;
+		break;
 	}
 
 }
 
-bool Details::on_button_press_event(GdkEventButton* event)
+bool Details::on_button_press_event(GdkEventButton *event)
 {
 	//Call base class, to allow normal handling,
 	//such as allowing the row to be selected by the right-click:
@@ -129,6 +125,17 @@ void Details::on_taskUpdated(int64_t)
 {
 	populate();
 }
+
+void Details::on_taskNameChanged(int64_t)
+{
+	populate();
+}
+
+void Details::on_taskTimeChanged(int64_t)
+{
+	populate();
+}
+
 void Details::on_taskRemoved(int64_t)
 {
 	empty();
@@ -192,29 +199,28 @@ void Details::on_menu_file_popup_edit()
 		std::list<DetailsObserver*>::iterator iter;
 		for (iter = observers.begin(); iter != observers.end(); ++iter)
 		{
-			DetailsObserver* observer = *iter;
+			DetailsObserver *observer = *iter;
 			observer->on_edit_details(selectedID);
 			//m_detailsDialog.setTimeEntryID(selectedID);
 		}
 	}
 }
 
-
 void Details::on_selection_changed()
 {
 	std::list<DetailsObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		DetailsObserver* observer = *iter;
+		DetailsObserver *observer = *iter;
 		observer->on_selected_changed();
 	}
 }
 
-void Details::attach(DetailsObserver* observer)
+void Details::attach(DetailsObserver *observer)
 {
 	observers.push_back(observer);
 }
-void Details::detach(DetailsObserver* observer)
+void Details::detach(DetailsObserver *observer)
 {
 	observers.remove(observer);
 }

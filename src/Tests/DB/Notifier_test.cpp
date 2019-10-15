@@ -21,6 +21,8 @@ public:
 		task_id_removed = 0;
 		task_id_updated = 0;
 		task_id_parent = 0;
+		task_id_name = 0;
+		task_id_time = 0;
 		notifier.attach(this);
 	}
 
@@ -48,6 +50,16 @@ public:
 		task_id_parent = t_id;
 	}
 
+	virtual void on_taskNameChanged(int64_t t_id)
+	{
+		task_id_name = t_id;
+	}
+
+	virtual void on_taskTimeChanged(int64_t t_id)
+	{
+		task_id_time = t_id;
+	}
+
 	virtual void on_completeUpdate()
 	{
 
@@ -58,6 +70,8 @@ public:
 	int64_t task_id_added;
 	int64_t task_id_removed;
 	int64_t task_id_parent;
+	int64_t task_id_name;
+	int64_t task_id_time;
 
 };
 

@@ -182,8 +182,7 @@ void EditTaskDialog::on_OKButton_clicked()
 		shared_ptr<Task> task = taskAccessor->getTask(taskID);
 		if (task)
 		{
-			task->setName(name);
-			taskAccessor->updateTask(*task);
+			taskAccessor->updateTask(task->withName(name));
 		}
 	}
 	autoTrackAccessor->setWorkspaces(taskID, workspaces);

@@ -14,7 +14,6 @@
 #include <deque>
 #include <glibmm.h>
 
-
 namespace DB
 {
 enum MessageType
@@ -23,12 +22,14 @@ enum MessageType
 	TASK_REMOVED,
 	TASK_ADDED,
 	TASK_PARENT_CHANGED,
-	COMPLETE_UPDATE
+	COMPLETE_UPDATE,
+	TASK_NAME_CHANGED,
+	TASK_TIME_CHANGED
 };
 struct NotificationMessage
 {
 	MessageType type;
-	int64_t	taskID;
+	int64_t taskID;
 };
 
 class Notifier
@@ -48,7 +49,7 @@ private:
 	bool m_enabled;
 	bool m_missedNotification;
 	Glib::Mutex mutex;
-	Glib::Thread*  receiving_thread;
+	Glib::Thread *receiving_thread;
 };
 
 }

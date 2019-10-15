@@ -17,8 +17,7 @@ namespace GUI
 using namespace std;
 using namespace DB;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, std::shared_ptr<ITaskAccessor> &taskaccessor,
-		std::shared_ptr<ITimeAccessor> &timeaccessor)
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, std::shared_ptr<ITaskAccessor> &taskaccessor, std::shared_ptr<ITimeAccessor> &timeaccessor)
 {
 	m_timekeeper = timekeeper;
 	m_taskaccessor = taskaccessor;
@@ -82,29 +81,19 @@ void StatusIcon::populateContextMenu()
 			switch (i)
 			{
 			case 0:
-				menulist.push_back(
-						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
+				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
 				break;
 			case 1:
-				menulist.push_back(
-						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
+				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
 				break;
 			case 2:
-				menulist.push_back(
-						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
+				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
 				break;
 			case 3:
-				menulist.push_back(
-						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
+				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
 				break;
 			case 4:
-				menulist.push_back(
-						Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon,
-								sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
 				break;
 			}
 		}
@@ -114,21 +103,11 @@ void StatusIcon::populateContextMenu()
 		}
 	}
 	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(
-			Gtk::Menu_Helpers::MenuElem(_("Toggle main window"),
-					sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open)));
-	menulist.push_back(
-			Gtk::Menu_Helpers::MenuElem(_("Stop all timers"),
-					sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
-	menulist.push_back(
-			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"),
-					sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
-	menulist.push_back(
-			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"),
-					sigc::mem_fun(this, &StatusIcon::on_menu_preferences)));
-	menulist.push_back(
-			Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"),
-					sigc::mem_fun(this, &StatusIcon::on_menu_about)));
+	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle main window"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open)));
+	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
+	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
+	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &StatusIcon::on_menu_preferences)));
+	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &StatusIcon::on_menu_about)));
 
 }
 
@@ -249,6 +228,18 @@ void StatusIcon::on_taskUpdated(int64_t)
 	populateContextMenu();
 }
 
+void StatusIcon::on_taskNameChanged(int64_t)
+{
+	setTooltip();
+	populateContextMenu();
+}
+
+void StatusIcon::on_taskTimeChanged(int64_t)
+{
+	setTooltip();
+	populateContextMenu();
+}
+
 void StatusIcon::on_completeUpdate()
 {
 	setTooltip();
@@ -263,9 +254,7 @@ void StatusIcon::on_runningChanged()
 }
 void StatusIcon::setTooltip()
 {
-	std::stringstream message
-	{
-	};
+	std::stringstream message { };
 	std::vector<int64_t> taskIDs = m_timeaccessor->getRunningTasks();
 	if (taskIDs.size() > 0)
 	{

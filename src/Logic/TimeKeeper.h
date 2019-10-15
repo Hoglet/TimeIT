@@ -41,10 +41,10 @@ public:
 	virtual void detach(TimekeeperObserver*) = 0;
 };
 
-class Timekeeper : public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
+class Timekeeper: public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
 {
 public:
-	Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer);
+	Timekeeper(const std::shared_ptr<DB::IDatabase> &database, const std::shared_ptr<Timer> &timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -67,7 +67,7 @@ public:
 	void detach(TimekeeperObserver*);
 
 	//
-	virtual time_t timeIdle() ;
+	virtual time_t timeIdle();
 	virtual int minutesIdle();
 
 	//TimerProxyObserver interface
@@ -77,15 +77,28 @@ public:
 private:
 	void UpdateTask(int64_t id, time_t now);
 
-	virtual void on_taskAdded(int64_t)  {};
-	virtual void on_taskUpdated(int64_t) {};
+	virtual void on_taskAdded(int64_t)
+	{
+	}
+	;
+	virtual void on_taskUpdated(int64_t)
+	{
+	}
+	;
+	virtual void on_taskNameChanged(int64_t)
+	{
+	}
+	;
+	virtual void on_taskTimeChanged(int64_t)
+	{
+	}
+	;
 	virtual void on_taskRemoved(int64_t);
-	virtual void on_settingsChanged( const std::string& );
-	virtual void on_completeUpdate( );
+	virtual void on_settingsChanged(const std::string&);
+	virtual void on_completeUpdate();
 
 	void UpdateTask(int64_t id);
 	void testfunc();
-
 
 	GUI::WidgetPtr idleDialog;
 	bool m_enabled;
@@ -94,10 +107,10 @@ private:
 	{
 		int64_t taskID;
 		int64_t dbHandle;
-		time_t  startTime;
-		time_t  stopTime; //Latest confirmed point in time
+		time_t startTime;
+		time_t stopTime; //Latest confirmed point in time
 	};
-	std::map<int64_t,TaskTime> activeTasks;
+	std::map<int64_t, TaskTime> activeTasks;
 
 	int m_idleGz;
 	int m_idleGt;

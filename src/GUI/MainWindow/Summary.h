@@ -22,17 +22,20 @@ public:
 	SummaryObserver();
 	virtual ~SummaryObserver();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
-	virtual void on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime) = 0;
-	void attach(ISummary* subject);
-	void detach(ISummary* subject);
+	virtual void on_showDetailsClicked(ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime) = 0;
+	void attach(ISummary *subject);
+	void detach(ISummary *subject);
 private:
 	bool unsubscription_allowed;
-	std::list<ISummary* > subjects;
+	std::list<ISummary*> subjects;
 };
 class ISummary
 {
 public:
-	virtual ~ISummary() {};
+	virtual ~ISummary()
+	{
+	}
+	;
 	virtual void attach(SummaryObserver*) = 0;
 	virtual void detach(SummaryObserver*) = 0;
 };
@@ -40,9 +43,9 @@ public:
 class Summary: public Gtk::TreeView, public DB::TaskAccessorObserver, public ISummary
 {
 public:
-	Summary(std::shared_ptr<DB::IDatabase>& database);
+	Summary(std::shared_ptr<DB::IDatabase> &database);
 	virtual ~Summary();
-	void setReferences(Gtk::Calendar& calendar);
+	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();
 	time_t getStartTime()
 	{
@@ -59,29 +62,35 @@ protected:
 	Gtk::TreeModel::Row add(int64_t id);
 	Gtk::Menu Menu_Popup;
 
-	bool on_button_press_event(GdkEventButton* event);
+	bool on_button_press_event(GdkEventButton *event);
 
 	//SummaryObserver
 	virtual void on_selection_changed();
-	virtual void on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime) {};
+	virtual void on_showDetailsClicked(ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime)
+	{
+	}
+	;
 
 	//
 	void connectSignals();
 	void on_dateChanged();
 	virtual void on_taskAdded(int64_t)
 	{
-	};
+	}
+	;
 	void on_menu_showDetails();
 	virtual void on_taskUpdated(int64_t);
 	virtual void on_taskRemoved(int64_t);
 	virtual void on_completeUpdate();
+	virtual void on_taskNameChanged(int64_t);
+	virtual void on_taskTimeChanged(int64_t);
 	void init();
-	void populate(Gtk::TreeModel::Row* parent=0, int parentID=0);
+	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	void empty();
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row& row, std::shared_ptr<DB::Task> task, time_t totalTime);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, std::shared_ptr<DB::Task> task, time_t totalTime);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
@@ -101,11 +110,11 @@ protected:
 	};
 	Glib::RefPtr<Gtk::TreeSelection> refTreeSelection;
 	ModelColumns columns;
-	Gtk::Calendar* calendar = nullptr;
+	Gtk::Calendar *calendar = nullptr;
 	time_t activeDay = 0;
 	time_t startTime = 0;
 	time_t stopTime = 0;
-	std::list<SummaryObserver* > observers;
+	std::list<SummaryObserver*> observers;
 	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
 	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
 private:

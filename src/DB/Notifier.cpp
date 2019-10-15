@@ -36,28 +36,42 @@ void Notifier::messageForwarder()
 			lock.release();
 			if (message.type == TASK_UPDATED)
 			{
-				for (TaskAccessorObserver* observer : observers)
+				for (TaskAccessorObserver *observer : observers)
 				{
 					observer->on_taskUpdated(message.taskID);
 				}
 			}
+			else if (message.type == TASK_NAME_CHANGED)
+			{
+				for (TaskAccessorObserver *observer : observers)
+				{
+					observer->on_taskNameChanged(message.taskID);
+				}
+			}
+			else if (message.type == TASK_TIME_CHANGED)
+			{
+				for (TaskAccessorObserver *observer : observers)
+				{
+					observer->on_taskTimeChanged(message.taskID);
+				}
+			}
 			else if (message.type == TASK_ADDED)
 			{
-				for (TaskAccessorObserver* observer : observers)
+				for (TaskAccessorObserver *observer : observers)
 				{
 					observer->on_taskAdded(message.taskID);
 				}
 			}
 			else if (message.type == TASK_REMOVED)
 			{
-				for (TaskAccessorObserver* observer : observers)
+				for (TaskAccessorObserver *observer : observers)
 				{
 					observer->on_taskRemoved(message.taskID);
 				}
 			}
 			else if (message.type == TASK_PARENT_CHANGED)
 			{
-				for (TaskAccessorObserver* observer : observers)
+				for (TaskAccessorObserver *observer : observers)
 				{
 					observer->on_taskParentChanged(message.taskID);
 				}
@@ -65,7 +79,7 @@ void Notifier::messageForwarder()
 			else if (message.type == COMPLETE_UPDATE)
 			{
 				uint32_t start = Utils::millisecondsSinceEpoch();
-				for (TaskAccessorObserver* observer : observers)
+				for (TaskAccessorObserver *observer : observers)
 				{
 					observer->on_completeUpdate();
 				}
@@ -125,7 +139,7 @@ void Notifier::sendNotification(MessageType type, int64_t taskID)
 	}
 }
 
-void Notifier::attach(TaskAccessorObserver* observer)
+void Notifier::attach(TaskAccessorObserver *observer)
 {
 	if (observer)
 	{
@@ -133,7 +147,7 @@ void Notifier::attach(TaskAccessorObserver* observer)
 	}
 }
 
-void Notifier::detach(TaskAccessorObserver* observer)
+void Notifier::detach(TaskAccessorObserver *observer)
 {
 	if (observer)
 	{

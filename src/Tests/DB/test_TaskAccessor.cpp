@@ -63,8 +63,7 @@ void TaskAccessor_setTaskName()
 	int64_t taskId = taskAccessor->newTask("Test", 0);
 	shared_ptr<Task> task = taskAccessor->getTask(taskId);
 	ASSERT_EQUAL("Test", task->getName());
-	task->setName("Tjohopp");
-	taskAccessor->updateTask(*task);
+	taskAccessor->updateTask(task->withName("Tjohopp"));
 	task = taskAccessor->getTask(taskId);
 	ASSERT_EQUAL("Tjohopp", task->getName());
 }
@@ -128,6 +127,8 @@ public:
 		updatedTaskID = 0;
 		updatedParentTaskID = 0;
 		removedTaskID = 0;
+		nameChangedTaskID = 0;
+		timeChangedTaskID = 0;
 	}
 	~TAObserver()
 	{
@@ -150,6 +151,16 @@ public:
 		updatedParentTaskID = id;
 	}
 
+	virtual void on_taskNameChanged(int64_t id)
+	{
+		nameChangedTaskID = id;
+	}
+
+	virtual void on_taskTimeChanged(int64_t id)
+	{
+		timeChangedTaskID = id;
+	}
+
 	virtual void on_completeUpdate()
 	{
 
@@ -158,6 +169,8 @@ public:
 	int64_t updatedTaskID;
 	int64_t updatedParentTaskID;
 	int64_t removedTaskID;
+	int64_t nameChangedTaskID;
+	int64_t timeChangedTaskID;
 };
 
 void TaskAccessor_updateTask()
@@ -175,34 +188,33 @@ void TaskAccessor_updateTask()
 	shared_ptr<Task> task1 = taskAccessor->getTask(id);
 
 	observer.updatedTaskID = 0;
-	task1->setName("Coding");
-	taskAccessor->updateTask(*task1);
+	taskAccessor->updateTask(task1->withName("Coding"));
 	shared_ptr<Task> changedTask = taskAccessor->getTask(id);
 	Gtk::Main::iteration(false);
-	ASSERT_EQUAL(task1->getName(), changedTask->getName());
-	ASSERT_EQUALM("Notified TaskID: ", task1->getID(), observer.updatedTaskID);
+	ASSERT_EQUAL("Coding", changedTask->getName());
+	ASSERT_EQUALM("Notified TaskID: ", task1->getID(), observer.nameChangedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", 0, observer.updatedParentTaskID);
 
-	observer.updatedTaskID = 0;
+	observer.nameChangedTaskID = 0;
 
 	task1 = changedTask;
 	taskAccessor->updateTask(*task1);
 	changedTask = taskAccessor->getTask(id);
-	ASSERT_EQUALM("Notified TaskID: ", 0, observer.updatedTaskID);
+	ASSERT_EQUALM("Notified TaskID: ", 0, observer.nameChangedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", 0, observer.updatedParentTaskID);
 
 	Task subtask("Sub task");
 	int64_t id2 = taskAccessor->newTask(subtask);
-	shared_ptr<Task> task2 = taskAccessor->getTask(id2);
-	task2->setParent(id);
-	taskAccessor->updateTask(*task2);
-	Gtk::Main::iteration(false);
-	ASSERT_EQUALM("Notified TaskID: ", task2->getID(), observer.updatedTaskID);
-	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.updatedParentTaskID);
+	shared_ptr<Task> temp_task = taskAccessor->getTask(id2);
 
-	taskAccessor->removeTask(task2->getID());
+	auto task2 = temp_task->withParent(id);
+	taskAccessor->updateTask(task2);
 	Gtk::Main::iteration(false);
-	ASSERT_EQUALM("Notified ParentID: ", task2->getID(), observer.removedTaskID);
+	ASSERT_EQUALM("Notified ParentID: ", task2.getID(), observer.updatedParentTaskID);
+
+	taskAccessor->removeTask(task2.getID());
+	Gtk::Main::iteration(false);
+	ASSERT_EQUALM("Notified ParentID: ", task2.getID(), observer.removedTaskID);
 }
 
 void TaskAccessor_lastChanged()
@@ -221,16 +233,13 @@ void TaskAccessor_lastChanged()
 	ASSERT_EQUALM("Asking for all tasks after last inserted", 0, tasks->size());
 
 	std::string newName = "New name";
-	Task updated_task(newName, task.getParentID(), task.getUUID(), task.getCompleted(), task.getID(), 495,
-			task.getParentUUID(), false);
+	Task updated_task(newName, task.getParentID(), task.getUUID(), task.getCompleted(), task.getID(), 495, task.getParentUUID(), false);
 	taskAccessor->updateTask(updated_task);
 	tasks = taskAccessor->getTasksChangedSince(0);
 
-	ASSERT_EQUALM("Updated with task changed before task in database. Number of tasks should be unchanged", 1,
-			tasks->size());
+	ASSERT_EQUALM("Updated with task changed before task in database. Number of tasks should be unchanged", 1, tasks->size());
 	task = tasks->at(0);
-	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName,
-			task.getName());
+	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName, task.getName());
 
 }
 

@@ -18,16 +18,16 @@ SummaryObserver::~SummaryObserver()
 	std::list<ISummary*>::iterator iter = subjects.begin();
 	while (iter != subjects.end())
 	{
-		ISummary* subject = *iter;
+		ISummary *subject = *iter;
 		subject->detach(this);
 		++iter;
 	}
 }
-void SummaryObserver::attach(ISummary* subject)
+void SummaryObserver::attach(ISummary *subject)
 {
 	subjects.push_back(subject);
 }
-void SummaryObserver::detach(ISummary* subject)
+void SummaryObserver::detach(ISummary *subject)
 {
 	if (unsubscription_allowed)
 	{
@@ -35,7 +35,7 @@ void SummaryObserver::detach(ISummary* subject)
 	}
 }
 
-Summary::Summary(std::shared_ptr<DB::IDatabase>& database) :
+Summary::Summary(std::shared_ptr<DB::IDatabase> &database) :
 		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getTaskAccessor())
 {
 	treeModel = TreeStore::create(columns);
@@ -48,10 +48,9 @@ Summary::Summary(std::shared_ptr<DB::IDatabase>& database) :
 	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
 	taskAccessor->attach(this);
 
-	Gtk::Menu::MenuList& menulist = Menu_Popup.items();
+	Gtk::Menu::MenuList &menulist = Menu_Popup.items();
 
-	menulist.push_back(
-			Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
+	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
 
 }
 
@@ -60,7 +59,7 @@ Summary::~Summary()
 	taskAccessor->detach(this);
 }
 
-bool Summary::on_button_press_event(GdkEventButton* event)
+bool Summary::on_button_press_event(GdkEventButton *event)
 {
 	bool retVal = Gtk::TreeView::on_button_press_event(event);
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
@@ -82,7 +81,7 @@ void Summary::on_menu_showDetails()
 	std::list<SummaryObserver*>::iterator iter = observers.begin();
 	while (iter != observers.end())
 	{
-		SummaryObserver* observer = *iter;
+		SummaryObserver *observer = *iter;
 		observer->on_showDetailsClicked(this, id, startTime, stopTime);
 		++iter;
 	}
@@ -98,17 +97,17 @@ void Summary::on_selection_changed()
 	std::list<SummaryObserver*>::iterator iter = observers.begin();
 	while (iter != observers.end())
 	{
-		SummaryObserver* observer = *iter;
+		SummaryObserver *observer = *iter;
 		observer->on_selection_changed(id, startTime, stopTime);
 		++iter;
 	}
 }
-void Summary::attach(SummaryObserver* observer)
+void Summary::attach(SummaryObserver *observer)
 {
 	observers.push_back(observer);
 }
 
-void Summary::detach(SummaryObserver* observer)
+void Summary::detach(SummaryObserver *observer)
 {
 	observer->detach(this);
 	observers.remove(observer);
@@ -128,7 +127,7 @@ int64_t Summary::getSelectedID()
 	}
 	return retVal;
 }
-void Summary::setReferences(Gtk::Calendar& calendar)
+void Summary::setReferences(Gtk::Calendar &calendar)
 {
 	this->calendar = &calendar;
 	connectSignals();
@@ -177,6 +176,17 @@ void Summary::on_taskUpdated(int64_t taskID)
 		needsRePopulation = true;
 	}
 }
+
+void Summary::on_taskNameChanged(int64_t id)
+{
+	on_taskUpdated(id);
+}
+
+void Summary::on_taskTimeChanged(int64_t id)
+{
+	on_taskUpdated(id);
+}
+
 void Summary::on_completeUpdate()
 {
 	if (isVisible())
@@ -240,12 +250,12 @@ bool Summary::on_focus(Gtk::DirectionType direction)
 
 bool Summary::isVisible()
 {
-	Container* parent = this->get_parent();
-	Gtk::Notebook* notebook = dynamic_cast<Gtk::Notebook*>(parent->get_parent());
+	Container *parent = this->get_parent();
+	Gtk::Notebook *notebook = dynamic_cast<Gtk::Notebook*>(parent->get_parent());
 	if (notebook)
 	{
 		int active_tab = notebook->get_current_page();
-		Widget* active = notebook->get_nth_page(active_tab);
+		Widget *active = notebook->get_nth_page(active_tab);
 		if (active != parent)
 		{
 			return false;
@@ -286,7 +296,7 @@ TreeModel::Row Summary::add(int64_t id)
 /*
  * Populate is filling the list, updating existing and adding elements not in list
  */
-void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
+void Summary::populate(Gtk::TreeModel::Row *parent, int parentID)
 {
 	if (isVisible())
 	{
@@ -304,7 +314,7 @@ void Summary::populate(Gtk::TreeModel::Row* parent, int parentID)
 	}
 }
 
-void Summary::assignValuesToRow(TreeModel::Row& row, std::shared_ptr<Task> task, time_t totalTime)
+void Summary::assignValuesToRow(TreeModel::Row &row, std::shared_ptr<Task> task, time_t totalTime)
 {
 	row[columns.col_id] = task->getID();
 	row[columns.col_name] = task->getName();

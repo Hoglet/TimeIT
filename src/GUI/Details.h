@@ -16,14 +16,16 @@
 #include "Database.h"
 #include "TimeAccessor.h"
 
-
 namespace GUI
 {
 
 class DetailsObserver
 {
 public:
-	virtual ~DetailsObserver() {};
+	virtual ~DetailsObserver()
+	{
+	}
+	;
 	virtual void on_selected_changed() = 0;
 	virtual void on_edit_details(int64_t) = 0;
 };
@@ -31,21 +33,26 @@ public:
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details : public Gtk::TreeView, public DB::TaskAccessorObserver
+class Details: public Gtk::TreeView, public DB::TaskAccessorObserver
 {
 public:
-	Details( std::shared_ptr<DB::IDatabase>& database);
+	Details(std::shared_ptr<DB::IDatabase> &database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
-	bool on_button_press_event(GdkEventButton* event);
+	bool on_button_press_event(GdkEventButton *event);
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
 	//TaskAccessorObserver interface
-	virtual void on_taskAdded(int64_t) {};
+	virtual void on_taskAdded(int64_t)
+	{
+	}
+	;
 	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskRemoved(int64_t) ;
+	virtual void on_taskRemoved(int64_t);
 	virtual void on_completeUpdate();
+	virtual void on_taskNameChanged(int64_t);
+	virtual void on_taskTimeChanged(int64_t);
 	//
 	int64_t getSelectedID();
 	//
@@ -71,11 +78,11 @@ private:
 			add(m_col_time);
 		}
 		;
-		Gtk::TreeModelColumn <int> m_col_id;
-		Gtk::TreeModelColumn <Glib::ustring> m_col_time;
+		Gtk::TreeModelColumn<int> m_col_id;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
 	};
 	ModelColumns m_columns;
-	Gtk::Calendar* m_calendar;
+	Gtk::Calendar *m_calendar;
 	int64_t m_taskID;
 //	time_t m_activeDay;
 	time_t m_startTime;
