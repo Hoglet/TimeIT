@@ -69,6 +69,7 @@ add_subdirectory(images)
 add_subdirectory(doc)
 add_subdirectory(po)
 add_subdirectory(misc)
+add_subdirectory(tests)
 
 #  make ctags
 # --------------
