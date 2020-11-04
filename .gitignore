@@ -9,7 +9,6 @@ install-sh
 depcomp
 latex
 *.o
-src/timeit
 config.status.lineno
 libtool
 .anjuta_sym_db.db
@@ -53,14 +52,14 @@ src/*.gcda
 config.guess
 config.sub
 cmake_install.cmake
-CMakeFiles
+/CMakeFiles
 coverage
-CMakeCache.txt
+/CMakeCache.txt
 *.cmake
 install_manifest.txt
 version
 src/version.h
-_CPack_Packages
+/_CPack_Packages
 debian/timeit
 *.deb
 *.rpm
@@ -77,3 +76,9 @@ src/version.h
 /tags
 /.cproject
 /.project
+/.codelite
+/.ninja_deps
+/.ninja_log
+/build.ninja
+/rules.ninja
+/src/tags

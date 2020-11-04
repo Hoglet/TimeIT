@@ -1,67 +1,85 @@
-project(timeit)
+cmake_minimum_required(VERSION 2.8)
 
-ENABLE_TESTING()
-set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
+# Append local cmake modules
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 
-set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
-set(PROGRAMNAME_LOCALEDIR "\"${DATADIR}/locale\"")
-set(GETTEXT_PACKAGE "\"${PROJECT_NAME}\"")
+#  about TimeIT
+# ---------------
+project(TimeIT)
 
-set(CMAKE_CXX_FLAGS "-std=c++0x -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -fprofile-arcs --coverage -ftest-coverage")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs --coverage -ftest-coverage")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+message(${CMAKE_SOURCE_DIR})
 
-add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
-add_definitions( -DPACKAGE_DATA_DIR=\"${DATADIR}\" )
-add_definitions( -DGETTEXT_PACKAGE=${GETTEXT_PACKAGE})
-add_definitions( -DPROGRAMNAME_LOCALEDIR=${PROGRAMNAME_LOCALEDIR})
+if(NOT CONFIGURED)
+	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/git_version_gen.sh)
+	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
+endif()
+add_custom_target(version ALL
+                  COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .
+                  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+file (STRINGS "version" PACKAGE_VERSION)
 
-#  Source files
+unset(VERSION_FILE CACHE)
+find_file(VERSION_FILE NAME "version" PATHS ${CMAKE_CURRENT_SOURCE_DIR})
+
+IF (NOT "${VERSION_FILE}" STREQUAL VERSION_FILE-NOTFOUND)
+  file (STRINGS ${VERSION_FILE} PACKAGE_VERSION)
+ELSE()
+  SET(PACKAGE_VERSION "1.Unknown ")
+ENDIF()
+
+#  dependencies
+# ---------------
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
+pkg_check_modules(SQLITE sqlite3 REQUIRED)
+pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
+pkg_check_modules(XLIB x11 REQUIRED)
+pkg_check_modules(JANSSON jansson REQUIRED)
+pkg_check_modules(CURL libcurl REQUIRED)
+pkg_check_modules(NOTIFY libnotify REQUIRED)
+
+
+# make dist target
+# -------------------
+add_custom_target(dist
+    COMMAND   ${CMAKE_SOURCE_DIR}/makedist.sh ${CMAKE_PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		DEPENDS version
+    )
+
+# make DEB & RPM package
+#--------------------
+set(CMAKE_INSTALL_PREFIX "/usr" )
+set(CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
+SET(CPACK_GENERATOR "DEB;RPM")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Kent Asplund")
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libgtkmm-2.4-1c2a |libgtkmm-2.4-1v5 , libsqlite3-0, libxss1,libnotify-bin, libjansson4, libcurl3")
+set(CPACK_RPM_PACKAGE_REQUIRES "libgtkmm-2.4-1v5, libsqlite3-0, libxss1, libnotify-bin, libjansson4, libcurl")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The unobtrusive time tracker.")
+set(CPACK_PACKAGE_DESCRIPTION "TimeIT is a time tracker somewhat similar to ktimetracker and gnotime written in C++ using gtkmm. It aims to be unobtrusive and simple to use.  It has Workspace tracking, Idle detection, hierarchical tasks and can show summaries over day/week/month")
+set(CPACK_PACKAGE_CONTACT "Kent Asplund hoglet@solit.se")
+set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
+INCLUDE(CPack)
+
+#  Subfolders
+# ---------------
+add_subdirectory(timeit_gtkmm)
+add_subdirectory(images)
+add_subdirectory(doc)
+add_subdirectory(po)
+add_subdirectory(misc)
+add_subdirectory(tests)
+
+#  make ctags
 # --------------
-file( GLOB_RECURSE headers *.h)
-file( GLOB_RECURSE sources *.cpp)
-
-link_directories(${GTKMM_LIBRARY_DIRS}
-                 ${SQLITE_LIBRARY_DIRS}
-                 ${XSCRNS_LIBRARY_DIRS}
-                 ${CURL_LIBRARY_DIRS}
-                 ${NOTIFY_LIBRARY_DIRS}
-                 ${JANSSON_LIBRARY_DIRS}
-                 )
-
-include_directories(${GTKMM_INCLUDE_DIRS}
-                    ${SQLITE_INCLUDE_DIRS}
-                    ${XSCRNS_INCLUDE_DIRS}
-                    ${XLIB_INCLUDE_DIRS}
-                    ${JANSSON_INCLUDE_DIRS}
-                    ${CURL_INCLUDE_DIRS}
-                    ${NOTIFY_INCLUDE_DIRS}
-                    "${PROJECT_SOURCE_DIR}"
-                    "${PROJECT_SOURCE_DIR}/DB/"
-                    "${PROJECT_SOURCE_DIR}/Logic/"
-                    "${PROJECT_SOURCE_DIR}/GUI/"
-                    "${PROJECT_SOURCE_DIR}/Misc/"
-                    "${PROJECT_SOURCE_DIR}/Sync/"
-                    "${PROJECT_SOURCE_DIR}/Tests/"
-                    "${PROJECT_SOURCE_DIR}/DB/DBAbstraction/"
-                    "${PROJECT_SOURCE_DIR}/../cute_lib/"
-                    )
-
-
-add_executable(${PROJECT_NAME} ${sources} ${headers} )
-
-target_link_libraries(${PROJECT_NAME}
-                      ${GTKMM_LIBRARIES}
-                      ${SQLITE_LIBRARIES}
-                      ${XSCRNS_LIBRARIES}
-                      ${XLIB_LIBRARIES}
-                      ${JANSSON_LIBRARIES}
-                      ${CURL_LIBRARIES}
-                      ${NOTIFY_LIBRARIES}
-                      )
-
-
-install(TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib
-         ARCHIVE DESTINATION lib/static)
+set_source_files_properties(tags PROPERTIES GENERATED true)
+add_custom_target(tags
+    COMMAND ctags -R --c++-kinds=+p --fields=+iaS --extra=+q timeit_gtkmm
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+find_program(CTAGS_PATH ctags)
+if(CTAGS_PATH)
+	add_dependencies(timeit tags)
+endif(CTAGS_PATH)
