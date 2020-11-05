@@ -5,10 +5,14 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 
 #  about TimeIT
 # ---------------
-project(TimeIT)
+project(timeit)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
+
+add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
+
 message(${CMAKE_SOURCE_DIR})
 
 if(NOT CONFIGURED)
@@ -66,6 +70,7 @@ INCLUDE(CPack)
 
 #  Subfolders
 # ---------------
+add_subdirectory(lib)
 add_subdirectory(timeit_gtkmm)
 add_subdirectory(images)
 add_subdirectory(doc)
@@ -75,11 +80,11 @@ add_subdirectory(tests)
 
 #  make ctags
 # --------------
-set_source_files_properties(tags PROPERTIES GENERATED true)
-add_custom_target(tags
-    COMMAND ctags -R --c++-kinds=+p --fields=+iaS --extra=+q timeit_gtkmm
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-find_program(CTAGS_PATH ctags)
-if(CTAGS_PATH)
-	add_dependencies(timeit tags)
-endif(CTAGS_PATH)
+#set_source_files_properties(tags PROPERTIES GENERATED true)
+#add_custom_target(tags
+#    COMMAND ctags -R --c++-kinds=+p --fields=+iaS --extra=+q timeit_gtkmm
+#    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+#find_program(CTAGS_PATH ctags)
+#if(CTAGS_PATH)
+#	add_dependencies(timeit_gtkmm tags)
+#endif(CTAGS_PATH)

@@ -3,7 +3,6 @@ project(timeit)
 ENABLE_TESTING()
 set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 
-set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
 set(PROGRAMNAME_LOCALEDIR "\"${DATADIR}/locale\"")
 set(GETTEXT_PACKAGE "\"${PROJECT_NAME}\"")
 
@@ -58,6 +57,7 @@ target_link_libraries(${PROJECT_NAME}
                       ${JANSSON_LIBRARIES}
                       ${CURL_LIBRARIES}
                       ${NOTIFY_LIBRARIES}
+					  libtimeit
                       )
 
 

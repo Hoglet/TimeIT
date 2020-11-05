@@ -3,7 +3,6 @@
 #include "cute_runner.h"
 
 #include "Logic/AutoTrackerTest.h"
-#include "Logic/UUID_test.h"
 #include "Logic/ControllerTest.h"
 #include "Logic/TimeKeeperTest.h"
 #include "Misc/test_exceptions.h"
@@ -19,7 +18,6 @@
 #include "DB/test_SettingsAccessor.h"
 #include "DB/test_AutotrackAccessor.h"
 #include "Misc/test_utils.h"
-#include "DB/test_task.h"
 #include "DB/test_extendedTask.h"
 #include "DB/test_db.h"
 #include "DB/test_timeEntry.h"
@@ -36,7 +34,6 @@ TestRunner::TestRunner()
 {
 	s += make_suite_TimeKeeperTest();
 	s += make_suite_ControllerTest();
-	s += make_suite_UUIDTest();
 	s += make_suite_AutoTrackerTest();
 	s += make_suite_test_TimeManagement();
 	s += make_suite_Notifier_test();
@@ -47,9 +44,7 @@ TestRunner::TestRunner()
 	s += make_suite_test_ExtendedTaskAccessor();
 	s += make_suite_test_SettingsAccessor();
 	s += make_suite_test_AutotrackAccessor();
-	s += make_suite_UUIDTest();
 	s += make_suite_test_TaskAccessor();
-	s += make_suite_Task_test();
 	s += make_suite_exceptionTest();
 	s += make_suite_OSAbstractionTest();
 	s += make_suite_ExtendedTask_test();

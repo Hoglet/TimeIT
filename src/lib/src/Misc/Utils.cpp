@@ -9,7 +9,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sstream>
-#include <gtkmm.h>
 #include "OSAbstraction.h"
 #include "time.h"
 #include <iomanip>
@@ -17,7 +16,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-using namespace Glib;
+//using namespace Glib;
 using namespace std;
 
 namespace Utils
@@ -32,15 +31,14 @@ std::string getImagePath()
 
 std::string get639LanguageString()
 {
-	std::string retVal=setlocale(LC_ALL,NULL);
-	retVal = retVal.substr(0,2);
+	std::string retVal = setlocale(LC_ALL, NULL);
+	retVal = retVal.substr(0, 2);
 	return retVal;
 }
 
-
-time_t getBeginingOfDay(const time_t& rawtime)
+time_t getBeginingOfDay(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 0;
 	timeInfo->tm_min = 0;
@@ -48,9 +46,9 @@ time_t getBeginingOfDay(const time_t& rawtime)
 	timeInfo->tm_isdst = -1;
 	return mktime(timeInfo);
 }
-time_t getEndOfDay(const time_t& rawtime)
+time_t getEndOfDay(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 59;
 	timeInfo->tm_min = 59;
@@ -61,22 +59,22 @@ time_t getEndOfDay(const time_t& rawtime)
 
 int getDayOfWeek(const time_t rawtime)
 {
-	struct tm * timeInfo = localtime(&rawtime);
-	int dow=timeInfo->tm_wday;
-	int retVal=dow;
+	struct tm *timeInfo = localtime(&rawtime);
+	int dow = timeInfo->tm_wday;
+	int retVal = dow;
 
 	int weekStartsOnDay = *(nl_langinfo(_NL_TIME_FIRST_WEEKDAY)) - 1;
 	retVal = retVal - weekStartsOnDay;
-	if(retVal<0)
+	if (retVal < 0)
 	{
-		retVal= retVal + 7;
+		retVal = retVal + 7;
 	}
 	return retVal;
 }
 
-time_t getBeginingOfWeek(const time_t& rawtime)
+time_t getBeginingOfWeek(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	int dayOfWeek = getDayOfWeek(rawtime);
 	time_t bow = rawtime - (dayOfWeek) * SECOND_PER_DAY;
 	timeInfo = localtime(&bow);
@@ -88,9 +86,9 @@ time_t getBeginingOfWeek(const time_t& rawtime)
 	return mktime(timeInfo);
 }
 
-time_t getEndOfWeek(const time_t& rawtime)
+time_t getEndOfWeek(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	int dayOfWeek = getDayOfWeek(rawtime);
 	time_t eow = rawtime + (6 - dayOfWeek) * SECOND_PER_DAY;
 	timeInfo = localtime(&eow);
@@ -100,9 +98,9 @@ time_t getEndOfWeek(const time_t& rawtime)
 	timeInfo->tm_isdst = -1;
 	return mktime(timeInfo);
 }
-time_t getBeginingOfMonth(const time_t& rawtime)
+time_t getBeginingOfMonth(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 0;
 	timeInfo->tm_min = 0;
@@ -111,9 +109,9 @@ time_t getBeginingOfMonth(const time_t& rawtime)
 	timeInfo->tm_isdst = -1;
 	return mktime(timeInfo);
 }
-time_t getEndOfMonth(const time_t& rawtime)
+time_t getEndOfMonth(const time_t &rawtime)
 {
-	struct tm * timeInfo = localtime(&rawtime);
+	struct tm *timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 59;
 	timeInfo->tm_min = 59;
 	timeInfo->tm_hour = 23;
@@ -122,9 +120,9 @@ time_t getEndOfMonth(const time_t& rawtime)
 	return mktime(timeInfo);
 }
 
-time_t getBeginingOfYear(const time_t& rawtime)
+time_t getBeginingOfYear(const time_t &rawtime)
 {
-	struct tm * timeInfo;
+	struct tm *timeInfo;
 	timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 0;
 	timeInfo->tm_min = 0;
@@ -134,9 +132,9 @@ time_t getBeginingOfYear(const time_t& rawtime)
 	timeInfo->tm_isdst = -1;
 	return mktime(timeInfo);
 }
-time_t getEndOfYear(const time_t& rawtime)
+time_t getEndOfYear(const time_t &rawtime)
 {
-	struct tm * timeInfo = localtime(&rawtime);
+	struct tm *timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 59;
 	timeInfo->tm_min = 59;
 	timeInfo->tm_hour = 23;
@@ -146,10 +144,9 @@ time_t getEndOfYear(const time_t& rawtime)
 	return mktime(timeInfo);
 }
 
-
-int getDaysInMonth(const time_t& rawtime)
+int getDaysInMonth(const time_t &rawtime)
 {
-	struct tm * timeInfo = localtime(&rawtime);
+	struct tm *timeInfo = localtime(&rawtime);
 	timeInfo->tm_sec = 59;
 	timeInfo->tm_min = 59;
 	timeInfo->tm_hour = 23;
@@ -182,7 +179,7 @@ time_t getTime(int year, int month, int day, int hour, int min, int sec)
 {
 	time_t rawtime;
 	time(&rawtime);
-	struct tm* timeInfo;
+	struct tm *timeInfo;
 	timeInfo = localtime(&rawtime);
 	timeInfo->tm_year = year - 1900;
 	timeInfo->tm_mon = month;
@@ -219,22 +216,17 @@ std::string seconds2hhmm(int64_t s)
 	retVal << setfill('0') << setw(2) << hours << ":" << setfill('0') << setw(2) << minutes;
 	return retVal.str();
 }
-std::string createDurationString(const time_t& from, const time_t& to)
+std::string createDurationString(const time_t &from, const time_t &to)
 {
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
 	struct tm toTime = *localtime(&to);
-	retVal << (fromTime.tm_year + 1900) << "-"
-           << setfill('0') << setw(2) << fromTime.tm_mon+1 << "-"
-           << setfill('0') << setw(2) << fromTime.tm_mday << " "
-           << setfill('0') << setw(2) << fromTime.tm_hour << ":"
-           << setfill('0') << setw(2) << fromTime.tm_min;
+	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << " "
+			<< setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
 	retVal << " -> ";
 	if (fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday)
 	{
-		retVal << (toTime.tm_year + 1900) << "-"
-               << setfill('0') << setw(2) << toTime.tm_mon+1 << "-"
-               << setfill('0') << setw(2) << toTime.tm_mday << " ";
+		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " ";
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
 	return retVal.str();

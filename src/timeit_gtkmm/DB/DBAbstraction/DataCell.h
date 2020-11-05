@@ -12,7 +12,7 @@ class DataCell
 public:
 	DataCell();
 	DataCell(int);
-	DataCell(const char *);
+	DataCell(const char*);
 	virtual ~DataCell();
 	bool hasValue();
 	int getInt();
