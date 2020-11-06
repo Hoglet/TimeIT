@@ -5,8 +5,8 @@
 #include "TaskAccessor.h"
 #include "dbexception.h"
 #include "test_TaskAccessor.h"
-#include "UUID.h"
 #include <gtkmm.h>
+#include <UUIDTool.h>
 
 using namespace DB;
 
@@ -27,7 +27,7 @@ void TaskAccessor_getTask()
 	int64_t taskId = taskAccessor->newTask("Test", 0);
 
 	shared_ptr<Task> task = taskAccessor->getTask(taskId);
-	ASSERT_EQUAL("Test", task->getName());
+	ASSERT_EQUAL("Test", task->name());
 }
 
 void TaskAccessor_testGetTasks()
@@ -49,7 +49,7 @@ void TaskAccessor_testGetTasks()
 
 	tasks = taskAccessor->getTasks();
 	Task &task = tasks->at(0);
-	ASSERT_EQUAL("Test", task.getName());
+	ASSERT_EQUAL("Test", task.name());
 
 	tasks = taskAccessor->getTasks(taskId);
 	ASSERT_EQUALM("Finding number of sub tasks ", 1, tasks->size());
@@ -62,10 +62,10 @@ void TaskAccessor_setTaskName()
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	int64_t taskId = taskAccessor->newTask("Test", 0);
 	shared_ptr<Task> task = taskAccessor->getTask(taskId);
-	ASSERT_EQUAL("Test", task->getName());
+	ASSERT_EQUAL("Test", task->name());
 	taskAccessor->updateTask(task->withName("Tjohopp"));
 	task = taskAccessor->getTask(taskId);
-	ASSERT_EQUAL("Tjohopp", task->getName());
+	ASSERT_EQUAL("Tjohopp", task->name());
 }
 
 void TaskAccessor_setParentID()
@@ -75,10 +75,10 @@ void TaskAccessor_setParentID()
 	int64_t taskId1 = taskAccessor->newTask("Test", 0);
 	int64_t taskId2 = taskAccessor->newTask("Test2", 0);
 	shared_ptr<Task> task = taskAccessor->getTask(taskId1);
-	ASSERT_EQUAL(0, task->getParentID());
+	ASSERT_EQUAL(0, task->parentID());
 	taskAccessor->setParentID(taskId1, taskId2);
 	task = taskAccessor->getTask(taskId1);
-	ASSERT_EQUAL(taskId2, task->getParentID());
+	ASSERT_EQUAL(taskId2, task->parentID());
 }
 
 void TaskAccessor_setParentID_inputValidation()
@@ -87,7 +87,7 @@ void TaskAccessor_setParentID_inputValidation()
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	int64_t taskId = taskAccessor->newTask("Test", 0);
 	shared_ptr<Task> task = taskAccessor->getTask(taskId);
-	ASSERT_EQUAL(0, task->getParentID());
+	ASSERT_EQUAL(0, task->parentID());
 	ASSERT_THROWS(taskAccessor->setParentID(taskId, taskId + 1), dbexception);
 }
 
@@ -113,8 +113,8 @@ void TaskAccessor_newTask()
 	std::shared_ptr<std::vector<Task>> tasks = taskAccessor->getTasks();
 	ASSERT_EQUAL(1, tasks->size());
 	Task *taskp = &(tasks->at(0));
-	ASSERTM("UUID should be set", taskp->getUUID().length() != 0);
-	ASSERTM("UUID should be valid", UUID::isValid(taskp->getUUID()));
+	ASSERTM("UUID should be set", taskp->UUID().length() != 0);
+	ASSERTM("UUID should be valid", UUIDTool::isValid(taskp->UUID()));
 
 	ASSERT_THROWSM("Adding an existing task should not be allowed", taskAccessor->newTask(*taskp), dbexception);
 }
@@ -191,8 +191,8 @@ void TaskAccessor_updateTask()
 	taskAccessor->updateTask(task1->withName("Coding"));
 	shared_ptr<Task> changedTask = taskAccessor->getTask(id);
 	Gtk::Main::iteration(false);
-	ASSERT_EQUAL("Coding", changedTask->getName());
-	ASSERT_EQUALM("Notified TaskID: ", task1->getID(), observer.nameChangedTaskID);
+	ASSERT_EQUAL("Coding", changedTask->name());
+	ASSERT_EQUALM("Notified TaskID: ", task1->ID(), observer.nameChangedTaskID);
 	ASSERT_EQUALM("Notified ParentID: ", 0, observer.updatedParentTaskID);
 
 	observer.nameChangedTaskID = 0;
@@ -210,11 +210,11 @@ void TaskAccessor_updateTask()
 	auto task2 = temp_task->withParent(id);
 	taskAccessor->updateTask(task2);
 	Gtk::Main::iteration(false);
-	ASSERT_EQUALM("Notified ParentID: ", task2.getID(), observer.updatedParentTaskID);
+	ASSERT_EQUALM("Notified ParentID: ", task2.ID(), observer.updatedParentTaskID);
 
-	taskAccessor->removeTask(task2.getID());
+	taskAccessor->removeTask(task2.ID());
 	Gtk::Main::iteration(false);
-	ASSERT_EQUALM("Notified ParentID: ", task2.getID(), observer.removedTaskID);
+	ASSERT_EQUALM("Notified ParentID: ", task2.ID(), observer.removedTaskID);
 }
 
 void TaskAccessor_lastChanged()
@@ -222,24 +222,24 @@ void TaskAccessor_lastChanged()
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	std::string originalName = "Test";
-	Task original_task(originalName, 0, UUID::randomUUID(), false, 0, 500, "", false);
+	Task original_task(originalName, 0, UUIDTool::randomUUID(), false, 0, 500, "", false);
 	taskAccessor->newTask(original_task);
 
 	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince(0);
 	ASSERT_EQUALM("Asking for all tasks", 1, tasks->size());
 	Task task = tasks->at(0);
-	ASSERT_EQUALM("Checking change time", 500, task.getLastChanged());
+	ASSERT_EQUALM("Checking change time", 500, task.lastChanged());
 	tasks = taskAccessor->getTasksChangedSince(600);
 	ASSERT_EQUALM("Asking for all tasks after last inserted", 0, tasks->size());
 
 	std::string newName = "New name";
-	Task updated_task(newName, task.getParentID(), task.getUUID(), task.getCompleted(), task.getID(), 495, task.getParentUUID(), false);
+	Task updated_task(newName, task.parentID(), task.UUID(), task.completed(), task.ID(), 495, task.parentUUID(), false);
 	taskAccessor->updateTask(updated_task);
 	tasks = taskAccessor->getTasksChangedSince(0);
 
 	ASSERT_EQUALM("Updated with task changed before task in database. Number of tasks should be unchanged", 1, tasks->size());
-	task = tasks->at(0);
-	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName, task.getName());
+	Task task2 = tasks->at(0);
+	ASSERT_EQUALM("Updated with task changed before task in database, name should not change", originalName, task2.name());
 
 }
 

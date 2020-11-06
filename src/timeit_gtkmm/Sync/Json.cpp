@@ -20,15 +20,15 @@ std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 	for (Task task : *tasks)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "name", json_string(task.getName().c_str()));
-		json_object_set(obj, "id", json_string(task.getUUID().c_str()));
-		if (task.getParentUUID().length() > 0)
+		json_object_set(obj, "name", json_string(task.name().c_str()));
+		json_object_set(obj, "id", json_string(task.UUID().c_str()));
+		if (task.parentUUID().length() > 0)
 		{
 			json_t *parent = json_object();
-			json_object_set(parent, "id", json_string(task.getParentUUID().c_str()));
+			json_object_set(parent, "id", json_string(task.parentUUID().c_str()));
 			json_object_set(obj, "parent", parent);
 		}
-		if (task.getCompleted())
+		if (task.completed())
 		{
 			json_object_set(obj, "completed", json_true());
 		}
@@ -36,8 +36,8 @@ std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 		{
 			json_object_set(obj, "completed", json_false());
 		}
-		json_object_set(obj, "lastChange", json_integer(task.getLastChanged()));
-		if (task.getDeleted())
+		json_object_set(obj, "lastChange", json_integer(task.lastChanged()));
+		if (task.deleted())
 		{
 			json_object_set(obj, "deleted", json_true());
 		}

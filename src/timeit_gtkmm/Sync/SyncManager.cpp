@@ -127,14 +127,14 @@ int SyncManager::syncTaskToDatabase(string result)
 	std::shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
 	for (Task task : *tasks)
 	{
-		int64_t id = taskAccessor->uuidToId(task.getUUID());
-		string parentUUID = task.getParentUUID();
-		bool completed = task.getCompleted();
+		int64_t id = taskAccessor->uuidToId(task.UUID());
+		string parentUUID = task.parentUUID();
+		bool completed = task.completed();
 		int64_t parent = 0;
-		time_t lastChanged = task.getLastChanged();
-		string name = task.getName();
-		string uuid = task.getUUID();
-		bool deleted = task.getDeleted();
+		time_t lastChanged = task.lastChanged();
+		string name = task.name();
+		string uuid = task.UUID();
+		bool deleted = task.deleted();
 		if (parentUUID.size() > 0)
 		{
 			parent = taskAccessor->uuidToId(parentUUID);
@@ -157,16 +157,16 @@ int SyncManager::syncTaskToDatabase(string result)
 //Update tasks that had missing data earlier
 	for (Task task : *tasksToUpdate)
 	{
-		string parentUUID = task.getParentUUID();
+		string parentUUID = task.parentUUID();
 		if (parentUUID.size() > 0)
 		{
-			int64_t id = taskAccessor->uuidToId(task.getUUID());
+			int64_t id = taskAccessor->uuidToId(task.UUID());
 			int64_t parent = taskAccessor->uuidToId(parentUUID);
-			bool completed = task.getCompleted();
-			time_t lastChanged = task.getLastChanged();
-			string name = task.getName();
-			string uuid = task.getUUID();
-			bool deleted = task.getDeleted();
+			bool completed = task.completed();
+			time_t lastChanged = task.lastChanged();
+			string name = task.name();
+			string uuid = task.UUID();
+			bool deleted = task.deleted();
 			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
 			taskAccessor->updateTask(tempTask);
 		}

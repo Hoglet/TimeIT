@@ -159,7 +159,7 @@ void Summary::on_taskUpdated(int64_t taskID)
 			TreeModel::Row row = *iter;
 			time_t totalTime = timeAccessor->getTotalTimeWithChildren(taskID, startTime, stopTime);
 			assignValuesToRow(row, task, totalTime);
-			int64_t parentID = task->getParentID();
+			int64_t parentID = task->parentID();
 			if (parentID > 0)
 			{
 				on_taskUpdated(parentID);
@@ -269,7 +269,7 @@ TreeModel::Row Summary::add(int64_t id)
 	std::shared_ptr<Task> task = taskAccessor->getTask(id);
 
 	TreeModel::Row row;
-	int64_t parentID = task->getParentID();
+	int64_t parentID = task->parentID();
 	if (parentID)
 	{
 		Gtk::TreeIter iter = findRow(parentID);
@@ -316,8 +316,8 @@ void Summary::populate(Gtk::TreeModel::Row *parent, int parentID)
 
 void Summary::assignValuesToRow(TreeModel::Row &row, std::shared_ptr<Task> task, time_t totalTime)
 {
-	row[columns.col_id] = task->getID();
-	row[columns.col_name] = task->getName();
+	row[columns.col_id] = task->ID();
+	row[columns.col_name] = task->name();
 	row[columns.col_time] = Utils::seconds2hhmm(totalTime);
 }
 

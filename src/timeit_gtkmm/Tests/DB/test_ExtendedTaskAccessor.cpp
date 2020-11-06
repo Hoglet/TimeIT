@@ -23,14 +23,13 @@ void ExtendedTaskAccessor_getExtendedTask()
 	timeAccessor->newTime(taskId2, 0, 1000);
 
 	ExtendedTask task = taskAccessor->getExtendedTask(taskId)->at(0);
-	ASSERT_EQUAL("Test", task.getName());
+	ASSERT_EQUAL("Test", task.name());
 	ASSERT_EQUAL(2000, task.getTotalTime());
 
-	task = taskAccessor->getExtendedTask(taskId2)->at(0);
-	ASSERT_EQUAL("Test2", task.getName());
+	ExtendedTask task2 = taskAccessor->getExtendedTask(taskId2)->at(0);
+	ASSERT_EQUAL("Test2", task.name());
 	ASSERT_EQUAL(1000, task.getTotalTime());
 }
-
 
 void ExtendedTaskAccessor_getExtendedTasks()
 {
@@ -51,8 +50,8 @@ void ExtendedTaskAccessor_getExtendedTasks()
 	timeAccessor->newTime(taskId2, 0, 1000);
 
 	tasks = taskAccessor->getExtendedTasks();
-	ExtendedTask& task = tasks->at(0);
-	ASSERT_EQUAL("Test", task.getName());
+	ExtendedTask &task = tasks->at(0);
+	ASSERT_EQUAL("Test", task.name());
 	ASSERT_EQUAL(1000, task.getTotalTime());
 }
 
@@ -71,11 +70,11 @@ void ExtendedTaskAccessor_getRunningTasks()
 	std::shared_ptr<std::vector<ExtendedTask>> tasks = taskAccessor->getRunningTasks();
 	ASSERT_EQUAL(1, tasks->size());
 	ExtendedTask task = tasks->at(0);
-	ASSERT_EQUAL("Test2", task.getName());
+	ASSERT_EQUAL("Test2", task.name());
 
 	tasks = taskAccessor->getExtendedTasks();
-	task = tasks->at(0);
-	ASSERT_EQUAL(1000, task.getTotalTime());
+	auto task2 = tasks->at(0);
+	ASSERT_EQUAL(1000, task2.getTotalTime());
 }
 
 void ExtendedTaskAccessor_testTotalTime()
@@ -100,8 +99,8 @@ void ExtendedTaskAccessor_setExpandedTasks()
 	ExtendedTask task = taskAccessor->getExtendedTask(taskId)->at(0);
 	ASSERT_EQUAL(false, task.getExpanded());
 	taskAccessor->setTaskExpanded(taskId, true);
-	task = taskAccessor->getExtendedTask(taskId)->at(0);
-	ASSERT_EQUAL(true, task.getExpanded());
+	auto task2 = taskAccessor->getExtendedTask(taskId)->at(0);
+	ASSERT_EQUAL(true, task2.getExpanded());
 }
 
 void ExtendedTaskAccessor_testTimeReporting()
@@ -113,26 +112,25 @@ void ExtendedTaskAccessor_testTimeReporting()
 	const int64_t taskId = taskAccessor->newTask("test", parentId);
 	timeAccessor->newTime(taskId, 4000, 5000);
 
-
-	std::shared_ptr<std::vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(parentId,0,0);
+	std::shared_ptr<std::vector<ExtendedTask>> tasks = taskAccessor->getExtendedTask(parentId, 0, 0);
 	ExtendedTask task = tasks->at(0);
-	int result=task.getTotalTime();
-	ASSERT_EQUALM("Test1",1000, result);
+	int result = task.getTotalTime();
+	ASSERT_EQUALM("Test1", 1000, result);
 
-	tasks = taskAccessor->getExtendedTask(taskId,0,0);
-	task = tasks->at(0);
-	result=task.getTotalTime();
-	ASSERT_EQUALM("Test2",1000, result);
+	tasks = taskAccessor->getExtendedTask(taskId, 0, 0);
+	auto task2 = tasks->at(0);
+	result = task2.getTotalTime();
+	ASSERT_EQUALM("Test2", 1000, result);
 
-	tasks = taskAccessor->getExtendedTasks(0,0,0);
-	task = tasks->at(0);
-	result=task.getTotalTime();
-	ASSERT_EQUALM("Test3",1000, result);
+	tasks = taskAccessor->getExtendedTasks(0, 0, 0);
+	auto task3 = tasks->at(0);
+	result = task.getTotalTime();
+	ASSERT_EQUALM("Test3", 1000, result);
 
-	tasks = taskAccessor->getExtendedTasks(parentId,0,0);
-	task = tasks->at(0);
-	result=task.getTotalTime();
-	ASSERT_EQUALM("Test4",1000, result);
+	tasks = taskAccessor->getExtendedTasks(parentId, 0, 0);
+	auto task4 = tasks->at(0);
+	result = task4.getTotalTime();
+	ASSERT_EQUALM("Test4", 1000, result);
 
 }
 

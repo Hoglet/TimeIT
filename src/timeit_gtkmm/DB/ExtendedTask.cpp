@@ -13,14 +13,14 @@ bool ExtendedTask::getRunning() const
 }
 void ExtendedTask::setExpanded(bool op)
 {
-	expanded=op;
+	expanded = op;
 }
 
 ExtendedTask::ExtendedTask(int op_ID, int op_parentID, std::string op_name, int op_time, bool op_expanded, bool op_running, int op_totalTime)
 {
-	ID = op_ID;
-	parentID = op_parentID;
-	name = op_name;
+	ID_ = op_ID;
+	parentID_ = op_parentID;
+	name_ = op_name;
 	totalTime = op_totalTime;
 	expanded = op_expanded;
 	running = op_running;
@@ -34,9 +34,8 @@ int ExtendedTask::getTotalTime() const
 
 void ExtendedTask::setTotalTime(int op_totalTime)
 {
-	totalTime=op_totalTime;
+	totalTime = op_totalTime;
 }
-
 
 int ExtendedTask::getTime() const
 {
@@ -45,6 +44,6 @@ int ExtendedTask::getTime() const
 
 void ExtendedTask::setTime(int op_time)
 {
-	time=op_time;
+	time = op_time;
 }
 }

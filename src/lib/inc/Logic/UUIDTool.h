@@ -3,14 +3,14 @@
 
 #include <string>
 
-class UUID
+class UUIDTool
 {
 public:
 	static std::string randomUUID();
 	static bool isValid(const std::string& uuid);
 	static void init();
 private:
-	UUID();
+	UUIDTool();
 	static int random4hex();
 	static int randomBetween8and11();
 	static bool rangeTestG4(const char& c);

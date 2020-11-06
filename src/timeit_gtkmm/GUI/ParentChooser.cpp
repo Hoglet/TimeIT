@@ -14,7 +14,7 @@ namespace GUI
 {
 
 using namespace std;
-ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase>& database) :
+ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase> &database) :
 		taskAccessor(database->getTaskAccessor())
 {
 	//Create the Tree model:
@@ -93,7 +93,7 @@ Gtk::TreeModel::iterator ParentChooser::findRow(int id)
 	return iter;
 }
 
-void ParentChooser::populate(std::string& baseString, int parentID)
+void ParentChooser::populate(std::string &baseString, int parentID)
 {
 	std::shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID);
 
@@ -102,19 +102,19 @@ void ParentChooser::populate(std::string& baseString, int parentID)
 		Gtk::TreeModel::Row row;
 		Gtk::TreeModel::iterator iter = model->append();
 		row = *(iter);
-		Task& task = tasks->at(i);
+		Task &task = tasks->at(i);
 
 		string name;
 		if (baseString.length() > 0)
 		{
 			name = baseString;
 		}
-		name += task.getName();
-		row[Columns.col_id] = task.getID();
+		name += task.name();
+		row[Columns.col_id] = task.ID();
 		row[Columns.col_name] = name;
 
 		string newBaseString = baseString + "    ";
-		populate(newBaseString, task.getID());
+		populate(newBaseString, task.ID());
 	}
 }
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <UUIDTool.h>
 
 using namespace std;
 using namespace DBAbstraction;
@@ -31,7 +32,7 @@ void TimeAccessor::stopAllRunning()
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 {
 	time_t now = time(0);
-	TimeEntry te(0, UUID::randomUUID(), taskID, "", start, stop, false, false, now);
+	TimeEntry te(0, UUIDTool::randomUUID(), taskID, "", start, stop, false, false, now);
 	return newEntry(te);
 }
 
@@ -373,7 +374,7 @@ void TimeAccessor::upgradeToDB5()
 		int64_t taskID = row[1].getInt();
 		time_t start = row[2].getInt();
 		time_t stop = row[3].getInt();
-		string uuid = UUID::randomUUID();
+		string uuid = UUIDTool::randomUUID();
 		TimeEntry item(id, uuid, taskID, "", start, stop, false, false, now);
 		newEntry(item);
 	}

@@ -123,8 +123,8 @@ void EditTaskDialog::setTaskID(int64_t ID)
 	std::shared_ptr<Task> task = taskAccessor->getTask(taskID);
 	if (task)
 	{
-		name = task->getName();
-		setParent(task->getParentID());
+		name = task->name();
+		setParent(task->parentID());
 		taskNameEntry.set_text(name);
 		std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
 		setTickedWorkspaces(workspaces);

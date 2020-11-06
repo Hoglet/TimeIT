@@ -15,7 +15,7 @@ using namespace DB;
 namespace GUI
 {
 
-AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::IDatabase>& database) :
+AddTime::AddTime(int64_t op_taskID, ICalendar &op_calendar, std::shared_ptr<DB::IDatabase> &database) :
 		table(4, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")), taskNameLabel(
 				_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), calendar(
 				op_calendar), taskID(op_taskID), m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
@@ -27,7 +27,7 @@ AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::
 	std::shared_ptr<Task> task = m_taskAccessor->getTask(taskID);
 	if (task)
 	{
-		taskName.set_text(task->getName());
+		taskName.set_text(task->name());
 	}
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
@@ -45,7 +45,7 @@ AddTime::AddTime(int64_t op_taskID, ICalendar& op_calendar, std::shared_ptr<DB::
 	stopTimeMinute.set_increments(1, 1);
 
 	time_t now = Utils::now();
-	struct tm* timeInfo = localtime(&now);
+	struct tm *timeInfo = localtime(&now);
 	startTimeHour.set_value(timeInfo->tm_hour);
 	stopTimeHour.set_value(timeInfo->tm_hour);
 	startTimeMinute.set_value(timeInfo->tm_min);
@@ -147,7 +147,8 @@ void AddTime::on_change()
 	if (stopH > startH || (stopH == startH && stopM > startM))
 	{
 		OKButton->set_sensitive(true);
-	} else
+	}
+	else
 	{
 		OKButton->set_sensitive(false);
 	}

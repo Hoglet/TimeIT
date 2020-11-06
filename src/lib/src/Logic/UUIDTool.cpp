@@ -1,29 +1,29 @@
-#include "UUID.h"
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <random>
 #include <Utils.h>
+#include <UUIDTool.h>
 
 
 using namespace std;
 
-void UUID::init()
+void UUIDTool::init()
 {
 	srand(Utils::now());
 }
 
-int UUID::random4hex()
+int UUIDTool::random4hex()
 {
 	return (rand() % (0xFF + 1)) + (rand() % (0xFF + 1));
 }
 
-int UUID::randomBetween8and11()
+int UUIDTool::randomBetween8and11()
 {
 	return (rand() % 4) + 8;
 }
 
-std::string UUID::randomUUID()
+std::string UUIDTool::randomUUID()
 {
 	//return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
 	stringstream uuid;
@@ -43,7 +43,7 @@ std::string UUID::randomUUID()
 	return uuid.str();
 }
 
-bool UUID::isValid(const std::string& uuid)
+bool UUIDTool::isValid(const std::string& uuid)
 {
 
 	if (36 != uuid.length())
@@ -120,7 +120,7 @@ bool UUID::isValid(const std::string& uuid)
 	return true;
 }
 
-bool UUID::isHex(const char& c)
+bool UUIDTool::isHex(const char& c)
 {
 	if (c >= '0' && c <= '9')
 	{
@@ -137,7 +137,7 @@ bool UUID::isHex(const char& c)
 	return false;
 }
 
-bool UUID::rangeTestG4(const char& c)
+bool UUIDTool::rangeTestG4(const char& c)
 {
 	if (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B')
 	{

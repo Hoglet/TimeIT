@@ -1,5 +1,5 @@
+#include <UUIDTool.h>
 #include "gtest/gtest.h"
-#include <UUID.h>
 #include <iostream>
 
 bool isHex(const char &c)
@@ -27,10 +27,10 @@ bool rangeTestG4(const char &c)
 	return false;
 }
 
-TEST(UUID, randomUUID)
+TEST(UUIDTool, randomUUID)
 {
 	//As UUID is random it is not repeatable
-	std::string uuid = UUID::randomUUID();
+	std::string uuid = UUIDTool::randomUUID();
 
 	ASSERT_EQ(36, uuid.length());
 
@@ -67,20 +67,20 @@ TEST(UUID, randomUUID)
 
 void UUID_isValid()
 {
-	ASSERT_TRUE(UUID::isValid("007300de-0104-4084-a1dc-009200Ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4084-a1gc-009200Ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007g00de-0104-4084-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0i04-4084-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4o84-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-5084-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4084-11dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4084-a1dc-00w200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de40104-4084-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-010444084-a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-40844a1dc-009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4084-a1dc4009200ca01c4"));
-	ASSERT_FALSE(UUID::isValid("007300de-0104-4084-a1dc-009200ca01c44"));
-	ASSERT_FALSE(UUID::isValid("07300de-0104-4084-a1dc-009200ca01c4"));
+	ASSERT_TRUE(UUIDTool::isValid("007300de-0104-4084-a1dc-009200Ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4084-a1gc-009200Ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007g00de-0104-4084-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0i04-4084-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4o84-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-5084-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4084-11dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4084-a1dc-00w200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de40104-4084-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-010444084-a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-40844a1dc-009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4084-a1dc4009200ca01c4"));
+	ASSERT_FALSE(UUIDTool::isValid("007300de-0104-4084-a1dc-009200ca01c44"));
+	ASSERT_FALSE(UUIDTool::isValid("07300de-0104-4084-a1dc-009200ca01c4"));
 
 }
 

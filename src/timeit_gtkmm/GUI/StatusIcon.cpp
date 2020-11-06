@@ -117,10 +117,10 @@ std::string StatusIcon::completeTaskPath(int64_t id)
 	std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
 	if (task)
 	{
-		taskName = task->getName();
-		if (task->getParentID() > 0)
+		taskName = task->name();
+		if (task->parentID() > 0)
 		{
-			taskName = completeTaskPath(task->getParentID()) + " / " + taskName;
+			taskName = completeTaskPath(task->parentID()) + " / " + taskName;
 		}
 	}
 	return taskName;
@@ -264,7 +264,7 @@ void StatusIcon::setTooltip()
 		for (int64_t id : taskIDs)
 		{
 			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
-			message << setw(15) << setiosflags(ios::left) << task->getName();
+			message << setw(15) << setiosflags(ios::left) << task->name();
 			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(id, startTime, stopTime));
 		}
 	}

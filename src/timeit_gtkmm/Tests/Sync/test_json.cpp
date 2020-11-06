@@ -29,12 +29,12 @@ void Json_simpleTaskTest()
 		bool expectedCompleted = false;
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQUALM("Name: ", expectedName, task.getName());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.getParentUUID());
-		ASSERT_EQUALM("completed: ", expectedCompleted, task.getCompleted());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.getDeleted());
-		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.getLastChanged());
+		ASSERT_EQUALM("Name: ", expectedName, task.name());
+		ASSERT_EQUALM("UUID: ", expectedUUID, task.UUID());
+		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID());
+		ASSERT_EQUALM("completed: ", expectedCompleted, task.completed());
+		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
+		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
 	}
 }
 
@@ -57,12 +57,12 @@ void Json_simpleTaskTest2()
 		bool expectedCompleted = true;
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQUALM("Name: ", expectedName, task.getName());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.getParentUUID());
-		ASSERT_EQUALM("Completed: ", expectedCompleted, task.getCompleted());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.getDeleted());
-		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.getLastChanged());
+		ASSERT_EQUALM("Name: ", expectedName, task.name());
+		ASSERT_EQUALM("UUID: ", expectedUUID, task.UUID());
+		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID());
+		ASSERT_EQUALM("Completed: ", expectedCompleted, task.completed());
+		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
+		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
 	}
 }
 
@@ -78,12 +78,12 @@ void Json_threeWayTaskTest()
 	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
-	ASSERT_EQUALM("Name ", task1.getName(), task2.getName());
-	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
-	ASSERT_EQUALM("Parent: ", task1.getParentUUID(), task2.getParentUUID());
-	ASSERT_EQUALM("Completed: ", task1.getCompleted(), task2.getCompleted());
-	ASSERT_EQUALM("Deleted: ", task1.getDeleted(), task2.getDeleted());
-	ASSERT_EQUALM("Expected change time: ", task1.getLastChanged(), task2.getLastChanged());
+	ASSERT_EQUALM("Name ", task1.name(), task2.name());
+	ASSERT_EQUALM("UUID: ", task1.UUID(), task2.UUID());
+	ASSERT_EQUALM("Parent: ", task1.parentUUID(), task2.parentUUID());
+	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
+	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
+	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
 
 }
 void Json_threeWayTaskTest2()
@@ -98,12 +98,12 @@ void Json_threeWayTaskTest2()
 	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
-	ASSERT_EQUALM("Name ", task1.getName(), task2.getName());
-	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
-	ASSERT_EQUALM("Parent: ", task1.getParentUUID(), task2.getParentUUID());
-	ASSERT_EQUALM("Completed: ", task1.getCompleted(), task2.getCompleted());
-	ASSERT_EQUALM("Deleted: ", task1.getDeleted(), task2.getDeleted());
-	ASSERT_EQUALM("Expected change time: ", task1.getLastChanged(), task2.getLastChanged());
+	ASSERT_EQUALM("Name ", task1.name(), task2.name());
+	ASSERT_EQUALM("UUID: ", task1.UUID(), task2.UUID());
+	ASSERT_EQUALM("Parent: ", task1.parentUUID(), task2.parentUUID());
+	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
+	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
+	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
 
 }
 

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <UUIDTool.h>
 
 namespace DB
 {
@@ -103,7 +104,7 @@ void Database::createViews()
 
 Database::Database(const std::string& dbname)
 {
-	UUID::init();
+	UUIDTool::init();
 
 	db = shared_ptr<CSQL>(new CSQL(dbname));
 

@@ -2,6 +2,7 @@
 #include "cute.h"
 #include "TempDB.h"
 #include "Utils.h"
+#include <UUIDTool.h>
 
 using namespace DB;
 
@@ -124,7 +125,7 @@ void TimeAccessor_newItem()
 	std::shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item1(0, UUID::randomUUID(), taskId, "", 100, 200, false, false, 200);
+	TimeEntry item1(0, UUIDTool::randomUUID(), taskId, "", 100, 200, false, false, 200);
 
 	int64_t timeEntryID = timeAccessor->newEntry(item1);
 	TimeEntry item2 = timeAccessor->getByID(timeEntryID);
@@ -186,7 +187,7 @@ void TimeAccessor_getActiveTasks()
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item(0, UUID::randomUUID(), taskId, "", 100, 600, false, false, 200);
+	TimeEntry item(0, UUIDTool::randomUUID(), taskId, "", 100, 600, false, false, 200);
 
 	timeAccessor->newEntry(item);
 
@@ -221,8 +222,8 @@ void TimeAccessor_removeShortTimeSpans()
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item1(0, UUID::randomUUID(), taskId, "", 100, 110, false, false, 200);
-	TimeEntry item2(0, UUID::randomUUID(), taskId, "", 100, 160, false, false, 200);
+	TimeEntry item1(0, UUIDTool::randomUUID(), taskId, "", 100, 110, false, false, 200);
+	TimeEntry item2(0, UUIDTool::randomUUID(), taskId, "", 100, 160, false, false, 200);
 
 	timeAccessor->newEntry(item1);
 	timeAccessor->newEntry(item2);

@@ -26,7 +26,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTasks(int
 	for (unsigned int i = 0; i < tasks->size(); i++)
 	{
 		ExtendedTask& task = tasks->at(i);
-		int totalTime = timeAccessor->getTotalTimeWithChildren(task.getID(), start, stop);
+		int totalTime = timeAccessor->getTotalTimeWithChildren(task.ID(), start, stop);
 		task.setTotalTime(totalTime);
 	}
 	return tasks;
@@ -39,7 +39,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getRunningTasks(int6
 	{
 		ExtendedTask& task = tasks->at(i);
 		int totalTime = task.getTime();
-		totalTime += getTotalChildTime(task.getID());
+		totalTime += getTotalChildTime(task.ID());
 		task.setTotalTime(totalTime);
 	}
 	return tasks;
@@ -52,7 +52,7 @@ int ExtendedTaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t sto
 	for (ExtendedTask task : *tasks)
 	{
 		totalTime += task.getTime();
-		totalTime += getTotalChildTime(task.getID(), start, stop);
+		totalTime += getTotalChildTime(task.ID(), start, stop);
 	}
 	return totalTime;
 }

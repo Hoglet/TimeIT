@@ -1,5 +1,5 @@
+#include <UUIDTool.h>
 #include "TaskAccessor.h"
-#include <UUID.h>
 #include <sstream>
 
 using namespace DBAbstraction;
@@ -128,7 +128,6 @@ Task TaskAccessor::getTaskUnlimited(int64_t taskID)
 	{
 		std::vector<DataCell> row = rows->at(0);
 		int64_t id = row[0].getInt();
-
 		int64_t parent = 0;
 		if (row[1].hasValue())
 		{
@@ -179,11 +178,11 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasksChangedSince(time_t tim
 
 	for (unsigned int position = 0; position < retVal->size(); position++)
 	{
-		int64_t parent = retVal->at(position).getParentID();
+		int64_t parent = retVal->at(position).parentID();
 		if (parent != 0)
 		{
 			Task &task = retVal->at(position);
-			task.parentUuid = idToUuid(parent);
+			task.parentUuid_ = idToUuid(parent);
 		}
 	}
 	return retVal;
@@ -221,59 +220,59 @@ void TaskAccessor::_update(const Task &task)
 {
 	std::shared_ptr<DBAbstraction::Statement> statement_updateTask = db->prepare(
 			"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
-	statement_updateTask->bindValue(1, task.getName());
-	if (task.getParentID() > 0)
+	statement_updateTask->bindValue(1, task.name());
+	if (task.parentID() > 0)
 	{
-		statement_updateTask->bindValue(2, task.getParentID());
+		statement_updateTask->bindValue(2, task.parentID());
 	}
 	else
 	{
 		statement_updateTask->bindNullValue(2);
 	}
-	statement_updateTask->bindValue(3, task.getLastChanged());
-	statement_updateTask->bindValue(4, task.getDeleted());
-	statement_updateTask->bindValue(5, task.getCompleted());
-	statement_updateTask->bindValue(6, task.getID());
+	statement_updateTask->bindValue(3, task.lastChanged());
+	statement_updateTask->bindValue(4, task.deleted());
+	statement_updateTask->bindValue(5, task.completed());
+	statement_updateTask->bindValue(6, task.ID());
 
 	statement_updateTask->execute();
 }
 
 void TaskAccessor::notify(const Task &existingTask, const Task &task)
 {
-	bool parentChanged = (existingTask.getParentID() != task.getParentID());
-	bool taskDeleted = (existingTask.getDeleted() != task.getDeleted() && task.getDeleted() == true);
-	bool nameChanged = (existingTask.getName() != task.getName());
+	bool parentChanged = (existingTask.parentID() != task.parentID());
+	bool taskDeleted = (existingTask.deleted() != task.deleted() && task.deleted() == true);
+	bool nameChanged = (existingTask.name() != task.name());
 
 	if (nameChanged)
 	{
-		notifier->sendNotification(TASK_NAME_CHANGED, task.getID());
+		notifier->sendNotification(TASK_NAME_CHANGED, task.ID());
 	}
 	if (parentChanged)
 	{
-		notifier->sendNotification(TASK_PARENT_CHANGED, task.getID());
+		notifier->sendNotification(TASK_PARENT_CHANGED, task.ID());
 	}
 	if (taskDeleted)
 	{
-		notifier->sendNotification(TASK_REMOVED, task.getID());
+		notifier->sendNotification(TASK_REMOVED, task.ID());
 	}
 }
 
 bool TaskAccessor::updateTask(const Task &task)
 {
-	int id = task.getID();
+	int id = task.ID();
 	if (id == 0)
 	{
-		id = uuidToId(task.getUUID());
+		id = uuidToId(task.UUID());
 		if (id == 0)
 		{
 			stringstream message;
-			message << "Unable to find task with UUID=" << task.getUUID();
+			message << "Unable to find task with UUID=" << task.UUID();
 			dbe.setMessage(message.str());
 			throw dbe;
 		}
 	}
 	Task existingTask = getTaskUnlimited(id);
-	if (task != existingTask && task.getLastChanged() >= existingTask.getLastChanged())
+	if (task != existingTask && task.lastChanged() >= existingTask.lastChanged())
 	{
 
 		_update(task);
@@ -285,16 +284,16 @@ bool TaskAccessor::updateTask(const Task &task)
 
 int64_t TaskAccessor::newTask(const Task &op_task)
 {
-	std::string uuid = op_task.getUUID();
-	int parentID = op_task.getParentID();
-	std::string name = op_task.getName();
-	bool completed = op_task.getCompleted();
-	time_t changeTime = op_task.getLastChanged();
-	bool deleted = op_task.getDeleted();
+	std::string uuid = op_task.UUID();
+	int parentID = op_task.parentID();
+	std::string name = op_task.name();
+	bool completed = op_task.completed();
+	time_t changeTime = op_task.lastChanged();
+	bool deleted = op_task.deleted();
 
 	if (uuid.length() == 0)
 	{
-		uuid = UUID::randomUUID();
+		uuid = UUIDTool::randomUUID();
 	}
 
 	int64_t id = 0;
@@ -384,7 +383,7 @@ void TaskAccessor::upgradeToDB5()
 			parent = row[1].getInt();
 		}
 		string name = row[2].getString();
-		string uuid = UUID::randomUUID();
+		string uuid = UUIDTool::randomUUID();
 		bool deleted = row[3].getBool();
 		bool completed = false;
 		time_t changed = now;

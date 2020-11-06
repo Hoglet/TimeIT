@@ -37,7 +37,7 @@ std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 	for (vector<DataCell> row : *rows)
 	{
 		int64_t id = row[0].getInt();
-		if(m_taskAccessor->getTask(id)->getDeleted() == false)
+		if(m_taskAccessor->getTask(id)->deleted() == false)
 		{
 			retVal.push_back(id);
 		}

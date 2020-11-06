@@ -75,7 +75,7 @@ void IdleDialog::setActiveTaskList(std::vector<int64_t> activeTaskIDs)
 		{
 			text << ", ";
 		}
-		text << task->getName();
+		text << task->name();
 	}
 	taskString = text.str();
 }
