@@ -89,14 +89,12 @@ void DetailsDialog::on_OKButton_clicked()
 	if (startTime != oldStartTime)
 	{
 		TimeEntry te = timeAccessor->getByID(timeEntryID);
-		te.setStart(startTime);
-		timeAccessor->update(te);
+		timeAccessor->update(te.withStart(startTime));
 	}
 	if (stopTimeHour.sensitive())
 	{
 		TimeEntry te = timeAccessor->getByID(timeEntryID);
-		te.setStop(stopTime);
-		timeAccessor->update(te);
+		timeAccessor->update(te.withStop(stopTime));
 	}
 	detailList.set(id, rangeStart, rangeStop);
 	oldStartTime = startTime;
@@ -160,12 +158,12 @@ void DetailsDialog::set(int64_t ID, time_t startTime, time_t stopTime)
 void DetailsDialog::setTimeEntryID(int64_t id)
 {
 	TimeEntry te = timeAccessor->getByID(id);
-	if (te.getID())
+	if (te.ID())
 	{
-		oldStartTime = te.getStart();
+		oldStartTime = te.start();
 		startTimeHour.set_sensitive(true);
 		startTimeMinute.set_sensitive(true);
-		if (te.getRunning())
+		if (te.running())
 		{
 			stopTimeHour.set_sensitive(false);
 			stopTimeMinute.set_sensitive(false);
@@ -174,7 +172,7 @@ void DetailsDialog::setTimeEntryID(int64_t id)
 		{
 			stopTimeHour.set_sensitive(true);
 			stopTimeMinute.set_sensitive(true);
-			oldStopTime = te.getStop();
+			oldStopTime = te.stop();
 		}
 		timeEntryID = id;
 		setValues();

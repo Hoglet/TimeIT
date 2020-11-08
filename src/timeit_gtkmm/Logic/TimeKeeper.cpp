@@ -167,8 +167,7 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 		TaskTime task = it->second;
 
 		DB::TimeEntry te = m_timeAccessor->getByID(task.dbHandle);
-		te.setStop(task.stopTime);
-		m_timeAccessor->update(te);
+		m_timeAccessor->update(te.withStop(task.stopTime));
 	}
 }
 

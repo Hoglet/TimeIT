@@ -79,13 +79,13 @@ void SyncManager_fullSyncEmptyClient()
 	ASSERT_EQUALM("Checking amount of times in database", 1, times->size());
 	for (TimeEntry item : *times)
 	{
-		ASSERT_EQUALM("TimeEntry ID", 1, item.getID());
-		ASSERT_EQUALM("TimeEntry UUID", string("010c012c-00b9-40f6-80dd-018e011d0191"), item.getUUID());
-		ASSERT_EQUALM("TimeEntry taskUUD", string("00b3015e-00d6-418e-81c8-0125012d0172"), item.getTaskUUID());
-		ASSERT_EQUALM("TimeEntry start", 1363597429, item.getStart());
-		ASSERT_EQUALM("TimeEntry stop", 1363597541, item.getStop());
-		ASSERT_EQUALM("TimeEntry changed", 1376388171, item.getLastChanged());
-		ASSERT_EQUALM("TimeEntry deleted", false, item.getDeleted());
+		ASSERT_EQUALM("TimeEntry ID", 1, item.ID());
+		ASSERT_EQUALM("TimeEntry UUID", string("010c012c-00b9-40f6-80dd-018e011d0191"), item.UUID());
+		ASSERT_EQUALM("TimeEntry taskUUD", string("00b3015e-00d6-418e-81c8-0125012d0172"), item.taskUUID());
+		ASSERT_EQUALM("TimeEntry start", 1363597429, item.start());
+		ASSERT_EQUALM("TimeEntry stop", 1363597541, item.stop());
+		ASSERT_EQUALM("TimeEntry changed", 1376388171, item.changed());
+		ASSERT_EQUALM("TimeEntry deleted", false, item.deleted());
 	}
 
 	syncManager.doSync(0);

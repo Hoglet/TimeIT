@@ -99,16 +99,14 @@ void TimeKeeper_testUpdate()
 	timeKeeper->StartTask(taskID);
 
 	vector<TimeEntry> entries = timeaccessor->getDetailTimeList(taskID, 0, now + 1000);
-	int64_t teID = entries.at(0).getID();
+	int64_t teID = entries.at(0).ID();
 	DB::TimeEntry te = timeaccessor->getByID(teID);
-	te.setStart(0);
-	te.setStop(10);
-	timeaccessor->update(te);
+	timeaccessor->update(te.withStart(0).withStop(10));
 
 	timeKeeper->on_signal_10_seconds();
 
-	te = timeaccessor->getByID(teID);
-	ASSERTM("Stop should be higher than 100 ", 100 < te.getStop());
+	auto changedItem = timeaccessor->getByID(teID);
+	ASSERTM("Stop should be higher than 100 ", 100 < changedItem.stop());
 
 	timeKeeper->detach(&observer);
 }

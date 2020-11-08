@@ -1,5 +1,4 @@
 #include "Task.h"
-#include <exception>
 #include <stdexcept>
 #include <UUIDTool.h>
 
@@ -8,23 +7,31 @@ namespace DB
 
 Task::Task()
 {
-	lastChanged_ = time(0);
+	lastChanged_ = time(nullptr);
 }
 
 Task::~Task()
 {
 }
 
-const std::string Task::name() const
+string Task::name() const
 {
 	return name_;
 }
 
-Task Task::withName(std::string newName) const
+Task Task::withName(const string& newName) const
 {
-	Task newTask(*this);
-	newTask.name_ = newName;
-	return newTask;
+	if(name_ == newName)
+	{
+		return *this;
+	}
+	else
+	{
+		Task newTask(*this);
+		newTask.name_ = newName;
+		newTask.lastChanged_ = time(nullptr);
+		return newTask;
+	}
 }
 
 int64_t Task::ID() const
@@ -39,12 +46,20 @@ int64_t Task::parentID() const
 
 Task Task::withParent(int64_t op1) const
 {
-	Task newTask(*this);
-	newTask.parentID_ = op1;
-	return newTask;
+	if(parentID_ == op1)
+	{
+		return *this;
+	}
+	else
+	{
+		Task newTask(*this);
+		newTask.parentID_ = op1;
+		newTask.lastChanged_ = time(nullptr);
+		return newTask;
+	}
 }
 
-Task::Task(const std::string &op_name, int64_t op_parentID):Task(op_name, op_parentID, "", false, 0, 0, "", false)
+Task::Task(const string &op_name, int64_t op_parentID): Task(op_name, op_parentID, "", false, 0, 0, "", false)
 {
 
 }
@@ -69,7 +84,7 @@ Task::Task(
 	}
 	if (op_lastChange == 0)
 	{
-		lastChanged_ = time(0);
+		lastChanged_ = time(nullptr);
 	}
 	else
 	{
@@ -105,16 +120,32 @@ time_t Task::lastChanged() const
 
 Task Task::withCompleted(bool state) const
 {
-	Task newTask(*this);
-	newTask.completed_ = state;
-	return newTask;
+	if( completed_ == state )
+	{
+		return *this;
+	}
+	else
+	{
+		Task newTask(*this);
+		newTask.completed_ = state;
+		newTask.lastChanged_ = time(nullptr);
+		return newTask;
+	}
 }
 
 Task Task::withDeleted(bool state) const
 {
-	Task newTask(*this);
-	newTask.deleted_ = state;
-	return newTask;
+	if( deleted_ == state )
+	{
+		return *this;
+	}
+	else
+	{
+		Task newTask(*this);
+		newTask.deleted_ = state;
+		newTask.lastChanged_ = time(nullptr);
+		return newTask;
+	}
 }
 
 bool Task::deleted() const

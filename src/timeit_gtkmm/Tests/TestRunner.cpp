@@ -20,7 +20,6 @@
 #include "Misc/test_utils.h"
 #include "DB/test_extendedTask.h"
 #include "DB/test_db.h"
-#include "DB/test_timeEntry.h"
 #include "Sync/test_json.h"
 #include "Sync/SyncTest.h"
 #include "cute_xml_file.h"
@@ -53,7 +52,6 @@ TestRunner::TestRunner()
 	s += make_suite_UtilsTest();
 	s += make_suite_JsonTest();
 	s += make_suite_SyncTest();
-	s += make_suite_test_TimeEntry();
 }
 
 void TestRunner::run(int argc, char *argv[])

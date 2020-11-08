@@ -180,14 +180,14 @@ void Details::populate()
 		TimeEntry te = *iter;
 		TreeModel::Row row;
 		TreeModel::iterator TMIter;
-		Gtk::TreeIter treeIter = findRow(te.getID());
+		Gtk::TreeIter treeIter = findRow(te.ID());
 		if (treeIter == m_treeModel->children().end())
 		{
 			treeIter = m_treeModel->append();
 		}
 		row = *treeIter;
-		row[m_columns.m_col_id] = te.getID();
-		row[m_columns.m_col_time] = Utils::createDurationString(te.getStart(), te.getStop());
+		row[m_columns.m_col_id] = te.ID();
+		row[m_columns.m_col_time] = Utils::createDurationString(te.start(), te.stop());
 	}
 }
 

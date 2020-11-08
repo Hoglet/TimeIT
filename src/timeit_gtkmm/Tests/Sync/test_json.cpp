@@ -125,12 +125,12 @@ void Json_simpleTimeTest()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times->at(0);
 		bool expectedDeleted = false;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.getTaskUUID());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.getDeleted());
-		ASSERT_EQUALM("Start: ", expectedStart, item.getStart());
-		ASSERT_EQUALM("Stop: ", expectedStop, item.getStop());
-		ASSERT_EQUALM("Expected change time: ", expectedChange, item.getLastChanged());
+		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
+		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
+		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
+		ASSERT_EQUALM("Start: ", expectedStart, item.start());
+		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
+		ASSERT_EQUALM("Expected change time: ", expectedChange, item.changed());
 	}
 }
 void Json_simpleTimeTest2()
@@ -151,12 +151,12 @@ void Json_simpleTimeTest2()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times->at(0);
 		bool expectedDeleted = true;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.getTaskUUID());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.getDeleted());
-		ASSERT_EQUALM("Start: ", expectedStart, item.getStart());
-		ASSERT_EQUALM("Stop: ", expectedStop, item.getStop());
-		ASSERT_EQUALM("Expected change time: ", expectedChange, item.getLastChanged());
+		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
+		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
+		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
+		ASSERT_EQUALM("Start: ", expectedStart, item.start());
+		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
+		ASSERT_EQUALM("Expected change time: ", expectedChange, item.changed());
 	}
 }
 
@@ -171,12 +171,12 @@ void Json_threeWayTimeTest()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items->at(0);
 
-	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
-	ASSERT_EQUALM("TaskID: ", item1.getTaskUUID(), item2.getTaskUUID());
-	ASSERT_EQUALM("Start: ", item1.getStart(), item2.getStart());
-	ASSERT_EQUALM("Stop: ", item1.getStop(), item2.getStop());
-	ASSERT_EQUALM("Deleted: ", item1.getDeleted(), item2.getDeleted());
-	ASSERT_EQUALM("Change time: ", item1.getLastChanged(), item2.getLastChanged());
+	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
+	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
+	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
+	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
+	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
+	ASSERT_EQUALM("Change time: ", item1.changed(), item2.changed());
 
 }
 void Json_threeWayTimeTest2()
@@ -190,12 +190,12 @@ void Json_threeWayTimeTest2()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items->at(0);
 
-	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
-	ASSERT_EQUALM("TaskID: ", item1.getTaskUUID(), item2.getTaskUUID());
-	ASSERT_EQUALM("Start: ", item1.getStart(), item2.getStart());
-	ASSERT_EQUALM("Stop: ", item1.getStop(), item2.getStop());
-	ASSERT_EQUALM("Deleted: ", item1.getDeleted(), item2.getDeleted());
-	ASSERT_EQUALM("Change time: ", item1.getLastChanged(), item2.getLastChanged());
+	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
+	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
+	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
+	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
+	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
+	ASSERT_EQUALM("Change time: ", item1.changed(), item2.changed());
 
 }
 

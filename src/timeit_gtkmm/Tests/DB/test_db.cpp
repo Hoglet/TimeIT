@@ -96,11 +96,11 @@ void database_testUpgrade()
 	shared_ptr<vector<TimeEntry>> times = timeAccessor->getTimesChangedSince();
 	ASSERT_EQUALM("Number of times ", 1, times->size());
 	TimeEntry te = times->at(0);
-	ASSERT_EQUALM("Time id ", 1, te.getID());
-	ASSERTM("Time uuid is valid ", UUIDTool::isValid(te.getUUID()));
-	ASSERT_EQUALM("Time taskID ", 2, te.getTaskID());
-	ASSERT_EQUALM("Time start ", 10, te.getStart());
-	ASSERT_EQUALM("Time stop ", 100, te.getStop());
+	ASSERT_EQUALM("Time id ", 1, te.ID());
+	ASSERTM("Time uuid is valid ", UUIDTool::isValid(te.UUID()));
+	ASSERT_EQUALM("Time taskID ", 2, te.taskID());
+	ASSERT_EQUALM("Time start ", 10, te.start());
+	ASSERT_EQUALM("Time stop ", 100, te.stop());
 
 	OSAbstraction::unlink("/tmp/dbtest.db");
 }

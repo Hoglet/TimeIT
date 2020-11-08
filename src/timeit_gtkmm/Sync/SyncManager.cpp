@@ -189,19 +189,19 @@ int SyncManager::syncTimesToDatabase(string result)
 
 	for (TimeEntry item : *times)
 	{
-		std::string taskUUID = item.getTaskUUID();
+		std::string taskUUID = item.taskUUID();
 		int64_t taskID = taskAccessor->uuidToId(taskUUID);
-		std::string uuid = item.getUUID();
+		std::string uuid = item.UUID();
 		int id = timeAccessor->uuidToId(uuid);
-		time_t changed = item.getLastChanged();
-		bool deleted = item.getDeleted();
-		time_t start = item.getStart();
-		time_t stop = item.getStop();
+		time_t changed = item.changed();
+		bool deleted = item.deleted();
+		time_t start = item.start();
+		time_t stop = item.stop();
 		bool running = false;
 		if (id > 0)
 		{
 			TimeEntry originalItem = timeAccessor->getByID(id);
-			running = originalItem.getRunning();
+			running = originalItem.running();
 		}
 
 		TimeEntry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);

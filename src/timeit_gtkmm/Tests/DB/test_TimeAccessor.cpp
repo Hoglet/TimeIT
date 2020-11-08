@@ -1,7 +1,6 @@
 #include "test_TimeAccessor.h"
 #include "cute.h"
 #include "TempDB.h"
-#include "Utils.h"
 #include <UUIDTool.h>
 
 using namespace DB;
@@ -28,8 +27,7 @@ void TimeAccessor_ChangeEndTime()
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
 	TimeEntry te = 	timeAccessor->getByID(timeId);
-	te.setStop(1300);
-	timeAccessor->update(te);
+	timeAccessor->update(te.withStop(1300));
 	int result = timeAccessor->getTime(taskId, 0, 0);
 	ASSERT_EQUAL(1300, result);
 
@@ -43,8 +41,7 @@ void TimeAccessor_ChangeStartTime()
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
 	TimeEntry te = timeAccessor->getByID(timeId);
-	te.setStart(300);
-	timeAccessor->update(te);
+	timeAccessor->update(te.withStart(300));
 	int result = timeAccessor->getTime(taskId, 0, 0);
 	ASSERT_EQUAL(700, result);
 
@@ -101,8 +98,8 @@ void TimeAccessor_GetDetailTimeList()
 	std::vector<TimeEntry> result = timeAccessor->getDetailTimeList(taskId, 0, 10000);
 	ASSERT_EQUAL(1, result.size());
 	TimeEntry te = result[0];
-	ASSERT_EQUAL(10, te.getStart());
-	ASSERT_EQUAL(100, te.getStop());
+	ASSERT_EQUAL(10, te.start());
+	ASSERT_EQUAL(100, te.stop());
 }
 
 void TimeAccessor_testGetByID()
@@ -113,9 +110,9 @@ void TimeAccessor_testGetByID()
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	int64_t timeEntryID = timeAccessor->newTime(taskId, 10, 100);
 	TimeEntry te = timeAccessor->getByID(timeEntryID);
-	ASSERT_EQUALM("Check task ID", taskId, te.getTaskID());
-	ASSERT_EQUALM("Check start", 10, te.getStart());
-	ASSERT_EQUALM("Check stop", 100, te.getStop());
+	ASSERT_EQUALM("Check task ID", taskId, te.taskID());
+	ASSERT_EQUALM("Check start", 10, te.start());
+	ASSERT_EQUALM("Check stop", 100, te.stop());
 
 }
 
@@ -130,13 +127,13 @@ void TimeAccessor_newItem()
 	int64_t timeEntryID = timeAccessor->newEntry(item1);
 	TimeEntry item2 = timeAccessor->getByID(timeEntryID);
 
-	ASSERT_EQUALM("UUID: ", item1.getUUID(), item2.getUUID());
-	ASSERT_EQUALM("TaskID: ", item1.getTaskID(), item2.getTaskID());
-	ASSERT_EQUALM("Start: ", item1.getStart(), item2.getStart());
-	ASSERT_EQUALM("Stop: ", item1.getStop(), item2.getStop());
-	ASSERT_EQUALM("Deleted: ", item1.getDeleted(), item2.getDeleted());
-	ASSERT_EQUALM("Running: ", item1.getRunning(), item2.getRunning());
-	ASSERT_EQUALM("Changed: ", item1.getLastChanged(), item2.getLastChanged());
+	ASSERT_EQUALM("UUID: ", item1.UUID(), item2.UUID());
+	ASSERT_EQUALM("TaskID: ", item1.taskID(), item2.taskID());
+	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
+	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
+	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
+	ASSERT_EQUALM("Running: ", item1.running(), item2.running());
+	ASSERT_EQUALM("Changed: ", item1.changed(), item2.changed());
 
 	ASSERT_THROWSM("Adding existing", timeAccessor->newEntry(item1), dbexception);
 //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
@@ -175,9 +172,9 @@ void TimeAccessor_getTimesChangedSince()
 	TimeEntry item = timeAccessor->getByID(timeid);
 	std::shared_ptr<std::vector<TimeEntry> > result = timeAccessor->getTimesChangedSince(0);
 	ASSERT_EQUAL(1, (*result).size());
-	result = timeAccessor->getTimesChangedSince(item.getLastChanged());
+	result = timeAccessor->getTimesChangedSince(item.changed());
 	ASSERT_EQUAL(1, (*result).size());
-	result = timeAccessor->getTimesChangedSince(item.getLastChanged()+1);
+	result = timeAccessor->getTimesChangedSince(item.changed() + 1);
 	ASSERT_EQUAL(0, (*result).size());
 }
 
@@ -255,4 +252,4 @@ cute::suite make_suite_TimeAccessor_test()
 }
 
 
-} /* namespace test_TimeAcessor */
+} /* namespace test_TimeAccessor */

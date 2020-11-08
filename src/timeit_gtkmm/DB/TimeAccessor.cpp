@@ -45,14 +45,13 @@ void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 	statement << ", changed=" << now;
 	statement << " WHERE id=" << timeID;
 	db->exe(statement.str());
-	notifier->sendNotification(TASK_UPDATED, te.getTaskID());
+	notifier->sendNotification(TASK_UPDATED, te.taskID());
 }
 
 void TimeAccessor::remove(int64_t id)
 {
 	TimeEntry te = getByID(id);
-	te.setDeleted(true);
-	update(te);
+	update(te.withDeleted(true));
 }
 
 TimeEntry TimeAccessor::getByID(int64_t id)
@@ -237,7 +236,7 @@ std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskID, time_t st
 void TimeAccessor::setRunning(int64_t timeID, bool running)
 {
 	TimeEntry te = getByID(timeID);
-	int64_t taskID = te.getTaskID();
+	int64_t taskID = te.taskID();
 	stringstream statement;
 	statement << "UPDATE times SET running = " << (int) running;
 	statement << " WHERE id=" << timeID;
@@ -291,24 +290,24 @@ int64_t TimeAccessor::uuidToId(std::string uuid)
 
 bool TimeAccessor::update(const TimeEntry &item)
 {
-	int64_t id = item.getID();
+	int64_t id = item.ID();
 	TimeEntry existingItem = getByID(id);
-	if (item != existingItem && item.getLastChanged() >= existingItem.getLastChanged())
+	if (item != existingItem && item.changed() >= existingItem.changed())
 	{
 		std::shared_ptr<DBAbstraction::Statement> statement_updateTime = db->prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
-		statement_updateTime->bindValue(1, item.getUUID());
-		statement_updateTime->bindValue(2, item.getTaskID());
-		statement_updateTime->bindValue(3, item.getStart());
-		statement_updateTime->bindValue(4, item.getStop());
-		statement_updateTime->bindValue(5, item.getRunning());
-		statement_updateTime->bindValue(6, item.getLastChanged());
-		statement_updateTime->bindValue(7, item.getDeleted());
-		statement_updateTime->bindValue(8, item.getID());
+		statement_updateTime->bindValue(1, item.UUID());
+		statement_updateTime->bindValue(2, item.taskID());
+		statement_updateTime->bindValue(3, item.start());
+		statement_updateTime->bindValue(4, item.stop());
+		statement_updateTime->bindValue(5, item.running());
+		statement_updateTime->bindValue(6, item.changed());
+		statement_updateTime->bindValue(7, item.deleted());
+		statement_updateTime->bindValue(8, item.ID());
 
 		statement_updateTime->execute();
 
-		notifier->sendNotification(TASK_UPDATED, item.getTaskID());
+		notifier->sendNotification(TASK_UPDATED, item.taskID());
 		return true;
 	}
 	return false;
@@ -342,17 +341,17 @@ int64_t TimeAccessor::newEntry(const TimeEntry &item)
 {
 	std::shared_ptr<DBAbstraction::Statement> statement_newEntry = db->prepare(
 			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
-	statement_newEntry->bindValue(1, item.getUUID());
-	statement_newEntry->bindValue(2, item.getTaskID());
-	statement_newEntry->bindValue(3, item.getStart());
-	statement_newEntry->bindValue(4, item.getStop());
-	statement_newEntry->bindValue(5, item.getLastChanged());
-	statement_newEntry->bindValue(6, item.getDeleted());
+	statement_newEntry->bindValue(1, item.UUID());
+	statement_newEntry->bindValue(2, item.taskID());
+	statement_newEntry->bindValue(3, item.start());
+	statement_newEntry->bindValue(4, item.stop());
+	statement_newEntry->bindValue(5, item.changed());
+	statement_newEntry->bindValue(6, item.deleted());
 	statement_newEntry->execute();
 
-	if (item.getStart() != item.getStop())
+	if (item.start() != item.stop())
 	{
-		notifier->sendNotification(TASK_UPDATED, item.getTaskID());
+		notifier->sendNotification(TASK_UPDATED, item.taskID());
 	}
 	return db->getIDOfLastInsert();
 }
