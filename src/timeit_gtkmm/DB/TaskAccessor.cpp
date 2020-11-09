@@ -7,13 +7,7 @@ using namespace std;
 namespace DB
 {
 
-TaskAccessorObserver::~TaskAccessorObserver()
-{
-}
 
-void TaskAccessorObserver::on_taskParentChanged(int64_t)
-{
-}
 
 ITaskAccessor::~ITaskAccessor()
 {
@@ -27,6 +21,7 @@ TaskAccessor::TaskAccessor(std::shared_ptr<DBAbstraction::CSQL> &op_db, std::sha
 TaskAccessor::~TaskAccessor()
 {
 }
+
 
 void TaskAccessor::createTable()
 {
@@ -366,7 +361,7 @@ void TaskAccessor::detach(TaskAccessorObserver *observer)
 
 void TaskAccessor::upgradeToDB5()
 {
-	time_t now = time(0);
+	time_t now = time(nullptr);
 //Update Tasks to new design
 	db->exe("ALTER TABLE tasks RENAME TO tasks_backup");
 	createTable();

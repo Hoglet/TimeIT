@@ -3,6 +3,7 @@
 
 #include "CSQL.h"
 #include "TaskAccessorObserver.h"
+#include "Task.h"
 
 #include <Notifier.h>
 #include <string>

@@ -1,12 +1,5 @@
-#include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
-#include "Notifier_test.h"
+#include "gtest/gtest.h"
 #include "Notifier.h"
-#include "ExtendedTaskAccessor.h"
-#include <glibmm.h>
-#include <gtkmm.h>
-#include <memory>
 
 using namespace DB;
 namespace Test
@@ -75,58 +68,44 @@ public:
 
 };
 
-void NotifyTaskUpdated()
+TEST( Notifier, TaskUpdated)
 {
 	NotifyTester test;
-	Gtk::Main::iteration(false);
 	test.notifier.sendNotification(TASK_UPDATED, 1);
-	Gtk::Main::iteration(false);
-	ASSERT_EQUAL(0, test.task_id_added);
-	ASSERT_EQUAL(0, test.task_id_parent);
-	ASSERT_EQUAL(0, test.task_id_removed);
-	ASSERT_EQUAL(1, test.task_id_updated);
+	ASSERT_EQ(0, test.task_id_added);
+	ASSERT_EQ(0, test.task_id_parent);
+	ASSERT_EQ(0, test.task_id_removed);
+	ASSERT_EQ(1, test.task_id_updated);
 }
 
-void NotifyTaskAdded()
+TEST(Notifier, TaskAdded)
 {
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_ADDED, 2);
-	Gtk::Main::iteration(false);
-	ASSERT_EQUAL(0, test.task_id_updated);
-	ASSERT_EQUAL(0, test.task_id_parent);
-	ASSERT_EQUAL(0, test.task_id_removed);
-	ASSERT_EQUAL(2, test.task_id_added);
+	ASSERT_EQ(0, test.task_id_updated);
+	ASSERT_EQ(0, test.task_id_parent);
+	ASSERT_EQ(0, test.task_id_removed);
+	ASSERT_EQ(2, test.task_id_added);
 }
 
-void NotifyTaskRemoved()
+TEST(Notifier,TaskRemoved)
 {
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_REMOVED, 3);
-	Gtk::Main::iteration(false);
-	ASSERT_EQUAL(0, test.task_id_updated);
-	ASSERT_EQUAL(0, test.task_id_added);
-	ASSERT_EQUAL(0, test.task_id_parent);
-	ASSERT_EQUAL(3, test.task_id_removed);
+	ASSERT_EQ(0, test.task_id_updated);
+	ASSERT_EQ(0, test.task_id_added);
+	ASSERT_EQ(0, test.task_id_parent);
+	ASSERT_EQ(3, test.task_id_removed);
 }
-void NotifyTaskParentChanged()
+TEST(Notifier,TaskParentChanged)
 {
 	NotifyTester test;
 	test.notifier.sendNotification(TASK_PARENT_CHANGED, 4);
-	Gtk::Main::iteration(false);
-	ASSERT_EQUAL(0, test.task_id_updated);
-	ASSERT_EQUAL(0, test.task_id_added);
-	ASSERT_EQUAL(0, test.task_id_removed);
-	ASSERT_EQUAL(4, test.task_id_parent);
+	ASSERT_EQ(0, test.task_id_updated);
+	ASSERT_EQ(0, test.task_id_added);
+	ASSERT_EQ(0, test.task_id_removed);
+	ASSERT_EQ(4, test.task_id_parent);
 }
 
-cute::suite make_suite_Notifier_test()
-{
-	cute::suite s;
-	s.push_back(CUTE(NotifyTaskUpdated));
-	s.push_back(CUTE(NotifyTaskAdded));
-	s.push_back(CUTE(NotifyTaskRemoved));
-	s.push_back(CUTE(NotifyTaskParentChanged));
-	return s;
-}
 
 }

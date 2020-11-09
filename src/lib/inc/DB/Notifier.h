@@ -5,14 +5,11 @@
  *      Author: hoglet
  */
 
-#ifndef NOTIFIER_H_
-#define NOTIFIER_H_
+#pragma once
 
 #include "TaskAccessorObserver.h"
-#include <stdint.h>
+#include <cstdint>
 #include <list>
-#include <deque>
-#include <glibmm.h>
 
 namespace DB
 {
@@ -42,15 +39,11 @@ public:
 	void sendNotification(MessageType type, int64_t taskId);
 	void enabled(bool);
 private:
-	void messageForwarder();
+	void sendMessage(NotificationMessage);
 	std::list<TaskAccessorObserver*> observers;
-	std::deque<NotificationMessage> messageQue;
-	Glib::Dispatcher signal_message;
+
 	bool m_enabled;
 	bool m_missedNotification;
-	Glib::Mutex mutex;
-	Glib::Thread *receiving_thread;
 };
 
 }
-#endif /* NOTIFIER_H_ */
