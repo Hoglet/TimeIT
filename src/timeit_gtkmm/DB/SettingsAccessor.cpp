@@ -60,12 +60,13 @@ int SettingsAccessor::GetIntByName(const std::string& name, int defaultValue)
 
 	int retVal = defaultValue;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		retVal = row[0].getInt();
-	} else
+	}
+	else
 	{
 		SetIntByName(name, defaultValue);
 	}
@@ -80,8 +81,8 @@ bool SettingsAccessor::SetIntByName(const std::string& name, int value)
 
 	bool retVal = false;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
@@ -90,8 +91,8 @@ bool SettingsAccessor::SetIntByName(const std::string& name, int value)
 		db->exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
-	} else //Value did not exist
-
+	}
+	else //Value did not exist
 	{
 		statement.str("");
 		statement << "INSERT INTO settings";
@@ -112,12 +113,13 @@ bool SettingsAccessor::GetBoolByName(const std::string& name, bool defaultValue)
 
 	bool retVal = defaultValue;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		retVal = row[0].getBool();
-	} else
+	}
+	else
 	{
 		SetBoolByName(name, defaultValue);
 	}
@@ -131,8 +133,8 @@ bool SettingsAccessor::SetBoolByName(const std::string& name, bool value)
 	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
@@ -141,8 +143,8 @@ bool SettingsAccessor::SetBoolByName(const std::string& name, bool value)
 		db->exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
-	} else //Value did not exist
-
+	}
+	else //Value did not exist
 	{
 		statement.str("");
 		statement << "INSERT INTO settings";
@@ -163,12 +165,13 @@ std::string SettingsAccessor::GetStringByName(const std::string& name, const std
 
 	std::string retVal = defaultValue;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		retVal = row[0].getString();
-	} else
+	}
+	else
 	{
 		SetStringByName(name, defaultValue);
 	}
@@ -182,8 +185,8 @@ bool SettingsAccessor::SetStringByName(const std::string& name, const std::strin
 	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size())
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
@@ -192,8 +195,8 @@ bool SettingsAccessor::SetStringByName(const std::string& name, const std::strin
 		db->exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
-	} else //Value did not exist
-
+	}
+	else //Value did not exist
 	{
 		statement.str("");
 		statement << "INSERT INTO settings";

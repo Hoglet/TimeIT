@@ -82,3 +82,4 @@ src/version.h
 /build.ninja
 /rules.ninja
 /src/tags
+/src/cmake-build-debug-coverage/

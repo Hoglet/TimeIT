@@ -24,36 +24,36 @@ ExtendedTask getTask(time_t start = 0, time_t stop = 0)
 void TimeManagement_tasksTimeIs100()
 {
 	ExtendedTask task = getTask();
-	ASSERT_EQUAL(100, task.getTime());
+	ASSERT_EQUAL(100, task.time());
 }
 
 void TimeManagement_tasksTotalTimeIs150()
 {
 	ExtendedTask task = getTask();
-	ASSERT_EQUAL(150, task.getTotalTime());
+	ASSERT_EQUAL(150, task.totalTime());
 }
 
 void TimeManagement_staggerTest1RecordedTimePassesEnd()
 {
 	ExtendedTask task = getTask(0,150);
-	ASSERT_EQUAL(50, task.getTime());
+	ASSERT_EQUAL(50, task.time());
 }
 
 void TimeManagement_staggerTest2RecordedTimeStartsBeforeStart()
 {
 	ExtendedTask task = getTask(150,300);
-	ASSERT_EQUAL(50, task.getTime());
+	ASSERT_EQUAL(50, task.time());
 }
 
 void TimeManagement_staggerTest3RecordedTotalTimePassesEnd()
 {
 	ExtendedTask task = getTask(0,150);
-	ASSERT_EQUAL(50, task.getTotalTime());
+	ASSERT_EQUAL(50, task.totalTime());
 }
 void TimeManagement_staggerTest3RecordedTotalTimeStartsBeforeStart()
 {
 	ExtendedTask task = getTask(150,300);
-	ASSERT_EQUAL(100, task.getTotalTime());
+	ASSERT_EQUAL(100, task.totalTime());
 }
 
 cute::suite make_suite_test_TimeManagement()

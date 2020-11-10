@@ -61,8 +61,8 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 		statement << " AND parent IS NULL ";
 	}
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	for (std::vector<DataCell> row : *rows)
+	QueryResult rows = db->exe(statement.str());
+	for (std::vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		int parent = 0;
@@ -83,14 +83,14 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 
 std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 {
-	std::shared_ptr<DBAbstraction::Statement> statement_getTask = db->prepare("SELECT id, parent, name, completed,"
+	DBAbstraction::Statement statement_getTask = db->prepare("SELECT id, parent, name, completed,"
 			" uuid, changed, deleted FROM  tasks WHERE id=?");
-	statement_getTask->bindValue(1, taskID);
-	shared_ptr<QueryResult> rows = statement_getTask->execute();
+	statement_getTask.bindValue(1, taskID);
+	QueryResult rows = statement_getTask.execute();
 	shared_ptr<Task> task;
-	if (rows->size() == 1)
+	if (rows.size() == 1)
 	{
-		std::vector<DataCell> row = rows->at(0);
+		std::vector<DataCell> row = rows.at(0);
 		int64_t id = row[0].getInt();
 		int64_t parent = 0;
 		if (row[1].hasValue())
@@ -114,14 +114,14 @@ std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 
 Task TaskAccessor::getTaskUnlimited(int64_t taskID)
 {
-	std::shared_ptr<DBAbstraction::Statement> statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
+	DBAbstraction::Statement statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
 			" uuid, changed, deleted FROM  tasks WHERE id=?;");
-	statement_getCompleteTask->bindValue(1, taskID);
-	std::shared_ptr<QueryResult> rows = statement_getCompleteTask->execute();
+	statement_getCompleteTask.bindValue(1, taskID);
+	QueryResult rows = statement_getCompleteTask.execute();
 	Task task;
-	if (rows->size() == 1)
+	if (rows.size() == 1)
 	{
-		std::vector<DataCell> row = rows->at(0);
+		std::vector<DataCell> row = rows.at(0);
 		int64_t id = row[0].getInt();
 		int64_t parent = 0;
 		if (row[1].hasValue())
@@ -153,8 +153,8 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasksChangedSince(time_t tim
 			"    tasks"
 			"  WHERE changed >" << timestamp;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	for (std::vector<DataCell> row : *rows)
+	QueryResult rows = db->exe(statement.str());
+	for (std::vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		int parent = 0;
@@ -187,10 +187,10 @@ int64_t TaskAccessor::uuidToId(std::string uuid)
 {
 
 	int64_t id = 0;
-	std::shared_ptr<DBAbstraction::Statement> statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
-	statement_uuidToId->bindValue(1, uuid);
-	std::shared_ptr<QueryResult> rows = statement_uuidToId->execute();
-	for (std::vector<DataCell> row : *rows)
+	DBAbstraction::Statement statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
+	statement_uuidToId.bindValue(1, uuid);
+	QueryResult rows = statement_uuidToId.execute();
+	for (std::vector<DataCell> row : rows)
 	{
 		id = row[0].getInt();
 	}
@@ -201,10 +201,10 @@ std::string TaskAccessor::idToUuid(int64_t id)
 {
 
 	string uuid = "";
-	std::shared_ptr<DBAbstraction::Statement> statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
-	statement_idToUuid->bindValue(1, id);
-	std::shared_ptr<QueryResult> rows = statement_idToUuid->execute();
-	for (vector<DataCell> row : *rows)
+	DBAbstraction::Statement statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
+	statement_idToUuid.bindValue(1, id);
+	QueryResult rows = statement_idToUuid.execute();
+	for (vector<DataCell> row : rows)
 	{
 		uuid = row[0].getString();
 	}
@@ -213,23 +213,23 @@ std::string TaskAccessor::idToUuid(int64_t id)
 
 void TaskAccessor::_update(const Task &task)
 {
-	std::shared_ptr<DBAbstraction::Statement> statement_updateTask = db->prepare(
+	DBAbstraction::Statement statement_updateTask = db->prepare(
 			"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
-	statement_updateTask->bindValue(1, task.name());
+	statement_updateTask.bindValue(1, task.name());
 	if (task.parentID() > 0)
 	{
-		statement_updateTask->bindValue(2, task.parentID());
+		statement_updateTask.bindValue(2, task.parentID());
 	}
 	else
 	{
-		statement_updateTask->bindNullValue(2);
+		statement_updateTask.bindNullValue(2);
 	}
-	statement_updateTask->bindValue(3, task.lastChanged());
-	statement_updateTask->bindValue(4, task.deleted());
-	statement_updateTask->bindValue(5, task.completed());
-	statement_updateTask->bindValue(6, task.ID());
+	statement_updateTask.bindValue(3, task.lastChanged());
+	statement_updateTask.bindValue(4, task.deleted());
+	statement_updateTask.bindValue(5, task.completed());
+	statement_updateTask.bindValue(6, task.ID());
 
-	statement_updateTask->execute();
+	statement_updateTask.execute();
 }
 
 void TaskAccessor::notify(const Task &existingTask, const Task &task)
@@ -293,23 +293,23 @@ int64_t TaskAccessor::newTask(const Task &op_task)
 
 	int64_t id = 0;
 
-	std::shared_ptr<DBAbstraction::Statement> statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
+	DBAbstraction::Statement statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
 			"VALUES (?,?,?,?,?,?);");
-	statement_newTask->bindValue(1, name);
+	statement_newTask.bindValue(1, name);
 	if (parentID > 0)
 	{
-		statement_newTask->bindValue(2, parentID);
+		statement_newTask.bindValue(2, parentID);
 	}
 	else
 	{
-		statement_newTask->bindNullValue(2);
+		statement_newTask.bindNullValue(2);
 	}
-	statement_newTask->bindValue(3, changeTime);
-	statement_newTask->bindValue(4, uuid);
-	statement_newTask->bindValue(5, completed);
-	statement_newTask->bindValue(6, deleted);
+	statement_newTask.bindValue(3, changeTime);
+	statement_newTask.bindValue(4, uuid);
+	statement_newTask.bindValue(5, completed);
+	statement_newTask.bindValue(6, deleted);
 
-	statement_newTask->execute();
+	statement_newTask.execute();
 	id = db->getIDOfLastInsert();
 	notifier->sendNotification(TASK_ADDED, id);
 	return id;
@@ -367,9 +367,9 @@ void TaskAccessor::upgradeToDB5()
 	createTable();
 	db->exe("UPDATE tasks_backup SET deleted = 0 WHERE deleted != 1");
 	db->exe("UPDATE tasks_backup SET parent = NULL WHERE parent = 0");
-	shared_ptr<Statement> statement = db->prepare("SELECT id, parent, name, deleted FROM  tasks_backup");
-	shared_ptr<QueryResult> rows = statement->execute();
-	for (vector<DataCell> row : *rows)
+	Statement statement = db->prepare("SELECT id, parent, name, deleted FROM  tasks_backup");
+	QueryResult rows = statement.execute();
+	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
 		int64_t parent = 0;

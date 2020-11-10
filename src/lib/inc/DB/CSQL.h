@@ -1,5 +1,6 @@
 #ifndef CSQL_H_
 #define CSQL_H_
+
 #include "dbexception.h"
 #include <sqlite3.h>
 #include <string>
@@ -23,7 +24,7 @@ public:
 	void bindValue(int index, int64_t value);
 	void bindValue(int index, const std::string& text);
 	void bindNullValue(int index);
-	std::shared_ptr<QueryResult> execute();
+	QueryResult execute();
 private:
 	Statement();
 	std::shared_ptr<CSQL> db;
@@ -37,9 +38,9 @@ class CSQL: public std::enable_shared_from_this<CSQL>
 public:
 	CSQL(const std::string& databasename);
 	virtual ~CSQL();
-	std::shared_ptr<QueryResult> exe(const std::string& statement);
+	QueryResult exe(const std::string& statement);
 	int64_t getIDOfLastInsert();
-	std::shared_ptr<Statement> prepare(const char *);
+	Statement prepare(const char *);
 	void beginTransaction();
 	void endTransaction();
 	void tryRollback();

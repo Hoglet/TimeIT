@@ -17,7 +17,6 @@
 #include "DB/test_SettingsAccessor.h"
 #include "DB/test_AutotrackAccessor.h"
 #include "Misc/test_utils.h"
-#include "DB/test_extendedTask.h"
 #include "DB/test_db.h"
 #include "Sync/test_json.h"
 #include "Sync/SyncTest.h"
@@ -44,7 +43,6 @@ TestRunner::TestRunner()
 	s += make_suite_test_TaskAccessor();
 	s += make_suite_exceptionTest();
 	s += make_suite_OSAbstractionTest();
-	s += make_suite_ExtendedTask_test();
 	s += make_suite_DB_test();
 	s += make_suite_ApplicationLockTest();
 	s += make_suite_UtilsTest();

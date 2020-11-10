@@ -47,10 +47,10 @@ int Database::getCurrentDBVersion()
 	statement << "SELECT value FROM parameters ";
 	statement << " WHERE id == \"dbversion\"";
 	//Do upgrade if necessary
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size() > 0)
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size() > 0)
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		DBVersion = row[0].getInt();
 	}
 	return DBVersion;

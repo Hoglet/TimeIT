@@ -33,8 +33,8 @@ std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 	std::vector<int64_t> retVal;
 	stringstream statement;
 	statement << "SELECT taskID FROM autotrack where workspace =" << workspace;
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	for (vector<DataCell> row : *rows)
+	QueryResult rows = db->exe(statement.str());
+	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
 		if(m_taskAccessor->getTask(id)->deleted() == false)
@@ -50,8 +50,8 @@ std::vector<int> AutotrackAccessor::getWorkspaces(int64_t taskID)
 	std::vector<int> retVal;
 	stringstream statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	for (vector<DataCell> row : *rows)
+	QueryResult rows = db->exe(statement.str());
+	for (vector<DataCell> row : rows)
 	{
 		int workspace = row[0].getInt();
 		retVal.push_back(workspace);

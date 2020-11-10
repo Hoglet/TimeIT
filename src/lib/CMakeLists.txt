@@ -7,6 +7,14 @@ add_library( libtimeit STATIC
   ${headers}
   )
 
+target_link_libraries( libtimeit
+        ${SQLITE_LIBRARIES}
+        ${XSCRNS_LIBRARIES}
+        ${XLIB_LIBRARIES}
+        ${JANSSON_LIBRARIES}
+        ${CURL_LIBRARIES}
+        )
+
 target_include_directories ( libtimeit PUBLIC
   inc
   inc/DB

@@ -51,7 +51,7 @@ int64_t CSQL::getIDOfLastInsert()
 	return sqlite3_last_insert_rowid(db);
 }
 
-std::shared_ptr<Statement> CSQL::prepare(const char *buffer)
+Statement CSQL::prepare(const char *buffer)
 {
 	sqlite3_stmt* stmt;
 	int rc = sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
@@ -67,15 +67,13 @@ std::shared_ptr<Statement> CSQL::prepare(const char *buffer)
 		throw e;
 	}
 	std::shared_ptr<CSQL> sharedMe = shared_from_this();
-	std::shared_ptr<Statement> statement = std::shared_ptr < Statement > (new Statement(stmt, sharedMe));
-
-	return statement;
+	return Statement(stmt, sharedMe);
 }
 
-std::shared_ptr<QueryResult> CSQL::exe(const std::string& s_exe)
+QueryResult CSQL::exe(const std::string& s_exe)
 {
-	std::shared_ptr<Statement> statement = prepare(s_exe.c_str());
-	return statement->execute();
+	Statement statement = prepare(s_exe.c_str());
+	return statement.execute();
 }
 
 void CSQL::beginTransaction()
@@ -148,9 +146,9 @@ void Statement::bindNullValue(int index)
 	sqlite3_bind_null(stmt, index);
 }
 
-std::shared_ptr<QueryResult> Statement::execute()
+QueryResult Statement::execute()
 {
-	shared_ptr<QueryResult> rows = shared_ptr < QueryResult > (new QueryResult());
+	QueryResult rows;
 	while (true)
 	{
 		int rc = sqlite3_step(stmt);
@@ -189,7 +187,7 @@ std::shared_ptr<QueryResult> Statement::execute()
 					//LCOV_EXCL_STOP
 				}
 			}
-			rows->push_back(row);
+			rows.push_back(row);
 		}
 		else
 		{

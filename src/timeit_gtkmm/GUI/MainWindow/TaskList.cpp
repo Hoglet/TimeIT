@@ -205,7 +205,7 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 {
 	row[columns.col_id] = task.ID();
-	if (task.getRunning())
+	if (task.running())
 	{
 		row[columns.col_pixbuf] = runningIcon;
 	}
@@ -214,7 +214,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 		row[columns.col_pixbuf] = blankIcon;
 	}
 	row[columns.col_name] = task.name();
-	time_t totalTime = task.getTotalTime();
+	time_t totalTime = task.totalTime();
 	if (totalTime > 0)
 	{
 		row[columns.col_time] = Utils::seconds2hhmm(totalTime);
@@ -244,7 +244,7 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 		row = *iter;
 		assignValuesToRow(row, tasks->at(i));
 		populate(&row, tasks->at(i).ID());
-		if (tasks->at(i).getExpanded())
+		if (tasks->at(i).expanded())
 		{
 			TreeModel::Path path(iter);
 			this->expand_to_path(path);

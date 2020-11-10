@@ -11,7 +11,6 @@ namespace DB
 
 ITimeAccessor::~ITimeAccessor()
 {
-
 }
 
 TimeAccessor::TimeAccessor(shared_ptr<CSQL> &op_db, std::shared_ptr<Notifier> &notifier)
@@ -21,8 +20,7 @@ TimeAccessor::TimeAccessor(shared_ptr<CSQL> &op_db, std::shared_ptr<Notifier> &n
 }
 
 TimeAccessor::~TimeAccessor()
-{
-}
+= default;
 
 void TimeAccessor::stopAllRunning()
 {
@@ -31,7 +29,7 @@ void TimeAccessor::stopAllRunning()
 
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 {
-	time_t now = time(0);
+	time_t now = time(nullptr);
 	TimeEntry te(0, UUIDTool::randomUUID(), taskID, "", start, stop, false, false, now);
 	return newEntry(te);
 }
@@ -39,7 +37,7 @@ int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 {
 	TimeEntry te = getByID(timeID);
-	time_t now = time(0);
+	time_t now = time(nullptr);
 	stringstream statement;
 	statement << "UPDATE times SET start = " << startTime << ", stop=" << stopTime;
 	statement << ", changed=" << now;
@@ -56,9 +54,9 @@ void TimeAccessor::remove(int64_t id)
 
 TimeEntry TimeAccessor::getByID(int64_t id)
 {
-	std::shared_ptr<Statement> statement = db->prepare(
+	Statement statement = db->prepare(
 			"SELECT taskID, start, stop, running, changed, deleted, uuid, taskUUID FROM v_times WHERE id = ?");
-	statement->bindValue(1, id);
+	statement.bindValue(1, id);
 
 	int taskID = 0;
 	std::string taskUUID;
@@ -69,10 +67,10 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 	bool deleted = false;
 	std::string uuid;
 
-	std::shared_ptr<QueryResult> rows = statement->execute();
-	if (rows->size() > 0)
+	QueryResult rows = statement.execute();
+	if (rows.size() > 0)
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		taskID = row[0].getInt();
 		start = row[1].getInt();
 		stop = row[2].getInt();
@@ -87,8 +85,7 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 
 int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
 {
-	int time = 0;
-	time = getTimeCompletelyWithinLimits(taskID, start, stop);
+	int time = getTimeCompletelyWithinLimits(taskID, start, stop);
 	if (stop > 0)
 	{
 		time += getTimePassingEndLimit(taskID, start, stop);
@@ -100,25 +97,25 @@ int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
 int TimeAccessor::getTimeCompletelyWithinLimits(int64_t &taskID, time_t &start, time_t &stop)
 {
 	int time = 0;
-	std::shared_ptr<QueryResult> rows;
+	QueryResult rows;
 	if (stop > 0)
 	{
-		std::shared_ptr<DBAbstraction::Statement> statement_timeCompletelyWithinLimits = db->prepare("SELECT SUM(stop-start) AS time "
+		DBAbstraction::Statement statement_timeCompletelyWithinLimits = db->prepare("SELECT SUM(stop-start) AS time "
 				" FROM times  WHERE taskID = ? AND start>=? AND stop<=? and deleted=0;");
-		statement_timeCompletelyWithinLimits->bindValue(1, taskID);
-		statement_timeCompletelyWithinLimits->bindValue(2, start);
-		statement_timeCompletelyWithinLimits->bindValue(3, stop);
-		rows = statement_timeCompletelyWithinLimits->execute();
+		statement_timeCompletelyWithinLimits.bindValue(1, taskID);
+		statement_timeCompletelyWithinLimits.bindValue(2, start);
+		statement_timeCompletelyWithinLimits.bindValue(3, stop);
+		rows = statement_timeCompletelyWithinLimits.execute();
 	}
 	else
 	{
-		std::shared_ptr<DBAbstraction::Statement> statement_getTime = db->prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
-		statement_getTime->bindValue(1, taskID);
-		rows = statement_getTime->execute();
+		DBAbstraction::Statement statement_getTime = db->prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
+		statement_getTime.bindValue(1, taskID);
+		rows = statement_getTime.execute();
 	}
-	if (rows->size() == 1)
+	if (rows.size() == 1)
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		if (row[0].hasValue())
 		{
 			time = row[0].getInt();
@@ -139,10 +136,10 @@ int TimeAccessor::getTimePassingEndLimit(int64_t &taskID, time_t &start, time_t 
 	statement << " AND stop  > " << stop;
 	statement << " AND start > " << start;
 	statement << " AND deleted=0 ";
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size() == 1)
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size() == 1)
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		if (row[0].hasValue())
 		{
 			time = row[0].getInt();
@@ -162,10 +159,10 @@ int TimeAccessor::getTimePassingStartLimit(int64_t taskID, time_t start, time_t 
 	statement << " AND stop  >  " << start;
 	statement << " AND stop  <  " << stop;
 	statement << " AND deleted=0 ";
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	if (rows->size() == 1)
+	QueryResult rows = db->exe(statement.str());
+	if (rows.size() == 1)
 	{
-		vector<DataCell> row = rows->at(0);
+		vector<DataCell> row = rows.at(0);
 		if (row[0].hasValue())
 		{
 			time = row[0].getInt();
@@ -181,9 +178,9 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 	statement << "SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' ORDER BY times.stop DESC LIMIT "
 			<< amount;
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
+	QueryResult rows = db->exe(statement.str());
 
-	for (vector<DataCell> row : *rows)
+	for (vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		resultList.push_back(id);
@@ -195,11 +192,11 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 std::vector<int64_t> TimeAccessor::getRunningTasks()
 {
 	std::vector<int64_t> resultList;
-	std::shared_ptr<Statement> statement_getRunningTasks = db->prepare(
+	Statement statement_getRunningTasks = db->prepare(
 			"SELECT DISTINCT times.taskid FROM times WHERE times.running;");
-	std::shared_ptr<QueryResult> rows = statement_getRunningTasks->execute();
+	QueryResult rows = statement_getRunningTasks.execute();
 
-	for (std::vector<DataCell> row : *rows)
+	for (std::vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		resultList.push_back(id);
@@ -217,8 +214,8 @@ std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskID, time_t st
 	statement << " AND taskID = " << taskID;
 	statement << " AND deleted=0 ";
 
-	std::shared_ptr<QueryResult> rows = db->exe(statement.str());
-	for (vector<DataCell> row : *rows)
+	QueryResult rows = db->exe(statement.str());
+	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
 		time_t start = row[1].getInt();
@@ -249,12 +246,12 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 {
 	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr<std::vector<TimeEntry>>(new vector<TimeEntry>);
 
-	std::shared_ptr<Statement> statement = db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
+	Statement statement = db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
 
-	statement->bindValue(1, timestamp);
+	statement.bindValue(1, timestamp);
 
-	std::shared_ptr<QueryResult> rows = statement->execute();
-	for (vector<DataCell> row : *rows)
+	QueryResult rows = statement.execute();
+	for (vector<DataCell> row : rows)
 	{
 		int taskID = row[0].getInt();
 		time_t start = row[1].getInt();
@@ -278,10 +275,10 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 int64_t TimeAccessor::uuidToId(std::string uuid)
 {
 	int64_t id = 0;
-	std::shared_ptr<DBAbstraction::Statement> statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
-	statement_uuidToId->bindValue(1, uuid);
-	std::shared_ptr<QueryResult> rows = statement_uuidToId->execute();
-	for (std::vector<DataCell> row : *rows)
+	DBAbstraction::Statement statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
+	statement_uuidToId.bindValue(1, uuid);
+	QueryResult rows = statement_uuidToId.execute();
+	for (std::vector<DataCell> row : rows)
 	{
 		id = row[0].getInt();
 	}
@@ -294,18 +291,18 @@ bool TimeAccessor::update(const TimeEntry &item)
 	TimeEntry existingItem = getByID(id);
 	if (item != existingItem && item.changed() >= existingItem.changed())
 	{
-		std::shared_ptr<DBAbstraction::Statement> statement_updateTime = db->prepare(
+		DBAbstraction::Statement statement_updateTime = db->prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
-		statement_updateTime->bindValue(1, item.UUID());
-		statement_updateTime->bindValue(2, item.taskID());
-		statement_updateTime->bindValue(3, item.start());
-		statement_updateTime->bindValue(4, item.stop());
-		statement_updateTime->bindValue(5, item.running());
-		statement_updateTime->bindValue(6, item.changed());
-		statement_updateTime->bindValue(7, item.deleted());
-		statement_updateTime->bindValue(8, item.ID());
+		statement_updateTime.bindValue(1, item.UUID());
+		statement_updateTime.bindValue(2, item.taskID());
+		statement_updateTime.bindValue(3, item.start());
+		statement_updateTime.bindValue(4, item.stop());
+		statement_updateTime.bindValue(5, item.running());
+		statement_updateTime.bindValue(6, item.changed());
+		statement_updateTime.bindValue(7, item.deleted());
+		statement_updateTime.bindValue(8, item.ID());
 
-		statement_updateTime->execute();
+		statement_updateTime.execute();
 
 		notifier->sendNotification(TASK_UPDATED, item.taskID());
 		return true;
@@ -315,10 +312,10 @@ bool TimeAccessor::update(const TimeEntry &item)
 shared_ptr<vector<int64_t>> TimeAccessor::getChildrenIDs(int64_t taskID)
 {
 	shared_ptr<vector<int64_t>> result = shared_ptr<vector<int64_t> >(new vector<int64_t>);
-	shared_ptr<Statement> statement_getChildrenIDs = db->prepare("SELECT id FROM tasks WHERE parent=?;");
-	statement_getChildrenIDs->bindValue(1, taskID);
-	shared_ptr<QueryResult> rows = statement_getChildrenIDs->execute();
-	for (vector<DataCell> row : *rows)
+	Statement statement_getChildrenIDs = db->prepare("SELECT id FROM tasks WHERE parent=?;");
+	statement_getChildrenIDs.bindValue(1, taskID);
+	QueryResult rows = statement_getChildrenIDs.execute();
+	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
 		result->push_back(id);
@@ -339,15 +336,15 @@ time_t TimeAccessor::getTotalTimeWithChildren(int64_t taskID, time_t start, time
 
 int64_t TimeAccessor::newEntry(const TimeEntry &item)
 {
-	std::shared_ptr<DBAbstraction::Statement> statement_newEntry = db->prepare(
+	DBAbstraction::Statement statement_newEntry = db->prepare(
 			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
-	statement_newEntry->bindValue(1, item.UUID());
-	statement_newEntry->bindValue(2, item.taskID());
-	statement_newEntry->bindValue(3, item.start());
-	statement_newEntry->bindValue(4, item.stop());
-	statement_newEntry->bindValue(5, item.changed());
-	statement_newEntry->bindValue(6, item.deleted());
-	statement_newEntry->execute();
+	statement_newEntry.bindValue(1, item.UUID());
+	statement_newEntry.bindValue(2, item.taskID());
+	statement_newEntry.bindValue(3, item.start());
+	statement_newEntry.bindValue(4, item.stop());
+	statement_newEntry.bindValue(5, item.changed());
+	statement_newEntry.bindValue(6, item.deleted());
+	statement_newEntry.execute();
 
 	if (item.start() != item.stop())
 	{
@@ -358,16 +355,16 @@ int64_t TimeAccessor::newEntry(const TimeEntry &item)
 
 void TimeAccessor::upgradeToDB5()
 {
-	time_t now = time(0);
+	time_t now = time(nullptr);
 
 	db->exe("DELETE FROM times WHERE taskID = 0");
 	db->exe("ALTER TABLE times RENAME TO times_backup");
 	createTable();
 	createViews();
 
-	shared_ptr<Statement> statement = db->prepare("SELECT id, taskID, start, stop FROM  times_backup");
-	shared_ptr<QueryResult> rows = statement->execute();
-	for (vector<DataCell> row : *rows)
+	Statement statement = db->prepare("SELECT id, taskID, start, stop FROM  times_backup");
+	QueryResult rows = statement.execute();
+	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
 		int64_t taskID = row[1].getInt();
@@ -413,19 +410,19 @@ void TimeAccessor::removeShortTimeSpans()
 std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
 {
 	std::vector<int64_t> resultList;
-	std::shared_ptr<Statement> statement_getTasks =
+	Statement statement_getTasks =
 			db->prepare(
 					"SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' WHERE (times.start>=? AND times.start<=?) OR (times.stop>=? AND times.stop<=?) OR (times.start<? AND times.stop>?)  AND times.deleted=0;");
-	statement_getTasks->bindValue(1, start);
-	statement_getTasks->bindValue(2, stop);
-	statement_getTasks->bindValue(3, start);
-	statement_getTasks->bindValue(4, stop);
-	statement_getTasks->bindValue(5, start);
-	statement_getTasks->bindValue(6, stop);
+	statement_getTasks.bindValue(1, start);
+	statement_getTasks.bindValue(2, stop);
+	statement_getTasks.bindValue(3, start);
+	statement_getTasks.bindValue(4, stop);
+	statement_getTasks.bindValue(5, start);
+	statement_getTasks.bindValue(6, stop);
 
-	std::shared_ptr<QueryResult> rows = statement_getTasks->execute();
+	QueryResult rows = statement_getTasks.execute();
 
-	for (std::vector<DataCell> row : *rows)
+	for (std::vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		resultList.push_back(id);
