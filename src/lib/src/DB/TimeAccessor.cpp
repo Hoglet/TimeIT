@@ -204,9 +204,9 @@ std::vector<int64_t> TimeAccessor::getRunningTasks()
 	return resultList;
 }
 
-std::vector<TimeEntry> TimeAccessor::getDetailTimeList(int64_t taskID, time_t startTime, time_t stopTime)
+TimeList TimeAccessor::getDetailTimeList(int64_t taskID, time_t startTime, time_t stopTime)
 {
-	vector<TimeEntry> resultList;
+	TimeList resultList;
 	stringstream statement;
 	statement << "SELECT id, start, stop, deleted, running, changed, uuid, taskUUID FROM v_times ";
 	statement << " WHERE stop > " << startTime;
@@ -242,9 +242,9 @@ void TimeAccessor::setRunning(int64_t timeID, bool running)
 	notifier->sendNotification(TASK_UPDATED, taskID);
 }
 
-std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time_t timestamp)
+TimeList TimeAccessor::getTimesChangedSince(time_t timestamp)
 {
-	std::shared_ptr<std::vector<TimeEntry> > result = shared_ptr<std::vector<TimeEntry>>(new vector<TimeEntry>);
+	TimeList result;
 
 	Statement statement = db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
 
@@ -267,7 +267,7 @@ std::shared_ptr<std::vector<TimeEntry> > TimeAccessor::getTimesChangedSince(time
 		int64_t id = row[7].getInt();
 		std::string taskUUID = row[8].getString();
 		TimeEntry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);
-		result->push_back(te);
+		result.push_back(te);
 	}
 	return result;
 }

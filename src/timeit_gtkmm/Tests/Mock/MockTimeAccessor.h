@@ -28,7 +28,7 @@ public:
 	virtual std::vector<DB::TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) ;
 	virtual std::vector<int64_t> getLatestTasks(int amount);
 	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime);
-	std::shared_ptr<std::vector<DB::TimeEntry> > getTimesChangedSince(time_t timestamp = 0);
+	std::vector<DB::TimeEntry> getTimesChangedSince(time_t timestamp = 0);
 	virtual int64_t uuidToId(std::string uuid);
 	virtual bool update(const DB::TimeEntry& item);
 	virtual int64_t newEntry(const DB::TimeEntry& item);

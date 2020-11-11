@@ -75,9 +75,9 @@ void SyncManager_fullSyncEmptyClient()
 		}
 	}
 	shared_ptr<ITimeAccessor> timeAccessor = db->getTimeAccessor();
-	shared_ptr<vector<TimeEntry> > times = timeAccessor->getTimesChangedSince();
-	ASSERT_EQUALM("Checking amount of times in database", 1, times->size());
-	for (TimeEntry item : *times)
+	TimeList times = timeAccessor->getTimesChangedSince();
+	ASSERT_EQUALM("Checking amount of times in database", 1, times.size());
+	for (TimeEntry item : times)
 	{
 		ASSERT_EQUALM("TimeEntry ID", 1, item.ID());
 		ASSERT_EQUALM("TimeEntry UUID", string("010c012c-00b9-40f6-80dd-018e011d0191"), item.UUID());
@@ -93,7 +93,7 @@ void SyncManager_fullSyncEmptyClient()
 	tasks = taskAccessor->getTasksChangedSince();
 	times = timeAccessor->getTimesChangedSince();
 	ASSERT_EQUALM("Checking number of tasks after repeat syncing ", 2, tasks->size());
-	ASSERT_EQUALM("Checking number of times after repeat syncing ", 1, times->size());
+	ASSERT_EQUALM("Checking number of times after repeat syncing ", 1, times.size());
 }
 
 cute::suite make_suite_SyncTest()

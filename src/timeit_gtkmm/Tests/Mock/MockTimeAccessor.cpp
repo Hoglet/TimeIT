@@ -75,9 +75,9 @@ int MockTimeAccessor::getTime(int64_t taskID, time_t startTime, time_t stopTime)
 	return 1;
 }
 
-std::shared_ptr<std::vector<TimeEntry> > MockTimeAccessor::getTimesChangedSince(time_t timestamp)
+std::vector<TimeEntry> MockTimeAccessor::getTimesChangedSince(time_t timestamp)
 {
-	std::shared_ptr<std::vector<TimeEntry> > result;
+	std::vector<TimeEntry> result;
 	return result;
 }
 int64_t MockTimeAccessor::uuidToId(std::string uuid)

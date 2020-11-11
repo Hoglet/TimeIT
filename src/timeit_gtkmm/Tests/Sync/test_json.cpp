@@ -111,11 +111,11 @@ void Json_simpleTimeTest()
 {
 	std::string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> times = Json::toTimes(json_string);
+	std::vector<DB::TimeEntry> times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
-	int numberOfItems = times->size();
+	int numberOfItems = times.size();
 	ASSERT_EQUALM("Number of items", 1, numberOfItems);
 
 	if (numberOfItems == 1)
@@ -123,7 +123,7 @@ void Json_simpleTimeTest()
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		TimeEntry item = times->at(0);
+		TimeEntry item = times.at(0);
 		bool expectedDeleted = false;
 		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
 		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
@@ -137,11 +137,11 @@ void Json_simpleTimeTest2()
 {
 	std::string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> times = Json::toTimes(json_string);
+	TimeList times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
-	int numberOfItems = times->size();
+	int numberOfItems = times.size();
 	ASSERT_EQUALM("Number of items", 1, numberOfItems);
 
 	if (numberOfItems == 1)
@@ -149,7 +149,7 @@ void Json_simpleTimeTest2()
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		TimeEntry item = times->at(0);
+		TimeEntry item = times.at(0);
 		bool expectedDeleted = true;
 		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
 		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
@@ -164,12 +164,12 @@ void Json_threeWayTimeTest()
 {
 	std::string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> items = Json::toTimes(json_string);
-	TimeEntry item1 = items->at(0);
+	std::vector<DB::TimeEntry> items = Json::toTimes(json_string);
+	TimeEntry item1 = items.at(0);
 	//Convert once more to be able to compare
 	std::string result = Json::toJson(items);
 	items = Json::toTimes(result);
-	TimeEntry item2 = items->at(0);
+	TimeEntry item2 = items.at(0);
 
 	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
 	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
@@ -183,12 +183,12 @@ void Json_threeWayTimeTest2()
 {
 	std::string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	std::shared_ptr<std::vector<DB::TimeEntry>> items = Json::toTimes(json_string);
-	TimeEntry item1 = items->at(0);
+	std::vector<DB::TimeEntry> items = Json::toTimes(json_string);
+	TimeEntry item1 = items.at(0);
 	//Convert once more to be able to compare
 	std::string result = Json::toJson(items);
 	items = Json::toTimes(result);
-	TimeEntry item2 = items->at(0);
+	TimeEntry item2 = items.at(0);
 
 	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
 	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());

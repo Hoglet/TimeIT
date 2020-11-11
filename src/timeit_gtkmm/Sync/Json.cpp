@@ -65,10 +65,10 @@ std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 
 	return result;
 }
-std::string toJson(std::shared_ptr<std::vector<DB::TimeEntry>> times)
+std::string toJson(const TimeList& times)
 {
 	json_t *array = json_array();
-	for (TimeEntry time : *times)
+	for (TimeEntry time : times)
 	{
 		json_t *obj = json_object();
 		json_object_set(obj, "id", json_string(time.UUID().c_str()));
@@ -180,13 +180,13 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 	return retVal;
 }
 
-std::shared_ptr<std::vector<DB::TimeEntry> > toTimes(const std::string &input)
+TimeList toTimes(const std::string &input)
 {
 
 	json_t *root;
 	json_error_t error;
 
-	shared_ptr<vector<DB::TimeEntry>> retVal = shared_ptr<vector<TimeEntry>>(new vector<TimeEntry>);
+	TimeList retVal;
 
 	root = json_loads(input.c_str(), 0, &error);
 
@@ -244,7 +244,7 @@ std::shared_ptr<std::vector<DB::TimeEntry> > toTimes(const std::string &input)
 			}
 		}
 		TimeEntry item(id, uuid, 0, taskID, start, stop, deleted, false, changed);
-		retVal->push_back(item);
+		retVal.push_back(item);
 	}
 	return retVal;
 }

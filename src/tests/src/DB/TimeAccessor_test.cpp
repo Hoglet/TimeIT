@@ -1,14 +1,11 @@
-#include "test_TimeAccessor.h"
-#include "cute.h"
+#include "gtest/gtest.h"
 #include "TempDB.h"
 #include <UUIDTool.h>
+#include "dbexception.h"
 
 using namespace DB;
 
-namespace Test
-{
-
-void TimeAccessor_simpleTest()
+TEST(TimeAccessor, simpleTest)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
@@ -16,24 +13,24 @@ void TimeAccessor_simpleTest()
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	timeAccessor->newTime(taskId, 0, 1000);
 	int result = timeAccessor->getTime(taskId, 0, 0);
-	ASSERT_EQUAL(1000, result);
+	ASSERT_EQ(1000, result);
 }
 
-void TimeAccessor_ChangeEndTime()
+TEST(TimeAccessor, ChangeEndTime)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
-	TimeEntry te = 	timeAccessor->getByID(timeId);
+	TimeEntry te = timeAccessor->getByID(timeId);
 	timeAccessor->update(te.withStop(1300));
 	int result = timeAccessor->getTime(taskId, 0, 0);
-	ASSERT_EQUAL(1300, result);
+	ASSERT_EQ(1300, result);
 
 }
 
-void TimeAccessor_ChangeStartTime()
+TEST(TimeAccessor, ChangeStartTime)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
@@ -43,11 +40,11 @@ void TimeAccessor_ChangeStartTime()
 	TimeEntry te = timeAccessor->getByID(timeId);
 	timeAccessor->update(te.withStart(300));
 	int result = timeAccessor->getTime(taskId, 0, 0);
-	ASSERT_EQUAL(700, result);
+	ASSERT_EQ(700, result);
 
 }
 
-void TimeAccessor_UpdateTime()
+TEST(TimeAccessor, UpdateTime)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
@@ -56,11 +53,11 @@ void TimeAccessor_UpdateTime()
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
 	timeAccessor->updateTime(timeId, 300, 700);
 	int result = timeAccessor->getTime(taskId, 0, 0);
-	ASSERT_EQUAL(400, result);
+	ASSERT_EQ(400, result);
 
 }
 
-void TimeAccessor_RemoveTime()
+TEST(TimeAccessor, RemoveTime)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
@@ -70,10 +67,10 @@ void TimeAccessor_RemoveTime()
 	timeAccessor->newTime(taskId, 2000, 2300);
 	timeAccessor->remove(timeId);
 	int result = timeAccessor->getTime(taskId, 0, 0);
-	ASSERT_EQUAL(300, result);
+	ASSERT_EQ(300, result);
 }
 
-void TimeAccessor_GetLatestTasks()
+TEST(TimeAccessor, GetLatestTasks)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
@@ -81,14 +78,14 @@ void TimeAccessor_GetLatestTasks()
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	timeAccessor->newTime(taskId, 0, 1000);
 	std::vector<int64_t> result = timeAccessor->getLatestTasks(10);
-	ASSERT_EQUAL(1, result.size());
-	ASSERT_EQUAL(taskId, result[0]);
+	ASSERT_EQ(1, result.size());
+	ASSERT_EQ(taskId, result[0]);
 	taskAccessor->removeTask(taskId);
 	result = timeAccessor->getLatestTasks(10);
-	ASSERT_EQUAL(0, result.size());
+	ASSERT_EQ(0, result.size());
 }
 
-void TimeAccessor_GetDetailTimeList()
+TEST(TimeAccessor, GetDetailTimeList)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
@@ -96,13 +93,13 @@ void TimeAccessor_GetDetailTimeList()
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	timeAccessor->newTime(taskId, 10, 100);
 	std::vector<TimeEntry> result = timeAccessor->getDetailTimeList(taskId, 0, 10000);
-	ASSERT_EQUAL(1, result.size());
+	ASSERT_EQ(1, result.size());
 	TimeEntry te = result[0];
-	ASSERT_EQUAL(10, te.start());
-	ASSERT_EQUAL(100, te.stop());
+	ASSERT_EQ(10, te.start());
+	ASSERT_EQ(100, te.stop());
 }
 
-void TimeAccessor_testGetByID()
+TEST(TimeAccessor, testGetByID)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
@@ -110,13 +107,13 @@ void TimeAccessor_testGetByID()
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	int64_t timeEntryID = timeAccessor->newTime(taskId, 10, 100);
 	TimeEntry te = timeAccessor->getByID(timeEntryID);
-	ASSERT_EQUALM("Check task ID", taskId, te.taskID());
-	ASSERT_EQUALM("Check start", 10, te.start());
-	ASSERT_EQUALM("Check stop", 100, te.stop());
+	ASSERT_EQ(taskId, te.taskID()) << "Check task ID";
+	ASSERT_EQ(10, te.start()) << "Check start";
+	ASSERT_EQ(100, te.stop()) << "Check stop";
 
 }
 
-void TimeAccessor_newItem()
+TEST(TimeAccessor, newItem)
 {
 	TempDB db;
 	std::shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
@@ -127,15 +124,15 @@ void TimeAccessor_newItem()
 	int64_t timeEntryID = timeAccessor->newEntry(item1);
 	TimeEntry item2 = timeAccessor->getByID(timeEntryID);
 
-	ASSERT_EQUALM("UUID: ", item1.UUID(), item2.UUID());
-	ASSERT_EQUALM("TaskID: ", item1.taskID(), item2.taskID());
-	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
-	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
-	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
-	ASSERT_EQUALM("Running: ", item1.running(), item2.running());
-	ASSERT_EQUALM("Changed: ", item1.changed(), item2.changed());
+	ASSERT_EQ(item1.UUID(), item2.UUID()) << "UUID: ";
+	ASSERT_EQ(item1.taskID(), item2.taskID()) << "TaskID: ";
+	ASSERT_EQ(item1.start(), item2.start()) << "Start: ";
+	ASSERT_EQ(item1.stop(), item2.stop()) << "Stop: ";
+	ASSERT_EQ(item1.deleted(), item2.deleted()) << "Deleted: ";
+	ASSERT_EQ(item1.running(), item2.running()) << "Running: ";
+	ASSERT_EQ(item1.changed(), item2.changed()) << "Changed: ";
 
-	ASSERT_THROWSM("Adding existing", timeAccessor->newEntry(item1), dbexception);
+	ASSERT_THROW(timeAccessor->newEntry(item1), dbexception);
 //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
 
 //	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
@@ -146,7 +143,7 @@ void TimeAccessor_newItem()
 
 }
 
-void TimeAccessor_GetTotalTimeWithChildren_test()
+TEST(TimeAccessor, GetTotalTimeWithChildren)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
@@ -155,30 +152,30 @@ void TimeAccessor_GetTotalTimeWithChildren_test()
 	const int64_t taskId = taskAccessor->newTask("test", parentId);
 	timeAccessor->newTime(taskId, 4000, 5000);
 	int parentTotalTime = timeAccessor->getTotalTimeWithChildren(parentId, 0, 0);
-	ASSERT_EQUAL(1000, parentTotalTime);
+	ASSERT_EQ(1000, parentTotalTime);
 	int childTotalTime = timeAccessor->getTotalTimeWithChildren(taskId, 0, 0);
-	ASSERT_EQUAL(1000, childTotalTime);
+	ASSERT_EQ(1000, childTotalTime);
 }
 
-void TimeAccessor_getTimesChangedSince()
+TEST(TimeAccessor, getTimesChangedSince)
 {
 	TempDB tempdb;
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	int64_t timeid=timeAccessor->newTime(taskId, 0, 1000);
+	int64_t timeid = timeAccessor->newTime(taskId, 0, 1000);
 
 	TimeEntry item = timeAccessor->getByID(timeid);
-	std::shared_ptr<std::vector<TimeEntry> > result = timeAccessor->getTimesChangedSince(0);
-	ASSERT_EQUAL(1, (*result).size());
+	std::vector<TimeEntry> result = timeAccessor->getTimesChangedSince(0);
+	ASSERT_EQ(1, result.size());
 	result = timeAccessor->getTimesChangedSince(item.changed());
-	ASSERT_EQUAL(1, (*result).size());
+	ASSERT_EQ(1, result.size());
 	result = timeAccessor->getTimesChangedSince(item.changed() + 1);
-	ASSERT_EQUAL(0, (*result).size());
+	ASSERT_EQ(0, result.size());
 }
 
-void TimeAccessor_getActiveTasks()
+TEST(TimeAccessor, getActiveTasks)
 {
 	TempDB db;
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
@@ -188,32 +185,32 @@ void TimeAccessor_getActiveTasks()
 
 	timeAccessor->newEntry(item);
 
-	std::vector<long int> result = timeAccessor->getActiveTasks(0,50000);
-	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+	std::vector<long int> result = timeAccessor->getActiveTasks(0, 50000);
+	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor->getActiveTasks(110,500);
-	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+	result = timeAccessor->getActiveTasks(110, 500);
+	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
 
-	result = timeAccessor->getActiveTasks(90,100);
-	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+	result = timeAccessor->getActiveTasks(90, 100);
+	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor->getActiveTasks(600,800);
-	ASSERT_EQUALM("Number of tasks are wrong", 1, result.size());
+	result = timeAccessor->getActiveTasks(600, 800);
+	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor->getActiveTasks(0,99);
-	ASSERT_EQUALM("Number of tasks are wrong", 0, result.size());
+	result = timeAccessor->getActiveTasks(0, 99);
+	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor->getActiveTasks(601,8000);
-	ASSERT_EQUALM("Number of tasks are wrong", 0, result.size());
+	result = timeAccessor->getActiveTasks(601, 8000);
+	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
 	taskAccessor->removeTask(taskId);
-	result = timeAccessor->getActiveTasks(110,500);
-	ASSERT_EQUALM("Deleted task is shown", 0, result.size());
+	result = timeAccessor->getActiveTasks(110, 500);
+	ASSERT_EQ(0, result.size()) << "Deleted task is shown";
 
 }
 
-void TimeAccessor_removeShortTimeSpans()
+TEST(TimeAccessor, removeShortTimeSpans)
 {
 	TempDB db;
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
@@ -228,28 +225,7 @@ void TimeAccessor_removeShortTimeSpans()
 
 	std::vector<TimeEntry> items = timeAccessor->getDetailTimeList(taskId, 0, 1000);
 
-	ASSERT_EQUAL(1, items.size());
+	ASSERT_EQ(1, items.size());
 }
 
 
-cute::suite make_suite_TimeAccessor_test()
-{
-	cute::suite s;
-	s.push_back(CUTE(TimeAccessor_removeShortTimeSpans));
-	s.push_back(CUTE(TimeAccessor_getTimesChangedSince));
-	s.push_back(CUTE(TimeAccessor_simpleTest));
-	s.push_back(CUTE(TimeAccessor_ChangeEndTime));
-	s.push_back(CUTE(TimeAccessor_ChangeStartTime));
-	s.push_back(CUTE(TimeAccessor_UpdateTime));
-	s.push_back(CUTE(TimeAccessor_GetLatestTasks));
-	s.push_back(CUTE(TimeAccessor_GetDetailTimeList));
-	s.push_back(CUTE(TimeAccessor_RemoveTime));
-	s.push_back(CUTE(TimeAccessor_testGetByID));
-	s.push_back(CUTE(TimeAccessor_newItem));
-	s.push_back(CUTE(TimeAccessor_GetTotalTimeWithChildren_test));
-	s.push_back(CUTE(TimeAccessor_getActiveTasks));
-	return s;
-}
-
-
-} /* namespace test_TimeAccessor */

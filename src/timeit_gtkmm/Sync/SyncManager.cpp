@@ -18,6 +18,7 @@ using std::vector;
 using DB::IDatabase;
 using DB::Task;
 using DB::TimeEntry;
+using DB::TimeList;
 
 SyncManager::SyncManager(shared_ptr<IDatabase> &database, shared_ptr<INetwork> &op_network, std::shared_ptr<Utils::MessageCenter> messageCenter)
 {
@@ -184,10 +185,10 @@ int SyncManager::syncTaskToDatabase(string result)
 int SyncManager::syncTimesToDatabase(string result)
 {
 	uint32_t start = Utils::millisecondsSinceEpoch();
-	std::shared_ptr<std::vector<TimeEntry> > times = Json::toTimes(result);
+	TimeList times = Json::toTimes(result);
 	uint32_t json_conversion_done = Utils::millisecondsSinceEpoch();
 
-	for (TimeEntry item : *times)
+	for (TimeEntry item : times)
 	{
 		std::string taskUUID = item.taskUUID();
 		int64_t taskID = taskAccessor->uuidToId(taskUUID);
@@ -220,7 +221,7 @@ int SyncManager::syncTimesToDatabase(string result)
 	cout << "Json conversion: " << json_conversion_done - start << " ms.\n";
 	cout << "stage1: " << stage1_done - json_conversion_done << " ms.\n";
 	cout << "******\n";
-	return times->size();
+	return times.size();
 }
 
 bool SyncManager::syncTasks(time_t sincePointInTime)
@@ -247,7 +248,7 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 
 bool SyncManager::syncTimes(time_t pointInTime)
 {
-	std::shared_ptr<std::vector<TimeEntry> > times = timeAccessor->getTimesChangedSince(pointInTime);
+	TimeList times = timeAccessor->getTimesChangedSince(pointInTime);
 	std::string jsonString = Json::toJson(times);
 	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
 	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);

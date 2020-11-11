@@ -1,5 +1,4 @@
-#ifndef TIMEACCESSOR_H_
-#define TIMEACCESSOR_H_
+#pragma once
 
 #include <map>
 #include <vector>
@@ -15,26 +14,32 @@ namespace DB
 {
 class Notifier;
 
+
+typedef std::vector<TimeEntry> TimeList;
+typedef int64_t                TaskID;
+typedef int64_t                TimeID;
+typedef std::vector<TaskID>    TaskIDList;
+
 class ITimeAccessor
 {
 public:
 	virtual ~ITimeAccessor();
-	virtual int64_t newTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
-	virtual void updateTime(int64_t timeID, time_t startTime, time_t stopTime) = 0;
-	virtual void setRunning(int64_t timeID, bool running) = 0;
-	virtual void stopAllRunning() = 0;
-	virtual TimeEntry getByID(int64_t id) = 0;
-	virtual void remove(int64_t id) = 0;
-	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) = 0;
-	virtual std::vector<int64_t> getLatestTasks(int amount) = 0;
-	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
-	virtual std::shared_ptr<std::vector<TimeEntry> > getTimesChangedSince(time_t timestamp=0) = 0;
-	virtual int64_t uuidToId(std::string uuid) = 0;
-	virtual bool update(const TimeEntry& item) = 0;
-	virtual int64_t newEntry(const TimeEntry& item) = 0;
-	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop) = 0;
-	virtual std::vector<int64_t> getRunningTasks() = 0;
-	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop) = 0;
+	virtual TimeID     newTime(TaskID taskID, time_t startTime, time_t stopTime) = 0;
+	virtual void       updateTime(TimeID timeID, time_t startTime, time_t stopTime) = 0;
+	virtual void       setRunning(TimeID timeID, bool running) = 0;
+	virtual void       stopAllRunning() = 0;
+	virtual TimeEntry  getByID(TimeID id) = 0;
+	virtual void       remove(TimeID id) = 0;
+	virtual TimeList   getDetailTimeList(TaskID taskId,time_t startTime, time_t stopTime) = 0;
+	virtual TaskIDList getLatestTasks(int amount) = 0;
+	virtual int	       getTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
+	virtual TimeList   getTimesChangedSince(time_t timestamp=0) = 0;
+	virtual TimeID     uuidToId(std::string uuid) = 0;
+	virtual bool       update(const TimeEntry& item) = 0;
+	virtual TimeID     newEntry(const TimeEntry& item) = 0;
+	virtual time_t     getTotalTimeWithChildren(TaskID taskID, time_t start, time_t stop) = 0;
+	virtual TaskIDList getRunningTasks() = 0;
+	virtual TaskIDList getActiveTasks(time_t start, time_t stop) = 0;
 };
 
 class TimeAccessor : public ITimeAccessor
@@ -42,22 +47,23 @@ class TimeAccessor : public ITimeAccessor
 public:
 	TimeAccessor(std::shared_ptr<DBAbstraction::CSQL>& db, std::shared_ptr<Notifier>& notifier);
 	virtual ~TimeAccessor();
-	virtual int64_t newTime(int64_t taskID, time_t startTime, time_t stopTime);
-	virtual void updateTime(int64_t timeID, time_t startTime, time_t stopTime);
-	virtual void stopAllRunning();
-	virtual void setRunning(int64_t timeID, bool running);
-	virtual std::vector<int64_t> getLatestTasks(int amount);
-	virtual TimeEntry getByID(int64_t id);
-	virtual void remove(int64_t id);
-	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime);
-	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime);
-	virtual std::shared_ptr<std::vector<TimeEntry> > getTimesChangedSince(time_t timestamp=0);
-	virtual int64_t uuidToId(std::string uuid);
-	virtual bool update(const TimeEntry& item);
-	virtual int64_t newEntry(const TimeEntry& item);
-	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop);
-	virtual std::vector<int64_t> getRunningTasks();
-	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop) ;
+
+	virtual TimeID     newTime(TaskID taskID, time_t startTime, time_t stopTime);
+	virtual void       updateTime(TimeID timeID, time_t startTime, time_t stopTime);
+	virtual void       stopAllRunning();
+	virtual void       setRunning(TimeID timeID, bool running);
+	virtual TaskIDList getLatestTasks(int amount);
+	virtual TimeEntry  getByID(TimeID id);
+	virtual void       remove(TimeID id);
+	virtual TimeList   getDetailTimeList(TaskID taskId,time_t startTime, time_t stopTime);
+	virtual int	       getTime(TaskID taskID, time_t startTime, time_t stopTime);
+	virtual TimeList   getTimesChangedSince(time_t timestamp=0);
+	virtual TimeID     uuidToId(std::string uuid);
+	virtual bool       update(const TimeEntry& item);
+	virtual TimeID     newEntry(const TimeEntry& item);
+	virtual time_t     getTotalTimeWithChildren(TaskID taskID, time_t start, time_t stop);
+	virtual TaskIDList getRunningTasks();
+	virtual TaskIDList getActiveTasks(time_t start, time_t stop) ;
 
 	void createTable();
 	void upgradeToDB5();
@@ -70,8 +76,6 @@ private:
     int getTimePassingEndLimit(int64_t & taskID, time_t & start, time_t & stop);
     int getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start, time_t & stop);
     std::shared_ptr<std::vector<int64_t>> getChildrenIDs(int64_t taskID);
-
     dbexception dbe;
 };
 }
-#endif /*TIMEACCESSOR_H_*/

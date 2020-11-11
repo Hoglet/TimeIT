@@ -93,9 +93,9 @@ void database_testUpgrade()
 	ASSERTM("Task 2 uuid is valid ", UUIDTool::isValid(task2->UUID()));
 
 	shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
-	shared_ptr<vector<TimeEntry>> times = timeAccessor->getTimesChangedSince();
-	ASSERT_EQUALM("Number of times ", 1, times->size());
-	TimeEntry te = times->at(0);
+	vector<TimeEntry> times = timeAccessor->getTimesChangedSince();
+	ASSERT_EQUALM("Number of times ", 1, times.size());
+	TimeEntry te = times.at(0);
 	ASSERT_EQUALM("Time id ", 1, te.ID());
 	ASSERTM("Time uuid is valid ", UUIDTool::isValid(te.UUID()));
 	ASSERT_EQUALM("Time taskID ", 2, te.taskID());

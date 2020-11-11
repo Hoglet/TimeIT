@@ -11,7 +11,6 @@
 #include "Misc/test_utils.h"
 #include "Misc/TimerTest.h"
 #include "DB/test_TimeManagement.h"
-#include "DB/test_TimeAccessor.h"
 #include "DB/test_ExtendedTaskAccessor.h"
 #include "DB/test_TaskAccessor.h"
 #include "DB/test_SettingsAccessor.h"
@@ -35,7 +34,6 @@ TestRunner::TestRunner()
 	s += make_suite_test_TimeManagement();
 	s += make_suite_TimerTest();
 	s += make_suite_AutoTrackerTest();
-	s += make_suite_TimeAccessor_test();
 	s += make_suite_test_TaskAccessor();
 	s += make_suite_test_ExtendedTaskAccessor();
 	s += make_suite_test_SettingsAccessor();
