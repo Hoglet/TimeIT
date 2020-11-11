@@ -3,15 +3,15 @@
 namespace DB
 {
 TimeEntry::TimeEntry(
-		int64_t op_id,
-		string  op_uuid,
-		int64_t op_taskID,
-		string  op_taskUUID,
-		time_t  op_start,
-		time_t  op_stop,
-		bool    op_deleted,
-		bool    op_running,
-		time_t  op_changed)
+		int64_t               op_id,
+		class UUID            op_uuid,
+		int64_t               op_taskID,
+		optional<class UUID>  op_taskUUID,
+		time_t                op_start,
+		time_t                op_stop,
+		bool                  op_deleted,
+		bool                  op_running,
+		time_t                op_changed)
 		:
 		id_(op_id),
 		uuid_(op_uuid),
@@ -73,12 +73,12 @@ int64_t TimeEntry::taskID() const
 {
 	return taskID_;
 }
-std::string TimeEntry::UUID() const
+class UUID TimeEntry::getUUID() const
 {
 	return uuid_;
 }
 
-std::string TimeEntry::taskUUID() const
+optional<class UUID> TimeEntry::taskUUID() const
 {
 	return taskUUID_;
 }

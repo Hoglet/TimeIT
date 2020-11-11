@@ -23,8 +23,11 @@ TEST(TimeAccessor, ChangeEndTime)
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
-	TimeEntry te = timeAccessor->getByID(timeId);
-	timeAccessor->update(te.withStop(1300));
+	auto te = timeAccessor->getByID(timeId);
+	if(te)
+	{
+		timeAccessor->update(te->withStop(1300));
+	}
 	int result = timeAccessor->getTime(taskId, 0, 0);
 	ASSERT_EQ(1300, result);
 
@@ -37,8 +40,8 @@ TEST(TimeAccessor, ChangeStartTime)
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	std::shared_ptr<ITimeAccessor> timeAccessor = tempdb.getTimeAccessor();
 	int64_t timeId = timeAccessor->newTime(taskId, 0, 1000);
-	TimeEntry te = timeAccessor->getByID(timeId);
-	timeAccessor->update(te.withStart(300));
+	auto te = timeAccessor->getByID(timeId);
+	timeAccessor->update(te->withStart(300));
 	int result = timeAccessor->getTime(taskId, 0, 0);
 	ASSERT_EQ(700, result);
 
@@ -106,10 +109,10 @@ TEST(TimeAccessor, testGetByID)
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = tempdb.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	int64_t timeEntryID = timeAccessor->newTime(taskId, 10, 100);
-	TimeEntry te = timeAccessor->getByID(timeEntryID);
-	ASSERT_EQ(taskId, te.taskID()) << "Check task ID";
-	ASSERT_EQ(10, te.start()) << "Check start";
-	ASSERT_EQ(100, te.stop()) << "Check stop";
+	auto te = timeAccessor->getByID(timeEntryID);
+	ASSERT_EQ(taskId, te->taskID()) << "Check task ID";
+	ASSERT_EQ(10, te->start()) << "Check start";
+	ASSERT_EQ(100, te->stop()) << "Check stop";
 
 }
 
@@ -119,18 +122,18 @@ TEST(TimeAccessor, newItem)
 	std::shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item1(0, UUIDTool::randomUUID(), taskId, "", 100, 200, false, false, 200);
+	TimeEntry item1(0, UUID(), taskId, {}, 100, 200, false, false, 200);
 
 	int64_t timeEntryID = timeAccessor->newEntry(item1);
-	TimeEntry item2 = timeAccessor->getByID(timeEntryID);
+	auto item2 = timeAccessor->getByID(timeEntryID);
 
-	ASSERT_EQ(item1.UUID(), item2.UUID()) << "UUID: ";
-	ASSERT_EQ(item1.taskID(), item2.taskID()) << "TaskID: ";
-	ASSERT_EQ(item1.start(), item2.start()) << "Start: ";
-	ASSERT_EQ(item1.stop(), item2.stop()) << "Stop: ";
-	ASSERT_EQ(item1.deleted(), item2.deleted()) << "Deleted: ";
-	ASSERT_EQ(item1.running(), item2.running()) << "Running: ";
-	ASSERT_EQ(item1.changed(), item2.changed()) << "Changed: ";
+	ASSERT_EQ(item1.getUUID(), item2->getUUID()) << "UUID: ";
+	ASSERT_EQ(item1.taskID(), item2->taskID()) << "TaskID: ";
+	ASSERT_EQ(item1.start(), item2->start()) << "Start: ";
+	ASSERT_EQ(item1.stop(), item2->stop()) << "Stop: ";
+	ASSERT_EQ(item1.deleted(), item2->deleted()) << "Deleted: ";
+	ASSERT_EQ(item1.running(), item2->running()) << "Running: ";
+	ASSERT_EQ(item1.changed(), item2->changed()) << "Changed: ";
 
 	ASSERT_THROW(timeAccessor->newEntry(item1), dbexception);
 //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
@@ -166,12 +169,12 @@ TEST(TimeAccessor, getTimesChangedSince)
 	const int64_t taskId = taskAccessor->newTask("test", 0);
 	int64_t timeid = timeAccessor->newTime(taskId, 0, 1000);
 
-	TimeEntry item = timeAccessor->getByID(timeid);
+	auto item = timeAccessor->getByID(timeid);
 	std::vector<TimeEntry> result = timeAccessor->getTimesChangedSince(0);
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor->getTimesChangedSince(item.changed());
+	result = timeAccessor->getTimesChangedSince(item->changed());
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor->getTimesChangedSince(item.changed() + 1);
+	result = timeAccessor->getTimesChangedSince(item->changed() + 1);
 	ASSERT_EQ(0, result.size());
 }
 
@@ -181,7 +184,7 @@ TEST(TimeAccessor, getActiveTasks)
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item(0, UUIDTool::randomUUID(), taskId, "", 100, 600, false, false, 200);
+	TimeEntry item(0, UUID(), taskId, {}, 100, 600, false, false, 200);
 
 	timeAccessor->newEntry(item);
 
@@ -216,8 +219,8 @@ TEST(TimeAccessor, removeShortTimeSpans)
 	std::shared_ptr<TimeAccessor> timeAccessor = std::dynamic_pointer_cast<TimeAccessor>(db.getTimeAccessor());
 	std::shared_ptr<IExtendedTaskAccessor> taskAccessor = db.getExtendedTaskAccessor();
 	const int64_t taskId = taskAccessor->newTask("test", 0);
-	TimeEntry item1(0, UUIDTool::randomUUID(), taskId, "", 100, 110, false, false, 200);
-	TimeEntry item2(0, UUIDTool::randomUUID(), taskId, "", 100, 160, false, false, 200);
+	TimeEntry item1(0, UUID(), taskId, {}, 100, 110, false, false, 200);
+	TimeEntry item2(0, UUID(), taskId, {}, 100, 160, false, false, 200);
 
 	timeAccessor->newEntry(item1);
 	timeAccessor->newEntry(item2);

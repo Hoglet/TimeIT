@@ -5,6 +5,7 @@
 #include "Task.h"
 #include <stdexcept>
 #include <string>
+#include <UUIDTool.h>
 
 using namespace std;
 using namespace DB;
@@ -21,11 +22,11 @@ std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 	{
 		json_t *obj = json_object();
 		json_object_set(obj, "name", json_string(task.name().c_str()));
-		json_object_set(obj, "id", json_string(task.UUID().c_str()));
-		if (task.parentUUID().length() > 0)
+		json_object_set(obj, "id", json_string(task.getUUID().c_str()));
+		if (task.parentUUID())
 		{
 			json_t *parent = json_object();
-			json_object_set(parent, "id", json_string(task.parentUUID().c_str()));
+			json_object_set(parent, "id", json_string(task.parentUUID()->c_str()));
 			json_object_set(obj, "parent", parent);
 		}
 		if (task.completed())
@@ -71,8 +72,8 @@ std::string toJson(const TimeList& times)
 	for (TimeEntry time : times)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "id", json_string(time.UUID().c_str()));
-		json_object_set(obj, "task", json_string(time.taskUUID().c_str()));
+		json_object_set(obj, "id", json_string(time.getUUID().c_str()));
+		json_object_set(obj, "task", json_string(time.taskUUID()->c_str()));
 		json_object_set(obj, "start", json_integer(time.start()));
 		json_object_set(obj, "stop", json_integer(time.stop()));
 		if (time.deleted())
@@ -86,13 +87,13 @@ std::string toJson(const TimeList& times)
 		json_object_set(obj, "changed", json_integer(time.changed()));
 
 		json_t *task = json_object();
-		json_object_set(task, "id", json_string(time.taskUUID().c_str()));
+		json_object_set(task, "id", json_string(time.taskUUID()->c_str()));
 		json_object_set(obj, "task", task);
 
 		json_array_append(array, obj);
 	}
 	char *str = json_dumps(array, 0);
-	if (str == 0)
+	if (str == nullptr)
 	{
 		//LCOV_EXCL_START
 		ge.setMessage("Failed to create json string");
@@ -118,8 +119,8 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 	for (unsigned int i = 0; i < json_array_size(root); i++)
 	{
 		std::string name;
-		std::string uuid;
-		std::string parent;
+		std::string uuidString;
+		std::string parentString;
 		bool completed;
 		time_t lastChanged;
 		bool deleted;
@@ -138,14 +139,14 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 		}
 		if (json_is_string(j_id))
 		{
-			uuid = json_string_value(j_id);
+			uuidString = json_string_value(j_id);
 		}
 		if (json_is_object(j_parent))
 		{
 			json_t *j_parentID = json_object_get(j_parent, "id");
 			if (json_is_string(j_parentID))
 			{
-				parent = json_string_value(j_parentID);
+				parentString = json_string_value(j_parentID);
 			}
 		}
 		if (json_is_boolean(j_completed))
@@ -174,8 +175,13 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 				deleted = false;
 			}
 		}
-		Task task(name, 0, uuid, completed, 0, lastChanged, parent, deleted);
-		retVal->push_back(task);
+		auto uuid= toUuid(uuidString);
+		if(uuid)
+		{
+			auto parent = toUuid(parentString);
+			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted);
+			retVal->push_back(task);
+		}
 	}
 	return retVal;
 }
@@ -193,8 +199,8 @@ TimeList toTimes(const std::string &input)
 	for (unsigned int i = 0; i < json_array_size(root); i++)
 	{
 		int64_t id = 0;
-		std::string uuid;
-		std::string taskID;
+		std::string uuidString;
+		std::string taskIDString;
 		time_t start;
 		time_t stop;
 		time_t changed;
@@ -213,12 +219,12 @@ TimeList toTimes(const std::string &input)
 			json_t *j_taskID = json_object_get(j_task, "id");
 			if (json_is_string(j_taskID))
 			{
-				taskID = json_string_value(j_taskID);
+				taskIDString = json_string_value(j_taskID);
 			}
 		}
 		if (json_is_string(j_id))
 		{
-			uuid = json_string_value(j_id);
+			uuidString = json_string_value(j_id);
 		}
 		if (json_is_integer(j_start))
 		{
@@ -243,8 +249,13 @@ TimeList toTimes(const std::string &input)
 				deleted = false;
 			}
 		}
-		TimeEntry item(id, uuid, 0, taskID, start, stop, deleted, false, changed);
-		retVal.push_back(item);
+		auto uuid= toUuid(uuidString);
+		auto taskID= toUuid(taskIDString);
+		if(uuid && taskID)
+		{
+			TimeEntry item(id, *uuid, 0, *taskID, start, stop, deleted, false, changed);
+			retVal.push_back(item);
+		}
 	}
 	return retVal;
 }

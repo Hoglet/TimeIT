@@ -26,7 +26,7 @@ public:
 	virtual int64_t newTask(std::string name, int64_t parentID) = 0;
 	virtual void setParentID(int64_t taskID, int parentID) = 0;
 	virtual void removeTask(int64_t taskID) = 0;
-	virtual int64_t uuidToId(std::string uuid) = 0;
+	virtual int64_t uuidToId(UUID uuid) = 0;
 	virtual void enableNotifications(bool) = 0;
 	virtual void setTaskExpanded(int64_t taskID, bool expanded) = 0;
 
@@ -52,7 +52,7 @@ public:
 	virtual int64_t newTask(std::string name, int64_t parentID);
 	virtual void setParentID(int64_t taskID, int parentID);
 	virtual void removeTask(int64_t taskID);
-	virtual int64_t uuidToId(std::string uuid);
+	virtual int64_t uuidToId(UUID uuid);
 	virtual void enableNotifications(bool);
 	virtual void setTaskExpanded(int64_t taskID, bool expanded);
 
@@ -66,9 +66,9 @@ private:
 	void notify(const Task &oldTask, const Task &newTask);
 	void _update(const Task &task);
 
-	dbexception dbe;
-	std::string idToUuid(int64_t id);
-	Task getTaskUnlimited(int64_t taskID);
+	dbexception          dbe;
+	optional<class UUID> idToUuid(int64_t id);
+	Task                 getTaskUnlimited(int64_t taskID);
 };
 
 }

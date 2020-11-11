@@ -72,11 +72,14 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 		}
 		string name = row[2].getString();
 		bool completed = row[3].getBool();
-		string uuid = row[4].getString();
+		auto uuid = toUuid(row[4].getString());
 		time_t lastChange = row[5].getInt();
 
-		Task task(name, parent, uuid, completed, id, lastChange, "", false);
-		retVal->push_back(task);
+		if(uuid)
+		{
+			Task task(name, parent, *uuid, completed, id, lastChange, idToUuid(parent), false);
+			retVal->push_back(task);
+		}
 	}
 	return retVal;
 }
@@ -99,15 +102,14 @@ std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 		}
 		string name = row[2].getString();
 		bool completed = row[3].getBool();
-		string uuid = row[4].getString();
+		auto uuid = toUuid(row[4].getString());
 		time_t lastChange = row[5].getInt();
 		bool deleted = row[6].getBool();
-		string parentUUID;
-		if (parent != 0)
+		if(uuid)
 		{
-			parentUUID = idToUuid(parent);
+			auto parentUUID = idToUuid(parent);
+			task = std::shared_ptr<Task>(new Task(name, parent, *uuid, completed, id, lastChange, parentUUID, deleted));
 		}
-		task = std::shared_ptr<Task>(new Task(name, parent, uuid, completed, id, lastChange, parentUUID, deleted));
 	}
 	return task;
 }
@@ -130,15 +132,13 @@ Task TaskAccessor::getTaskUnlimited(int64_t taskID)
 		}
 		string name = row[2].getString();
 		bool completed = row[3].getBool();
-		string uuid = row[4].getString();
+		auto uuid = toUuid(row[4].getString());
 		time_t lastChange = row[5].getInt();
 		bool deleted = row[6].getBool();
-		string parentUUID;
-		if (parent != 0)
+		if(uuid)
 		{
-			parentUUID = idToUuid(parent);
+			return Task(name, parent, *uuid, completed, id, lastChange, idToUuid(parent), deleted);
 		}
-		return Task(name, parent, uuid, completed, id, lastChange, parentUUID, deleted);
 	}
 	return task;
 }
@@ -164,31 +164,25 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasksChangedSince(time_t tim
 		}
 		string name = row[2].getString();
 		bool completed = row[3].getBool();
-		string uuid = row[4].getString();
+		auto uuid = toUuid(row[4].getString());
 		time_t lastChange = row[5].getInt();
 		bool deleted = row[6].getBool();
-		Task task(name, parent, uuid, completed, id, lastChange, "", deleted);
-		retVal->push_back(task);
-	}
-
-	for (unsigned int position = 0; position < retVal->size(); position++)
-	{
-		int64_t parent = retVal->at(position).parentID();
-		if (parent != 0)
+		if (uuid)
 		{
-			Task &task = retVal->at(position);
-			task.parentUuid_ = idToUuid(parent);
+			auto parentUUID=idToUuid(parent);
+			Task task(name, parent, *uuid, completed, id, lastChange, parentUUID, deleted);
+			retVal->push_back(task);
 		}
 	}
 	return retVal;
 }
 
-int64_t TaskAccessor::uuidToId(std::string uuid)
+int64_t TaskAccessor::uuidToId(UUID uuid)
 {
 
 	int64_t id = 0;
 	DBAbstraction::Statement statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
-	statement_uuidToId.bindValue(1, uuid);
+	statement_uuidToId.bindValue(1, uuid.c_str());
 	QueryResult rows = statement_uuidToId.execute();
 	for (std::vector<DataCell> row : rows)
 	{
@@ -197,18 +191,20 @@ int64_t TaskAccessor::uuidToId(std::string uuid)
 	return id;
 }
 
-std::string TaskAccessor::idToUuid(int64_t id)
+optional<class UUID> TaskAccessor::idToUuid(int64_t id)
 {
-
-	string uuid = "";
-	DBAbstraction::Statement statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
-	statement_idToUuid.bindValue(1, id);
-	QueryResult rows = statement_idToUuid.execute();
-	for (vector<DataCell> row : rows)
+	if(id)
 	{
-		uuid = row[0].getString();
+		DBAbstraction::Statement statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
+		statement_idToUuid.bindValue(1, id);
+		QueryResult rows = statement_idToUuid.execute();
+		for (vector<DataCell> row : rows)
+		{
+			auto uuid = row[0].getString();
+			return toUuid(uuid);
+		}
 	}
-	return uuid;
+	return {};
 }
 
 void TaskAccessor::_update(const Task &task)
@@ -257,11 +253,11 @@ bool TaskAccessor::updateTask(const Task &task)
 	int id = task.ID();
 	if (id == 0)
 	{
-		id = uuidToId(task.UUID());
+		id = uuidToId(task.getUUID());
 		if (id == 0)
 		{
 			stringstream message;
-			message << "Unable to find task with UUID=" << task.UUID();
+			message << "Unable to find task with UUID=" << task.getUUID().c_str();
 			dbe.setMessage(message.str());
 			throw dbe;
 		}
@@ -279,17 +275,12 @@ bool TaskAccessor::updateTask(const Task &task)
 
 int64_t TaskAccessor::newTask(const Task &op_task)
 {
-	std::string uuid = op_task.UUID();
+	UUID uuid = op_task.getUUID();
 	int parentID = op_task.parentID();
 	std::string name = op_task.name();
 	bool completed = op_task.completed();
 	time_t changeTime = op_task.lastChanged();
 	bool deleted = op_task.deleted();
-
-	if (uuid.length() == 0)
-	{
-		uuid = UUIDTool::randomUUID();
-	}
 
 	int64_t id = 0;
 
@@ -305,7 +296,7 @@ int64_t TaskAccessor::newTask(const Task &op_task)
 		statement_newTask.bindNullValue(2);
 	}
 	statement_newTask.bindValue(3, changeTime);
-	statement_newTask.bindValue(4, uuid);
+	statement_newTask.bindValue(4, uuid.c_str());
 	statement_newTask.bindValue(5, completed);
 	statement_newTask.bindValue(6, deleted);
 
@@ -378,13 +369,11 @@ void TaskAccessor::upgradeToDB5()
 			parent = row[1].getInt();
 		}
 		string name = row[2].getString();
-		string uuid = UUIDTool::randomUUID();
 		bool deleted = row[3].getBool();
 		bool completed = false;
 		time_t changed = now;
-		string parentUUID = "";
 
-		Task task(name, parent, uuid, completed, id, changed, parentUUID, deleted);
+		Task task(name, parent, UUID(), completed, id, changed, {}, deleted);
 		newTask(task);
 	}
 	db->exe("DROP TABLE tasks_backup");

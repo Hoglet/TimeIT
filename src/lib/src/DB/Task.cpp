@@ -59,29 +59,24 @@ Task Task::withParent(int64_t op1) const
 	}
 }
 
-Task::Task(const string &op_name, int64_t op_parentID): Task(op_name, op_parentID, "", false, 0, 0, "", false)
+Task::Task(const string &op_name, int64_t op_parentID): Task(op_name, op_parentID, UUID(), false, 0, 0, {}, false)
 {
 
 }
 
 Task::Task(
-	const std::string& op_name,
-	int64_t            op_parentID,
-	const std::string& op_uuid,
-	bool               op_completed,
-	int64_t            op_ID,
-	time_t             op_lastChange,
-	const std::string& op_parentUUID,
-	bool               op_deleted)
+	const std::string&   op_name,
+	int64_t              op_parentID,
+	class UUID           op_uuid,
+	bool                 op_completed,
+	int64_t              op_ID,
+	time_t               op_lastChange,
+	optional<class UUID> op_parentUUID,
+	bool                 op_deleted)
+	:
+	uuid_(op_uuid),
+	parentUuid_(op_parentUUID)
 {
-	if (op_uuid.length() != 0 && UUIDTool::isValid(op_uuid) == false)
-	{
-		throw std::invalid_argument("Invalid uuid");
-	}
-	if (op_parentUUID.length() != 0 && UUIDTool::isValid(op_parentUUID) == false)
-	{
-		throw std::invalid_argument("Invalid uuid in parent");
-	}
 	if (op_lastChange == 0)
 	{
 		lastChanged_ = time(nullptr);
@@ -93,18 +88,16 @@ Task::Task(
 	ID_ = op_ID;
 	parentID_ = op_parentID;
 	name_ = op_name;
-	uuid_ = op_uuid;
 	completed_ = op_completed;
-	parentUuid_ = op_parentUUID;
 	deleted_ = op_deleted;
 }
 
-std::string Task::UUID() const
+UUID Task::getUUID() const
 {
 	return uuid_;
 }
 
-std::string Task::parentUUID() const
+optional<class UUID> Task::parentUUID() const
 {
 	return parentUuid_;
 }

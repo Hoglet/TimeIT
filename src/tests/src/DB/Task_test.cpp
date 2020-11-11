@@ -3,33 +3,7 @@
 
 using namespace DB;
 
-class TestTaskC
-{
-public:
-	TestTaskC()
-	{
-	}
-	void testValidUUID()
-	{
-		Task task("Name", 0, "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d", false, 0, 0, "", false);
-	}
-	void testInvalidUUID()
-	{
-		Task task("Name", 0, "ascd", false, 0, 0, "", false);
-	}
-	void testInvalidParentUUID()
-	{
-		Task task("Name", 0, "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d", false, 0, 0, "abcd", false);
-	}
-};
 
-TEST(Task, creation)
-{
-	TestTaskC test_object;
-	ASSERT_NO_THROW(test_object.testValidUUID());
-	ASSERT_THROW(test_object.testInvalidUUID(), std::invalid_argument);
-	ASSERT_THROW(test_object.testInvalidParentUUID(), std::invalid_argument);
-}
 
 TEST( Task, getters)
 {
@@ -38,14 +12,13 @@ TEST( Task, getters)
 	ASSERT_EQ(0, task.parentID());
 
 	ASSERT_EQ("Name", task.name());
-	ASSERT_EQ("", task.UUID());
 	ASSERT_EQ(false, task.completed());
 
 }
 
 TEST (Task, with)
 {
-	Task original("Apa", 0, "", false, 0, 0, "", false);
+	Task original("Apa", 0, UUID(), false, 0, 0, {}, false);
 	auto now = time(0);
 
 	auto task = original.withName("Test");

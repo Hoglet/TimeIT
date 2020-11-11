@@ -94,7 +94,7 @@ void MockTaskAccessor::removeTask(int64_t taskID)
 {
 }
 
-int64_t MockTaskAccessor::uuidToId(std::string uuid)
+int64_t MockTaskAccessor::uuidToId(UUID uuid)
 {
 	return 0;
 }

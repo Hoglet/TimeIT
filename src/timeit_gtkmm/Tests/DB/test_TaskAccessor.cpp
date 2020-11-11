@@ -113,8 +113,6 @@ void TaskAccessor_newTask()
 	std::shared_ptr<std::vector<Task>> tasks = taskAccessor->getTasks();
 	ASSERT_EQUAL(1, tasks->size());
 	Task *taskp = &(tasks->at(0));
-	ASSERTM("UUID should be set", taskp->UUID().length() != 0);
-	ASSERTM("UUID should be valid", UUIDTool::isValid(taskp->UUID()));
 
 	ASSERT_THROWSM("Adding an existing task should not be allowed", taskAccessor->newTask(*taskp), dbexception);
 }
@@ -222,7 +220,7 @@ void TaskAccessor_lastChanged()
 	TempDB tempdb;
 	std::shared_ptr<ITaskAccessor> taskAccessor = tempdb.getTaskAccessor();
 	std::string originalName = "Test";
-	Task original_task(originalName, 0, UUIDTool::randomUUID(), false, 0, 500, "", false);
+	Task original_task(originalName, 0, UUID(), false, 0, 500, {}, false);
 	taskAccessor->newTask(original_task);
 
 	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince(0);
@@ -233,7 +231,7 @@ void TaskAccessor_lastChanged()
 	ASSERT_EQUALM("Asking for all tasks after last inserted", 0, tasks->size());
 
 	std::string newName = "New name";
-	Task updated_task(newName, task.parentID(), task.UUID(), task.completed(), task.ID(), 495, task.parentUUID(), false);
+	Task updated_task(newName, task.parentID(), task.getUUID(), task.completed(), task.ID(), 495, task.parentUUID(), false);
 	taskAccessor->updateTask(updated_task);
 	tasks = taskAccessor->getTasksChangedSince(0);
 

@@ -27,8 +27,8 @@ void ExtendedTaskAccessor_getExtendedTask()
 	ASSERT_EQUAL(2000, task.totalTime());
 
 	ExtendedTask task2 = taskAccessor->getExtendedTask(taskId2)->at(0);
-	ASSERT_EQUAL("Test2", task.name());
-	ASSERT_EQUAL(1000, task.totalTime());
+	ASSERT_EQUAL("Test2", task2.name());
+	ASSERT_EQUAL(1000, task2.totalTime());
 }
 
 void ExtendedTaskAccessor_getExtendedTasks()

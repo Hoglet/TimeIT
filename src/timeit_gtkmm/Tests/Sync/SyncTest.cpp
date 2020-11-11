@@ -67,7 +67,7 @@ void SyncManager_fullSyncEmptyClient()
 		{
 			string parentUUID = "013900e6-00dd-40f7-b0d6-00de00bf006b";
 			ASSERT_EQUALM("Checking Child's change time", 1375358093, task.lastChanged());
-			ASSERT_EQUALM("Checking Child's parent ", parentUUID, task.parentUUID());
+			ASSERT_EQUALM("Checking Child's parent ", parentUUID, task.parentUUID()->c_str());
 		}
 		else
 		{
@@ -80,8 +80,8 @@ void SyncManager_fullSyncEmptyClient()
 	for (TimeEntry item : times)
 	{
 		ASSERT_EQUALM("TimeEntry ID", 1, item.ID());
-		ASSERT_EQUALM("TimeEntry UUID", string("010c012c-00b9-40f6-80dd-018e011d0191"), item.UUID());
-		ASSERT_EQUALM("TimeEntry taskUUD", string("00b3015e-00d6-418e-81c8-0125012d0172"), item.taskUUID());
+		ASSERT_EQUALM("TimeEntry UUID", "010c012c-00b9-40f6-80dd-018e011d0191", item.getUUID().c_str());
+		ASSERT_EQUALM("TimeEntry taskUUD", "00b3015e-00d6-418e-81c8-0125012d0172", item.taskUUID()->c_str());
 		ASSERT_EQUALM("TimeEntry start", 1363597429, item.start());
 		ASSERT_EQUALM("TimeEntry stop", 1363597541, item.stop());
 		ASSERT_EQUALM("TimeEntry changed", 1376388171, item.changed());

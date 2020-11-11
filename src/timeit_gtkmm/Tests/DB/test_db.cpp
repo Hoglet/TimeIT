@@ -85,19 +85,16 @@ void database_testUpgrade()
 	shared_ptr<Task> task1 = taskAccessor->getTask(1);
 	ASSERT_EQUALM("Task 1 name ", string("Test"), task1->name());
 	ASSERT_EQUALM("Task 1 parent ", 0, task1->parentID());
-	ASSERTM("Task 1 uuid is valid ", UUIDTool::isValid(task1->UUID()));
 
 	shared_ptr<Task> task2 = taskAccessor->getTask(2);
 	ASSERT_EQUALM("Task 2 name ", string("Sub task"), task2->name());
 	ASSERT_EQUALM("Task 2 parent ", 1, task2->parentID());
-	ASSERTM("Task 2 uuid is valid ", UUIDTool::isValid(task2->UUID()));
 
 	shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
 	vector<TimeEntry> times = timeAccessor->getTimesChangedSince();
 	ASSERT_EQUALM("Number of times ", 1, times.size());
 	TimeEntry te = times.at(0);
 	ASSERT_EQUALM("Time id ", 1, te.ID());
-	ASSERTM("Time uuid is valid ", UUIDTool::isValid(te.UUID()));
 	ASSERT_EQUALM("Time taskID ", 2, te.taskID());
 	ASSERT_EQUALM("Time start ", 10, te.start());
 	ASSERT_EQUALM("Time stop ", 100, te.stop());

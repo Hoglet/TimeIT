@@ -30,35 +30,40 @@ void TimeAccessor::stopAllRunning()
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
 {
 	time_t now = time(nullptr);
-	TimeEntry te(0, UUIDTool::randomUUID(), taskID, "", start, stop, false, false, now);
+	TimeEntry te(0, UUID(), taskID, {}, start, stop, false, false, now);
 	return newEntry(te);
 }
 
 void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 {
-	TimeEntry te = getByID(timeID);
-	time_t now = time(nullptr);
-	stringstream statement;
-	statement << "UPDATE times SET start = " << startTime << ", stop=" << stopTime;
-	statement << ", changed=" << now;
-	statement << " WHERE id=" << timeID;
-	db->exe(statement.str());
-	notifier->sendNotification(TASK_UPDATED, te.taskID());
+	auto te = getByID(timeID);
+	if(te)
+	{
+		time_t now = time(nullptr);
+		stringstream statement;
+		statement << "UPDATE times SET start = " << startTime << ", stop=" << stopTime;
+		statement << ", changed=" << now;
+		statement << " WHERE id=" << timeID;
+		db->exe(statement.str());
+		notifier->sendNotification(TASK_UPDATED, te->taskID());
+	}
 }
 
 void TimeAccessor::remove(int64_t id)
 {
-	TimeEntry te = getByID(id);
-	update(te.withDeleted(true));
+	auto te = getByID(id);
+	if(te)
+	{
+		update(te->withDeleted(true));
+	}
 }
 
-TimeEntry TimeAccessor::getByID(int64_t id)
+std::optional<TimeEntry> TimeAccessor::getByID(int64_t id)
 {
 	Statement statement = db->prepare(
 			"SELECT taskID, start, stop, running, changed, deleted, uuid, taskUUID FROM v_times WHERE id = ?");
 	statement.bindValue(1, id);
 
-	int taskID = 0;
 	std::string taskUUID;
 	time_t start = 0;
 	time_t stop = 0;
@@ -71,16 +76,21 @@ TimeEntry TimeAccessor::getByID(int64_t id)
 	if (rows.size() > 0)
 	{
 		vector<DataCell> row = rows.at(0);
-		taskID = row[0].getInt();
-		start = row[1].getInt();
-		stop = row[2].getInt();
-		running = row[3].getBool();
-		changed = row[4].getInt();
-		deleted = row[5].getBool();
-		uuid = row[6].getString();
-		taskUUID = row[7].getString();
+		int     taskID   = row[0].getInt();
+		time_t  start    = row[1].getInt();
+		time_t  stop     = row[2].getInt();
+		time_t  running  = row[3].getBool();
+		int64_t changed  = row[4].getInt();
+		bool    deleted  = row[5].getBool();
+		auto    uuid     = toUuid(row[6].getString());
+		auto    taskUUID = toUuid(row[7].getString());
+		if( uuid && taskUUID )
+		{
+
+			return TimeEntry(id, *uuid, taskID, *taskUUID, start, stop, deleted, running, changed);
+		}
 	}
-	return TimeEntry(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);
+	return {};
 }
 
 int TimeAccessor::getTime(int64_t taskID, time_t start, time_t stop)
@@ -223,23 +233,29 @@ TimeList TimeAccessor::getDetailTimeList(int64_t taskID, time_t startTime, time_
 		bool deleted = row[3].getBool();
 		bool running = row[4].getBool();
 		time_t changed = row[5].getInt();
-		std::string uuid = row[6].getString();
-		std::string taskUUID = row[7].getString();
-		resultList.push_back(TimeEntry(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed));
+		auto uuid = toUuid(row[6].getString());
+		auto taskUUID = toUuid(row[7].getString());
+		if (uuid && taskUUID)
+		{
+			resultList.push_back(TimeEntry(id, *uuid, taskID, *taskUUID, start, stop, deleted, running, changed));
+		}
 	}
 	return resultList;
 }
 
 void TimeAccessor::setRunning(int64_t timeID, bool running)
 {
-	TimeEntry te = getByID(timeID);
-	int64_t taskID = te.taskID();
-	stringstream statement;
-	statement << "UPDATE times SET running = " << (int) running;
-	statement << " WHERE id=" << timeID;
+	auto te = getByID(timeID);
+	if(te)
+	{
+		int64_t taskID = te->taskID();
+		stringstream statement;
+		statement << "UPDATE times SET running = " << (int) running;
+		statement << " WHERE id=" << timeID;
 
-	db->exe(statement.str());
-	notifier->sendNotification(TASK_UPDATED, taskID);
+		db->exe(statement.str());
+		notifier->sendNotification(TASK_UPDATED, taskID);
+	}
 }
 
 TimeList TimeAccessor::getTimesChangedSince(time_t timestamp)
@@ -259,24 +275,23 @@ TimeList TimeAccessor::getTimesChangedSince(time_t timestamp)
 		bool running = row[3].getBool();
 		time_t changed = row[4].getInt();
 		bool deleted = row[5].getBool();
-		std::string uuid = "";
-		if (row[6].hasValue())
-		{
-			uuid = row[6].getString();
-		}
+		auto uuid = toUuid(row[6].getString());
 		int64_t id = row[7].getInt();
-		std::string taskUUID = row[8].getString();
-		TimeEntry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);
-		result.push_back(te);
+		auto taskUUID = toUuid(row[8].getString());
+		if(uuid && taskUUID)
+		{
+			TimeEntry te(id, *uuid, taskID, *taskUUID, start, stop, deleted, running, changed);
+			result.push_back(te);
+		}
 	}
 	return result;
 }
 
-int64_t TimeAccessor::uuidToId(std::string uuid)
+int64_t TimeAccessor::uuidToId(UUID uuid)
 {
 	int64_t id = 0;
 	DBAbstraction::Statement statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
-	statement_uuidToId.bindValue(1, uuid);
+	statement_uuidToId.bindValue(1, uuid.c_str());
 	QueryResult rows = statement_uuidToId.execute();
 	for (std::vector<DataCell> row : rows)
 	{
@@ -288,12 +303,12 @@ int64_t TimeAccessor::uuidToId(std::string uuid)
 bool TimeAccessor::update(const TimeEntry &item)
 {
 	int64_t id = item.ID();
-	TimeEntry existingItem = getByID(id);
-	if (item != existingItem && item.changed() >= existingItem.changed())
+	auto existingItem = getByID(id);
+	if (existingItem && item != *existingItem && item.changed() >= existingItem->changed())
 	{
 		DBAbstraction::Statement statement_updateTime = db->prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
-		statement_updateTime.bindValue(1, item.UUID());
+		statement_updateTime.bindValue(1, item.getUUID().c_str());
 		statement_updateTime.bindValue(2, item.taskID());
 		statement_updateTime.bindValue(3, item.start());
 		statement_updateTime.bindValue(4, item.stop());
@@ -338,7 +353,7 @@ int64_t TimeAccessor::newEntry(const TimeEntry &item)
 {
 	DBAbstraction::Statement statement_newEntry = db->prepare(
 			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
-	statement_newEntry.bindValue(1, item.UUID());
+	statement_newEntry.bindValue(1, item.getUUID().c_str());
 	statement_newEntry.bindValue(2, item.taskID());
 	statement_newEntry.bindValue(3, item.start());
 	statement_newEntry.bindValue(4, item.stop());
@@ -370,8 +385,7 @@ void TimeAccessor::upgradeToDB5()
 		int64_t taskID = row[1].getInt();
 		time_t start = row[2].getInt();
 		time_t stop = row[3].getInt();
-		string uuid = UUIDTool::randomUUID();
-		TimeEntry item(id, uuid, taskID, "", start, stop, false, false, now);
+		TimeEntry item(id, UUID(), taskID, {}, start, stop, false, false, now);
 		newEntry(item);
 	}
 }
@@ -429,5 +443,7 @@ std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
 	}
 	return resultList;
 }
+
+
 
 }

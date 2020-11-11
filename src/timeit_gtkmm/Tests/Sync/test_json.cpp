@@ -30,8 +30,8 @@ void Json_simpleTaskTest()
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQUALM("Name: ", expectedName, task.name());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.UUID());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID());
+		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID().c_str());
+		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID()->c_str());
 		ASSERT_EQUALM("completed: ", expectedCompleted, task.completed());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
 		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
@@ -58,8 +58,8 @@ void Json_simpleTaskTest2()
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQUALM("Name: ", expectedName, task.name());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.UUID());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID());
+		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID().c_str());
+		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID()->c_str());
 		ASSERT_EQUALM("Completed: ", expectedCompleted, task.completed());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
 		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
@@ -79,8 +79,8 @@ void Json_threeWayTaskTest()
 	Task task2 = tasks->at(0);
 
 	ASSERT_EQUALM("Name ", task1.name(), task2.name());
-	ASSERT_EQUALM("UUID: ", task1.UUID(), task2.UUID());
-	ASSERT_EQUALM("Parent: ", task1.parentUUID(), task2.parentUUID());
+	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
+	ASSERT_EQUALM("Parent: ", task1.parentUUID()->c_str(), task2.parentUUID()->c_str());
 	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
 	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
 	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
@@ -99,8 +99,8 @@ void Json_threeWayTaskTest2()
 	Task task2 = tasks->at(0);
 
 	ASSERT_EQUALM("Name ", task1.name(), task2.name());
-	ASSERT_EQUALM("UUID: ", task1.UUID(), task2.UUID());
-	ASSERT_EQUALM("Parent: ", task1.parentUUID(), task2.parentUUID());
+	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
+	ASSERT_EQUALM("Parent: ", task1.parentUUID()->c_str(), task2.parentUUID()->c_str());
 	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
 	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
 	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
@@ -125,8 +125,8 @@ void Json_simpleTimeTest()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times.at(0);
 		bool expectedDeleted = false;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
+		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID().c_str());
+		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID()->c_str());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
 		ASSERT_EQUALM("Start: ", expectedStart, item.start());
 		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
@@ -136,7 +136,7 @@ void Json_simpleTimeTest()
 void Json_simpleTimeTest2()
 {
 	std::string json_string =
-			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+			R"([ {"id": "01bd0176-00ed-4135-b181-014101790130","task":{"id":"00e1010f-00f2-40df-90b3-00f900ab009e"},"start": 1363339855,"stop": 1363342626,"deleted": true,"changed": 1376059170, "owner":{"username":"tester"}}])";
 	TimeList times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
@@ -151,8 +151,8 @@ void Json_simpleTimeTest2()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times.at(0);
 		bool expectedDeleted = true;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.UUID());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID());
+		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID().c_str());
+		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID()->c_str());
 		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
 		ASSERT_EQUALM("Start: ", expectedStart, item.start());
 		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
@@ -163,7 +163,20 @@ void Json_simpleTimeTest2()
 void Json_threeWayTimeTest()
 {
 	std::string json_string =
-			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+			R"(
+[{
+	"id": "01bd0176-00ed-4135-b181-014101790130",
+    "task":
+	{
+		"id" : "00e1010f-00f2-40df-90b3-00f900ab009e"
+	},
+	"start": 1363339855,
+	"stop": 1363342626,
+	"deleted": false,
+	"changed": 1376059170,
+	"owner":{"username":"tester"}
+}])";
+
 	std::vector<DB::TimeEntry> items = Json::toTimes(json_string);
 	TimeEntry item1 = items.at(0);
 	//Convert once more to be able to compare
@@ -171,7 +184,7 @@ void Json_threeWayTimeTest()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items.at(0);
 
-	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
+	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
 	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
 	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
 	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
@@ -182,7 +195,18 @@ void Json_threeWayTimeTest()
 void Json_threeWayTimeTest2()
 {
 	std::string json_string =
-			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"taskID\": \"00e1010f-00f2-40df-90b3-00f900ab009e\",\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": true,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
+			R"(
+[{
+	"id": "01bd0176-00ed-4135-b181-014101790130",
+    "task":
+	{
+		"id" : "00e1010f-00f2-40df-90b3-00f900ab009e"
+	},	"taskID": "00e1010f-00f2-40df-90b3-00f900ab009e",
+	"start": 1363339855,
+	"stop": 1363342626,
+	"deleted": true,
+	"changed": 1376059170,"owner": {"username":"tester"}
+}])";
 	std::vector<DB::TimeEntry> items = Json::toTimes(json_string);
 	TimeEntry item1 = items.at(0);
 	//Convert once more to be able to compare
@@ -190,7 +214,7 @@ void Json_threeWayTimeTest2()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items.at(0);
 
-	ASSERT_EQUALM("ID ", item1.UUID(), item2.UUID());
+	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
 	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
 	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
 	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
@@ -202,11 +226,11 @@ void Json_threeWayTimeTest2()
 void Json_testTaskStringGenerationTest()
 {
 	std::string name = "task1";
-	std::string parentID = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
-	std::string UUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
+	auto parentID = toUuid("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
+	auto uuid = toUuid("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	time_t changeTime = 1374263745;
 
-	Task task(name, 1, UUID, false, 1, changeTime, parentID, false);
+	Task task(name, 1, *uuid, false, 1, changeTime, parentID, false);
 	std::shared_ptr<std::vector<Task>> tasks = std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
 	tasks->push_back(task);
 	std::string result = Json::toJson(tasks, "tester");
@@ -231,8 +255,8 @@ void Json_testTaskStringGenerationTest()
 	json_t *j_owner = json_object_get(object, "owner");
 
 	ASSERT_EQUALM("Name is incorrect", name, json_string_value(j_name));
-	ASSERT_EQUALM("id is incorrect", UUID, json_string_value(j_id));
-	ASSERT_EQUALM("Parent id is incorrect", parentID, json_string_value(json_object_get(j_parent, "id")));
+	ASSERT_EQUALM("id is incorrect", uuid->c_str(), json_string_value(j_id));
+	ASSERT_EQUALM("Parent id is incorrect", parentID->c_str(), json_string_value(json_object_get(j_parent, "id")));
 	ASSERT_EQUALM("Completed is incorrect", false, json_is_true(j_completed));
 	ASSERT_EQUALM("Last changed is incorrect", changeTime, json_integer_value(j_lastChanged));
 	ASSERT_EQUALM("Deleted is incorrect", false, json_is_true(j_deleted));

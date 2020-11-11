@@ -1,3 +1,4 @@
+#include <Logic/UUIDTool.h>
 #include "gtest/gtest.h"
 #include "TimeEntry.h"
 
@@ -5,8 +6,8 @@ using namespace DB;
 
 TimeEntry getTestTimeEntry()
 {
-	TimeEntry te(1, "00a600df-00da-414c-8078-0182005b0109", 1, "00a600df-00da-414c-8078-0182005b0107" , 100, 1100, false, false, 1100);
-	return te;
+	auto uuid = toUuid("00a600df-00da-414c-8078-0182005b0109");
+	return TimeEntry(1, *uuid, 1, toUuid("00a600df-00da-414c-8078-0182005b0107") , 100, 1100, false, false, 1100);
 }
 
 /*TEST(TimeEntry, changeStartTime)

@@ -128,17 +128,17 @@ int SyncManager::syncTaskToDatabase(string result)
 	std::shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
 	for (Task task : *tasks)
 	{
-		int64_t id = taskAccessor->uuidToId(task.UUID());
-		string parentUUID = task.parentUUID();
+		int64_t id = taskAccessor->uuidToId(task.getUUID());
+		auto parentUUID = task.parentUUID();
 		bool completed = task.completed();
 		int64_t parent = 0;
 		time_t lastChanged = task.lastChanged();
 		string name = task.name();
-		string uuid = task.UUID();
+		auto uuid = task.getUUID();
 		bool deleted = task.deleted();
-		if (parentUUID.size() > 0)
+		if (parentUUID)
 		{
-			parent = taskAccessor->uuidToId(parentUUID);
+			parent = taskAccessor->uuidToId(*parentUUID);
 			if (parent == 0)
 			{
 				tasksToUpdate->push_back(task);
@@ -158,15 +158,15 @@ int SyncManager::syncTaskToDatabase(string result)
 //Update tasks that had missing data earlier
 	for (Task task : *tasksToUpdate)
 	{
-		string parentUUID = task.parentUUID();
-		if (parentUUID.size() > 0)
+		auto parentUUID = task.parentUUID();
+		if (parentUUID)
 		{
-			int64_t id = taskAccessor->uuidToId(task.UUID());
-			int64_t parent = taskAccessor->uuidToId(parentUUID);
+			int64_t id = taskAccessor->uuidToId(task.getUUID());
+			int64_t parent = taskAccessor->uuidToId(*parentUUID);
 			bool completed = task.completed();
 			time_t lastChanged = task.lastChanged();
 			string name = task.name();
-			string uuid = task.UUID();
+			auto uuid = task.getUUID();
 			bool deleted = task.deleted();
 			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
 			taskAccessor->updateTask(tempTask);
@@ -190,9 +190,9 @@ int SyncManager::syncTimesToDatabase(string result)
 
 	for (TimeEntry item : times)
 	{
-		std::string taskUUID = item.taskUUID();
-		int64_t taskID = taskAccessor->uuidToId(taskUUID);
-		std::string uuid = item.UUID();
+		auto taskUUID = item.taskUUID();
+		int64_t taskID = taskAccessor->uuidToId(*taskUUID);
+		auto uuid = item.getUUID();
 		int id = timeAccessor->uuidToId(uuid);
 		time_t changed = item.changed();
 		bool deleted = item.deleted();
@@ -201,8 +201,11 @@ int SyncManager::syncTimesToDatabase(string result)
 		bool running = false;
 		if (id > 0)
 		{
-			TimeEntry originalItem = timeAccessor->getByID(id);
-			running = originalItem.running();
+			auto originalItem = timeAccessor->getByID(id);
+			if(originalItem)
+			{
+				running = originalItem->running();
+			}
 		}
 
 		TimeEntry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);

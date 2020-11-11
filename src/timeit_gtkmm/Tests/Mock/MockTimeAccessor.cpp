@@ -46,10 +46,9 @@ void MockTimeAccessor::setRunning(int64_t timeID, bool running)
 {
 }
 
-TimeEntry MockTimeAccessor::getByID(int64_t id)
+std::optional<TimeEntry> MockTimeAccessor::getByID(int64_t id)
 {
-	TimeEntry te(0, "", 0, "", 0, 0, false, false, 0);
-	return te;
+	return TimeEntry(0, UUID(), 0, {}, 0, 0, false, false, 0);
 }
 
 void MockTimeAccessor::remove(int64_t id)
@@ -80,7 +79,7 @@ std::vector<TimeEntry> MockTimeAccessor::getTimesChangedSince(time_t timestamp)
 	std::vector<TimeEntry> result;
 	return result;
 }
-int64_t MockTimeAccessor::uuidToId(std::string uuid)
+int64_t MockTimeAccessor::uuidToId(UUID uuid)
 {
 	return 0;
 }

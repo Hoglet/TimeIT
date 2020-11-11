@@ -28,7 +28,7 @@ public:
 	virtual void setTaskName(int64_t taskID, std::string name);
 	virtual void setParentID(int64_t taskID, int parentID);
 	virtual void removeTask(int64_t taskID);
-	virtual int64_t uuidToId(std::string uuid);
+	virtual int64_t uuidToId(UUID uuid);
 	virtual void enableNotifications(bool);
 };
 
