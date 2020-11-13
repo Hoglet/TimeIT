@@ -1,7 +1,4 @@
-#include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
-#include "test_AutotrackAccessor.h"
+#include "gtest/gtest.h"
 #include "TempDB.h"
 #include "AutotrackAccessor.h"
 #include <vector>
@@ -10,10 +7,7 @@
 
 using namespace DB;
 
-namespace Test
-{
-
-void AutotrackAccessor_WorkspaceAccessor()
+TEST (AutotrackAccessor, WorkspaceAccessor)
 {
 	TempDB tempdb;
 	std::shared_ptr<IAutotrackAccessor> autotrackAccessor = tempdb.getAutotrackAccessor();
@@ -23,11 +17,11 @@ void AutotrackAccessor_WorkspaceAccessor()
 	workspaces.push_back(1);
 	autotrackAccessor->setWorkspaces(taskId, workspaces);
 	std::vector<int> result = autotrackAccessor->getWorkspaces(1);
-	ASSERT_EQUAL(result, workspaces);
+	ASSERT_EQ(result, workspaces);
 }
 
 
-void AutotrackAccessor_getTaskIDs()
+TEST (AutotrackAccessor, getTaskIDs)
 {
 	TempDB tempdb;
 	std::shared_ptr<IAutotrackAccessor> autotrackAccessor = tempdb.getAutotrackAccessor();
@@ -39,9 +33,9 @@ void AutotrackAccessor_getTaskIDs()
 	workspaces.push_back(1);
 	autotrackAccessor->setWorkspaces(taskID, workspaces);
 	std::vector<int64_t> result = autotrackAccessor->getTaskIDs(0);
-	ASSERT_EQUALM("Number of ids on workspace 0 ", 0, result.size());
+	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 0 ";
 	result = autotrackAccessor->getTaskIDs(1);
-	ASSERT_EQUALM("Number of ids on workspace 1 ", 1, result.size());
+	ASSERT_EQ(1, result.size()) << "Number of ids on workspace 1 ";
 
 	std::stringstream statement;
 	statement << "UPDATE tasks SET deleted = 1 ";
@@ -50,15 +44,7 @@ void AutotrackAccessor_getTaskIDs()
 	tempdb.execute(statement.str());
 
 	result = autotrackAccessor->getTaskIDs(1);
-	ASSERT_EQUALM("Number of ids on workspace 1 when task is deleted ", 0, result.size());
+	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 1 when task is deleted ";
 }
 
-cute::suite make_suite_test_AutotrackAccessor()
-{
-	cute::suite s;
-	s.push_back(CUTE(AutotrackAccessor_WorkspaceAccessor));
-	s.push_back(CUTE(AutotrackAccessor_getTaskIDs));
-	return s;
-}
-}
 
