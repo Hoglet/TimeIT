@@ -9,7 +9,7 @@
 #define MAIN_H_
 
 #include <libtimeit/db/Database.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <IGUIFactory.h>
 
 class Main

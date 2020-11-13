@@ -1,25 +1,24 @@
+#include <gtkmm.h>
 #include <AutoTracker.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <iostream>
 #include <vector>
 #include <TimeKeeper.h>
-#include <Timer.h>
 
 AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database,
-		const std::shared_ptr<Timer> &timer)
+		Timer& timer): m_timer(timer)
 {
 	m_timekeeper = timekeeper;
-	m_timer = timer;
 	m_autotrackAccessor = database->getAutotrackAccessor();
 	m_taskAccessor = database->getTaskAccessor();
 	oldWorkspace = -1;
 	on_signal_1_second(); //check if we should start anything;
-	m_timer->attach(this);
+	m_timer.attach(this);
 }
 
 AutoTracker::~AutoTracker()
 {
-	m_timer->detach(this);
+	m_timer.detach(this);
 }
 
 void AutoTracker::on_signal_1_second()

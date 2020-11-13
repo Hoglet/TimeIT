@@ -5,8 +5,7 @@
  *      Author: hoglet
  */
 
-#include "Timer.h"
-#include <gtkmm.h>
+#include "libtimeit/Timer.h"
 
 //LCOV_EXCL_START
 TimerObserver::~TimerObserver()
@@ -26,12 +25,10 @@ void TimerObserver::on_signal_10_seconds()
 
 Timer::Timer()
 {
-	connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &Timer::on_signal_1_second), 1);
 }
 
 Timer::~Timer()
 {
-	connection.disconnect();
 }
 
 void Timer::attach(TimerObserver *observer)

@@ -10,13 +10,13 @@
 #include <string>
 #include <sstream>
 #include <glibmm/i18n.h>
-#include "Timer.h"
+#include "libtimeit/Timer.h"
 #include <libtimeit/Utils.h>
 
 namespace GUI
 {
 
-IdleDialog::IdleDialog(std::shared_ptr<Timer> &timer, std::shared_ptr<DB::ITaskAccessor> accessor) :
+IdleDialog::IdleDialog(Timer& timer, std::shared_ptr<DB::ITaskAccessor> accessor) :
 		m_timer(timer), taskAccessor(accessor)
 {
 
@@ -36,7 +36,7 @@ IdleDialog::IdleDialog(std::shared_ptr<Timer> &timer, std::shared_ptr<DB::ITaskA
 	// been detected for X minutes. What should we do?"
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
-	m_timer->attach(this);
+	m_timer.attach(this);
 
 	signal_response().connect(sigc::mem_fun(this, &IdleDialog::responseHandler));
 
@@ -47,7 +47,7 @@ IdleDialog::IdleDialog(std::shared_ptr<Timer> &timer, std::shared_ptr<DB::ITaskA
 
 IdleDialog::~IdleDialog()
 {
-	m_timer->detach(this);
+	m_timer.detach(this);
 }
 
 void IdleDialog::attach(IActionObserver *observer)

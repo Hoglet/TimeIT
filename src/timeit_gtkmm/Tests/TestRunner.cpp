@@ -9,7 +9,6 @@
 #include "Misc/test_OSAbstraction.h"
 #include "Misc/test_ApplicationLock.h"
 #include "Misc/test_utils.h"
-#include "Misc/TimerTest.h"
 #include "DB/test_db.h"
 #include "Sync/SyncTest.h"
 #include "cute_xml_file.h"
@@ -24,7 +23,6 @@ TestRunner::TestRunner()
 	s += make_suite_TimeKeeperTest();
 	s += make_suite_ControllerTest();
 	s += make_suite_AutoTrackerTest();
-	s += make_suite_TimerTest();
 	s += make_suite_AutoTrackerTest();
 	s += make_suite_exceptionTest();
 	s += make_suite_OSAbstractionTest();

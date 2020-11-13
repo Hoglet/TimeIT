@@ -7,7 +7,7 @@
 
 #include "IdleDetector.h"
 #include <iostream>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>

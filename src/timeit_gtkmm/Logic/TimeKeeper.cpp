@@ -1,5 +1,5 @@
 #include <IdleDialog.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <iostream>
 #include <libtimeit/db/DefaultValues.h>
 #include "TimeKeeper.h"
@@ -23,7 +23,7 @@ void Timekeeper::on_signal_1_second()
 }
 //LCOV_EXCL_STOP
 
-Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std::shared_ptr<Timer>& timer) :
+Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, Timer& timer) :
 		m_timeAccessor(database->getTimeAccessor()),m_timer(timer)
 
 {
@@ -33,13 +33,13 @@ Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, const std
 	m_settingsAccessor->attach(this);
 	on_settingsChanged("");
 	m_enabled = true;
-	m_timer->attach(this);
+	m_timer.attach(this);
 	m_taskAccessor->attach(this);
 }
 
 Timekeeper::~Timekeeper()
 {
-	m_timer->detach(this);
+	m_timer.detach(this);
 	m_taskAccessor->detach(this);
 	map<int64_t, TaskTime>::iterator it;
 	it = activeTasks.begin();

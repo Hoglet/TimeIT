@@ -5,7 +5,7 @@
 #include "Mock/MockGuiFactory.h"
 #include "Mock/MockDatabase.h"
 #include "DB/TempDB.h"
-#include "Timer.h"
+#include "libtimeit/Timer.h"
 #include "TimeKeeper.h"
 #include "Controller.h"
 
@@ -20,7 +20,7 @@ void Controller_startSequence()
 {
 	//Create a database object
 	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
-	shared_ptr<Timer> timer = std::shared_ptr<Timer>(new Timer());
+	Timer timer;
 	shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new MockTimeKeeper());
 	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
 	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket", timer));
@@ -44,7 +44,7 @@ void Controller_testActions()
 {
 	//Create a database object
 	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
-	shared_ptr<Timer> timer = std::shared_ptr<Timer>(new Timer());
+	Timer timer;
 	shared_ptr<MockTimeKeeper> timekeeper = std::shared_ptr<MockTimeKeeper>(new MockTimeKeeper());
 	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
 	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket", timer));

@@ -1,7 +1,7 @@
 #include "TimeKeeperTest.h"
 #include "TimeKeeper.h"
 #include "DB/TempDB.h"
-#include "Timer.h"
+#include "libtimeit/Timer.h"
 #include "cute.h"
 
 using namespace std;
@@ -48,7 +48,7 @@ public:
 void TimeKeeper_testStartingStopingAndToggling()
 {
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
-	shared_ptr<Timer> timer = shared_ptr<Timer>(new Timer());
+	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();
 	shared_ptr<ITimeAccessor> timeaccessor = db->getTimeAccessor();
@@ -86,7 +86,7 @@ void TimeKeeper_testStartingStopingAndToggling()
 void TimeKeeper_testUpdate()
 {
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
-	shared_ptr<Timer> timer = shared_ptr<Timer>(new Timer());
+	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();
 	shared_ptr<ITimeAccessor> timeaccessor = db->getTimeAccessor();
@@ -114,7 +114,7 @@ void TimeKeeper_testUpdate()
 void TimeKeeper_testStopAll()
 {
 	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
-	shared_ptr<Timer> timer = shared_ptr<Timer>(new Timer());
+	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();
 	shared_ptr<ITimeAccessor> timeaccessor = db->getTimeAccessor();

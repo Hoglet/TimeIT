@@ -3,7 +3,7 @@
 
 #include <list>
 #include <libtimeit/db/Task.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <TimeKeeper.h>
 #include <libtimeit/db/Database.h>
 #include <IdleDetector.h>
@@ -44,7 +44,7 @@ public:
 class Timekeeper: public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
 {
 public:
-	Timekeeper(const std::shared_ptr<DB::IDatabase> &database, const std::shared_ptr<Timer> &timer);
+	Timekeeper(const std::shared_ptr<DB::IDatabase> &database, Timer &timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -121,7 +121,7 @@ private:
 
 	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
 	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
-	std::shared_ptr<Timer> m_timer;
+	Timer& m_timer;
 	std::shared_ptr<DB::ISettingsAccessor> m_settingsAccessor;
 
 	IdleDetector m_idleDetector;

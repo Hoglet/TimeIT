@@ -10,7 +10,7 @@
 
 #include <string>
 #include <memory>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <IActionObserver.h>
 #include <iostream>
 #include "Ipc.h"
@@ -21,7 +21,7 @@ namespace Utils
 class IpcServer: public Ipc, public TimerObserver
 {
 public:
-	IpcServer(std::string socketName, std::shared_ptr<Timer>);
+	IpcServer(std::string socketName, Timer&);
 	virtual ~IpcServer();
 	void poll();
 	virtual void on_signal_1_second();
@@ -30,7 +30,7 @@ public:
 	private:
 	void on_show_menu();
 	std::string socketName;
-	std::shared_ptr<Timer> timer;
+	Timer& timer;
 	std::list<IActionObserver*> observers;
 	int sock;
 };

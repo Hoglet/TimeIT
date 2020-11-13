@@ -19,7 +19,7 @@ namespace Utils
 {
 using namespace std;
 
-IpcServer::IpcServer(string name, shared_ptr<Timer> op_timer)
+IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer)
 {
 	socketName = prepareSocketDir() + name;
 
@@ -51,15 +51,14 @@ IpcServer::IpcServer(string name, shared_ptr<Timer> op_timer)
 			listen(sock, 5);
 		}
 	}
-	timer = op_timer;
-	timer->attach(this);
+	timer.attach(this);
 }
 
 IpcServer::~IpcServer()
 {
 	close(sock);
 	unlink(socketName.c_str());
-	timer->detach(this);
+	timer.detach(this);
 }
 
 void IpcServer::poll()

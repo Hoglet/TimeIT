@@ -9,7 +9,7 @@
 #define IDLEDIALOG_H_
 
 #include <gtkmm.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <IWidget.h>
 #include <memory>
 #include <libtimeit/db/TaskAccessor.h>
@@ -36,7 +36,7 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
 {
 public:
-	IdleDialog(std::shared_ptr<Timer>& timer, std::shared_ptr<DB::ITaskAccessor> accessor);
+	IdleDialog(Timer& timer, std::shared_ptr<DB::ITaskAccessor> accessor);
 	virtual void setIdleStartTime(time_t idleStartTime);
 	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
 	virtual ~IdleDialog();
@@ -58,7 +58,7 @@ private:
 	Gtk::Button revertButton;
 	Gtk::Button revertAndContinueButton;
 	Gtk::Button continueButton;
-	std::shared_ptr<Timer> m_timer;
+	Timer& m_timer;
 	time_t m_idleStartTime;
 	std::string taskString;
 	std::shared_ptr<DB::ITaskAccessor> taskAccessor;

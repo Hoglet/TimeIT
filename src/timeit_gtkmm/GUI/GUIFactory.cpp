@@ -14,7 +14,7 @@ namespace GUI
 
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper> &op_timekeeper, std::shared_ptr<DB::IDatabase> &op_database, const std::shared_ptr<Timer> &op_timer) :
+GUIFactory::GUIFactory(std::shared_ptr<ITimeKeeper> &op_timekeeper, std::shared_ptr<DB::IDatabase> &op_database, Timer& op_timer) :
 		timekeeper(op_timekeeper), database(op_database), timer(op_timer)
 {
 

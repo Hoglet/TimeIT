@@ -5,11 +5,9 @@
  *      Author: hoglet
  */
 
-#ifndef TIMER_H_
-#define TIMER_H_
+#pragma once
 
 #include <list>
-#include <gtkmm.h>
 
 namespace Test
 {
@@ -31,17 +29,17 @@ class Timer
 {
 	friend class Test::TimerTest;
 	friend class Test::DummyTimerTest;
-	public:
+
+public:
 	Timer();
 	virtual ~Timer();
 	void attach(TimerObserver *observer);
 	void detach(TimerObserver *observer);
-	protected:
-	bool on_signal_1_second();
-	private:
-	void signalSender();
-	std::list<TimerObserver*> observers;
-	sigc::connection connection;
-};
 
-#endif /* TIMER_H_ */
+	// Call this every second glibmm example:
+	// Glib::signal_timeout().connect_seconds(sigc::mem_fun(timer, &Timer::on_signal_1_second), 1);
+	bool on_signal_1_second();
+private:
+	void signalSender();
+	std::list<TimerObserver *> observers;
+};

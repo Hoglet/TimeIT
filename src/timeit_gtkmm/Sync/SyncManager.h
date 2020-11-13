@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <libtimeit/db/Database.h>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <Network.h>
 #include <libtimeit/sync/Json.h>
 

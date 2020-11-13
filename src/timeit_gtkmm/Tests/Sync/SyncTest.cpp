@@ -5,7 +5,7 @@
 #include "libtimeit/sync/Json.h"
 #include "Mock/MockDatabase.h"
 #include "Mock/MockNetwork.h"
-#include "Timer.h"
+#include "libtimeit/Timer.h"
 #include "SyncManager.h"
 #include "DB/TempDB.h"
 

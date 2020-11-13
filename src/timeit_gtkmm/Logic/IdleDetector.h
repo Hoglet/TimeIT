@@ -7,7 +7,7 @@
 
 #ifndef IDLEDETECTOR_H_
 #define IDLEDETECTOR_H_
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <time.h>
 #include <memory>
 

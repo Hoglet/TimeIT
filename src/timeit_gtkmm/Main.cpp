@@ -122,7 +122,8 @@ int Main::run(int argc, char *argv[])
 			//Initiate all logic
 			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
 
-			timer = std::shared_ptr<Timer>(new Timer());
+			Timer timer;
+			sigc::connection connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(&timer, &Timer::on_signal_1_second), 1);
 
 			std::shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
 			guiFactory = std::shared_ptr<GUI::IGUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
@@ -141,6 +142,7 @@ int Main::run(int argc, char *argv[])
 			//Then start message loop
 			application.run();
 			guiFactory.reset();
+			connection.disconnect();
 		}
 		else
 		{

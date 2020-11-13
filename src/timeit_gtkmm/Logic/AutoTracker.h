@@ -1,7 +1,7 @@
 #ifndef AUTOTRACKER_H_
 #define AUTOTRACKER_H_
 #include <iostream>
-#include <Timer.h>
+#include <libtimeit/Timer.h>
 #include <TimeKeeper.h>
 #include <libtimeit/db/Database.h>
 #include <libtimeit/db/AutotrackAccessor.h>
@@ -10,7 +10,7 @@
 class AutoTracker: public TimerObserver
 {
 public:
-	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database, const std::shared_ptr<Timer> &timer);
+	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database, Timer& timer);
 	virtual ~AutoTracker();
 	private:
 	void check4Changes();
@@ -22,7 +22,7 @@ public:
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
 	std::shared_ptr<DB::IAutotrackAccessor> m_autotrackAccessor;
 	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
-	std::shared_ptr<Timer> m_timer;
+	Timer& m_timer;
 	Workspace m_workspace;
 };
 
