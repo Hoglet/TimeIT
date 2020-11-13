@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "TempDB.h"
-#include "ISettingsAccessor.h"
+#include <DB/ISettingsAccessor.h>
 
 using namespace DB;
 

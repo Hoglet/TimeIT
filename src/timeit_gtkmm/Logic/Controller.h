@@ -11,10 +11,10 @@
 #include <IGUIFactory.h>
 #include <IdleDialog.h>
 #include <TimeKeeper.h>
-#include <ExtendedTaskAccessor.h>
+#include <DB/ExtendedTaskAccessor.h>
 #include <MainWindow/Summary.h>
-#include <ISettingsAccessor.h>
-#include <Database.h>
+#include <DB/ISettingsAccessor.h>
+#include <DB/Database.h>
 #include <IpcServer.h>
 
 class Controller: public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver

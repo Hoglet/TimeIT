@@ -1,8 +1,7 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "TempDB.h"
-#include "AutotrackAccessor.h"
+#include <DB/AutotrackAccessor.h>
 #include <vector>
-#include "dbexception.h"
 #include <sstream>
 
 using namespace DB;

@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "Notifier.h"
+#include <gtest/gtest.h>
+#include <DB/Notifier.h>
 
 using namespace DB;
 namespace Test

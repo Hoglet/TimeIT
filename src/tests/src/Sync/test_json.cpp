@@ -1,16 +1,11 @@
-#include "test_json.h"
-#include "cute.h"
-#include "Json.h"
-#include "Task.h"
-#include "cute_runner.h"
+#include <gtest/gtest.h>
+#include <Sync/Json.h>
+#include <DB/Task.h>
 #include <jansson.h>
 
 using namespace DB;
 
-namespace Test
-{
-
-void Json_simpleTaskTest()
+TEST( Json, simpleTaskTest )
 {
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
@@ -21,7 +16,7 @@ void Json_simpleTaskTest()
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	std::string expectedUUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	int numberOfTasks = tasks->size();
-	ASSERT_EQUALM("Number of tasks", 1, numberOfTasks);
+	ASSERT_EQ( 1, numberOfTasks ) << "Number of tasks";
 
 	if (numberOfTasks == 1)
 	{
@@ -29,16 +24,16 @@ void Json_simpleTaskTest()
 		bool expectedCompleted = false;
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQUALM("Name: ", expectedName, task.name());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID().c_str());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID()->c_str());
-		ASSERT_EQUALM("completed: ", expectedCompleted, task.completed());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
-		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
+		ASSERT_EQ( expectedName, task.name()) << "Name: ";
+		ASSERT_EQ( expectedUUID, task.getUUID().c_str()) << "UUID: ";
+		ASSERT_EQ( expectedParent, task.parentUUID()->c_str()) << "Parent: ";
+		ASSERT_EQ( expectedCompleted, task.completed()) << "completed: ";
+		ASSERT_EQ( expectedDeleted, task.deleted()) << "Deleted: ";
+		ASSERT_EQ( expectedChangeTime, task.lastChanged()) << "Expected change time: ";
 	}
 }
 
-void Json_simpleTaskTest2()
+TEST( Json, simpleTaskTest2 )
 {
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
@@ -49,7 +44,7 @@ void Json_simpleTaskTest2()
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	std::string expectedUUID = "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
 	int numberOfTasks = tasks->size();
-	ASSERT_EQUALM("Number of tasks", 1, numberOfTasks);
+	ASSERT_EQ( 1, numberOfTasks) << "Number of tasks";
 
 	if (numberOfTasks == 1)
 	{
@@ -57,16 +52,16 @@ void Json_simpleTaskTest2()
 		bool expectedCompleted = true;
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQUALM("Name: ", expectedName, task.name());
-		ASSERT_EQUALM("UUID: ", expectedUUID, task.getUUID().c_str());
-		ASSERT_EQUALM("Parent: ", expectedParent, task.parentUUID()->c_str());
-		ASSERT_EQUALM("Completed: ", expectedCompleted, task.completed());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, task.deleted());
-		ASSERT_EQUALM("Expected change time: ", expectedChangeTime, task.lastChanged());
+		ASSERT_EQ( expectedName, task.name()) << "Name: ";
+		ASSERT_EQ( expectedUUID, task.getUUID().c_str()) << "UUID: ";
+		ASSERT_EQ( expectedParent, task.parentUUID()->c_str()) << "Parent: ";
+		ASSERT_EQ( expectedCompleted, task.completed()) << "Completed: ";
+		ASSERT_EQ( expectedDeleted, task.deleted()) << "Deleted: ";
+		ASSERT_EQ( expectedChangeTime, task.lastChanged()) << "Expected change time: ";
 	}
 }
 
-void Json_threeWayTaskTest()
+TEST( Json, threeWayTaskTest )
 {
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
@@ -78,15 +73,16 @@ void Json_threeWayTaskTest()
 	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
-	ASSERT_EQUALM("Name ", task1.name(), task2.name());
-	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
-	ASSERT_EQUALM("Parent: ", task1.parentUUID()->c_str(), task2.parentUUID()->c_str());
-	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
-	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
-	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
+	ASSERT_EQ( task1.name(), task2.name()) << "Name ";
+	ASSERT_EQ( task1.getUUID(), task2.getUUID()) << "UUID: ";
+	ASSERT_EQ( *task1.parentUUID(), *task2.parentUUID()) << "Parent: ";
+	ASSERT_EQ( task1.completed(), task2.completed()) << "Completed: ";
+	ASSERT_EQ( task1.deleted(), task2.deleted()) << "Deleted: ";
+	ASSERT_EQ( task1.lastChanged(), task2.lastChanged()) << "Expected change time: ";
 
 }
-void Json_threeWayTaskTest2()
+
+TEST( Json, threeWayTaskTest2 )
 {
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
@@ -98,16 +94,16 @@ void Json_threeWayTaskTest2()
 	tasks = Json::toTasks(result);
 	Task task2 = tasks->at(0);
 
-	ASSERT_EQUALM("Name ", task1.name(), task2.name());
-	ASSERT_EQUALM("UUID: ", task1.getUUID(), task2.getUUID());
-	ASSERT_EQUALM("Parent: ", task1.parentUUID()->c_str(), task2.parentUUID()->c_str());
-	ASSERT_EQUALM("Completed: ", task1.completed(), task2.completed());
-	ASSERT_EQUALM("Deleted: ", task1.deleted(), task2.deleted());
-	ASSERT_EQUALM("Expected change time: ", task1.lastChanged(), task2.lastChanged());
+	ASSERT_EQ( task1.name(), task2.name()) << "Name ";
+	ASSERT_EQ( task1.getUUID(), task2.getUUID()) << "UUID: ";
+	ASSERT_EQ( *task1.parentUUID(), *task2.parentUUID()) << "Parent: ";
+	ASSERT_EQ( task1.completed(), task2.completed()) << "Completed: ";
+	ASSERT_EQ( task1.deleted(), task2.deleted()) << "Deleted: ";
+	ASSERT_EQ( task1.lastChanged(), task2.lastChanged()) << "Expected change time: ";
 
 }
 
-void Json_simpleTimeTest()
+TEST( Json, simpleTimeTest )
 {
 	std::string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
@@ -116,7 +112,7 @@ void Json_simpleTimeTest()
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
 	int numberOfItems = times.size();
-	ASSERT_EQUALM("Number of items", 1, numberOfItems);
+	ASSERT_EQ( 1, numberOfItems) << "Number of items";
 
 	if (numberOfItems == 1)
 	{
@@ -125,24 +121,26 @@ void Json_simpleTimeTest()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times.at(0);
 		bool expectedDeleted = false;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID().c_str());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID()->c_str());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
-		ASSERT_EQUALM("Start: ", expectedStart, item.start());
-		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
-		ASSERT_EQUALM("Expected change time: ", expectedChange, item.changed());
+		ASSERT_EQ( expectedUUID, item.getUUID().c_str()) << "ID: ";
+		ASSERT_EQ( expectedTaskID, item.taskUUID()->c_str()) << "TaskID: ";
+		ASSERT_EQ( expectedDeleted, item.deleted()) << "Deleted: ";
+		ASSERT_EQ( expectedStart, item.start()) << "Start: ";
+		ASSERT_EQ( expectedStop, item.stop()) << "Stop: ";
+		ASSERT_EQ( expectedChange, item.changed()) << "Expected change time: ";
 	}
 }
-void Json_simpleTimeTest2()
+
+TEST( Json, simpleTimeTest2 )
 {
-	std::string json_string =
-			R"([ {"id": "01bd0176-00ed-4135-b181-014101790130","task":{"id":"00e1010f-00f2-40df-90b3-00f900ab009e"},"start": 1363339855,"stop": 1363342626,"deleted": true,"changed": 1376059170, "owner":{"username":"tester"}}])";
+	std::string json_string = R"(
+[ {
+  "id": "01bd0176-00ed-4135-b181-014101790130","task":{"id":"00e1010f-00f2-40df-90b3-00f900ab009e"},"start": 1363339855,"stop": 1363342626,"deleted": true,"changed": 1376059170, "owner":{"username":"tester"}}])";
 	TimeList times = Json::toTimes(json_string);
 
 	std::string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	std::string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
 	int numberOfItems = times.size();
-	ASSERT_EQUALM("Number of items", 1, numberOfItems);
+	ASSERT_EQ( 1, numberOfItems) << "Number of items";
 
 	if (numberOfItems == 1)
 	{
@@ -151,16 +149,16 @@ void Json_simpleTimeTest2()
 		time_t expectedChange = 1376059170;
 		TimeEntry item = times.at(0);
 		bool expectedDeleted = true;
-		ASSERT_EQUALM("ID: ", expectedUUID, item.getUUID().c_str());
-		ASSERT_EQUALM("TaskID: ", expectedTaskID, item.taskUUID()->c_str());
-		ASSERT_EQUALM("Deleted: ", expectedDeleted, item.deleted());
-		ASSERT_EQUALM("Start: ", expectedStart, item.start());
-		ASSERT_EQUALM("Stop: ", expectedStop, item.stop());
-		ASSERT_EQUALM("Expected change time: ", expectedChange, item.changed());
+		ASSERT_EQ( expectedUUID, item.getUUID().c_str()) << "ID: ";
+		ASSERT_EQ( expectedTaskID, item.taskUUID()->c_str()) << "TaskID: ";
+		ASSERT_EQ( expectedDeleted, item.deleted()) << "Deleted: ";
+		ASSERT_EQ( expectedStart, item.start()) << "Start: ";
+		ASSERT_EQ( expectedStop, item.stop()) << "Stop: ";
+		ASSERT_EQ( expectedChange, item.changed()) << "Expected change time: ";
 	}
 }
 
-void Json_threeWayTimeTest()
+TEST( Json, threeWayTimeTest )
 {
 	std::string json_string =
 			R"(
@@ -184,15 +182,16 @@ void Json_threeWayTimeTest()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items.at(0);
 
-	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
-	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
-	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
-	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
-	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
-	ASSERT_EQUALM("Change time: ", item1.changed(), item2.changed());
+	ASSERT_EQ( item1.getUUID(), item2.getUUID()) << "ID ";
+	ASSERT_EQ( item1.taskUUID(), item2.taskUUID()) << "TaskID: ";
+	ASSERT_EQ( item1.start(), item2.start()) << "Start: ";
+	ASSERT_EQ( item1.stop(), item2.stop()) << "Stop: ";
+	ASSERT_EQ( item1.deleted(), item2.deleted()) << "Deleted: ";
+	ASSERT_EQ( item1.changed(), item2.changed()) << "Change time: ";
 
 }
-void Json_threeWayTimeTest2()
+
+TEST( Json, threeWayTimeTest2 )
 {
 	std::string json_string =
 			R"(
@@ -214,16 +213,16 @@ void Json_threeWayTimeTest2()
 	items = Json::toTimes(result);
 	TimeEntry item2 = items.at(0);
 
-	ASSERT_EQUALM("ID ", item1.getUUID(), item2.getUUID());
-	ASSERT_EQUALM("TaskID: ", item1.taskUUID(), item2.taskUUID());
-	ASSERT_EQUALM("Start: ", item1.start(), item2.start());
-	ASSERT_EQUALM("Stop: ", item1.stop(), item2.stop());
-	ASSERT_EQUALM("Deleted: ", item1.deleted(), item2.deleted());
-	ASSERT_EQUALM("Change time: ", item1.changed(), item2.changed());
+	ASSERT_EQ( item1.getUUID(), item2.getUUID()) << "ID ";
+	ASSERT_EQ( item1.taskUUID(), item2.taskUUID()) << "TaskID: ";
+	ASSERT_EQ( item1.start(), item2.start()) << "Start: ";
+	ASSERT_EQ( item1.stop(), item2.stop()) << "Stop: ";
+	ASSERT_EQ( item1.deleted(), item2.deleted()) << "Deleted: ";
+	ASSERT_EQ( item1.changed(), item2.changed()) << "Change time: ";
 
 }
 
-void Json_testTaskStringGenerationTest()
+TEST( Json, testTaskStringGenerationTest )
 {
 	std::string name = "task1";
 	auto parentID = toUuid("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
@@ -240,11 +239,11 @@ void Json_testTaskStringGenerationTest()
 
 	root = json_loads(result.c_str(), 0, &error);
 
-	ASSERT_EQUALM("Number if tasks are wrong ", 1, json_array_size(root));
+	ASSERT_EQ( 1, json_array_size(root)) << "Number if tasks are wrong ";
 
 	json_t *object = json_array_get(root, 0);
 
-	ASSERT_EQUALM("Number of fields are wrong ", 7, json_object_size(object));
+	ASSERT_EQ( 7, json_object_size(object)) << "Number of fields are wrong ";
 
 	json_t *j_name = json_object_get(object, "name");
 	json_t *j_id = json_object_get(object, "id");
@@ -254,29 +253,12 @@ void Json_testTaskStringGenerationTest()
 	json_t *j_deleted = json_object_get(object, "deleted");
 	json_t *j_owner = json_object_get(object, "owner");
 
-	ASSERT_EQUALM("Name is incorrect", name, json_string_value(j_name));
-	ASSERT_EQUALM("id is incorrect", uuid->c_str(), json_string_value(j_id));
-	ASSERT_EQUALM("Parent id is incorrect", parentID->c_str(), json_string_value(json_object_get(j_parent, "id")));
-	ASSERT_EQUALM("Completed is incorrect", false, json_is_true(j_completed));
-	ASSERT_EQUALM("Last changed is incorrect", changeTime, json_integer_value(j_lastChanged));
-	ASSERT_EQUALM("Deleted is incorrect", false, json_is_true(j_deleted));
-	ASSERT_EQUALM("Owner id is incorrect", "tester", json_string_value(json_object_get(j_owner, "username")));
-
+	ASSERT_EQ( name, json_string_value(j_name)) << "Name is incorrect";
+	ASSERT_STREQ( uuid->c_str(), json_string_value(j_id)) << "id is incorrect";
+	ASSERT_STREQ( parentID->c_str(), json_string_value(json_object_get(j_parent, "id"))) << "Parent id is incorrect";
+	ASSERT_EQ( false, json_is_true(j_completed)) << "Completed is incorrect";
+	ASSERT_EQ( changeTime, json_integer_value(j_lastChanged)) << "Last changed is incorrect";
+	ASSERT_EQ( false, json_is_true(j_deleted)) << "Deleted is incorrect";
+	ASSERT_STREQ( "tester", json_string_value(json_object_get(j_owner, "username"))) << "Owner id is incorrect";
 }
 
-cute::suite make_suite_JsonTest()
-{
-	cute::suite s;
-	s.push_back(CUTE(Json_simpleTaskTest));
-	s.push_back(CUTE(Json_simpleTaskTest2));
-	s.push_back(CUTE(Json_threeWayTaskTest));
-	s.push_back(CUTE(Json_simpleTimeTest));
-	s.push_back(CUTE(Json_threeWayTimeTest));
-	s.push_back(CUTE(Json_simpleTimeTest2));
-	s.push_back(CUTE(Json_threeWayTaskTest2));
-	s.push_back(CUTE(Json_threeWayTimeTest2));
-	s.push_back(CUTE(Json_testTaskStringGenerationTest));
-	return s;
-}
-
-} /* namespace Test */

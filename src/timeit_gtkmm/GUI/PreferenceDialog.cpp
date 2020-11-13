@@ -8,7 +8,7 @@
 #include "PreferenceDialog.h"
 #include <glibmm/i18n.h>
 #include <iostream>
-#include <DefaultValues.h>
+#include <DB/DefaultValues.h>
 
 namespace GUI
 {

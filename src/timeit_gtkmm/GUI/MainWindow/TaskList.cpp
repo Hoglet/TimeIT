@@ -1,8 +1,7 @@
 #include "TaskList.h"
 #include <string>
-#include <iostream>
 #include <glibmm/i18n.h>
-#include "Utils.h"
+#include <Misc/Utils.h>
 
 namespace GUI
 {

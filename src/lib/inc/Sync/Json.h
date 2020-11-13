@@ -2,9 +2,9 @@
 #define JSON_H_
 
 #include <string>
-#include "Task.h"
-#include "TimeAccessor.h"
-#include "GeneralException.h"
+#include "DB/Task.h"
+#include "DB/TimeAccessor.h"
+#include "Exceptions/GeneralException.h"
 #include <vector>
 #include <memory>
 

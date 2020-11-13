@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "TempDB.h"
-#include <UUIDTool.h>
-#include "dbexception.h"
+#include <Logic/UUIDTool.h>
+#include <Exceptions/dbexception.h>
 
 using namespace DB;
 

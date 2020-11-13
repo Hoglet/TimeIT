@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "ExtendedTask.h"
+#include <gtest/gtest.h>
+#include <DB/ExtendedTask.h>
 
 using namespace DB;
 

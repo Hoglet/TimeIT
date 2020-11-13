@@ -1,7 +1,7 @@
 #ifndef MOCKTASKACCESSOR_H_
 #define MOCKTASKACCESSOR_H_
 
-#include "ExtendedTaskAccessor.h"
+#include <DB/ExtendedTaskAccessor.h>
 
 namespace Test
 {

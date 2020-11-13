@@ -5,9 +5,9 @@
  *      Author: hoglet
  */
 
-#include "AutotrackAccessor.h"
+#include "DB/AutotrackAccessor.h"
 #include <sstream>
-#include "ExtendedTaskAccessor.h"
+#include "DB/ExtendedTaskAccessor.h"
 
 using namespace std;
 using namespace DBAbstraction;

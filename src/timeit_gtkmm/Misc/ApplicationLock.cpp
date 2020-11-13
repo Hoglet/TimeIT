@@ -6,14 +6,9 @@
  */
 
 #include "ApplicationLock.h"
-#include "OSAbstraction.h"
 #include <string>
-#include <iostream>
-#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 ApplicationLock::ApplicationLock(const std::string& lockBase)
 {

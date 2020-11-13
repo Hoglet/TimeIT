@@ -1,14 +1,14 @@
-#include "TimeAccessor.h"
-#include "AutotrackAccessor.h"
-#include "ExtendedTaskAccessor.h"
-#include "TaskAccessor.h"
-#include "SettingsAccessor.h"
-#include "CSQL.h"
-#include "Database.h"
+#include "DB/TimeAccessor.h"
+#include "DB/AutotrackAccessor.h"
+#include "DB/ExtendedTaskAccessor.h"
+#include "DB/TaskAccessor.h"
+#include "DB/SettingsAccessor.h"
+#include "DB/CSQL.h"
+#include "DB/Database.h"
 
 #include <iostream>
 #include <sstream>
-#include <UUIDTool.h>
+#include <Logic/UUIDTool.h>
 
 namespace DB
 {

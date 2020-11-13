@@ -12,7 +12,7 @@
 #include "LZSpinButton.h"
 #include "Details.h"
 #include "MainWindow/Summary.h"
-#include <Database.h>
+#include <DB/Database.h>
 #include <IWidget.h>
 
 namespace GUI

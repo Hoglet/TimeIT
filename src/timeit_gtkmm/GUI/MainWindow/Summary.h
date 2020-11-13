@@ -9,9 +9,9 @@
 #define SUMMARY_H_
 
 #include <gtkmm.h>
-#include "TimeAccessor.h"
-#include "Database.h"
-#include "TaskAccessor.h"
+#include <DB/TimeAccessor.h>
+#include <DB/Database.h>
+#include <DB/TaskAccessor.h>
 
 namespace GUI
 {

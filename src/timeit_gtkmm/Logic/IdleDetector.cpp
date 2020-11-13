@@ -12,7 +12,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
 #include <memory>
-#include <Utils.h>
+#include <Misc/Utils.h>
 
 namespace
 {

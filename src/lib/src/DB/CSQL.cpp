@@ -1,8 +1,6 @@
-#include "CSQL.h"
+#include "DB/CSQL.h"
 
-#include <stdio.h>
 #include <sstream>
-#include <exception>
 #include <string.h>
 
 using namespace std;

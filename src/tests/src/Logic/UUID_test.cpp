@@ -1,10 +1,7 @@
-#include <UUIDTool.h>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include <iostream>
 
 extern bool isValid(const std::string& uuid);
-
-
 
 TEST ( UUID, isValid )
 {

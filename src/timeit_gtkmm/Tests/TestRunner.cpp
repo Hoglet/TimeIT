@@ -11,7 +11,6 @@
 #include "Misc/test_utils.h"
 #include "Misc/TimerTest.h"
 #include "DB/test_db.h"
-#include "Sync/test_json.h"
 #include "Sync/SyncTest.h"
 #include "cute_xml_file.h"
 #include "xml_listener.h"
@@ -32,8 +31,6 @@ TestRunner::TestRunner()
 	s += make_suite_DB_test();
 	s += make_suite_ApplicationLockTest();
 	s += make_suite_UtilsTest();
-	s += make_suite_JsonTest();
-	s += make_suite_SyncTest();
 }
 
 void TestRunner::run(int argc, char *argv[])

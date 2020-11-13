@@ -4,7 +4,7 @@
 #include <iostream>
 #include <Workspace.h>
 #include <glibmm/i18n.h>
-#include <Utils.h>
+#include <Misc/Utils.h>
 namespace GUI
 {
 using namespace DB;

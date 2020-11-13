@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#include "Notifier.h"
-#include "Utils.h"
+#include "DB/Notifier.h"
+#include "Misc/Utils.h"
 #include <iostream>
 
 namespace DB

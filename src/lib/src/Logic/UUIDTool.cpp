@@ -2,8 +2,8 @@
 #include <iostream>
 #include <iomanip>
 #include <random>
-#include <Utils.h>
-#include <UUIDTool.h>
+#include <Misc/Utils.h>
+#include <Logic/UUIDTool.h>
 #include <optional>
 
 

@@ -2,12 +2,12 @@
 #define TIMEKEEPER_H_
 
 #include <list>
-#include <Task.h>
+#include <DB/Task.h>
 #include <Timer.h>
 #include <TimeKeeper.h>
-#include <Database.h>
+#include <DB/Database.h>
 #include <IdleDetector.h>
-#include <TaskAccessor.h>
+#include <DB/TaskAccessor.h>
 #include <IGUIFactory.h>
 
 class TimekeeperObserver

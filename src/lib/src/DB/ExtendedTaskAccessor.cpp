@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "ExtendedTaskAccessor.h"
+#include "DB/ExtendedTaskAccessor.h"
 
 using namespace std;
 using namespace DBAbstraction;

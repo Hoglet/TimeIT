@@ -1,12 +1,11 @@
 #include "SyncManager.h"
 
-#include <Utils.h>
+#include <Misc/Utils.h>
 #include <glibmm.h>
 #include <iostream>
-#include "Json.h"
-#include "DefaultValues.h"
+#include <Sync/Json.h>
+#include <DB/DefaultValues.h>
 #include <glibmm/i18n.h>
-#include <Utils.h>
 
 namespace syncing
 {

@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <GUIFactory.h>
 #include <ApplicationLock.h>
-#include <OSAbstraction.h>
+#include <Misc/OSAbstraction.h>
 #include <Controller.h>
 #include <AutoTracker.h>
 

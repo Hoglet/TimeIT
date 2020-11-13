@@ -1,7 +1,7 @@
 #ifndef MOCKDATABASE_H_
 #define MOCKDATABASE_H_
 
-#include "IDatabase.h"
+#include <DB/IDatabase.h>
 
 namespace Test
 {

@@ -6,7 +6,7 @@
  */
 
 #pragma once
-#include <Database.h>
+#include <DB/Database.h>
 #include <string>
 
 class TempDB: public DB::Database

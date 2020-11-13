@@ -1,6 +1,6 @@
-#include "Task.h"
+#include "DB/Task.h"
 #include <stdexcept>
-#include <UUIDTool.h>
+#include <Logic/UUIDTool.h>
 
 namespace DB
 {

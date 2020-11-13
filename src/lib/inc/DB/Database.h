@@ -2,11 +2,11 @@
 #define DATABASE_H_
 
 #include "IDatabase.h"
-#include <AutotrackAccessor.h>
+#include "AutotrackAccessor.h"
 #include "TimeAccessor.h"
-#include <ExtendedTaskAccessor.h>
-#include <ISettingsAccessor.h>
-#include <Notifier.h>
+#include "ExtendedTaskAccessor.h"
+#include "ISettingsAccessor.h"
+#include "Notifier.h"
 #include <memory>
 
 namespace DBAbstraction { class CSQL; }

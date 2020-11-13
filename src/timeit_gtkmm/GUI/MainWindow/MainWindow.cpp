@@ -22,13 +22,13 @@
 #include <gtkmm.h>
 #include "EditTaskDialog.h"
 #include <iostream>
-#include <Utils.h>
-#include <OSAbstraction.h>
+#include <Misc/Utils.h>
+#include <Misc/OSAbstraction.h>
 #include <vector>
 #include <glibmm/i18n.h>
 #include "Summary.h"
 #include "DetailsDialog.h"
-#include <DefaultValues.h>
+#include <DB/DefaultValues.h>
 #include <glibmm.h>
 
 using namespace Gtk;

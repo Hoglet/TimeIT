@@ -1,8 +1,8 @@
-#include "TimeAccessor.h"
+#include "DB/TimeAccessor.h"
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <UUIDTool.h>
+#include <Logic/UUIDTool.h>
 
 using namespace std;
 using namespace DBAbstraction;

@@ -21,9 +21,9 @@
 #define _TASK_LIST_HPP_
 
 #include <gtkmm.h>
-#include "ExtendedTask.h"
+#include <DB/ExtendedTask.h>
 #include "IActionObserver.h"
-#include <Database.h>
+#include <DB/Database.h>
 
 namespace GUI
 {

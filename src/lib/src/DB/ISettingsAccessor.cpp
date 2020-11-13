@@ -1,4 +1,4 @@
-#include "ISettingsAccessor.h"
+#include "DB/ISettingsAccessor.h"
 
 namespace DB
 {

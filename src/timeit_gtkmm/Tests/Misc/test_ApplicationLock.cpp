@@ -1,7 +1,7 @@
 #include "test_ApplicationLock.h"
 #include "ApplicationLock.h"
 #include "cute.h"
-#include "OSAbstraction.h"
+#include "Misc/OSAbstraction.h"
 #include <fstream>
 namespace Test
 {

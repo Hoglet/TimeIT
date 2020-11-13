@@ -2,10 +2,10 @@
 #define SYNCMANAGER_H_
 
 #include <memory>
-#include "Database.h"
-#include "Timer.h"
-#include "Network.h"
-#include "Json.h"
+#include <DB/Database.h>
+#include <Timer.h>
+#include <Network.h>
+#include <Sync/Json.h>
 
 namespace syncing
 {

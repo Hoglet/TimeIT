@@ -5,7 +5,7 @@
 #include "TaskAccessorObserver.h"
 #include "Task.h"
 
-#include <Notifier.h>
+#include "Notifier.h"
 #include <string>
 
 namespace DB

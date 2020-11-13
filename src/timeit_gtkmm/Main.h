@@ -8,7 +8,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#include <Database.h>
+#include <DB/Database.h>
 #include <Timer.h>
 #include <IGUIFactory.h>
 

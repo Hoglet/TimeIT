@@ -8,7 +8,7 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-#include <ISettingsAccessor.h>
+#include <DB/ISettingsAccessor.h>
 #include "CSQL.h"
 
 namespace DB

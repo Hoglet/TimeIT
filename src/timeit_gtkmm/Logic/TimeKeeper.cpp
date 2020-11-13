@@ -1,9 +1,9 @@
 #include <IdleDialog.h>
 #include <Timer.h>
 #include <iostream>
-#include <DefaultValues.h>
+#include <DB/DefaultValues.h>
 #include "TimeKeeper.h"
-#include <Utils.h>
+#include <Misc/Utils.h>
 
 using namespace std;
 

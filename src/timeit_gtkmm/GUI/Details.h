@@ -13,8 +13,8 @@
 
 #include "MainWindow/Summary.h"
 
-#include "Database.h"
-#include "TimeAccessor.h"
+#include <DB/Database.h>
+#include <DB/TimeAccessor.h>
 
 namespace GUI
 {

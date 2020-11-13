@@ -1,11 +1,11 @@
-#include "Json.h"
+#include "Sync/Json.h"
 
 #include <string.h>
 #include <jansson.h>
-#include "Task.h"
+#include "DB/Task.h"
 #include <stdexcept>
 #include <string>
-#include <UUIDTool.h>
+#include <Logic/UUIDTool.h>
 
 using namespace std;
 using namespace DB;

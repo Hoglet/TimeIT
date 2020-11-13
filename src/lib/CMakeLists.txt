@@ -24,9 +24,6 @@ target_link_libraries( libtimeit
 
 target_include_directories ( libtimeit PUBLIC
   inc
-  inc/DB
-  inc/Logic
-  inc/Misc
   )
 
 

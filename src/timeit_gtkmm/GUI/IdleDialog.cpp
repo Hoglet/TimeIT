@@ -11,7 +11,7 @@
 #include <sstream>
 #include <glibmm/i18n.h>
 #include "Timer.h"
-#include <Utils.h>
+#include <Misc/Utils.h>
 
 namespace GUI
 {

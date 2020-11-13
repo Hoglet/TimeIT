@@ -8,7 +8,7 @@
 #ifndef MOCKSETTINGSACESSOR_H_
 #define MOCKSETTINGSACESSOR_H_
 
-#include "ISettingsAccessor.h"
+#include <DB/ISettingsAccessor.h>
 
 namespace Test
 {

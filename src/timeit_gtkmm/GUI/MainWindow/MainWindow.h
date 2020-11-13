@@ -24,7 +24,7 @@
 #include <IWidget.h>
 #include <IMainWindow.h>
 #include "TaskList.h"
-#include "ExtendedTask.h"
+#include <DB/ExtendedTask.h>
 #include "SummaryViews.h"
 #include "TimeItAboutDialog.h"
 #include "Details.h"

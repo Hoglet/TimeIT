@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include "LZSpinButton.h"
 #include "ICalendar.h"
-#include <Database.h>
+#include <DB/Database.h>
 #include <IWidget.h>
 namespace GUI
 {

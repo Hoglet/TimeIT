@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <list>
-#include "SettingsAccessor.h"
+#include "DB/SettingsAccessor.h"
 
 using namespace std;
 using namespace DBAbstraction;

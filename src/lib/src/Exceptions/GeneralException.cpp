@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "GeneralException.h"
+#include "Exceptions/GeneralException.h"
 
 GeneralException::GeneralException()
 {

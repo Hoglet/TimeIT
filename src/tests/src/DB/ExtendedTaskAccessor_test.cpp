@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "TempDB.h"
-#include "ExtendedTaskAccessor.h"
-#include "dbexception.h"
+#include <DB/ExtendedTaskAccessor.h>
+#include <Exceptions/dbexception.h>
 
 using namespace DB;
 
