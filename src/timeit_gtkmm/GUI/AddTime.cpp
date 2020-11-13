@@ -6,7 +6,7 @@
  */
 
 #include "AddTime.h"
-#include <Misc/Utils.h>
+#include <libtimeit/Utils.h>
 #include <time.h>
 #include <glibmm/i18n.h>
 

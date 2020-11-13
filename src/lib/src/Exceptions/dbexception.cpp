@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "Exceptions/dbexception.h"
+#include <libtimeit/exceptions/dbexception.h>
 
 using namespace std;
 dbexception::dbexception()

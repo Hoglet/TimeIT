@@ -2,7 +2,7 @@
 #define DATACELL_H_
 
 #include <string>
-#include "Exceptions/dbexception.h"
+#include <libtimeit/exceptions/dbexception.h>
 
 namespace DBAbstraction
 {

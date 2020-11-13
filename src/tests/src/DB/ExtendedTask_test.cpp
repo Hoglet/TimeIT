@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <DB/ExtendedTask.h>
+#include <libtimeit/db/ExtendedTask.h>
 
 using namespace DB;
 

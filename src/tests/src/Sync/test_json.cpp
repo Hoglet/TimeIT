@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <Sync/Json.h>
-#include <DB/Task.h>
+#include <libtimeit/sync/Json.h>
+#include <libtimeit/db/Task.h>
 #include <jansson.h>
 
 using namespace DB;

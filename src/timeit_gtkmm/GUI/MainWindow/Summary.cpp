@@ -1,5 +1,5 @@
 #include "Summary.h"
-#include "Misc/Utils.h"
+#include "libtimeit/Utils.h"
 #include "DetailsDialog.h"
 #include <glibmm/i18n.h>
 using namespace std;

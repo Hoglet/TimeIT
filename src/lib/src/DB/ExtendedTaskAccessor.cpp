@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include "DB/ExtendedTaskAccessor.h"
+#include <libtimeit/db/ExtendedTaskAccessor.h>
 
 using namespace std;
 using namespace DBAbstraction;

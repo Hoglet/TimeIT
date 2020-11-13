@@ -8,7 +8,7 @@
 #ifndef MOCKTIMEACCESSOR_H_
 #define MOCKTIMEACCESSOR_H_
 
-#include <DB/TimeAccessor.h>
+#include <libtimeit/db/TimeAccessor.h>
 namespace Test
 {
 

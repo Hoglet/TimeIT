@@ -3,8 +3,8 @@
 #include <iostream>
 #include <Timer.h>
 #include <TimeKeeper.h>
-#include <DB/Database.h>
-#include <DB/AutotrackAccessor.h>
+#include <libtimeit/db/Database.h>
+#include <libtimeit/db/AutotrackAccessor.h>
 #include <Workspace.h>
 
 class AutoTracker: public TimerObserver

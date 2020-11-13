@@ -13,7 +13,7 @@
 #include <signal.h>
 #include <GUIFactory.h>
 #include <ApplicationLock.h>
-#include <Misc/OSAbstraction.h>
+#include <libtimeit/OSAbstraction.h>
 #include <Controller.h>
 #include <AutoTracker.h>
 
@@ -26,6 +26,7 @@
 #include <MessageCenter.h>
 #include <IpcServer.h>
 #include <IpcClient.h>
+#include <libtimeit.h>
 
 using namespace std;
 using namespace Test;
@@ -113,6 +114,7 @@ int Main::run(int argc, char *argv[])
 
 			Gtk::Main application(argc, argv);
 			Gtk::Main::init_gtkmm_internals();
+			libtimeit::init();
 
 			//Create a database object
 			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));

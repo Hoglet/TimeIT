@@ -1,7 +1,7 @@
 #ifndef CSQL_H_
 #define CSQL_H_
 
-#include "Exceptions/dbexception.h"
+#include <libtimeit/exceptions/dbexception.h>
 #include <sqlite3.h>
 #include <string>
 #include <vector>

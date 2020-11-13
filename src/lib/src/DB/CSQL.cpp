@@ -1,7 +1,9 @@
-#include "DB/CSQL.h"
 
 #include <sstream>
+#include <string>
 #include <string.h>
+#include <libtimeit/db/CSQL.h>
+#include <cstring>
 
 using namespace std;
 namespace DBAbstraction

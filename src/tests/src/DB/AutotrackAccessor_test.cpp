@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <DB/AutotrackAccessor.h>
+#include <libtimeit/db/AutotrackAccessor.h>
 #include <vector>
 #include <sstream>
 

@@ -16,8 +16,8 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <IWidget.h>
-#include <DB/ISettingsAccessor.h>
-#include <DB/Database.h>
+#include <libtimeit/db/ISettingsAccessor.h>
+#include <libtimeit/db/Database.h>
 
 namespace GUI
 {

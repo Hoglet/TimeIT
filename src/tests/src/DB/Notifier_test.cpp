@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <DB/Notifier.h>
+#include <libtimeit/db/Notifier.h>
 
 using namespace DB;
 namespace Test

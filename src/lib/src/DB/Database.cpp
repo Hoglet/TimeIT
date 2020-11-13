@@ -1,14 +1,13 @@
-#include "DB/TimeAccessor.h"
-#include "DB/AutotrackAccessor.h"
-#include "DB/ExtendedTaskAccessor.h"
-#include "DB/TaskAccessor.h"
-#include "DB/SettingsAccessor.h"
-#include "DB/CSQL.h"
-#include "DB/Database.h"
-
 #include <iostream>
 #include <sstream>
-#include <Logic/UUIDTool.h>
+
+#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/AutotrackAccessor.h>
+#include <libtimeit/db/ExtendedTaskAccessor.h>
+#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/Database.h>
 
 namespace DB
 {
@@ -104,8 +103,6 @@ void Database::createViews()
 
 Database::Database(const std::string& dbname)
 {
-	UUIDTool::init();
-
 	db = shared_ptr<CSQL>(new CSQL(dbname));
 
 	try

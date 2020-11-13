@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <DB/ISettingsAccessor.h>
+#include <libtimeit/db/ISettingsAccessor.h>
 
 using namespace DB;
 

@@ -2,11 +2,11 @@
 #define JSON_H_
 
 #include <string>
-#include "DB/Task.h"
-#include "DB/TimeAccessor.h"
-#include "Exceptions/GeneralException.h"
 #include <vector>
 #include <memory>
+#include <libtimeit/db/Task.h>
+#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/exceptions/GeneralException.h>
 
 namespace Json
 {

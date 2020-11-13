@@ -1,11 +1,10 @@
-#include <Logic/UUIDTool.h>
 #include "test_db.h"
 #include "cute.h"
-#include <DB/Database.h>
-#include <Misc/OSAbstraction.h>
-#include <Exceptions/dbexception.h>
-#include <DB/DataCell.h>
-#include <DB/CSQL.h>
+#include <libtimeit/db/Database.h>
+#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/exceptions/dbexception.h>
+#include <libtimeit/db/DataCell.h>
+#include <libtimeit/db/CSQL.h>
 #include "TempDB.h"
 #include <sstream>
 #include <string>

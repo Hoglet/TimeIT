@@ -2,7 +2,7 @@
 
 #include "cute.h"
 #include <time.h>
-#include <Misc/Utils.h>
+#include <libtimeit/Utils.h>
 
 namespace Test
 {

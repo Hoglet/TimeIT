@@ -7,7 +7,7 @@
 
 #include "Details.h"
 #include <vector>
-#include <Misc/Utils.h>
+#include <libtimeit/Utils.h>
 #include <glibmm/i18n.h>
 
 using namespace Gtk;

@@ -10,7 +10,7 @@
 
 #include <gtkmm/combobox.h>
 #include <gtkmm/liststore.h>
-#include <DB/Database.h>
+#include <libtimeit/db/Database.h>
 #include <string>
 
 namespace GUI

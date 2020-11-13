@@ -6,7 +6,7 @@
  */
 
 #include "DetailsDialog.h"
-#include "Misc/Utils.h"
+#include "libtimeit/Utils.h"
 #include <ctime>
 #include <glibmm/i18n.h>
 

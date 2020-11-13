@@ -8,8 +8,7 @@
 #ifndef GUIFACTORY_H_
 #define GUIFACTORY_H_
 
-#include <DB/Database.h>
-
+#include <libtimeit/db/Database.h>
 #include <TimeKeeper.h>
 #include <IGUIFactory.h>
 #include <Timer.h>

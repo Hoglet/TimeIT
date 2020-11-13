@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 #include <list>
-#include "DB/SettingsAccessor.h"
+#include <libtimeit/db/SettingsAccessor.h>
 
 using namespace std;
 using namespace DBAbstraction;

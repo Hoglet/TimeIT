@@ -1,6 +1,5 @@
-#include <Logic/UUIDTool.h>
-#include "DB/TaskAccessor.h"
 #include <sstream>
+#include <libtimeit/db/TaskAccessor.h>
 
 using namespace DBAbstraction;
 using namespace std;

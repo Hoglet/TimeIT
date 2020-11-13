@@ -6,11 +6,11 @@
 #include <string>
 #include <vector>
 #include <EditTaskDialog.h>
-#include <DB/AutotrackAccessor.h>
+#include <libtimeit/db/AutotrackAccessor.h>
 #include <ParentChooser.h>
 #include <IWidget.h>
 #include <Workspace.h>
-#include <DB/Database.h>
+#include <libtimeit/db/Database.h>
 
 namespace GUI
 {

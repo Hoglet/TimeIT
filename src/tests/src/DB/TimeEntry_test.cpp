@@ -1,6 +1,5 @@
-#include <Logic/UUIDTool.h>
 #include <gtest/gtest.h>
-#include <DB/TimeEntry.h>
+#include <libtimeit/db/TimeEntry.h>
 
 using namespace DB;
 

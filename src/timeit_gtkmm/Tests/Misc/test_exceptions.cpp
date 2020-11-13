@@ -1,7 +1,7 @@
 #include "test_exceptions.h"
 #include "cute.h"
-#include "Exceptions/dbexception.h"
-#include "Exceptions/GeneralException.h"
+#include "libtimeit/exceptions/dbexception.h"
+#include "libtimeit/exceptions/GeneralException.h"
 #include <string>
 
 namespace Test

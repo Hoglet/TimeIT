@@ -8,7 +8,7 @@
 #ifndef TEMPDB_H_
 #define TEMPDB_H_
 
-#include <DB/Database.h>
+#include <libtimeit/db/Database.h>
 #include <string>
 
 namespace Test

@@ -8,10 +8,10 @@
 #include <EditTaskDialog.h>
 #include "Controller.h"
 #include <DetailsDialog.h>
-#include <Misc/OSAbstraction.h>
+#include <libtimeit/OSAbstraction.h>
 #include <iostream>
-#include <Misc/Utils.h>
-#include <DB/DefaultValues.h>
+#include <libtimeit/Utils.h>
+#include <libtimeit/db/DefaultValues.h>
 #include <GUIFactory.h>
 #include <libnotify/notify.h>
 

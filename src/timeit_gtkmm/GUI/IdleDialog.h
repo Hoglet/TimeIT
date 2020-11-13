@@ -12,7 +12,7 @@
 #include <Timer.h>
 #include <IWidget.h>
 #include <memory>
-#include <DB/TaskAccessor.h>
+#include <libtimeit/db/TaskAccessor.h>
 
 namespace GUI
 {

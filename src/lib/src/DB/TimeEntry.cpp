@@ -1,4 +1,4 @@
-#include "DB/TimeEntry.h"
+#include <libtimeit/db/TimeEntry.h>
 
 namespace DB
 {

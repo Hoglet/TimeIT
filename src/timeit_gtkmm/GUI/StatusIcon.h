@@ -11,8 +11,8 @@
 #include <gtkmm.h>
 
 #include "TimeKeeper.h"
-#include <DB/TaskAccessor.h>
-#include <DB/TimeAccessor.h>
+#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/TimeAccessor.h>
 #include "IActionObserver.h"
 
 namespace GUI

@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <DB/TaskAccessor.h>
-#include <Exceptions/dbexception.h>
-#include <Logic/UUIDTool.h>
+#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/exceptions/dbexception.h>
 
 using namespace DB;
 

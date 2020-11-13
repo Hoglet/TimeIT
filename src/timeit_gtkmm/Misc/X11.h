@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
-#include <Exceptions/GeneralException.h>
+#include <libtimeit/exceptions/GeneralException.h>
 
 class X11
 {
