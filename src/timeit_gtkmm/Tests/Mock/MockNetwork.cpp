@@ -21,15 +21,16 @@ void MockNetwork::setResponse(std::string& uri, std::string& response)
 	responses[uri] = response;
 }
 
-struct NetworkResponse MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password,
+HTTPResponse MockNetwork::request(const std::string& url, std::string data, std::string username, std::string password,
 		bool verifyPassword)
 {
 	std::map<std::string, std::string>::iterator iter;
-	NetworkResponse returnValue;
-	returnValue.statusOK = false;
-	returnValue.url = url;
+	bool   statusOK = false;
+	string response;
+	
 	int urlLen = url.size();
 
+	int httpCode;
 	for (iter = responses.begin(); iter != responses.end(); ++iter)
 	{
 		std::string key = iter->first;
@@ -39,13 +40,16 @@ struct NetworkResponse MockNetwork::request(const std::string& url, std::string 
 			std::string urlTail = url.substr(pos, std::string::npos);
 			if (urlTail == key)
 			{
-				returnValue.response = iter->second;
-				returnValue.statusOK = true;
-				returnValue.httpCode = 200;
+				response = iter->second;
+				statusOK = true;
+				httpCode = 200;
 				break;
 			}
 		}
 	}
+
+	string errorMessage;
+	HTTPResponse returnValue(url, response, statusOK, httpCode, errorMessage);
 
 	return returnValue;
 }

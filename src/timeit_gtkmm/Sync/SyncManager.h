@@ -4,8 +4,9 @@
 #include <memory>
 #include <libtimeit/db/Database.h>
 #include <libtimeit/Timer.h>
-#include <Network.h>
+#include <libtimeit/sync/Network.h>
 #include <libtimeit/sync/Json.h>
+#include <Misc/MessageCenter.h>
 
 namespace syncing
 {
@@ -25,7 +26,7 @@ public:
 	bool syncTimes(time_t sincePointInTime);
 	int syncTimesToDatabase(std::string result);
 	int syncTaskToDatabase(std::string result);
-	void manageNetworkProblems(NetworkResponse result);
+	void manageNetworkProblems(HTTPResponse result);
 
 	std::shared_ptr<DB::IDatabase> db;
 	std::shared_ptr<DB::ITaskAccessor> taskAccessor;

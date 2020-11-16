@@ -1,5 +1,5 @@
 #include "SyncTest.h"
-#include "Network.h"
+#include "libtimeit/sync/Network.h"
 #include "cute.h"
 #include "cute_runner.h"
 #include "libtimeit/sync/Json.h"

@@ -235,10 +235,10 @@ bool SyncManager::syncTasks(time_t sincePointInTime)
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 	std::string jsonString = Json::toJson(tasks, username);
-	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
-	if (result.statusOK && result.httpCode == 200)
+	auto result = network->request(url, jsonString, username, password, ignoreCertError);
+	if (result.statusOK() && result.httpCode() == 200)
 	{
-		syncTaskToDatabase(result.response);
+		syncTaskToDatabase(result.response());
 		return true;
 	}
 	else
@@ -259,13 +259,13 @@ bool SyncManager::syncTimes(time_t pointInTime)
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
 	uint32_t start = Utils::millisecondsSinceEpoch();
-	NetworkResponse result = network->request(url, jsonString, username, password, ignoreCertError);
+	HTTPResponse result = network->request(url, jsonString, username, password, ignoreCertError);
 	uint32_t end = Utils::millisecondsSinceEpoch();
 	cout << "Server request " << end - start << " ms.\n";
 
-	if (result.statusOK && result.httpCode == 200)
+	if (result.statusOK() && result.httpCode() == 200)
 	{
-		syncTimesToDatabase(result.response);
+		syncTimesToDatabase(result.response());
 		return true;
 	}
 	else
@@ -303,22 +303,22 @@ bool SyncManager::doSync(time_t pointInTime)
 	return success;
 }
 
-void SyncManager::manageNetworkProblems(NetworkResponse result)
+void SyncManager::manageNetworkProblems(HTTPResponse result)
 {
-	if (result.statusOK == false || result.httpCode != 200)
+	if (result.statusOK() == false || result.httpCode() != 200)
 	{
 		std::stringstream text;
 		// %s is replaced with the URI on which the connection failed
-		text << Utils::string_printf(_("Failed connection to %s:\n"), result.url.c_str());
+		text << Utils::string_printf(_("Failed connection to %s:\n"), result.url().c_str());
 
-		text << _("HTTP error ") << result.httpCode << " ";
-		if (result.httpCode == 401)
+		text << _("HTTP error ") << result.httpCode() << " ";
+		if (result.httpCode() == 401)
 		{
 			text << _("Username or password is wrong.");
 		}
 		else
 		{
-			text << result.errorMessage;
+			text << result.errorMessage();
 		}
 		Utils::Message message(Utils::ERROR_MESSAGE, _("Network error"), text.str());
 		messageCenter->sendMessage(message);
