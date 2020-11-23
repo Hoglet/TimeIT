@@ -7,10 +7,11 @@
 #include <libtimeit/db/AutotrackAccessor.h>
 #include <Workspace.h>
 
-class AutoTracker: public TimerObserver
+
+class AutoTracker: public libtimeit::TimerObserver
 {
 public:
-	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database, Timer& timer);
+	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<libtimeit::IDatabase> &database, libtimeit::Timer& timer);
 	virtual ~AutoTracker();
 	private:
 	void check4Changes();
@@ -20,9 +21,9 @@ public:
 
 	int oldWorkspace;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
-	std::shared_ptr<DB::IAutotrackAccessor> m_autotrackAccessor;
-	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
-	Timer& m_timer;
+	std::shared_ptr<libtimeit::IAutotrackAccessor> m_autotrackAccessor;
+	std::shared_ptr<libtimeit::ITaskAccessor> m_taskAccessor;
+	libtimeit::Timer& m_timer;
 	Workspace m_workspace;
 };
 

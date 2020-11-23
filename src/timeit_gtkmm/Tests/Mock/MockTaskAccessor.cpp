@@ -1,6 +1,8 @@
 #include "MockTaskAccessor.h"
 
-using namespace DB;
+using namespace libtimeit;
+using namespace std;
+
 namespace Test
 {
 
@@ -12,29 +14,29 @@ MockTaskAccessor::~MockTaskAccessor()
 {
 }
 
-void MockTaskAccessor::attach(TaskAccessorObserver*)
+void MockTaskAccessor::attach(EventObserver*)
 {
 }
 
-void MockTaskAccessor::detach(TaskAccessorObserver*)
+void MockTaskAccessor::detach(EventObserver*)
 {
 }
 
-std::shared_ptr<Task> MockTaskAccessor::getTask(int64_t taskID)
+shared_ptr<Task> MockTaskAccessor::getTask(int64_t taskID)
 {
-	std::shared_ptr<Task> returnValue;
+	shared_ptr<Task> returnValue;
 	return returnValue;
 }
 
-std::shared_ptr<std::vector<Task>> MockTaskAccessor::getTasks(int64_t parentID)
+shared_ptr<vector<Task>> MockTaskAccessor::getTasks(int64_t parentID)
 {
-	std::shared_ptr<std::vector<Task>> returnValue = std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
+	shared_ptr<vector<Task>> returnValue = shared_ptr<vector<Task>>(new vector<Task>);
 	return returnValue;
 }
 
 std::shared_ptr<std::vector<Task>> MockTaskAccessor::getTasksChangedSince(time_t timestamp)
 {
-	std::shared_ptr<std::vector<Task>> returnValue = std::shared_ptr<std::vector<Task>>(new std::vector<Task>);
+	std::shared_ptr<std::vector<Task>> returnValue = shared_ptr<vector<Task>>(new vector<Task>);
 	return returnValue;
 }
 
@@ -48,32 +50,32 @@ bool MockTaskAccessor::updateTask(const Task& task)
 	return false;
 }
 
-std::shared_ptr<std::vector<ExtendedTask> > MockTaskAccessor::getExtendedTask(int64_t taskID, time_t start, time_t stop,
+std::shared_ptr<vector<ExtendedTask> > MockTaskAccessor::getExtendedTask(int64_t taskID, time_t start, time_t stop,
 		bool calculateTotalTime)
 {
-	std::shared_ptr<std::vector<ExtendedTask>> returnValue = std::shared_ptr<std::vector<ExtendedTask>>(
-			new std::vector<ExtendedTask>);
+	std::shared_ptr<vector<ExtendedTask>> returnValue = shared_ptr<vector<ExtendedTask>>(
+			new vector<ExtendedTask>);
 	ExtendedTask task(1, 0, "Hum", 0, 0);
 	returnValue->push_back(task);
 	return returnValue;
 }
 
-std::shared_ptr<std::vector<ExtendedTask>> MockTaskAccessor::getExtendedTasks(int64_t parentID, time_t start,
+std::shared_ptr<vector<ExtendedTask>> MockTaskAccessor::getExtendedTasks(int64_t parentID, time_t start,
 		time_t stop)
 {
-	std::shared_ptr<std::vector<ExtendedTask>> list = std::shared_ptr<std::vector<ExtendedTask>>(
-			new std::vector<ExtendedTask>);
+	shared_ptr<std::vector<ExtendedTask>> list = shared_ptr<vector<ExtendedTask>>(
+			new vector<ExtendedTask>);
 	return list;
 }
 
-std::shared_ptr<std::vector<ExtendedTask>> MockTaskAccessor::getRunningTasks(int64_t parentID)
+shared_ptr<vector<ExtendedTask>> MockTaskAccessor::getRunningTasks(int64_t parentID)
 {
-	std::shared_ptr<std::vector<ExtendedTask>> list = std::shared_ptr<std::vector<ExtendedTask>>(
-			new std::vector<ExtendedTask>);
+	shared_ptr<std::vector<ExtendedTask>> list = shared_ptr<vector<ExtendedTask>>(
+			new vector<ExtendedTask>);
 	return list;
 }
 
-int64_t MockTaskAccessor::newTask(std::string name, int64_t parentID)
+int64_t MockTaskAccessor::newTask(string name, int64_t parentID)
 {
 	return 1;
 }
@@ -82,7 +84,7 @@ void MockTaskAccessor::setTaskExpanded(int64_t taskID, bool expanded)
 {
 }
 
-void MockTaskAccessor::setTaskName(int64_t taskID, std::string name)
+void MockTaskAccessor::setTaskName(int64_t taskID, string name)
 {
 }
 

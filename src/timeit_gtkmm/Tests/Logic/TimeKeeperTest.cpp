@@ -5,7 +5,7 @@
 #include "cute.h"
 
 using namespace std;
-using namespace DB;
+using namespace libtimeit;
 
 namespace Test
 {
@@ -47,7 +47,8 @@ public:
 
 void TimeKeeper_testStartingStopingAndToggling()
 {
-	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
+	Notifier notifier;
+	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();
@@ -85,7 +86,8 @@ void TimeKeeper_testStartingStopingAndToggling()
 
 void TimeKeeper_testUpdate()
 {
-	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
+	Notifier notifier;
+	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();
@@ -113,7 +115,8 @@ void TimeKeeper_testUpdate()
 
 void TimeKeeper_testStopAll()
 {
-	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB());
+	Notifier notifier;
+	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
 	shared_ptr<Timekeeper> timeKeeper = shared_ptr<Timekeeper>(new Timekeeper(db, timer));
 	shared_ptr<ITaskAccessor> taskaccessor = db->getTaskAccessor();

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libtimeit/db/Task.h>
 
-using namespace DB;
+using namespace libtimeit;
 
 
 

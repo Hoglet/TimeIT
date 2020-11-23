@@ -5,11 +5,11 @@
 
 namespace GUI
 {
-using namespace DB;
+using namespace libtimeit;
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(std::shared_ptr<DB::IDatabase> &database) :
+TaskList::TaskList(shared_ptr<IDatabase> &database) :
 		taskAccessor(database->getExtendedTaskAccessor())
 {
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"), 24, 24, true);

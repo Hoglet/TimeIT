@@ -32,6 +32,7 @@
 #include <glibmm.h>
 
 using namespace Gtk;
+using namespace libtimeit;
 
 namespace GUI
 {
@@ -42,7 +43,7 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(std::shared_ptr<DB::IDatabase> &database) :
+MainWindow::MainWindow(std::shared_ptr<IDatabase> &database) :
 		taskList(database), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
 				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")), taskAccessor(
 				database->getExtendedTaskAccessor()), settingsAccessor(database->getSettingsAccessor())
@@ -63,7 +64,7 @@ ICalendar& MainWindow::getCalendar()
 
 void MainWindow::attach(SummaryObserver *observer)
 {
-	std::vector<Summary*>::iterator iter;
+	vector<Summary*>::iterator iter;
 
 	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
@@ -73,7 +74,7 @@ void MainWindow::attach(SummaryObserver *observer)
 }
 void MainWindow::detach(SummaryObserver *observer)
 {
-	std::vector<Summary*>::iterator iter;
+	vector<Summary*>::iterator iter;
 
 	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
@@ -115,7 +116,7 @@ void MainWindow::relateWidgets()
 	summaries.push_back(&monthSummary);
 	summaries.push_back(&yearSummary);
 
-	std::vector<Summary*>::iterator iter;
+	vector<Summary*>::iterator iter;
 	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
 		Summary *summary = *iter;
@@ -320,7 +321,7 @@ void MainWindow::on_action_remove_task()
 	case (Gtk::RESPONSE_CANCEL):
 		break;
 	default:
-		std::cerr << "Unexpected button clicked." << std::endl;
+		cerr << "Unexpected button clicked." << std::endl;
 		break;
 	}
 }

@@ -16,11 +16,13 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+using namespace std;
 
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::IDatabase> &database,
+	GUIFactory(shared_ptr<ITimeKeeper>&, shared_ptr<IDatabase> &database,
 			Timer& timer);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
@@ -49,9 +51,9 @@ private:
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
-	std::shared_ptr<ITimeKeeper> timekeeper;
+	shared_ptr<ITimeKeeper> timekeeper;
 
-	std::shared_ptr<DB::IDatabase> database;
+	shared_ptr<IDatabase> database;
 	Timer& timer;
 };
 }

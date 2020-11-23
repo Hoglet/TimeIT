@@ -41,10 +41,10 @@ public:
 	virtual void detach(TimekeeperObserver*) = 0;
 };
 
-class Timekeeper: public TimerObserver, public ITimeKeeper, public DB::TaskAccessorObserver, public DB::ISettingsAccessorObserver
+class Timekeeper: public libtimeit::TimerObserver, public ITimeKeeper, public libtimeit::EventObserver, public libtimeit::ISettingsAccessorObserver
 {
 public:
-	Timekeeper(const std::shared_ptr<DB::IDatabase> &database, Timer &timer);
+	Timekeeper(const std::shared_ptr<libtimeit::IDatabase> &database, libtimeit::Timer &timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -119,10 +119,10 @@ private:
 	void notifyIdleDetected();
 	std::list<TimekeeperObserver*> observers;
 
-	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
-	Timer& m_timer;
-	std::shared_ptr<DB::ISettingsAccessor> m_settingsAccessor;
+	std::shared_ptr<libtimeit::ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<libtimeit::ITaskAccessor> m_taskAccessor;
+	libtimeit::Timer& m_timer;
+	std::shared_ptr<libtimeit::ISettingsAccessor> m_settingsAccessor;
 
 	IdleDetector m_idleDetector;
 };

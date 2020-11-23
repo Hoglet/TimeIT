@@ -2,40 +2,46 @@
 #include "TempDB.h"
 #include <libtimeit/db/ISettingsAccessor.h>
 
-using namespace DB;
-
-TEST( SettingsAccessor, ShortFilterTimeAccessor)
+namespace test
 {
-	TempDB tempdb;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
+using namespace libtimeit;
+using namespace std;
+
+TEST(SettingsAccessor, ShortFilterTimeAccessor)
+{
+	Notifier notifier;
+	TempDB tempdb(notifier);
+	shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
 	settingsAccessor->SetShortFilterTime(30);
 
 	ASSERT_EQ(30, settingsAccessor->GetShortFilterTime());
 }
 
-TEST( SettingsAccessor, IntAccessor)
+TEST(SettingsAccessor, IntAccessor)
 {
-	TempDB tempdb;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
-	ASSERT_EQ(10, settingsAccessor->GetIntByName("Tjohopp",10));
+	Notifier notifier;
+	TempDB tempdb(notifier);
+	shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
+	ASSERT_EQ(10, settingsAccessor->GetIntByName("Tjohopp", 10));
 	settingsAccessor->SetIntByName("Tjohopp", 30);
-	ASSERT_EQ(30, settingsAccessor->GetIntByName("Tjohopp",10));
+	ASSERT_EQ(30, settingsAccessor->GetIntByName("Tjohopp", 10));
 }
 
-TEST( SettingsAccessor, BoolAccessor)
+TEST(SettingsAccessor, BoolAccessor)
 {
-	TempDB tempdb;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
-	ASSERT_EQ(true, settingsAccessor->GetBoolByName("Tjohopp",true));
+	Notifier notifier;
+	TempDB tempdb(notifier);
+	shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
+	ASSERT_EQ(true, settingsAccessor->GetBoolByName("Tjohopp", true));
 	settingsAccessor->SetBoolByName("Tjohopp", false);
-	ASSERT_EQ(false, settingsAccessor->GetBoolByName("Tjohopp",true));
+	ASSERT_EQ(false, settingsAccessor->GetBoolByName("Tjohopp", true));
 }
 
-class Observer: public ISettingsAccessorObserver
+class Observer : public ISettingsAccessorObserver
 {
 public:
 
-	void on_settingsChanged(const std::string& name)
+	void on_settingsChanged(const std::string &name)
 	{
 		changed_setting = name;
 	}
@@ -43,13 +49,14 @@ public:
 	std::string changed_setting;
 };
 
-TEST( SettingsAccessor, notification )
+TEST(SettingsAccessor, notification)
 {
-	TempDB tempdb;
+	Notifier notifier;
+	TempDB tempdb(notifier);
 	Observer observer;
 	ASSERT_EQ("", observer.changed_setting);
 
-	std::shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
+	shared_ptr<ISettingsAccessor> settingsAccessor = tempdb.getSettingsAccessor();
 	settingsAccessor->attach(&observer);
 	settingsAccessor->SetBoolByName("Tjohopp", false);
 	ASSERT_EQ("Tjohopp", observer.changed_setting);
@@ -58,3 +65,4 @@ TEST( SettingsAccessor, notification )
 }
 
 
+}

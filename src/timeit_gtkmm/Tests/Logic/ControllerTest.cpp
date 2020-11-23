@@ -11,18 +11,21 @@
 
 #include "../../Misc/IpcServer.h"
 
-using namespace std;
+
 
 namespace Test
 {
+using namespace libtimeit;
+using namespace std;
 
 void Controller_startSequence()
 {
+	Notifier notifier;
 	//Create a database object
-	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
+	shared_ptr<IDatabase> database = std::shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
-	shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new MockTimeKeeper());
-	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
+	shared_ptr<ITimeKeeper> timekeeper = shared_ptr<ITimeKeeper>(new MockTimeKeeper());
+	shared_ptr<MockGuiFactory> guiFactory = shared_ptr<MockGuiFactory>(new MockGuiFactory());
 	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket", timer));
 
 	MockStatusIcon &statusIcon = static_cast<MockStatusIcon&>(guiFactory->getStatusIcon());
@@ -42,8 +45,9 @@ void Controller_startSequence()
 
 void Controller_testActions()
 {
+	Notifier notifier;
 	//Create a database object
-	shared_ptr<DB::IDatabase> database = std::shared_ptr<DB::IDatabase>(new TempDB());
+	shared_ptr<IDatabase> database = std::shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
 	shared_ptr<MockTimeKeeper> timekeeper = std::shared_ptr<MockTimeKeeper>(new MockTimeKeeper());
 	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());

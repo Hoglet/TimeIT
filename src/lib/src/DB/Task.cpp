@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <libtimeit/db/Task.h>
 
-namespace DB
+namespace libtimeit
 {
 
 Task::Task()

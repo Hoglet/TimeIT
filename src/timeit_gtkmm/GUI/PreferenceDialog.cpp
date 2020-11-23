@@ -13,7 +13,7 @@
 namespace GUI
 {
 
-PreferenceDialog::PreferenceDialog(std::shared_ptr<DB::IDatabase> &database) :
+PreferenceDialog::PreferenceDialog(std::shared_ptr<libtimeit::IDatabase> &database) :
 		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(
 				database->getSettingsAccessor())
 

@@ -1,5 +1,5 @@
-#ifndef CSQL_H_
-#define CSQL_H_
+#ifndef TIMEIT_CSQL_H_
+#define TIMEIT_CSQL_H_
 
 #include <libtimeit/exceptions/dbexception.h>
 #include <sqlite3.h>
@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <memory>
 
-namespace DBAbstraction
+namespace libtimeit
 {
 
 class CSQL;

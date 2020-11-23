@@ -27,10 +27,12 @@
 
 namespace GUI
 {
-class TaskList: public Gtk::TreeView, public DB::TaskAccessorObserver
+using namespace libtimeit;
+
+class TaskList: public Gtk::TreeView, public EventObserver
 {
 public:
-	TaskList(std::shared_ptr<DB::IDatabase> &database);
+	TaskList(std::shared_ptr<IDatabase> &database);
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
@@ -79,12 +81,12 @@ private:
 	void on_menu_remove_task();
 	void on_menu_add_time();
 	virtual bool on_button_press_event(GdkEventButton *event);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, const DB::ExtendedTask &task);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, const ExtendedTask &task);
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();
 	std::list<IActionObserver*> observers;
-	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor;
 };
 }
 #endif // _TASK_LIST_HPP_

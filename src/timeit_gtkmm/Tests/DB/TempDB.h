@@ -14,12 +14,15 @@
 namespace Test
 {
 
-class TempDB: public DB::Database
+class TempDB: public libtimeit::Database
 {
 public:
-	TempDB();
+	TempDB(libtimeit::Notifier& op_notifier);
 	virtual ~TempDB();
 	void execute(std::string statement);
+private:
+	TempDB();
+
 };
 
 } /* namespace Test */

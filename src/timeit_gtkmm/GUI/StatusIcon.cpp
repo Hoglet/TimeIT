@@ -15,9 +15,9 @@
 namespace GUI
 {
 using namespace std;
-using namespace DB;
+using namespace libtimeit;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, std::shared_ptr<ITaskAccessor> &taskaccessor, std::shared_ptr<ITimeAccessor> &timeaccessor)
+StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, shared_ptr<ITaskAccessor> &taskaccessor, std::shared_ptr<ITimeAccessor> &timeaccessor)
 {
 	m_timekeeper = timekeeper;
 	m_taskaccessor = taskaccessor;
@@ -65,7 +65,7 @@ void StatusIcon::populateContextMenu()
 		try
 		{
 			int64_t id = latestTasks[i];
-			std::shared_ptr<DB::Task> task = m_taskaccessor->getTask(id);
+			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
 			std::string menuLine = completeTaskPath(latestTasks[i]);
 
 			Gtk::Image *menuIcon = Gtk::manage(new Gtk::Image());

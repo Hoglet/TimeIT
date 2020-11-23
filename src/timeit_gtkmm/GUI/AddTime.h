@@ -15,11 +15,12 @@
 #include <IWidget.h>
 namespace GUI
 {
+using namespace libtimeit;
 
 class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, ICalendar& calendar, std::shared_ptr<DB::IDatabase>& database);
+	AddTime(int64_t taskId, ICalendar& calendar, std::shared_ptr<IDatabase>& database);
 	virtual ~AddTime();
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
@@ -57,8 +58,8 @@ private:
 	ICalendar& calendar;
 
 	int64_t taskID;
-	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
+	std::shared_ptr<ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
 };
 }
 

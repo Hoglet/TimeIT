@@ -1,8 +1,9 @@
 #include "libtimeit/sync/Network.h"
-#include "HTTPRequest.h"
+#include "libtimeit/sync/HTTPRequest.h"
 #include <stdexcept>
 #include <string.h>
 #include <curl/curl.h>
+#include <future>
 
 //LCOV_EXCL_START
 
@@ -24,12 +25,18 @@ Network::~Network()
 
 
 
-HTTPResponse Network::request(const std::string& url, std::string data, std::string username, std::string password,
-						  bool ignoreCertificateErrors)
+std::shared_ptr<asyncHTTPResponse> Network::request(const std::string& url, std::string data, std::string username, std::string password,
+													bool ignoreCertificateErrors)
 {
-	auto request=std::make_shared<HTTPRequest>(ignoreCertificateErrors);
-	auto result = request->PUT(url, data, username, password);
+	std::shared_ptr<asyncHTTPResponse> result=std::make_shared<asyncHTTPResponse>();
 
+	result->request.ignoreCertErrors(ignoreCertificateErrors);
+
+	result->futureResponse =	std::async(
+					std::launch::async,
+					&HTTPRequest::PUT,
+					result->request,
+					url, data, username, password).share();
 
 	return result;
 }

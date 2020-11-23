@@ -25,7 +25,7 @@ namespace GUI
 class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(std::shared_ptr<DB::IDatabase>& database);
+	PreferenceDialog(std::shared_ptr<libtimeit::IDatabase>& database);
 	virtual ~PreferenceDialog();
 
 	// IWidget interface
@@ -94,7 +94,7 @@ private:
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<libtimeit::ISettingsAccessor> settingsAccessor;
 };
 
 }

@@ -7,9 +7,9 @@
 #include <libtimeit/Utils.h>
 namespace GUI
 {
-using namespace DB;
+using namespace libtimeit;
 using namespace std;
-EditTaskDialog::EditTaskDialog(std::shared_ptr<DB::IDatabase> &database) :
+EditTaskDialog::EditTaskDialog(std::shared_ptr<IDatabase> &database) :
 		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database), autoTrackAccessor(
 				database->getAutotrackAccessor()), taskAccessor(database->getTaskAccessor())
 
@@ -140,10 +140,10 @@ void EditTaskDialog::setParent(int ID)
 	parentChooser.setParentID(parentID);
 }
 
-void EditTaskDialog::setTickedWorkspaces(std::vector<int> workspaces)
+void EditTaskDialog::setTickedWorkspaces(vector<int> workspaces)
 {
 
-	std::vector<Gtk::CheckButton*>::iterator chbiter = checkbutton.begin();
+	vector<Gtk::CheckButton*>::iterator chbiter = checkbutton.begin();
 	while (chbiter != checkbutton.end())
 	{
 		(*chbiter)->set_active(false);
@@ -166,9 +166,9 @@ void EditTaskDialog::setTickedWorkspaces(std::vector<int> workspaces)
 }
 void EditTaskDialog::on_OKButton_clicked()
 {
-	std::string name;
-	std::stringstream checkButtonName;
-	std::vector<int> workspaces = getTickedWorkspaces();
+	string name;
+	stringstream checkButtonName;
+	vector<int> workspaces = getTickedWorkspaces();
 	name = taskNameEntry.get_text();
 	parentID = parentChooser.getParentID();
 
@@ -198,7 +198,7 @@ void EditTaskDialog::on_CancelButton_clicked()
 }
 void EditTaskDialog::check4changes()
 {
-	std::vector<int> tickedWorkspaces = getTickedWorkspaces();
+	vector<int> tickedWorkspaces = getTickedWorkspaces();
 
 	if (taskNameEntry.get_text() != name || tickedWorkspaces != workspaces || parentChooser.getParentID() != parentID)
 	{
@@ -217,7 +217,7 @@ void EditTaskDialog::on_data_changed()
 
 EditTaskDialog::~EditTaskDialog()
 {
-	std::vector<Gtk::CheckButton*>::iterator iter = checkbutton.end();
+	vector<Gtk::CheckButton*>::iterator iter = checkbutton.end();
 	for (; iter != checkbutton.end(); iter++)
 	{
 		Gtk::CheckButton *button = *iter;

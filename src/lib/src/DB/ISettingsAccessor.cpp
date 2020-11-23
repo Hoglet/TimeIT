@@ -1,6 +1,6 @@
 #include <libtimeit/db/ISettingsAccessor.h>
 
-namespace DB
+namespace libtimeit
 {
 
 ISettingsAccessorObserver::~ISettingsAccessorObserver()

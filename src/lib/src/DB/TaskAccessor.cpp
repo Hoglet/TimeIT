@@ -1,9 +1,8 @@
 #include <sstream>
 #include <libtimeit/db/TaskAccessor.h>
 
-using namespace DBAbstraction;
 using namespace std;
-namespace DB
+namespace libtimeit
 {
 
 
@@ -12,8 +11,12 @@ ITaskAccessor::~ITaskAccessor()
 {
 }
 
-TaskAccessor::TaskAccessor(std::shared_ptr<DBAbstraction::CSQL> &op_db, std::shared_ptr<Notifier> op_notifier) :
-		notifier(op_notifier), db(op_db)
+TaskAccessor::TaskAccessor(
+		shared_ptr<CSQL>& op_db,
+		Notifier&         op_notifier)
+		:
+		notifier(op_notifier),
+		db(op_db)
 {
 }
 
@@ -39,12 +42,12 @@ void TaskAccessor::createTable()
 
 void TaskAccessor::enableNotifications(bool state)
 {
-	notifier->enabled(state);
+	notifier.enabled(state);
 }
 
 std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 {
-	shared_ptr<vector<Task>> retVal = shared_ptr<std::vector<Task>>(new vector<Task>);
+	shared_ptr<vector<Task>> retVal = shared_ptr<vector<Task>>(new vector<Task>);
 	stringstream statement;
 
 	statement << "SELECT id, parent, name, completed, uuid, changed"
@@ -85,7 +88,7 @@ std::shared_ptr<std::vector<Task>> TaskAccessor::getTasks(int64_t parentID)
 
 std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 {
-	DBAbstraction::Statement statement_getTask = db->prepare("SELECT id, parent, name, completed,"
+	Statement statement_getTask = db->prepare("SELECT id, parent, name, completed,"
 			" uuid, changed, deleted FROM  tasks WHERE id=?");
 	statement_getTask.bindValue(1, taskID);
 	QueryResult rows = statement_getTask.execute();
@@ -107,7 +110,7 @@ std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 		if(uuid)
 		{
 			auto parentUUID = idToUuid(parent);
-			task = std::shared_ptr<Task>(new Task(name, parent, *uuid, completed, id, lastChange, parentUUID, deleted));
+			task = shared_ptr<Task>(new Task(name, parent, *uuid, completed, id, lastChange, parentUUID, deleted));
 		}
 	}
 	return task;
@@ -115,7 +118,7 @@ std::shared_ptr<Task> TaskAccessor::getTask(int64_t taskID)
 
 Task TaskAccessor::getTaskUnlimited(int64_t taskID)
 {
-	DBAbstraction::Statement statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
+	Statement statement_getCompleteTask = db->prepare("SELECT id, parent, name, completed,"
 			" uuid, changed, deleted FROM  tasks WHERE id=?;");
 	statement_getCompleteTask.bindValue(1, taskID);
 	QueryResult rows = statement_getCompleteTask.execute();
@@ -180,7 +183,7 @@ int64_t TaskAccessor::uuidToId(UUID uuid)
 {
 
 	int64_t id = 0;
-	DBAbstraction::Statement statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
+	Statement statement_uuidToId = db->prepare("SELECT id FROM tasks WHERE uuid=?;");
 	statement_uuidToId.bindValue(1, uuid.c_str());
 	QueryResult rows = statement_uuidToId.execute();
 	for (std::vector<DataCell> row : rows)
@@ -194,7 +197,7 @@ optional<class UUID> TaskAccessor::idToUuid(int64_t id)
 {
 	if(id)
 	{
-		DBAbstraction::Statement statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
+		Statement statement_idToUuid = db->prepare("SELECT uuid FROM tasks WHERE id=?;");
 		statement_idToUuid.bindValue(1, id);
 		QueryResult rows = statement_idToUuid.execute();
 		for (vector<DataCell> row : rows)
@@ -208,7 +211,7 @@ optional<class UUID> TaskAccessor::idToUuid(int64_t id)
 
 void TaskAccessor::_update(const Task &task)
 {
-	DBAbstraction::Statement statement_updateTask = db->prepare(
+	Statement statement_updateTask = db->prepare(
 			"UPDATE tasks SET name = ?, parent = ? ,changed = ? ,deleted = ?, completed = ? WHERE id=?;");
 	statement_updateTask.bindValue(1, task.name());
 	if (task.parentID() > 0)
@@ -235,15 +238,15 @@ void TaskAccessor::notify(const Task &existingTask, const Task &task)
 
 	if (nameChanged)
 	{
-		notifier->sendNotification(TASK_NAME_CHANGED, task.ID());
+		notifier.sendNotification(TASK_NAME_CHANGED, task.ID());
 	}
 	if (parentChanged)
 	{
-		notifier->sendNotification(TASK_PARENT_CHANGED, task.ID());
+		notifier.sendNotification(TASK_PARENT_CHANGED, task.ID());
 	}
 	if (taskDeleted)
 	{
-		notifier->sendNotification(TASK_REMOVED, task.ID());
+		notifier.sendNotification(TASK_REMOVED, task.ID());
 	}
 }
 
@@ -283,7 +286,7 @@ int64_t TaskAccessor::newTask(const Task &op_task)
 
 	int64_t id = 0;
 
-	DBAbstraction::Statement statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
+	Statement statement_newTask = db->prepare("INSERT INTO tasks (name,parent,changed,uuid,completed,deleted) "
 			"VALUES (?,?,?,?,?,?);");
 	statement_newTask.bindValue(1, name);
 	if (parentID > 0)
@@ -301,7 +304,7 @@ int64_t TaskAccessor::newTask(const Task &op_task)
 
 	statement_newTask.execute();
 	id = db->getIDOfLastInsert();
-	notifier->sendNotification(TASK_ADDED, id);
+	notifier.sendNotification(TASK_ADDED, id);
 	return id;
 }
 
@@ -326,7 +329,7 @@ void TaskAccessor::setParentID(int64_t taskID, int parentID)
 	statement << " , changed = " << now;
 	statement << " WHERE id=" << taskID;
 	db->exe(statement.str());
-	notifier->sendNotification(TASK_PARENT_CHANGED, taskID);
+	notifier.sendNotification(TASK_PARENT_CHANGED, taskID);
 }
 
 void TaskAccessor::removeTask(int64_t taskID)
@@ -337,16 +340,16 @@ void TaskAccessor::removeTask(int64_t taskID)
 	statement << " ,changed = " << now;
 	statement << " WHERE id = " << taskID;
 	db->exe(statement.str());
-	notifier->sendNotification(TASK_REMOVED, taskID);
+	notifier.sendNotification(TASK_REMOVED, taskID);
 }
 
-void TaskAccessor::attach(TaskAccessorObserver *observer)
+void TaskAccessor::attach(EventObserver *observer)
 {
-	notifier->attach(observer);
+	notifier.attach(observer);
 }
-void TaskAccessor::detach(TaskAccessorObserver *observer)
+void TaskAccessor::detach(EventObserver *observer)
 {
-	notifier->detach(observer);
+	notifier.detach(observer);
 }
 
 void TaskAccessor::upgradeToDB5()

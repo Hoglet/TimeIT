@@ -6,14 +6,14 @@
 #include <libtimeit/exceptions/GeneralException.h>
 
 using namespace std;
-using namespace DB;
 
-namespace Json
+
+namespace libtimeit
 {
 
 GeneralException ge;
 
-std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
+string toJson(shared_ptr<vector<Task>> tasks, string username)
 {
 	json_t *array = json_array();
 	for (Task task : *tasks)
@@ -59,12 +59,12 @@ std::string toJson(std::shared_ptr<std::vector<Task>> tasks, string username)
 		throw ge;
 		//LCOV_EXCL_STOP
 	}
-	std::string result = str;
+	string result = str;
 	free(str);
 
 	return result;
 }
-std::string toJson(const TimeList& times)
+string toJson(const TimeList& times)
 {
 	json_t *array = json_array();
 	for (TimeEntry time : times)
@@ -98,13 +98,13 @@ std::string toJson(const TimeList& times)
 		throw ge;
 		//LCOV_EXCL_STOP
 	}
-	std::string result = str;
+	string result = str;
 	free(str);
 
 	return result;
 }
 
-std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
+shared_ptr<vector<Task>> toTasks(const string &text)
 {
 
 	json_t *root;
@@ -116,9 +116,9 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 
 	for (unsigned int i = 0; i < json_array_size(root); i++)
 	{
-		std::string name;
-		std::string uuidString;
-		std::string parentString;
+		string name;
+		string uuidString;
+		string parentString;
 		bool completed;
 		time_t lastChanged;
 		bool deleted;
@@ -184,7 +184,7 @@ std::shared_ptr<std::vector<Task>> toTasks(const std::string &text)
 	return retVal;
 }
 
-TimeList toTimes(const std::string &input)
+TimeList toTimes(const string &input)
 {
 
 	json_t *root;
@@ -197,8 +197,8 @@ TimeList toTimes(const std::string &input)
 	for (unsigned int i = 0; i < json_array_size(root); i++)
 	{
 		int64_t id = 0;
-		std::string uuidString;
-		std::string taskIDString;
+		string uuidString;
+		string taskIDString;
 		time_t start;
 		time_t stop;
 		time_t changed;

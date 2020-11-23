@@ -4,7 +4,7 @@
 #include <string>
 #include <libtimeit/exceptions/dbexception.h>
 
-namespace DBAbstraction
+namespace libtimeit
 {
 
 class DataCell

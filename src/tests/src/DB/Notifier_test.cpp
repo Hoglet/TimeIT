@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 #include <libtimeit/db/Notifier.h>
 
-using namespace DB;
+using namespace libtimeit;
+
 namespace Test
 {
 
-class NotifyTester: public TaskAccessorObserver
+class NotifyTester: public EventObserver
 {
 public:
 	NotifyTester()

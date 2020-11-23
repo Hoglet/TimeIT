@@ -10,8 +10,7 @@
 #include "libtimeit/db/ExtendedTaskAccessor.h"
 
 using namespace std;
-using namespace DBAbstraction;
-namespace DB
+namespace libtimeit
 {
 
 IAutotrackAccessor::~IAutotrackAccessor()

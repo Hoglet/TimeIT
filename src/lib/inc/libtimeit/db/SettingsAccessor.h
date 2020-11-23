@@ -11,13 +11,13 @@
 #include <libtimeit/db/ISettingsAccessor.h>
 #include "CSQL.h"
 
-namespace DB
+namespace libtimeit
 {
 
 class SettingsAccessor: public ISettingsAccessor
 {
 public:
-	SettingsAccessor(std::shared_ptr<DBAbstraction::CSQL>& op_db);
+	SettingsAccessor(std::shared_ptr<CSQL>& op_db);
 	virtual ~SettingsAccessor();
 	/* ShortFilterTime
 	 * Time in minutes that is the shortest time counted as work.
@@ -44,7 +44,7 @@ private:
 	int idleGT;
 	int idleGZ;
 	int shortFilterTime;
-	std::shared_ptr<DBAbstraction::CSQL> db;
+	std::shared_ptr<CSQL> db;
 	std::list<ISettingsAccessorObserver*> observers;
 };
 }

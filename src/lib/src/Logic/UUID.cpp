@@ -6,9 +6,13 @@
 #include <iomanip>
 #include <libtimeit/db/UUID.h>
 
+namespace libtimeit
+{
+
+
 using namespace std;
 
-bool rangeTestG4(const char& c)
+bool rangeTestG4(const char &c)
 {
 	if (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B')
 	{
@@ -17,7 +21,7 @@ bool rangeTestG4(const char& c)
 	return false;
 }
 
-bool isValid(const std::string& uuid)
+bool isValid(const std::string &uuid)
 {
 
 	if (36 != uuid.length())
@@ -95,10 +99,7 @@ bool isValid(const std::string& uuid)
 }
 
 
-
-
-
-std::optional<UUID> toUuid(std::string uuid)
+optional<UUID> toUuid(string uuid)
 {
 	if (isValid(uuid))
 	{
@@ -134,7 +135,7 @@ UUID::UUID()
 	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
 	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
 
-	uuid=uuidSStream.str();
+	uuid = uuidSStream.str();
 }
 
 bool UUID::operator==(const UUID &rhs) const
@@ -154,5 +155,7 @@ const char *UUID::c_str() const
 
 UUID::UUID(std::string op_uuid)
 {
-	uuid=op_uuid;
+	uuid = op_uuid;
+}
+
 }

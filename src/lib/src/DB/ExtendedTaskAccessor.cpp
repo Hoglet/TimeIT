@@ -3,11 +3,10 @@
 #include <libtimeit/db/ExtendedTaskAccessor.h>
 
 using namespace std;
-using namespace DBAbstraction;
-namespace DB
+namespace libtimeit
 {
 
-ExtendedTaskAccessor::ExtendedTaskAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<Notifier> notifier,
+ExtendedTaskAccessor::ExtendedTaskAccessor(shared_ptr<CSQL>& op_db, Notifier& notifier,
 		std::shared_ptr<ITimeAccessor> timeAccessor) :
 		TaskAccessor(op_db, notifier)
 {
@@ -22,7 +21,7 @@ ExtendedTaskAccessor::~ExtendedTaskAccessor()
 std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTasks(int64_t parentID, time_t start,
 		time_t stop)
 {
-	std::shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, parentID, false, start, stop);
+	shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, parentID, false, start, stop);
 	for (unsigned int i = 0; i < tasks->size(); i++)
 	{
 		ExtendedTask& task = tasks->at(i);
@@ -32,9 +31,9 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTasks(int
 	return tasks;
 }
 
-std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getRunningTasks(int64_t parentID)
+shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getRunningTasks(int64_t parentID)
 {
-	std::shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, parentID, true);
+	shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, parentID, true);
 	for (unsigned int i = 0; i < tasks->size(); i++)
 	{
 		ExtendedTask& task = tasks->at(i);
@@ -47,7 +46,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getRunningTasks(int6
 
 int ExtendedTaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
-	std::shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, id, false, start, stop);
+	shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(0, id, false, start, stop);
 	int totalTime = 0;
 	for (ExtendedTask task : *tasks)
 	{
@@ -57,7 +56,7 @@ int ExtendedTaskAccessor::getTotalChildTime(int64_t id, time_t start, time_t sto
 	return totalTime;
 }
 
-std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(int64_t taskID, int64_t parentID,
+shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(int64_t taskID, int64_t parentID,
 		bool onlyRunning, time_t start, time_t stop)
 {
 	shared_ptr<vector<ExtendedTask>> retVal = shared_ptr<vector<ExtendedTask>>(new vector<ExtendedTask>);
@@ -89,7 +88,7 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(in
 	}
 
 	QueryResult rows = db->exe(statement.str());
-	for (std::vector<DataCell> row : rows)
+	for (vector<DataCell> row : rows)
 	{
 		int id = row[0].getInt();
 		int parent = 0;
@@ -107,10 +106,10 @@ std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::_getExtendedTasks(in
 	return retVal;
 }
 
-std::shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTask(int64_t taskID, time_t start, time_t stop,
+shared_ptr<vector<ExtendedTask>> ExtendedTaskAccessor::getExtendedTask(int64_t taskID, time_t start, time_t stop,
 		bool calculateTotalTime)
 {
-	std::shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(taskID, 0, false, start, stop);
+	shared_ptr<vector<ExtendedTask>> tasks = _getExtendedTasks(taskID, 0, false, start, stop);
 	if (tasks->size() == 1)
 	{
 		if (calculateTotalTime)

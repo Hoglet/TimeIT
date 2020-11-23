@@ -10,18 +10,19 @@
 #include <ctime>
 #include <glibmm/i18n.h>
 
-using namespace DB;
+using namespace libtimeit;
+using namespace std;
 
 namespace GUI
 {
-std::shared_ptr<DetailsDialog> DetailsDialog::create(std::shared_ptr<DB::IDatabase>& database)
+std::shared_ptr<DetailsDialog> DetailsDialog::create(shared_ptr<IDatabase>& database)
 {
-	std::shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
-	retVal->weak_this_ptr = std::weak_ptr<DetailsDialog>(retVal);
+	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database));
+	retVal->weak_this_ptr = weak_ptr<DetailsDialog>(retVal);
 	return retVal;
 }
 
-DetailsDialog::DetailsDialog(std::shared_ptr<DB::IDatabase>& database) :
+DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
 	detailList(database), table(4, 4), startTimeLabel(_("Start time")),
 			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
 		"gtk-revert-to-saved")),

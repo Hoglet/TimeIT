@@ -12,8 +12,10 @@
 
 namespace Test
 {
+using namespace libtimeit;
+using namespace std;
 
-class MockSettingsAccessor: public DB::ISettingsAccessor
+class MockSettingsAccessor: public ISettingsAccessor
 {
 public:
 	MockSettingsAccessor();
@@ -22,17 +24,17 @@ public:
 	virtual int GetShortFilterTime();
 	virtual void SetShortFilterTime(int);
 
-	virtual void attach(DB::ISettingsAccessorObserver* );
-	virtual void detach(DB::ISettingsAccessorObserver* );
+	virtual void attach(ISettingsAccessorObserver* );
+	virtual void detach(ISettingsAccessorObserver* );
 
-	virtual int GetIntByName(const std::string& name, int defaultValue);
-	virtual bool SetIntByName(const std::string& name, int value);
+	virtual int GetIntByName(const string& name, int defaultValue);
+	virtual bool SetIntByName(const string& name, int value);
 
-	virtual bool GetBoolByName(const std::string& name, bool defaultValue);
-	virtual bool SetBoolByName(const std::string& name, bool value);
+	virtual bool GetBoolByName(const string& name, bool defaultValue);
+	virtual bool SetBoolByName(const string& name, bool value);
 
-	virtual std::string GetStringByName(const std::string& name, const std::string& defaultValue);
-	virtual bool SetStringByName(const std::string& name, const std::string& value);
+	virtual string GetStringByName(const string& name, const string& defaultValue);
+	virtual bool SetStringByName(const string& name, const string& value);
 
 };
 

@@ -92,7 +92,7 @@ REPEAT_BRIEF           = YES
 # This tag implements a quasi-intelligent brief description abbreviator 
 # that is used to form the text in various listings. Each string 
 # in this list, if found as the leading text of the brief description, will be 
-# stripped from the text and the result after processing the whole list, is 
+# stripped from the text and the outstandingRequest after processing the whole list, is
 # used as the annotated text. Otherwise, the brief description is used as-is. 
 # If left blank, the following values are used ("$name" is automatically 
 # replaced with the name of the entity): "The $name class" "The $name widget" 
@@ -199,7 +199,7 @@ TAB_SIZE               = 8
 # as commands in the documentation. An alias has the form "name=value". 
 # For example adding "sideeffect=\par Side Effects:\n" will allow you to 
 # put the command \sideeffect (or @sideeffect) in the documentation, which 
-# will result in a user-defined paragraph with heading "Side Effects:". 
+# will outstandingRequest in a user-defined paragraph with heading "Side Effects:".
 # You can put \n's in the value part of an alias to insert newlines.
 
 ALIASES                = 
@@ -967,7 +967,7 @@ GENERATE_HTMLHELP      = NO
 
 # If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can 
 # be used to specify the file name of the resulting .chm file. You 
-# can add a path in front of the file if the result should not be 
+# can add a path in front of the file if the outstandingRequest should not be
 # written to the html output directory.
 
 CHM_FILE               = 
@@ -1141,7 +1141,7 @@ USE_MATHJAX            = NO
 # directory should contain the MathJax.js script. For instance, if the mathjax 
 # directory is located at the same level as the HTML output directory, then 
 # MATHJAX_RELPATH should be ../mathjax. The default value points to the
-# mathjax.org site, so you can quickly see the result without installing 
+# mathjax.org site, so you can quickly see the outstandingRequest without installing
 # MathJax, but it is strongly recommended to install a local copy of MathJax 
 # before deployment.
 
@@ -1508,7 +1508,7 @@ ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 
 # The PERL_PATH should be the absolute path and name of the perl script 
-# interpreter (i.e. the result of `which perl').
+# interpreter (i.e. the outstandingRequest of `which perl').
 
 PERL_PATH              = /usr/bin/perl
 

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libtimeit/db/ExtendedTask.h>
 
-using namespace DB;
+using namespace libtimeit;
 
 TEST(ExtendedTask, testTime)
 {

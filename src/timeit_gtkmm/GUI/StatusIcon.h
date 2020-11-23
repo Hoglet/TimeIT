@@ -17,12 +17,13 @@
 
 namespace GUI
 {
+using namespace libtimeit;
 
-class StatusIcon: public TimekeeperObserver, public IStatusIcon, public DB::TaskAccessorObserver
+class StatusIcon: public TimekeeperObserver, public IStatusIcon, public EventObserver
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<DB::ITaskAccessor>&, std::shared_ptr<DB::ITimeAccessor>&);
+	StatusIcon(std::shared_ptr<ITimeKeeper>&, std::shared_ptr<ITaskAccessor>&, std::shared_ptr<ITimeAccessor>&);
 	virtual void show()
 	{
 	}
@@ -75,8 +76,8 @@ private:
 
 	Gtk::Menu m_Menu_Popup;
 	std::shared_ptr<ITimeKeeper> m_timekeeper;
-	std::shared_ptr<DB::ITaskAccessor> m_taskaccessor;
-	std::shared_ptr<DB::ITimeAccessor> m_timeaccessor;
+	std::shared_ptr<ITaskAccessor> m_taskaccessor;
+	std::shared_ptr<ITimeAccessor> m_timeaccessor;
 	std::list<IActionObserver*> observers;
 	std::vector<int64_t> latestTasks;
 

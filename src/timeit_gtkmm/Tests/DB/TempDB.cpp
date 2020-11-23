@@ -5,12 +5,13 @@
  *      Author: hoglet
  */
 
+#include <libtimeit/db/Notifier.h>
 #include "TempDB.h"
 
 namespace Test
 {
 
-TempDB::TempDB() : Database(":memory:")
+TempDB::TempDB(libtimeit::Notifier& op_notifier) : Database(":memory:", op_notifier)
 {
 	sqlite3_initialize();
 

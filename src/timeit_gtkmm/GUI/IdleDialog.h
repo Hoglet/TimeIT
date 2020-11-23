@@ -16,6 +16,8 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+
 class IIdleDialog
 {
 public:
@@ -36,7 +38,7 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
 {
 public:
-	IdleDialog(Timer& timer, std::shared_ptr<DB::ITaskAccessor> accessor);
+	IdleDialog(Timer& timer, std::shared_ptr<libtimeit::ITaskAccessor> accessor);
 	virtual void setIdleStartTime(time_t idleStartTime);
 	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
 	virtual ~IdleDialog();
@@ -61,7 +63,7 @@ private:
 	Timer& m_timer;
 	time_t m_idleStartTime;
 	std::string taskString;
-	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
+	std::shared_ptr<libtimeit::ITaskAccessor> taskAccessor;
 
 	std::list<IActionObserver*> observers;
 	void responseHandler(int result);

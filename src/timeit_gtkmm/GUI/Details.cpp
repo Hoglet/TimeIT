@@ -12,11 +12,12 @@
 
 using namespace Gtk;
 using namespace std;
-using namespace DB;
+using namespace libtimeit;
+
 namespace GUI
 {
 
-Details::Details(std::shared_ptr<DB::IDatabase> &database) :
+Details::Details(shared_ptr<IDatabase> &database) :
 		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
 
 {

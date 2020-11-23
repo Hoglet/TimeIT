@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libtimeit/db/TimeEntry.h>
 
-using namespace DB;
+using namespace libtimeit;
 
 TimeEntry getTestTimeEntry()
 {

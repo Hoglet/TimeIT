@@ -8,13 +8,13 @@
 #include <libtimeit/db/TimeAccessor.h>
 #include <libtimeit/exceptions/GeneralException.h>
 
-namespace Json
+namespace libtimeit
 {
-std::shared_ptr<std::vector<DB::Task>> toTasks(const std::string&);
-std::vector<DB::TimeEntry> toTimes(const std::string&);
+std::shared_ptr<std::vector<Task>> toTasks(const std::string&);
+std::vector<TimeEntry> toTimes(const std::string&);
 
-std::string toJson(std::shared_ptr<std::vector<DB::Task>>, std::string username);
-std::string toJson(const std::vector<DB::TimeEntry>&);
+std::string toJson(std::shared_ptr<std::vector<Task>>, std::string username);
+std::string toJson(const std::vector<TimeEntry>&);
 }
 
 #endif /* JSON_H_ */

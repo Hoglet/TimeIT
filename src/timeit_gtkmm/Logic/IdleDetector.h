@@ -20,7 +20,7 @@ public:
 };
 
 
-class IdleDetector : public TimerObserver, public IIdleDetector
+class IdleDetector : public libtimeit::TimerObserver, public IIdleDetector
 {
 public:
 	IdleDetector();

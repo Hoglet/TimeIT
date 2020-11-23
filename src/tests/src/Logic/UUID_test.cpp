@@ -1,7 +1,12 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-extern bool isValid(const std::string& uuid);
+namespace libtimeit
+{
+extern bool isValid(const std::string &uuid);
+}
+
+using namespace libtimeit;
 
 TEST ( UUID, isValid )
 {

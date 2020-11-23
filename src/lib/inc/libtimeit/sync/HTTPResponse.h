@@ -34,4 +34,5 @@ private:
 	std::string errorMessage_;
 };
 
+
 #endif //TIMEIT_HTTPRESPONSE_H

@@ -11,8 +11,9 @@
 #include <libtimeit/db/TimeAccessor.h>
 namespace Test
 {
+using namespace libtimeit;
 
-class MockTimeAccessor: public DB::ITimeAccessor
+class MockTimeAccessor: public ITimeAccessor
 {
 public:
 	MockTimeAccessor();
@@ -23,15 +24,15 @@ public:
 	virtual void changeStartTime(int64_t timeID, time_t startTime);
 	virtual void stopAllRunning();
 	virtual void setRunning(int64_t timeID, bool running);
-	virtual std::optional<DB::TimeEntry> getByID(int64_t id);
+	virtual std::optional<TimeEntry> getByID(int64_t id);
 	virtual void remove(int64_t id);
-	virtual std::vector<DB::TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) ;
+	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) ;
 	virtual std::vector<int64_t> getLatestTasks(int amount);
 	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime);
-	std::vector<DB::TimeEntry> getTimesChangedSince(time_t timestamp = 0);
+	std::vector<TimeEntry> getTimesChangedSince(time_t timestamp = 0);
 	virtual int64_t uuidToId(UUID uuid);
-	virtual bool update(const DB::TimeEntry& item);
-	virtual int64_t newEntry(const DB::TimeEntry& item);
+	virtual bool update(const TimeEntry& item);
+	virtual int64_t newEntry(const TimeEntry& item);
 	virtual time_t getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop);
 	virtual std::vector<int64_t> getRunningTasks();
 	virtual std::vector<int64_t> getActiveTasks(time_t start, time_t stop);

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TIMEIT_TASK_H
+#define TIMEIT_TASK_H
 
 #include <string>
 #include "UUID.h"
@@ -10,7 +11,7 @@ class Network_test;
 }
 ;
 
-namespace DB
+namespace libtimeit
 {
 class TaskAccessor;
 using std::string;
@@ -70,3 +71,5 @@ private:
 extern bool operator==(const Task &op1, const Task &op2);
 extern bool operator!=(const Task &op1, const Task &op2);
 }
+
+#endif

@@ -1,6 +1,6 @@
 #include <libtimeit/db/TimeEntry.h>
 
-namespace DB
+namespace libtimeit
 {
 TimeEntry::TimeEntry(
 		int64_t               op_id,

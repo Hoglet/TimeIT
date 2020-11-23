@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <libtimeit/Timer.h>
 
+using namespace libtimeit;
+
 class TimerTest: public TimerObserver
 {
 public:

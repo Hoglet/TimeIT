@@ -15,9 +15,10 @@ class HTTPRequest
 {
 	friend size_t send_data(void*, size_t, size_t, HTTPRequest*);
 public:
-	HTTPRequest(bool ignoreCertificateErrors = false);
+	HTTPRequest();
 	~HTTPRequest();
-	const HTTPResponse PUT(
+	void ignoreCertErrors( bool );
+	HTTPResponse PUT(
 			const std::string& url,
 			std::string data,
 			std::string username,
@@ -31,6 +32,7 @@ private:
 	std::string sendBuffer;
 
 	size_t curSendPosition{0};
+	bool ignoreCertificateErrors_{false};
 };
 
 

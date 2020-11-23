@@ -1,7 +1,9 @@
-#pragma once
+#ifndef TIMEIT_EXTENDEDTASK_H
+#define TIMEIT_EXTENDEDTASK_H
+
 #include "Task.h"
 
-namespace DB
+namespace libtimeit
 {
 class ExtendedTask : public Task
 {
@@ -32,3 +34,4 @@ private:
 };
 }
 
+#endif

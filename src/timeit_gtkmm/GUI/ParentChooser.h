@@ -19,7 +19,7 @@ namespace GUI
 class ParentChooser: public Gtk::ComboBox
 {
 public:
-	ParentChooser(std::shared_ptr<DB::IDatabase>& database);
+	ParentChooser(std::shared_ptr<libtimeit::IDatabase>& database);
 	virtual ~ParentChooser();
 
 	void setID(int ID);
@@ -51,7 +51,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
+	std::shared_ptr<libtimeit::ITaskAccessor> taskAccessor;
 	int parentID;
 };
 

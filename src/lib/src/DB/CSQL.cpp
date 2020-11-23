@@ -6,7 +6,7 @@
 #include <cstring>
 
 using namespace std;
-namespace DBAbstraction
+namespace libtimeit
 {
 
 CSQL::CSQL(const string& dbname)

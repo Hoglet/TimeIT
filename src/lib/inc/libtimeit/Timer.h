@@ -4,8 +4,8 @@
  *  Created on: 2008-jul-04
  *      Author: hoglet
  */
-
-#pragma once
+#ifndef TIMEIT_TIMER_H
+#define TIMEIT_TIMER_H
 
 #include <list>
 
@@ -14,6 +14,9 @@ namespace Test
 class TimerTest;
 class DummyTimerTest;
 }
+namespace libtimeit
+{
+
 
 class TimerObserver
 {
@@ -28,6 +31,7 @@ public:
 class Timer
 {
 	friend class Test::TimerTest;
+
 	friend class Test::DummyTimerTest;
 
 public:
@@ -43,3 +47,5 @@ private:
 	void signalSender();
 	std::list<TimerObserver *> observers;
 };
+}
+#endif

@@ -15,6 +15,10 @@
 
 namespace GUI
 {
+
+using namespace libtimeit;
+using namespace std;
+
 class ISummary;
 class SummaryObserver
 {
@@ -40,10 +44,10 @@ public:
 	virtual void detach(SummaryObserver*) = 0;
 };
 
-class Summary: public Gtk::TreeView, public DB::TaskAccessorObserver, public ISummary
+class Summary: public Gtk::TreeView, public libtimeit::EventObserver, public ISummary
 {
 public:
-	Summary(std::shared_ptr<DB::IDatabase> &database);
+	Summary(std::shared_ptr<libtimeit::IDatabase> &database);
 	virtual ~Summary();
 	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();
@@ -90,7 +94,7 @@ protected:
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, std::shared_ptr<DB::Task> task, time_t totalTime);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, std::shared_ptr<Task> task, time_t totalTime);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
@@ -115,8 +119,8 @@ protected:
 	time_t startTime = 0;
 	time_t stopTime = 0;
 	std::list<SummaryObserver*> observers;
-	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
-	std::shared_ptr<DB::ITaskAccessor> taskAccessor;
+	std::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<ITaskAccessor> taskAccessor;
 private:
 	bool isVisible();
 	bool needsRePopulation = true;

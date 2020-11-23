@@ -5,15 +5,27 @@
  *      Author: hoglet
  */
 
-#pragma once
+#ifndef TIMEIT_TEMPDB_H
+#define TIMEIT_TEMPDB_H
+
 #include <libtimeit/db/Database.h>
 #include <string>
 
-class TempDB: public DB::Database
+namespace test
+{
+using namespace std;
+using namespace libtimeit;
+
+class TempDB : public libtimeit::Database
 {
 public:
-	TempDB();
+	TempDB(Notifier &notifier);
 	virtual ~TempDB();
-	void execute(std::string statement);
+	void execute(string statement);
+private:
+	TempDB();
 };
 
+}
+
+#endif

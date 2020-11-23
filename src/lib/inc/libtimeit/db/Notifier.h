@@ -4,15 +4,19 @@
  *  Created on: Dec 25, 2011
  *      Author: hoglet
  */
+#ifndef TIMEIT_NOTIFIER_H
+#define TIMEIT_NOTIFIER_H
 
 #pragma once
 
-#include "TaskAccessorObserver.h"
+#include "libtimeit/EventObserver.h"
 #include <cstdint>
 #include <list>
+#include <string>
 
-namespace DB
+namespace libtimeit
 {
+
 enum MessageType
 {
 	TASK_UPDATED,
@@ -23,6 +27,7 @@ enum MessageType
 	TASK_NAME_CHANGED,
 	TASK_TIME_CHANGED
 };
+
 struct NotificationMessage
 {
 	MessageType type;
@@ -34,16 +39,19 @@ class Notifier
 public:
 	Notifier();
 	virtual ~Notifier();
-	void attach(TaskAccessorObserver*);
-	void detach(TaskAccessorObserver*);
+	void attach(EventObserver*);
+	void detach(EventObserver*);
 	void sendNotification(MessageType type, int64_t taskId);
 	void enabled(bool);
+	void send(EventType type, const std::string Headline, const std::string message);
+	int size();
 private:
 	void sendMessage(NotificationMessage);
-	std::list<TaskAccessorObserver*> observers;
+	std::list<EventObserver*> observers = {};
 
 	bool m_enabled;
 	bool m_missedNotification;
 };
 
 }
+#endif

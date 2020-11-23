@@ -16,7 +16,10 @@
 namespace GUI
 {
 
-IdleDialog::IdleDialog(Timer& timer, std::shared_ptr<DB::ITaskAccessor> accessor) :
+using namespace::std;
+using namespace libtimeit;
+
+IdleDialog::IdleDialog(Timer& timer, shared_ptr<ITaskAccessor> accessor) :
 		m_timer(timer), taskAccessor(accessor)
 {
 
@@ -64,13 +67,13 @@ void IdleDialog::setIdleStartTime(time_t idleStartTime)
 	m_idleStartTime = idleStartTime;
 }
 
-void IdleDialog::setActiveTaskList(std::vector<int64_t> activeTaskIDs)
+void IdleDialog::setActiveTaskList(vector<int64_t> activeTaskIDs)
 {
 	std::stringstream text;
 	int i = 0;
 	for (int64_t taskID : activeTaskIDs)
 	{
-		std::shared_ptr<DB::Task> task = taskAccessor->getTask(taskID);
+		std::shared_ptr<libtimeit::Task> task = taskAccessor->getTask(taskID);
 		if (i++ > 0)
 		{
 			text << ", ";
@@ -132,7 +135,7 @@ void IdleDialog::responseHandler(int result)
 			observer->on_action_continue();
 			break;
 		default:
-			std::cout << "Unexpected button clicked." << std::endl;
+			cout << "Unexpected button clicked." << std::endl;
 			break;
 		}
 	}

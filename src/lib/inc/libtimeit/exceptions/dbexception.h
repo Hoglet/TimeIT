@@ -1,5 +1,6 @@
-#ifndef DBEXCEPTION_H_
-#define DBEXCEPTION_H_
+#ifndef DBEXCEPTION_H
+#define DBEXCEPTION_H \
+                      \
 #include <iostream>
 #include <string>
 #include <exception>
@@ -18,4 +19,4 @@ private:
 	std::string rc2string() const;
 };
 
-#endif /*DBEXCEPTION_H_*/
+#endif /*DBEXCEPTION_H*/

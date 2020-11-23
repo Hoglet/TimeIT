@@ -17,11 +17,13 @@
 
 namespace Utils
 {
+using namespace std;
+using namespace libtimeit;
 
 class IpcServer: public Ipc, public TimerObserver
 {
 public:
-	IpcServer(std::string socketName, Timer&);
+	IpcServer(string socketName, Timer&);
 	virtual ~IpcServer();
 	void poll();
 	virtual void on_signal_1_second();
@@ -29,12 +31,13 @@ public:
 	void detach(IActionObserver*);
 	private:
 	void on_show_menu();
-	std::string socketName;
+	string socketName;
 	Timer& timer;
-	std::list<IActionObserver*> observers;
+	list<IActionObserver*> observers;
 	int sock;
 };
 
 } /* namespace Utils */
+
 
 #endif /* SRC_MISC_IPCSERVER_H_ */

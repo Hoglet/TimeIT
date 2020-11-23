@@ -18,9 +18,11 @@
 constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
 using namespace GUI;
+using namespace libtimeit;
+using namespace std;
 
-Controller::Controller(std::shared_ptr<GUI::IGUIFactory> &op_guiFactory, std::shared_ptr<ITimeKeeper> &op_timeKeeper,
-		std::shared_ptr<DB::IDatabase> &database, std::shared_ptr<Utils::IpcServer> &ipc) :
+Controller::Controller(shared_ptr<GUI::IGUIFactory> &op_guiFactory, shared_ptr<ITimeKeeper> &op_timeKeeper,
+		shared_ptr<IDatabase> &database, shared_ptr<Utils::IpcServer> &ipc) :
 		guiFactory(op_guiFactory), timeKeeper(op_timeKeeper), taskAccessor(database->getExtendedTaskAccessor()), timeAccessor(
 				database->getTimeAccessor()), settingsAccessor(database->getSettingsAccessor())
 {

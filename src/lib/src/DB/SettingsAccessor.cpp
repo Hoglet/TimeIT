@@ -11,9 +11,8 @@
 #include <libtimeit/db/SettingsAccessor.h>
 
 using namespace std;
-using namespace DBAbstraction;
 
-namespace DB
+namespace libtimeit
 {
 
 SettingsAccessor::SettingsAccessor(shared_ptr<CSQL>& op_db)

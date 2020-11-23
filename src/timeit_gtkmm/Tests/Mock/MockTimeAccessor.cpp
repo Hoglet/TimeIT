@@ -7,7 +7,7 @@
 
 #include "MockTimeAccessor.h"
 
-using namespace DB;
+using namespace libtimeit;
 
 namespace Test
 {

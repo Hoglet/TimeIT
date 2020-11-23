@@ -1,10 +1,11 @@
-#pragma once
+#ifndef TIMEIT_TIMEENTRY_H
+#define TIMEIT_TIMEENTRY_H
 
 #include <cstdint>
 #include <string>
 #include "UUID.h"
 
-namespace DB
+namespace libtimeit
 {
 using std::string;
 using std::optional;
@@ -53,3 +54,4 @@ private:
 	void operator=(const TimeEntry&) {}
 };
 }
+#endif

@@ -1,5 +1,5 @@
-#ifndef IDATABASE_H_
-#define IDATABASE_H_
+#ifndef TIMEIT_IDATABASE_H_
+#define TIMEIT_IDATABASE_H_
 
 #include "AutotrackAccessor.h"
 #include "TimeAccessor.h"
@@ -8,7 +8,7 @@
 
 #include <memory>
 
-namespace DB
+namespace libtimeit
 {
 
 class IDatabase

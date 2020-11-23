@@ -8,13 +8,14 @@
 #include "ParentChooser.h"
 #include <iostream>
 
-using namespace DB;
+using namespace libtimeit;
+using namespace std;
 
 namespace GUI
 {
 
 using namespace std;
-ParentChooser::ParentChooser(std::shared_ptr<DB::IDatabase> &database) :
+ParentChooser::ParentChooser(shared_ptr<IDatabase> &database) :
 		taskAccessor(database->getTaskAccessor())
 {
 	//Create the Tree model:

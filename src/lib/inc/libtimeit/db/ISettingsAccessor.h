@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace DB
+namespace libtimeit
 {
 
 class ISettingsAccessorObserver

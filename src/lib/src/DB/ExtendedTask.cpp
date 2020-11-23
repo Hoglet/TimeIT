@@ -1,6 +1,6 @@
 #include "libtimeit/db/ExtendedTask.h"
 
-namespace DB
+namespace libtimeit
 {
 
 bool ExtendedTask::expanded() const

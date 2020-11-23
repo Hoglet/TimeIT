@@ -34,12 +34,14 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+using namespace std;
 
-class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, public IMainWindow, public DB::ISettingsAccessorObserver
+class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, public IMainWindow, public ISettingsAccessorObserver
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(std::shared_ptr<DB::IDatabase>& database);
+	MainWindow(shared_ptr<IDatabase>& database);
 
 
 	// IWidget interface
@@ -136,9 +138,9 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
-	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
-	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
-	std::vector<Summary*> summaries;
+	shared_ptr<IExtendedTaskAccessor> taskAccessor;
+	shared_ptr<ISettingsAccessor> settingsAccessor;
+	vector<Summary*> summaries;
 };
 }
 #endif // _MAIN_WINDOW_HPP_

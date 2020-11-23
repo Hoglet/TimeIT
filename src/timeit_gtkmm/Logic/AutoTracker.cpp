@@ -5,7 +5,10 @@
 #include <vector>
 #include <TimeKeeper.h>
 
-AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<DB::IDatabase> &database,
+using namespace libtimeit;
+using namespace std;
+
+AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<IDatabase> &database,
 		Timer& timer): m_timer(timer)
 {
 	m_timekeeper = timekeeper;

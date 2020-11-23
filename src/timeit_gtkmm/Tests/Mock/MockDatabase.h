@@ -5,7 +5,7 @@
 
 namespace Test
 {
-using namespace DB;
+using namespace libtimeit;
 
 class MockDatabase: public IDatabase
 {

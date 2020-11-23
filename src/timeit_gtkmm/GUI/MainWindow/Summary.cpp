@@ -5,9 +5,13 @@
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-using namespace DB;
+using namespace libtimeit;
+
 namespace GUI
 {
+using namespace std;
+using namespace libtimeit;
+
 SummaryObserver::SummaryObserver()
 {
 	unsubscription_allowed = true;
@@ -15,7 +19,7 @@ SummaryObserver::SummaryObserver()
 SummaryObserver::~SummaryObserver()
 {
 	unsubscription_allowed = false;
-	std::list<ISummary*>::iterator iter = subjects.begin();
+	list<ISummary*>::iterator iter = subjects.begin();
 	while (iter != subjects.end())
 	{
 		ISummary *subject = *iter;
@@ -35,7 +39,7 @@ void SummaryObserver::detach(ISummary *subject)
 	}
 }
 
-Summary::Summary(std::shared_ptr<DB::IDatabase> &database) :
+Summary::Summary(std::shared_ptr<IDatabase> &database) :
 		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getTaskAccessor())
 {
 	treeModel = TreeStore::create(columns);

@@ -11,7 +11,7 @@ constexpr auto DATACELL_BLOB = 4;
 constexpr auto DATACELL_NULL = 5;
 constexpr auto DATACELL_BOOL = 6;
 
-namespace DBAbstraction
+namespace libtimeit
 {
 
 DataCell::DataCell()

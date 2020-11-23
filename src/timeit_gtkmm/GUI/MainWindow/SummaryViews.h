@@ -14,11 +14,13 @@
 
 namespace GUI
 {
+using namespace std;
+using namespace libtimeit;
 
 class DaySummary: public Summary
 {
 public:
-	DaySummary( std::shared_ptr<DB::IDatabase>& database) :
+	DaySummary( shared_ptr<IDatabase>& database) :
 		Summary( database)
 	{
 		init();
@@ -39,7 +41,7 @@ private:
 class WeekSummary: public Summary
 {
 public:
-	WeekSummary( std::shared_ptr<DB::IDatabase>& database) :
+	WeekSummary( shared_ptr<IDatabase>& database) :
 		Summary( database)
 	{
 		init();
@@ -60,7 +62,7 @@ private:
 class MonthSummary: public Summary
 {
 public:
-	MonthSummary( std::shared_ptr<DB::IDatabase>& database) :
+	MonthSummary( shared_ptr<IDatabase>& database) :
 		Summary( database)
 	{
 		init();
@@ -81,7 +83,7 @@ private:
 class YearSummary: public Summary
 {
 public:
-	YearSummary( std::shared_ptr<DB::IDatabase>& database) :
+	YearSummary( shared_ptr<IDatabase>& database) :
 		Summary( database)
 	{
 		init();

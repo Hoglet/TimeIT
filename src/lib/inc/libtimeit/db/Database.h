@@ -9,15 +9,16 @@
 #include "Notifier.h"
 #include <memory>
 
-namespace DBAbstraction { class CSQL; }
 
-namespace DB
+
+namespace libtimeit
 {
+class CSQL;
 
 class Database: public IDatabase
 {
 public:
-	Database(const std::string& dbname);
+	Database(const std::string& dbname, Notifier& notifier);
 	virtual ~Database();
 	std::shared_ptr<IAutotrackAccessor> getAutotrackAccessor();
 	std::shared_ptr<ITimeAccessor> getTimeAccessor();
@@ -34,8 +35,8 @@ protected:
 	std::shared_ptr<IExtendedTaskAccessor> m_extendedTaskAccessor;
 	std::shared_ptr<TaskAccessor> m_taskAccessor;
 	std::shared_ptr<ISettingsAccessor> m_settingsAccessor;
-	std::shared_ptr<Notifier> m_notifier;
-	std::shared_ptr<DBAbstraction::CSQL> db;
+	Notifier& m_notifier;
+	std::shared_ptr<CSQL> db;
 
 	void createTablesPartOne();
 	void createAccessors();

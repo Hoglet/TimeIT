@@ -9,10 +9,9 @@
 #include <libtimeit/db/CSQL.h>
 #include <libtimeit/db/Database.h>
 
-namespace DB
+namespace libtimeit
 {
 using namespace std;
-using namespace DBAbstraction;
 
 void Database::createTablesPartOne()
 {
@@ -27,16 +26,14 @@ void Database::createTablesPartOne()
 
 void Database::createAccessors()
 {
-	std::shared_ptr<Notifier> notifier(new Notifier());
-	m_notifier = notifier;
-	m_timeAccessor = std::shared_ptr<TimeAccessor>(new TimeAccessor(db, notifier));
+	m_timeAccessor = shared_ptr<TimeAccessor>(new TimeAccessor(db, m_notifier));
 	m_timeAccessor->createTable();
-	m_taskAccessor = std::shared_ptr<TaskAccessor>(new TaskAccessor(db, notifier));
+	m_taskAccessor = shared_ptr<TaskAccessor>(new TaskAccessor(db, m_notifier));
 	m_taskAccessor->createTable();
-	m_extendedTaskAccessor = std::shared_ptr<ExtendedTaskAccessor>(
-			new ExtendedTaskAccessor(db, notifier, m_timeAccessor));
-	m_autotrackAccessor = std::shared_ptr<AutotrackAccessor>(new AutotrackAccessor(db, m_extendedTaskAccessor));
-	m_settingsAccessor = std::shared_ptr<SettingsAccessor>(new SettingsAccessor(db));
+	m_extendedTaskAccessor = shared_ptr<ExtendedTaskAccessor>(
+			new ExtendedTaskAccessor(db, m_notifier, m_timeAccessor));
+	m_autotrackAccessor = shared_ptr<AutotrackAccessor>(new AutotrackAccessor(db, m_extendedTaskAccessor));
+	m_settingsAccessor = shared_ptr<SettingsAccessor>(new SettingsAccessor(db));
 }
 
 int Database::getCurrentDBVersion()
@@ -101,7 +98,7 @@ void Database::createViews()
 	m_timeAccessor->createViews();
 }
 
-Database::Database(const std::string& dbname)
+Database::Database(const std::string& dbname, Notifier& notifier) : m_notifier(notifier)
 {
 	db = shared_ptr<CSQL>(new CSQL(dbname));
 
@@ -159,27 +156,27 @@ void Database::endTransaction()
 	db->endTransaction();
 }
 
-std::shared_ptr<IAutotrackAccessor> Database::getAutotrackAccessor()
+shared_ptr<IAutotrackAccessor> Database::getAutotrackAccessor()
 {
 	return m_autotrackAccessor;
 }
 
-std::shared_ptr<ITimeAccessor> Database::getTimeAccessor()
+shared_ptr<ITimeAccessor> Database::getTimeAccessor()
 {
 	return m_timeAccessor;
 }
 
-std::shared_ptr<IExtendedTaskAccessor> Database::getExtendedTaskAccessor()
+shared_ptr<IExtendedTaskAccessor> Database::getExtendedTaskAccessor()
 {
 	return m_extendedTaskAccessor;
 }
 
-std::shared_ptr<ITaskAccessor> Database::getTaskAccessor()
+shared_ptr<ITaskAccessor> Database::getTaskAccessor()
 {
 	return m_taskAccessor;
 }
 
-std::shared_ptr<ISettingsAccessor> Database::getSettingsAccessor()
+shared_ptr<ISettingsAccessor> Database::getSettingsAccessor()
 {
 	return m_settingsAccessor;
 }

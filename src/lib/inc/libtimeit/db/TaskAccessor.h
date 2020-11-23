@@ -2,21 +2,21 @@
 #define TASKACCESSOR_H_
 
 #include "CSQL.h"
-#include "TaskAccessorObserver.h"
+#include "libtimeit/EventObserver.h"
 #include "Task.h"
 
 #include "Notifier.h"
 #include <string>
 
-namespace DB
+namespace libtimeit
 {
 
 class ITaskAccessor
 {
 public:
 	virtual ~ITaskAccessor();
-	virtual void attach(TaskAccessorObserver*) = 0;
-	virtual void detach(TaskAccessorObserver*) = 0;
+	virtual void attach(EventObserver*) = 0;
+	virtual void detach(EventObserver*) = 0;
 
 	virtual std::shared_ptr<Task> getTask(int64_t taskID) = 0;
 	virtual std::shared_ptr<std::vector<Task>> getTasks(int64_t parentID = 0) = 0;
@@ -40,10 +40,10 @@ class TaskAccessor: public virtual ITaskAccessor
 	friend class SyncManager;
 
 public:
-	TaskAccessor(std::shared_ptr<DBAbstraction::CSQL> &op_db, std::shared_ptr<Notifier> notifier);
+	TaskAccessor(std::shared_ptr<CSQL> &op_db, Notifier& notifier);
 	virtual ~TaskAccessor();
-	virtual void attach(TaskAccessorObserver*);
-	virtual void detach(TaskAccessorObserver*);
+	virtual void attach(EventObserver*);
+	virtual void detach(EventObserver*);
 	virtual std::shared_ptr<Task> getTask(int64_t taskID);
 	virtual std::shared_ptr<std::vector<Task>> getTasks(int64_t parentID = 0);
 	virtual std::shared_ptr<std::vector<Task>> getTasksChangedSince(time_t timestamp = 0);
@@ -59,8 +59,8 @@ public:
 protected:
 	void createTable();
 	void upgradeToDB5();
-	std::shared_ptr<Notifier> notifier;
-	std::shared_ptr<DBAbstraction::CSQL> db;
+	Notifier& notifier;
+	std::shared_ptr<CSQL> db;
 
 private:
 	void notify(const Task &oldTask, const Task &newTask);

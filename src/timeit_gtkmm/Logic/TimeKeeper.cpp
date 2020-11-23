@@ -6,6 +6,7 @@
 #include <libtimeit/Utils.h>
 
 using namespace std;
+using namespace libtimeit;
 
 TimekeeperObserver::~TimekeeperObserver()
 {
@@ -23,7 +24,7 @@ void Timekeeper::on_signal_1_second()
 }
 //LCOV_EXCL_STOP
 
-Timekeeper::Timekeeper(const std::shared_ptr<DB::IDatabase>& database, Timer& timer) :
+Timekeeper::Timekeeper(const std::shared_ptr<IDatabase>& database, Timer& timer) :
 		m_timeAccessor(database->getTimeAccessor()),m_timer(timer)
 
 {

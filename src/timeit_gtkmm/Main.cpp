@@ -22,7 +22,7 @@
 #include <TimeKeeper.h>
 #include <glibmm/i18n.h>
 #include <TestRunner.h>
-#include <SyncManager.h>
+#include <libtimeit/sync/SyncManager.h>
 #include <MessageCenter.h>
 #include <IpcServer.h>
 #include <IpcClient.h>
@@ -30,6 +30,7 @@
 
 using namespace std;
 using namespace Test;
+using namespace libtimeit;
 
 extern "C" {
 void sighandler(int sig)
@@ -116,8 +117,9 @@ int Main::run(int argc, char *argv[])
 			Gtk::Main::init_gtkmm_internals();
 			libtimeit::init();
 
+			Notifier notifier;
 			//Create a database object
-			database = std::shared_ptr<DB::IDatabase>(new DB::Database(dbName));
+			database = shared_ptr<IDatabase>(new Database(dbName,notifier));
 
 			//Initiate all logic
 			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
@@ -130,11 +132,11 @@ int Main::run(int argc, char *argv[])
 
 			AutoTracker autotracker(timekeeper, database, timer);
 
-			std::shared_ptr<INetwork> network = std::shared_ptr<INetwork>(new Network());
-			syncing::SyncManager syncManager(database, network, messageCenter);
-			syncManager.start();
+			shared_ptr<INetwork> network = shared_ptr<INetwork>(new Network());
 
-			std::shared_ptr<Utils::IpcServer> ipcServer = std::shared_ptr<Utils::IpcServer>(new Utils::IpcServer(socketName, timer));
+			SyncManager syncManager(database, network, notifier, timer);
+
+			shared_ptr<Utils::IpcServer> ipcServer = shared_ptr<Utils::IpcServer>(new Utils::IpcServer(socketName, timer));
 
 			Controller controller(guiFactory, timekeeper, database, ipcServer);
 			controller.start();

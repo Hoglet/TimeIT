@@ -1,6 +1,6 @@
 #include <libtimeit/db/IDatabase.h>
 
-namespace DB
+namespace libtimeit
 {
 IDatabase::~IDatabase()
 {

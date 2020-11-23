@@ -1,5 +1,5 @@
-#ifndef _TASK_ACCESSOR_HPP_
-#define _TASK_ACCESSOR_HPP_
+#ifndef TIMEIT_TASK_ACCESSOR_HPP_
+#define TIMEIT_TASK_ACCESSOR_HPP_
 
 #include <vector>
 #include <list>
@@ -12,7 +12,7 @@
 #include "TimeAccessor.h"
 #include "TaskAccessor.h"
 
-namespace DB
+namespace libtimeit
 {
 
 class Notifier;
@@ -30,7 +30,7 @@ class ExtendedTaskAccessor : public virtual TaskAccessor, public virtual IExtend
 {
 public:
 	friend class TimeAccessor;
-	ExtendedTaskAccessor(std::shared_ptr<DBAbstraction::CSQL>& op_db, std::shared_ptr<Notifier> notifier, std::shared_ptr<ITimeAccessor> timeAccessor);
+	ExtendedTaskAccessor(std::shared_ptr<CSQL>& op_db, Notifier& notifier, std::shared_ptr<ITimeAccessor> timeAccessor);
 	virtual ~ExtendedTaskAccessor();
 
 	virtual std::shared_ptr<std::vector<ExtendedTask>> getExtendedTasks(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
@@ -43,4 +43,4 @@ private:
 };
 
 }
-#endif // _TASK_MANAGER_HPP_
+#endif // TIMEIT_TASK_MANAGER_HPP_

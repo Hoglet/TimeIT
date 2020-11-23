@@ -12,7 +12,7 @@ file( GLOB_RECURSE sources *.cpp)
 add_library( libtimeit STATIC
   ${sources}
   ${headers}
-  )
+		inc/libtimeit/internal/gettext.h inc/libtimeit/EventObserver.cpp)
 
 target_link_libraries( libtimeit
         ${SQLITE_LIBRARIES}
@@ -20,6 +20,7 @@ target_link_libraries( libtimeit
         ${XLIB_LIBRARIES}
         ${JANSSON_LIBRARIES}
         ${CURL_LIBRARIES}
+		pthread
         )
 
 target_include_directories ( libtimeit PUBLIC

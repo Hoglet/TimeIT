@@ -7,6 +7,10 @@
 
 #include "libtimeit/Timer.h"
 
+namespace libtimeit
+{
+
+
 //LCOV_EXCL_START
 TimerObserver::~TimerObserver()
 {
@@ -72,3 +76,4 @@ void Timer::signalSender()
 
 }
 
+}

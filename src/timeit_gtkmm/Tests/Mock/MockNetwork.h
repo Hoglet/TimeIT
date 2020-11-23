@@ -14,12 +14,12 @@ public:
 	MockNetwork();
 	virtual ~MockNetwork();
 
-	virtual HTTPResponse request(
+	virtual std::shared_ptr<asyncHTTPResponse> request(
 			const std::string& url,
-			std::string data,
-			std::string username,
-			std::string password,
-			bool verifyPassword);
+			std::string        data,
+			std::string        username,
+			std::string        password,
+			bool               verifyPassword);
 
 	void setResponse(std::string& uri, std::string& response);
 private:

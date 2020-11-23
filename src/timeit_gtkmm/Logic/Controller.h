@@ -21,7 +21,7 @@ class Controller: public IActionObserver, public TimekeeperObserver, public GUI:
 {
 public:
 	Controller(std::shared_ptr<GUI::IGUIFactory> &guiFactory, std::shared_ptr<ITimeKeeper> &timeKeeper,
-			std::shared_ptr<DB::IDatabase> &database, std::shared_ptr<Utils::IpcServer>&);
+			std::shared_ptr<libtimeit::IDatabase> &database, std::shared_ptr<Utils::IpcServer>&);
 	virtual ~Controller();
 	void start();
 
@@ -57,9 +57,9 @@ private:
 	std::shared_ptr<GUI::IGUIFactory> guiFactory;
 	std::shared_ptr<ITimeKeeper> timeKeeper;
 	std::shared_ptr<GUI::IdleDialog> idleDialog;
-	std::shared_ptr<DB::IExtendedTaskAccessor> taskAccessor;
-	std::shared_ptr<DB::ITimeAccessor> timeAccessor;
-	std::shared_ptr<DB::ISettingsAccessor> settingsAccessor;
+	std::shared_ptr<libtimeit::IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<libtimeit::ITimeAccessor> timeAccessor;
+	std::shared_ptr<libtimeit::ISettingsAccessor> settingsAccessor;
 
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;

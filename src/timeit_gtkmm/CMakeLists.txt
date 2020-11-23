@@ -49,15 +49,16 @@ include_directories(${GTKMM_INCLUDE_DIRS}
 
 add_executable(${PROJECT_NAME} ${sources} ${headers} )
 
-target_link_libraries(${PROJECT_NAME}
-                      ${GTKMM_LIBRARIES}
-                      ${SQLITE_LIBRARIES}
-                      ${XSCRNS_LIBRARIES}
-                      ${XLIB_LIBRARIES}
-                      ${JANSSON_LIBRARIES}
-                      ${CURL_LIBRARIES}
-                      ${NOTIFY_LIBRARIES}
-					  libtimeit
+target_link_libraries(
+		${PROJECT_NAME}
+		${GTKMM_LIBRARIES}
+		${SQLITE_LIBRARIES}
+		${XSCRNS_LIBRARIES}
+		${XLIB_LIBRARIES}
+		${JANSSON_LIBRARIES}
+		${CURL_LIBRARIES}
+		${NOTIFY_LIBRARIES}
+		libtimeit
                       )
 
 

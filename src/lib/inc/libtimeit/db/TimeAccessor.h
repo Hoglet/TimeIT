@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TIMEIT_TIMEACCESSOR_H
+#define TIMEIT_TIMEACCESSOR_H
 
 #include <map>
 #include <vector>
@@ -10,7 +11,7 @@
 #include "Notifier.h"
 #include "TimeEntry.h"
 
-namespace DB
+namespace libtimeit
 {
 class Notifier;
 
@@ -46,7 +47,7 @@ public:
 class TimeAccessor : public ITimeAccessor
 {
 public:
-	TimeAccessor(std::shared_ptr<DBAbstraction::CSQL>& db, std::shared_ptr<Notifier>& notifier);
+	TimeAccessor(std::shared_ptr<CSQL>& db, Notifier& notifier);
 	virtual ~TimeAccessor();
 
 	virtual TimeID              newTime(TaskID taskID, time_t startTime, time_t stopTime);
@@ -71,8 +72,8 @@ public:
     void createViews();
     void removeShortTimeSpans();
 private:
-	std::shared_ptr<DBAbstraction::CSQL> db;
-	std::shared_ptr<Notifier> notifier;
+	std::shared_ptr<CSQL> db;
+	Notifier& notifier;
     int getTimePassingStartLimit(int64_t taskID, time_t start,  time_t stop);
     int getTimePassingEndLimit(int64_t & taskID, time_t & start, time_t & stop);
     int getTimeCompletelyWithinLimits(int64_t & taskID, time_t & start, time_t & stop);
@@ -81,3 +82,4 @@ private:
 
 };
 }
+#endif

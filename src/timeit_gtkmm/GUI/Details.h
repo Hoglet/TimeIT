@@ -18,6 +18,8 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+using namespace std;
 
 class DetailsObserver
 {
@@ -33,17 +35,17 @@ public:
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details: public Gtk::TreeView, public DB::TaskAccessorObserver
+class Details: public Gtk::TreeView, public EventObserver
 {
 public:
-	Details(std::shared_ptr<DB::IDatabase> &database);
+	Details(shared_ptr<IDatabase> &database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
 	bool on_button_press_event(GdkEventButton *event);
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
-	//TaskAccessorObserver interface
+	//EventObserver interface
 	virtual void on_taskAdded(int64_t)
 	{
 	}
@@ -89,8 +91,8 @@ private:
 	time_t m_stopTime;
 	Gtk::Menu m_Menu_Popup;
 	std::list<DetailsObserver*> observers;
-	std::shared_ptr<DB::ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<DB::ITaskAccessor> m_taskAccessor;
+	shared_ptr<ITimeAccessor> m_timeAccessor;
+	shared_ptr<ITaskAccessor> m_taskAccessor;
 };
 }
 
