@@ -1,3 +1,7 @@
+
+
+**NOTE:** I have chosen to start a major refactoring effort and master is volatile at the moment. Bug fixes, if any, will be done on branches.
+
 # TimeIT
 TimeIT is a time tracker that works quietly almost without any interaction and still measures the time you are spending on multiple projects.  
 ![Screenshot](doc/html/C/TimeIT-MainWindow.png)
