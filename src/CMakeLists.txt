@@ -9,12 +9,6 @@ project(timeit)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
-
-add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
-
-message(${CMAKE_SOURCE_DIR})
-
 if(NOT CONFIGURED)
 	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/git_version_gen.sh)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
@@ -67,6 +61,14 @@ set(CPACK_PACKAGE_DESCRIPTION "TimeIT is a time tracker somewhat similar to ktim
 set(CPACK_PACKAGE_CONTACT "Kent Asplund hoglet@solit.se")
 set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 INCLUDE(CPack)
+
+
+
+set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
+set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
+
+add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
+
 
 #  Subfolders
 # ---------------

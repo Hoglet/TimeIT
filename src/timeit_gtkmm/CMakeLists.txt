@@ -2,7 +2,6 @@ project(timeit)
 
 ENABLE_TESTING()
 set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
-
 set(PROGRAMNAME_LOCALEDIR "\"${DATADIR}/locale\"")
 set(GETTEXT_PACKAGE "\"${PROJECT_NAME}\"")
 
