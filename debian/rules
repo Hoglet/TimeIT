@@ -16,7 +16,8 @@
 export PREFIX=/usr
 export CMAKE_INSTALL_PREFIX=/usr
 export CPACK_PACKAGING_INSTALL_PREFIX=/usr
+
 %:
-	./git_version_gen.sh
-	dh $@ --buildsystem=cmake
+	scripts/git_version_gen.sh src lib/inc/libtimeit/version.h
+	dh $@
 

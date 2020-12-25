@@ -14,7 +14,7 @@ if( GTEST_FOUND )
 
 
 	include_directories(${GTEST_INCLUDE_DIRS}
-					"${CMAKE_CURRENT_SOURCE_DIR}/../lib/inc/"
+					"${CMAKE_CURRENT_LIST_DIR}/../lib/inc/"
                     )
   
 

@@ -9,9 +9,12 @@ endif()
 file( GLOB_RECURSE headers *.h)
 file( GLOB_RECURSE sources *.cpp)
 
+
+
+
 add_library( libtimeit STATIC
-  ${sources}
-  ${headers}
+		${sources}
+		${headers}
 		inc/libtimeit/internal/gettext.h inc/libtimeit/EventObserver.cpp)
 
 target_link_libraries( libtimeit

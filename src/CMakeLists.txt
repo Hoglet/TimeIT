@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 # Append local cmake modules
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake )
 
 #  about TimeIT
 # ---------------
@@ -10,11 +10,16 @@ project(timeit)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if(NOT CONFIGURED)
-	execute_process(COMMAND ${CMAKE_SOURCE_DIR}/git_version_gen.sh)
+	execute_process( COMMAND ${CMAKE_CURRENT_LIST_DIR}/../scripts/git_version_gen.sh ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/lib/inc/libtimeit/version.h)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
 endif()
+
+message ( **************** )
+message ( "COMMAND  ${CMAKE_CURRENT_LIST_DIR}/../scripts/git_version_gen.sh ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/lib/inc/libtimeit/version.h ")
+message ( **************** )
+
 add_custom_target(version ALL
-                  COMMAND  ${CMAKE_SOURCE_DIR}/git_version_gen.sh .
+                  COMMAND  ${CMAKE_CURRENT_LIST_DIR}/../scripts/git_version_gen.sh ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/lib/inc/libtimeit/version.h
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 file (STRINGS "version" PACKAGE_VERSION)
 
@@ -90,3 +95,8 @@ add_subdirectory(tests)
 #if(CTAGS_PATH)
 #	add_dependencies(timeit_gtkmm tags)
 #endif(CTAGS_PATH)
+
+install(TARGETS timeit
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib/static)

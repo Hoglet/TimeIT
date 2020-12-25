@@ -61,7 +61,4 @@ target_link_libraries(
                       )
 
 
-install(TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION bin
-         LIBRARY DESTINATION lib
-         ARCHIVE DESTINATION lib/static)
+

@@ -27,7 +27,7 @@ then
 	VN="$VN"
 else
 	#Git failed to find version number. Falling back to Debian changelog.
-	DEBIAN_VERSION=`head debian/changelog  -n 1 | cut -d'(' -f2 |cut -d')' -f1`
+	DEBIAN_VERSION=`head ../debian/changelog  -n 1 | cut -d'(' -f2 |cut -d')' -f1`
 	VN="${DEBIAN_VERSION}"
 fi
 if test -r $GVF
@@ -36,7 +36,9 @@ then
 else
 	VC=unset
 fi
+echo $2
 test "$VN" = "$VC" || {
 	echo "$VN" > $GVF
-    echo "constexpr auto VERSION = \"$VN\";" > timeit_gtkmm/version.h
+	echo "writing $2"
+	echo "constexpr auto VERSION = \"$VN\";" > $2
 }

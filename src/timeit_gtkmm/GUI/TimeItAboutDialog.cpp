@@ -9,7 +9,7 @@
 #include <libtimeit/OSAbstraction.h>
 #include <glibmm/i18n.h>
 #include <libtimeit/Utils.h>
-#include "version.h"
+#include <libtimeit/version.h>
 namespace GUI
 {
 

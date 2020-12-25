@@ -55,7 +55,6 @@ cmake_install.cmake
 /CMakeFiles
 coverage
 /CMakeCache.txt
-*.cmake
 install_manifest.txt
 version
 src/version.h
@@ -83,3 +82,4 @@ src/version.h
 /rules.ninja
 /src/tags
 /src/cmake-build-debug-coverage/
+/src/lib/inc/libtimeit/version.h
