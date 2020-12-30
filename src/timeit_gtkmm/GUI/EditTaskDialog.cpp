@@ -27,7 +27,7 @@ EditTaskDialog::EditTaskDialog(std::shared_ptr<IDatabase> &database) :
 	NameLabel.set_text(_("Name: "));
 	/* This text is the headline for the area where you choose
 	 on what workspace the task should be automatically started */
-	std::string text = Utils::string_printf("<b>%s<b>", _("Workspace tracking"));
+	std::string text = libtimeit::string_printf("<b>%s<b>", _("Workspace tracking"));
 	label1.set_text(text);
 
 	createLayout();

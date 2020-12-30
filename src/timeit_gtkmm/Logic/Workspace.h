@@ -8,7 +8,7 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 #include <string>
-#include "../Misc/X11.h"
+#include "libtimeit/X11.h"
 
 class Workspace
 {

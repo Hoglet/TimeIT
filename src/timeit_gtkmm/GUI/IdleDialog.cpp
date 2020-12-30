@@ -24,7 +24,7 @@ IdleDialog::IdleDialog(Timer& timer, shared_ptr<ITaskAccessor> accessor) :
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
-	m_idleStartTime = Utils::now();
+	m_idleStartTime = libtimeit::now();
 
 	set_deletable(false);
 	setText();
@@ -97,13 +97,13 @@ void IdleDialog::show()
 void IdleDialog::setText()
 {
 	std::stringstream str;
-	int minutesIdle = (Utils::now() - m_idleStartTime) / 60;
+	int minutesIdle = (libtimeit::now() - m_idleStartTime) / 60;
 
 	// %d represents the time
 	std::string format_str = ngettext("No activity has been detected for %d minute. What should we do?",
 			"No activity has been detected for %d minutes. What should we do?",
 			minutesIdle);
-	str << Utils::string_printf(format_str, minutesIdle);
+	str << libtimeit::string_printf(format_str, minutesIdle);
 
 	if (taskString.size() > 0)
 	{

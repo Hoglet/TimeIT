@@ -12,7 +12,7 @@
 #endif
 #include <signal.h>
 #include <GUIFactory.h>
-#include <ApplicationLock.h>
+#include <libtimeit/misc/ApplicationLock.h>
 #include <libtimeit/OSAbstraction.h>
 #include <Controller.h>
 #include <AutoTracker.h>
@@ -24,8 +24,8 @@
 #include <TestRunner.h>
 #include <libtimeit/sync/SyncManager.h>
 #include <MessageCenter.h>
-#include <IpcServer.h>
-#include <IpcClient.h>
+#include <libtimeit/misc/IpcServer.h>
+#include <libtimeit/misc/IpcClient.h>
 #include <libtimeit.h>
 
 using namespace std;

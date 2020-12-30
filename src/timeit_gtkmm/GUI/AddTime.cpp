@@ -44,7 +44,7 @@ AddTime::AddTime(int64_t op_taskID, ICalendar &op_calendar, std::shared_ptr<IDat
 	stopTimeHour.set_increments(1, 1);
 	stopTimeMinute.set_increments(1, 1);
 
-	time_t now = Utils::now();
+	time_t now = libtimeit::now();
 	struct tm *timeInfo = localtime(&now);
 	startTimeHour.set_value(timeInfo->tm_hour);
 	stopTimeHour.set_value(timeInfo->tm_hour);
@@ -120,8 +120,8 @@ void AddTime::on_response(int response_id)
 		int stopH = stopTimeHour.get_value_as_int();
 		int stopM = stopTimeMinute.get_value_as_int();
 
-		time_t startTime = Utils::getTime(y, m, d, startH, startM);
-		time_t stopTime = Utils::getTime(y, m, d, stopH, stopM);
+		time_t startTime = libtimeit::getTime(y, m, d, startH, startM);
+		time_t stopTime = libtimeit::getTime(y, m, d, stopH, stopM);
 		m_timeAccessor->newTime(taskID, startTime, stopTime);
 	}
 }
@@ -161,8 +161,8 @@ void AddTime::on_month_changed()
 	guint m = month.get_value_as_int() - 1;
 
 	//Avoiding problems with dayligt saving time by checking second day of month
-	time_t activeDay = Utils::getTime(y, m, 2);
-	int maxDay = Utils::getDaysInMonth(activeDay);
+	time_t activeDay = libtimeit::getTime(y, m, 2);
+	int maxDay = libtimeit::getDaysInMonth(activeDay);
 	day.set_range(1, maxDay);
 }
 

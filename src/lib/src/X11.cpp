@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "X11.h"
+#include "libtimeit/X11.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>

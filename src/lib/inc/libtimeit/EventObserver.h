@@ -16,15 +16,16 @@ enum class EventType
 class EventObserver
 {
 public:
-	virtual      ~EventObserver();
-	virtual void on_message(EventType type, const std::string headline, const std::string message) const;
-	virtual void on_taskParentChanged(int64_t);
-	virtual void on_taskAdded(int64_t)          = 0;
-	virtual void on_taskUpdated(int64_t)        = 0;
-	virtual void on_taskRemoved(int64_t)        = 0;
-	virtual void on_completeUpdate()            = 0;
-	virtual void on_taskNameChanged(int64_t)    = 0;
-	virtual void on_taskTimeChanged(int64_t)    = 0;
+	virtual      ~EventObserver() = default;
+	virtual void on_message(EventType type, const std::string headline, const std::string message) const {};
+	virtual void on_taskParentChanged(int64_t)  {};
+	virtual void on_taskAdded(int64_t)          {};
+	virtual void on_taskUpdated(int64_t)        {};
+	virtual void on_taskRemoved(int64_t)        {};
+	virtual void on_completeUpdate()            {};
+	virtual void on_taskNameChanged(int64_t)    {};
+	virtual void on_taskTimeChanged(int64_t)    {};
+	virtual void on_action_showMainWindow()     {};
 };
 
 }

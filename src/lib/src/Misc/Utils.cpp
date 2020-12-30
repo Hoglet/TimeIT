@@ -19,7 +19,7 @@
 //using namespace Glib;
 using namespace std;
 
-namespace Utils
+namespace libtimeit
 {
 constexpr auto SECOND_PER_DAY = 24 * 60 * 60;
 

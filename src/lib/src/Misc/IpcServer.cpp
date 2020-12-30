@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "IpcServer.h"
+#include "libtimeit/misc/IpcServer.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -96,22 +96,22 @@ void IpcServer::on_signal_1_second()
 	poll();
 }
 
-void IpcServer::attach(IActionObserver *observer)
+void IpcServer::attach(EventObserver *observer)
 {
 	observers.push_back(observer);
 }
 
-void IpcServer::detach(IActionObserver *observer)
+void IpcServer::detach(EventObserver *observer)
 {
 	observers.remove(observer);
 }
 
 void IpcServer::on_show_menu()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<EventObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		EventObserver *observer = *iter;
 		observer->on_action_showMainWindow();
 	}
 }

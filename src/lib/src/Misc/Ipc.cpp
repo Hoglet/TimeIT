@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "Ipc.h"
+#include "libtimeit/misc/Ipc.h"
 #include <sys/un.h>
 #include <stdio.h>
 #include <unistd.h>

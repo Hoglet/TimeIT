@@ -22,7 +22,7 @@ StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timekeeper, shared_ptr<ITas
 	m_timekeeper = timekeeper;
 	m_taskaccessor = taskaccessor;
 	m_timeaccessor = timeaccessor;
-	const std::string &imagePath = Utils::getImagePath();
+	const std::string &imagePath = libtimeit::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
 	std::string blankIconPath = Glib::build_filename(imagePath, "blank.png");
@@ -259,13 +259,13 @@ void StatusIcon::setTooltip()
 	if (taskIDs.size() > 0)
 	{
 		//Figure out start and end of today
-		time_t startTime = Utils::getBeginingOfDay(time(0));
-		time_t stopTime = Utils::getEndOfDay(time(0));
+		time_t startTime = libtimeit::getBeginingOfDay(time(0));
+		time_t stopTime = libtimeit::getEndOfDay(time(0));
 		for (int64_t id : taskIDs)
 		{
 			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
 			message << setw(15) << setiosflags(ios::left) << task->name();
-			message << " " << Utils::seconds2hhmm(m_timeaccessor->getTime(id, startTime, stopTime));
+			message << " " << libtimeit::seconds2hhmm(m_timeaccessor->getTime(id, startTime, stopTime));
 		}
 	}
 	else

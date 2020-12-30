@@ -9,7 +9,7 @@
 #include "TimeKeeper.h"
 #include "Controller.h"
 
-#include "../../Misc/IpcServer.h"
+#include "libtimeit/misc/IpcServer.h"
 
 
 

@@ -15,9 +15,14 @@
 #include <MainWindow/Summary.h>
 #include <libtimeit/db/ISettingsAccessor.h>
 #include <libtimeit/db/Database.h>
-#include <IpcServer.h>
+#include <libtimeit/misc/IpcServer.h>
+#include <libtimeit/EventObserver.h>
 
-class Controller: public IActionObserver, public TimekeeperObserver, public GUI::SummaryObserver
+class Controller:
+		public IActionObserver,
+		public TimekeeperObserver,
+		public GUI::SummaryObserver,
+		public libtimeit::EventObserver
 {
 public:
 	Controller(std::shared_ptr<GUI::IGUIFactory> &guiFactory, std::shared_ptr<ITimeKeeper> &timeKeeper,

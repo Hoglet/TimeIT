@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 #include <libtimeit/Timer.h>
-#include <IActionObserver.h>
+#include <libtimeit/EventObserver.h>
 #include <iostream>
 #include "Ipc.h"
 

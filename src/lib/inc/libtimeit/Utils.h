@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-namespace Utils
+namespace libtimeit
 {
 std::string getImagePath();
 std::string get639LanguageString();

@@ -1,5 +1,5 @@
 #include "test_ApplicationLock.h"
-#include "ApplicationLock.h"
+#include "libtimeit/misc/ApplicationLock.h"
 #include "cute.h"
 #include "libtimeit/OSAbstraction.h"
 #include <fstream>

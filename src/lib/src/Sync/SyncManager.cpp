@@ -52,7 +52,7 @@ void SyncManager::on_signal_1_second()
 	{
 		case SyncState::IDLE:
 		{
-			time_t now = Utils::now();
+			time_t now = libtimeit::now();
 			if (isActive() && now > nextFullSync)
 			{
 				nextFullSync = now + ONE_DAY;
@@ -271,7 +271,7 @@ void SyncManager::manageNetworkProblems()
 	{
 		std::stringstream text;
 		// %s is replaced with the URI on which the connection failed
-		text << Utils::string_printf(_("Failed connection to %s:\n"), result.url().c_str());
+		text << libtimeit::string_printf(_("Failed connection to %s:\n"), result.url().c_str());
 
 		text << _("HTTP error ") << result.httpCode() << " ";
 		if (result.httpCode() == 401)

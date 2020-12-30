@@ -34,7 +34,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	//This is the licence text
 	set_license(_("This program is licenced under GNU General Public Licence (GPL) version 2."));
 
-	std::string iconPath = Glib::build_filename(Utils::getImagePath(), "icon.svg");
+	std::string iconPath = Glib::build_filename( libtimeit::getImagePath(), "icon.svg" );
 	set_logo(Gdk::Pixbuf::create_from_file(iconPath, 200, 200));
 
 	set_url_hook(sigc::mem_fun(this, &TimeItAboutDialog::on_link_clicked));

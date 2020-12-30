@@ -9,7 +9,7 @@ namespace libtimeit
 
 void init()
 {
-	srand(Utils::now());
+	srand( now() );
 }
 
 }

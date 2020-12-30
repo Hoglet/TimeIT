@@ -12,8 +12,8 @@ using namespace Glib;
 TaskList::TaskList(shared_ptr<IDatabase> &database) :
 		taskAccessor(database->getExtendedTaskAccessor())
 {
-	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "running.svg"), 24, 24, true);
-	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(Utils::getImagePath(), "blank.svg"), 24, 24, true);
+	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
+	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "blank.svg"), 24, 24, true);
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column(_("Name"), columns.col_name);
@@ -216,7 +216,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 	time_t totalTime = task.totalTime();
 	if (totalTime > 0)
 	{
-		row[columns.col_time] = Utils::seconds2hhmm(totalTime);
+		row[columns.col_time] = libtimeit::seconds2hhmm(totalTime);
 	}
 	else
 	{

@@ -95,8 +95,8 @@ void Timekeeper::StartTask(int64_t id)
 	if (it == activeTasks.end())
 	{
 		TaskTime task;
-		task.startTime = Utils::now();
-		task.stopTime = Utils::now();
+		task.startTime = libtimeit::now();
+		task.stopTime = libtimeit::now();
 		task.dbHandle = m_timeAccessor->newTime(id, task.startTime, task.stopTime);
 		task.taskID = id;
 		activeTasks[id] = task;
@@ -164,7 +164,7 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 	it = activeTasks.find(id);
 	if (it != activeTasks.end())
 	{
-		it->second.stopTime = Utils::now();
+		it->second.stopTime = libtimeit::now();
 		TaskTime task = it->second;
 
 		auto te = m_timeAccessor->getByID(task.dbHandle);
@@ -177,7 +177,7 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 
 void Timekeeper::UpdateTask(int64_t id)
 {
-	time_t now = Utils::now();
+	time_t now = libtimeit::now();
 	UpdateTask(id, now);
 }
 bool Timekeeper::hasRunningTasks()

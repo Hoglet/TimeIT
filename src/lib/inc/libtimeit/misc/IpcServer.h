@@ -11,9 +11,9 @@
 #include <string>
 #include <memory>
 #include <libtimeit/Timer.h>
-#include <IActionObserver.h>
+#include <libtimeit/EventObserver.h>
 #include <iostream>
-#include "Ipc.h"
+#include "libtimeit/misc/Ipc.h"
 
 namespace Utils
 {
@@ -27,13 +27,13 @@ public:
 	virtual ~IpcServer();
 	void poll();
 	virtual void on_signal_1_second();
-	void attach(IActionObserver*);
-	void detach(IActionObserver*);
+	void attach(EventObserver*);
+	void detach(EventObserver*);
 	private:
 	void on_show_menu();
 	string socketName;
 	Timer& timer;
-	list<IActionObserver*> observers;
+	list<EventObserver*> observers;
 	int sock;
 };
 

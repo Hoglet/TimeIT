@@ -188,7 +188,7 @@ void Details::populate()
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.ID();
-		row[m_columns.m_col_time] = Utils::createDurationString(te.start(), te.stop());
+		row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
 	}
 }
 

@@ -81,12 +81,12 @@ void Notifier::sendMessage(NotificationMessage message)
 		}
 		else if (message.type == COMPLETE_UPDATE)
 		{
-			uint32_t start = Utils::millisecondsSinceEpoch();
+			uint32_t start = millisecondsSinceEpoch();
 			for (EventObserver *observer : observers)
 			{
 				observer->on_completeUpdate();
 			}
-			uint32_t stop = Utils::millisecondsSinceEpoch();
+			uint32_t stop = millisecondsSinceEpoch();
 			std::cout << "Complete update of GUI: " << stop - start << " ms.\n";
 		}
 		else

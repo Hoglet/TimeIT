@@ -219,7 +219,7 @@ void Summary::on_dateChanged()
 	guint month;
 	guint day;
 	calendar->get_date(year, month, day);
-	activeDay = Utils::getTime(year, month, day);
+	activeDay = libtimeit::getTime(year, month, day);
 	time_t old_startTime = startTime;
 	time_t old_stopTime = stopTime;
 	calculateTimeSpan();
@@ -322,7 +322,7 @@ void Summary::assignValuesToRow(TreeModel::Row &row, std::shared_ptr<Task> task,
 {
 	row[columns.col_id] = task->ID();
 	row[columns.col_name] = task->name();
-	row[columns.col_time] = Utils::seconds2hhmm(totalTime);
+	row[columns.col_time] = libtimeit::seconds2hhmm(totalTime);
 }
 
 Gtk::TreeModel::iterator Summary::findRow(int id)

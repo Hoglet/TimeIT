@@ -284,7 +284,7 @@ void MainWindow::on_show()
 void MainWindow::setCalendar()
 {
 	struct tm *timeInfo;
-	time_t now = Utils::now();
+	time_t now = libtimeit::now();
 	timeInfo = localtime(&now);
 	int month = timeInfo->tm_mon;
 	int year = timeInfo->tm_year + 1900;

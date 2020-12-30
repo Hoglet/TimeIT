@@ -6,7 +6,7 @@
 #include <libtimeit/Timer.h>
 #include <TimeKeeper.h>
 #include <libtimeit/db/Database.h>
-#include <IdleDetector.h>
+#include <libtimeit/logic/IdleDetector.h>
 #include <libtimeit/db/TaskAccessor.h>
 #include <IGUIFactory.h>
 
