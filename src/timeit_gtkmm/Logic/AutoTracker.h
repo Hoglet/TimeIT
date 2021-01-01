@@ -5,7 +5,7 @@
 #include <TimeKeeper.h>
 #include <libtimeit/db/Database.h>
 #include <libtimeit/db/AutotrackAccessor.h>
-#include <Workspace.h>
+#include <libtimeit/logic/Workspace.h>
 
 
 class AutoTracker: public libtimeit::TimerObserver
