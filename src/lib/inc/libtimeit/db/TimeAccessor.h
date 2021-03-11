@@ -32,6 +32,7 @@ public:
 	virtual void                stopAllRunning() = 0;
 	virtual optional<TimeEntry> getByID(TimeID id) = 0;
 	virtual void                remove(TimeID id) = 0;
+	virtual void                removeShortTimeSpans() = 0;
 	virtual TimeList            getDetailTimeList(TaskID taskId,time_t startTime, time_t stopTime) = 0;
 	virtual TaskIDList          getLatestTasks(int amount) = 0;
 	virtual int	                getTime(int64_t taskID, time_t startTime, time_t stopTime) = 0;
@@ -57,6 +58,7 @@ public:
 	virtual TaskIDList          getLatestTasks(int amount);
 	virtual optional<TimeEntry> getByID(TimeID id);
 	virtual void                remove(TimeID id);
+	virtual void                removeShortTimeSpans();
 	virtual TimeList            getDetailTimeList(TaskID taskId,time_t startTime, time_t stopTime);
 	virtual int	                getTime(TaskID taskID, time_t startTime, time_t stopTime);
 	virtual TimeList            getTimesChangedSince(time_t timestamp=0);
@@ -65,12 +67,11 @@ public:
 	virtual TimeID              newEntry(const TimeEntry& item);
 	virtual time_t              getTotalTimeWithChildren(TaskID taskID, time_t start, time_t stop);
 	virtual TaskIDList          getRunningTasks();
-	virtual TaskIDList          getActiveTasks(time_t start, time_t stop) ;
+	virtual TaskIDList          getActiveTasks(time_t start, time_t stop);
 
 	void createTable();
 	void upgradeToDB5();
-    void createViews();
-    void removeShortTimeSpans();
+	void createViews();
 private:
 	std::shared_ptr<CSQL> db;
 	Notifier& notifier;

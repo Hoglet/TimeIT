@@ -55,6 +55,10 @@ void MockTimeAccessor::remove(int64_t id)
 {
 }
 
+void MockTimeAccessor::removeShortTimeSpans()
+{
+}
+
 std::vector<TimeEntry> MockTimeAccessor::getDetailTimeList(int64_t taskId, time_t startTime, time_t stopTime)
 {
 	std::vector<TimeEntry> list

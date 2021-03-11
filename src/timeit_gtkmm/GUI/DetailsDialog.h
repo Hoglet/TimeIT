@@ -12,6 +12,7 @@
 #include "LZSpinButton.h"
 #include "Details.h"
 #include "MainWindow/Summary.h"
+#include <libtimeit/db/ISettingsAccessor.h>
 #include <libtimeit/db/Database.h>
 #include <IWidget.h>
 
@@ -82,6 +83,7 @@ private:
 	int64_t timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
 	std::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<libtimeit::ISettingsAccessor> settingsAccessor;
 };
 }
 

@@ -55,6 +55,15 @@ void TimeAccessor::remove(int64_t id)
 	}
 }
 
+void TimeAccessor::removeShortTimeSpans()
+{
+	time_t now = time(nullptr);
+	Statement statement = db->prepare( // short, except if barely a moment ago
+			"DELETE FROM times WHERE stop-start < 30 AND ?-stop > 30");
+	statement.bindValue(1, now);
+	statement.execute();
+}
+
 std::optional<TimeEntry> TimeAccessor::getByID(int64_t id)
 {
 	Statement statement = db->prepare(
@@ -411,11 +420,6 @@ void TimeAccessor::createViews()
 			" FROM times "
 			" LEFT JOIN tasks "
 			" ON times.taskID = tasks.id");
-}
-
-void TimeAccessor::removeShortTimeSpans()
-{
-	db->exe("DELETE FROM times WHERE stop-start < 30");
 }
 
 std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)

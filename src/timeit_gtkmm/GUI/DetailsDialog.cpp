@@ -7,6 +7,7 @@
 
 #include "DetailsDialog.h"
 #include "libtimeit/Utils.h"
+#include <libtimeit/db/DefaultValues.h>
 #include <ctime>
 #include <glibmm/i18n.h>
 
@@ -26,7 +27,7 @@ DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
 	detailList(database), table(4, 4), startTimeLabel(_("Start time")),
 			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
 		"gtk-revert-to-saved")),
-OKButton(Gtk::StockID("gtk-apply")), timeAccessor(database->getTimeAccessor())
+OKButton(Gtk::StockID("gtk-apply")), timeAccessor(database->getTimeAccessor()), settingsAccessor(database->getSettingsAccessor())
 {
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
@@ -154,6 +155,11 @@ void DetailsDialog::on_edit_details(int64_t id)
 
 void DetailsDialog::set(int64_t ID, time_t startTime, time_t stopTime)
 {
+	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
+	if (quiet) // only if needed as workaround to remove an unwanted flood of entries because of issue #23
+	{
+		timeAccessor->removeShortTimeSpans();
+	}
 	timeEntryID = 0;
 	id = ID;
 	rangeStart = startTime;

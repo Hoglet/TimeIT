@@ -26,6 +26,7 @@ public:
 	virtual void setRunning(int64_t timeID, bool running);
 	virtual std::optional<TimeEntry> getByID(int64_t id);
 	virtual void remove(int64_t id);
+	virtual void removeShortTimeSpans();
 	virtual std::vector<TimeEntry> getDetailTimeList(int64_t taskId,time_t startTime, time_t stopTime) ;
 	virtual std::vector<int64_t> getLatestTasks(int amount);
 	virtual int	getTime(int64_t taskID, time_t startTime, time_t stopTime);
