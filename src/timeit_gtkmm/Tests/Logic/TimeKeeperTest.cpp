@@ -37,6 +37,9 @@ public:
 	{
 		idleDetected = true;
 	}
+	virtual void on_activityResumed()
+	{
+	}
 	virtual void on_runningChanged()
 	{
 		runningChanged = true;

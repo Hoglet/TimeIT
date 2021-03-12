@@ -34,6 +34,7 @@ Timekeeper::Timekeeper(const std::shared_ptr<IDatabase>& database, Timer& timer)
 	m_settingsAccessor->attach(this);
 	on_settingsChanged("");
 	m_enabled = true;
+	m_isIdle = false;
 	m_timer.attach(this);
 	m_taskAccessor->attach(this);
 }
@@ -66,17 +67,27 @@ void Timekeeper::on_settingsChanged(const std::string& name)
 
 void Timekeeper::on_signal_10_seconds()
 {
-	if (m_enabled)
+	auto idle=m_idleDetector.idle();
+	if(idle!=m_isIdle)
 	{
-		map<int64_t, TaskTime>::iterator it;
-		if (m_idleDetector.idle())
+		if(idle)
 		{
 			if (hasRunningTasks())
 			{
 				notifyIdleDetected();
 			}
 		}
-		else if (m_idleDetector.minutesIdle() < m_idleGz)
+		else
+		{
+			notifyActivityResumed();
+
+		}
+		m_isIdle = idle;
+	}
+	if (m_enabled)
+	{
+		map<int64_t, TaskTime>::iterator it;
+		if (m_idleDetector.minutesIdle() < m_idleGz)
 		{
 			//Only saving time when being certain that somebody is working
 			for (it = activeTasks.begin(); it != activeTasks.end(); ++it)
@@ -137,7 +148,6 @@ void Timekeeper::StopTask(int64_t id)
 			notifyRunningChanged();
 		}
 	}
-	m_idleDetector.setEnabled(activeTasks.empty() == false);
 }
 
 void Timekeeper::on_taskRemoved(int64_t id)
@@ -219,7 +229,6 @@ time_t Timekeeper::timeIdle()
 
 void Timekeeper::notifyRunningChanged()
 {
-	m_idleDetector.setEnabled(activeTasks.empty() == false);
 	std::list<TimekeeperObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
@@ -236,6 +245,17 @@ void Timekeeper::notifyIdleDetected()
 		TimekeeperObserver* observer = *iter;
 		observer->on_idleDetected();
 	}
+}
+
+void Timekeeper::notifyActivityResumed()
+{
+	std::list<TimekeeperObserver*>::iterator iter;
+	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	{
+		TimekeeperObserver* observer = *iter;
+		observer->on_activityResumed();
+	}
+
 }
 
 void Timekeeper::enable(bool enable)

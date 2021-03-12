@@ -148,13 +148,10 @@ void Controller::on_action_remove_task()
 	//ENHANCEMENT Move code from main window (or?)
 }
 
-void Controller::on_idleDetected()
+void Controller::on_activityResumed()
 {
-	timeKeeper->enable(false);
-	time_t now = time(0);
-	time_t idleStartTime = now - timeKeeper->timeIdle();
 	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
-	if (quiet)
+	if(quiet)
 	{
 		on_action_revertAndContinue();
 	}
@@ -167,6 +164,13 @@ void Controller::on_idleDetected()
 		idleDialog->setActiveTaskList(taskIDs);
 		idleDialog->show();
 	}
+}
+
+void Controller::on_idleDetected()
+{
+	timeKeeper->enable(false);
+	time_t now = time(0);
+	idleStartTime = now - timeKeeper->timeIdle();
 }
 
 void Controller::on_action_revertAndContinue()

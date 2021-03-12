@@ -15,6 +15,7 @@ class TimekeeperObserver
 public:
 	virtual ~TimekeeperObserver();
 	virtual void on_idleDetected() = 0;
+	virtual void on_activityResumed() = 0;
 	virtual void on_runningChanged() = 0;
 };
 
@@ -98,10 +99,10 @@ private:
 	virtual void on_completeUpdate();
 
 	void UpdateTask(int64_t id);
-	void testfunc();
 
 	GUI::WidgetPtr idleDialog;
 	bool m_enabled;
+	bool m_isIdle;
 
 	struct TaskTime
 	{
@@ -117,6 +118,7 @@ private:
 
 	void notifyRunningChanged();
 	void notifyIdleDetected();
+	void notifyActivityResumed();
 	std::list<TimekeeperObserver*> observers;
 
 	std::shared_ptr<libtimeit::ITimeAccessor> m_timeAccessor;

@@ -35,10 +35,10 @@ private:
 	void setIcon();
 	void setTooltip();
 	void on_runningChanged();
+	void on_activityResumed()
+	{};
 	void on_idleDetected()
-	{
-	}
-	;
+	{};
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();
 	void on_menu_file_popup_quit();

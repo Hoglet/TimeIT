@@ -50,6 +50,7 @@ public:
 
 	//
 	virtual void on_idleDetected();
+	virtual void on_activityResumed();
 	virtual void on_runningChanged();
 	virtual void on_action_toggleMainWindow();
 	virtual void on_action_showMainWindow();
@@ -69,6 +70,7 @@ private:
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;
 	int selectedTaskID = -1;
+	long idleStartTime = 0;
 
 };
 

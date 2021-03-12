@@ -116,10 +116,7 @@ int Workspace::get_active()
 		{
 			std::cerr << e.what();
 		}
-
-		//active = wnck_workspace_get_number(workspace);
 	}
-	std::cout << "Current workspace: " << active << std::endl;
 	return active;
 }
 std::string Workspace::get_name(int workspaceNR)
