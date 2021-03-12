@@ -45,6 +45,7 @@ private:
 
 	Gtk::Label startTimeLabel;
 	Gtk::Label stopTimeLabel;
+	Gtk::Label startColonLabel, toLabel, stopColonLabel;
 	Gtk::ScrolledWindow scrolledWindow;
 	LZSpinButton startTimeHour;
 	LZSpinButton startTimeMinute;

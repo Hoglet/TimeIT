@@ -23,10 +23,10 @@ std::shared_ptr<DetailsDialog> DetailsDialog::create(shared_ptr<IDatabase>& data
 }
 
 DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
-	detailList(database), table(4, 4), startTimeLabel(_("Start time")),
-			stopTimeLabel(_("Stop time")), CancelButton(Gtk::StockID(
-		"gtk-revert-to-saved")),
-OKButton(Gtk::StockID("gtk-apply")), timeAccessor(database->getTimeAccessor())
+		detailList(database), table(7, 4), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
+		startColonLabel(":"), toLabel("→"), stopColonLabel(":"),
+		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")),
+		timeAccessor(database->getTimeAccessor())
 {
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
@@ -46,12 +46,15 @@ OKButton(Gtk::StockID("gtk-apply")), timeAccessor(database->getTimeAccessor())
 	oldStopTime = 1;
 
 	//Layout
-	table.attach(startTimeLabel, 0, 2, 0, 1);
-	table.attach(stopTimeLabel, 2, 4, 0, 1);
-	table.attach(startTimeHour, 0, 1, 1, 2);
-	table.attach(startTimeMinute, 1, 2, 1, 2);
-	table.attach(stopTimeHour, 2, 3, 1, 2);
-	table.attach(stopTimeMinute, 3, 4, 1, 2);
+	table.attach(startTimeLabel, 0, 3, 0, 1);
+	table.attach(stopTimeLabel, 4, 7, 0, 1);
+ 	table.attach(startTimeHour, 0, 1, 1, 2);
+	table.attach(startColonLabel, 1, 2, 1, 2);
+	table.attach(startTimeMinute, 2, 3, 1, 2);
+	table.attach(toLabel, 3, 4, 1, 2);
+	table.attach(stopTimeHour, 4, 5, 1, 2);
+	table.attach(stopColonLabel, 5, 6, 1, 2);
+	table.attach(stopTimeMinute, 6, 7, 1, 2);
 
 	scrolledWindow.add(detailList);
 	get_vbox()->pack_start(scrolledWindow, Gtk::PACK_EXPAND_WIDGET, 3);

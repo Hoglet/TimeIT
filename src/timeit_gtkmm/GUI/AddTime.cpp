@@ -16,9 +16,11 @@ namespace GUI
 {
 
 AddTime::AddTime(int64_t op_taskID, ICalendar &op_calendar, std::shared_ptr<IDatabase> &database) :
-		table(4, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")), taskNameLabel(
-				_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")), calendar(
-				op_calendar), taskID(op_taskID), m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
+		table(7, 4), yearLabel(_("Year")), monthLabel(_("Month")), dayLabel(_("Day")),
+		taskNameLabel(_("Adding time to:")), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
+		startColonLabel(":"), toLabel("→"), stopColonLabel(":"),
+		calendar(op_calendar), taskID(op_taskID),
+		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
 {
 
 	set_deletable(false);
@@ -71,18 +73,21 @@ AddTime::AddTime(int64_t op_taskID, ICalendar &op_calendar, std::shared_ptr<IDat
 	get_vbox()->pack_start(hseparator);
 	get_vbox()->pack_start(table, Gtk::PACK_SHRINK, 3);
 	{
-		table.attach(yearLabel, 0, 2, 0, 1);
-		table.attach(monthLabel, 2, 3, 0, 1);
-		table.attach(dayLabel, 3, 4, 0, 1);
-		table.attach(year, 0, 2, 1, 2);
-		table.attach(month, 2, 3, 1, 2);
-		table.attach(day, 3, 4, 1, 2);
-		table.attach(startTimeLabel, 0, 2, 2, 3);
-		table.attach(stopTimeLabel, 2, 4, 2, 3);
-		table.attach(startTimeHour, 0, 1, 3, 4);
-		table.attach(startTimeMinute, 1, 2, 3, 4);
-		table.attach(stopTimeHour, 2, 3, 3, 4);
-		table.attach(stopTimeMinute, 3, 4, 3, 4);
+ 		table.attach(yearLabel, 0, 2, 0, 1);
+		table.attach(monthLabel, 2, 4, 0, 1);
+		table.attach(dayLabel, 4, 7, 0, 1);
+ 		table.attach(year, 0, 2, 1, 2);
+		table.attach(month, 2, 4, 1, 2);
+		table.attach(day, 4, 7, 1, 2);
+		table.attach(startTimeLabel, 0, 3, 2, 3);
+		table.attach(stopTimeLabel, 4, 7, 2, 3);
+ 		table.attach(startTimeHour, 0, 1, 3, 4);
+		table.attach(startColonLabel, 1, 2, 3, 4);
+		table.attach(startTimeMinute, 2, 3, 3, 4);
+		table.attach(toLabel, 3, 4, 3, 4);
+		table.attach(stopTimeHour, 4, 5, 3, 4);
+		table.attach(stopColonLabel, 5, 6, 3, 4);
+		table.attach(stopTimeMinute, 6, 7, 3, 4);
 	}
 	//get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
 	//get_action_area()->pack_start(CancelButton);
