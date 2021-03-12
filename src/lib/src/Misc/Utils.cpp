@@ -202,7 +202,7 @@ std::string seconds2ddhhmm(int64_t s)
 	hours = s / (60 * 60);
 	s -= hours * (60 * 60);
 	minutes = s / 60;
-	retVal << setfill('0') << setw(2) << days << ":" << setfill('0') << setw(2) << hours << ":" << setfill('0') << setw(2) << minutes;
+	retVal << setfill('0') << setw(2) << days << " d " << setfill('0') << setw(2) << hours << " h " << setfill('0') << setw(2) << minutes << " m";
 	return retVal.str();
 }
 std::string seconds2hhmm(int64_t s)
@@ -213,7 +213,7 @@ std::string seconds2hhmm(int64_t s)
 	hours = s / (60 * 60);
 	s -= hours * (60 * 60);
 	minutes = s / 60;
-	retVal << setfill('0') << setw(2) << hours << ":" << setfill('0') << setw(2) << minutes;
+	retVal << setfill('0') << setw(2) << hours << " h " << setfill('0') << setw(2) << minutes << " m";
 	return retVal.str();
 }
 std::string createDurationString(const time_t &from, const time_t &to)
@@ -221,14 +221,17 @@ std::string createDurationString(const time_t &from, const time_t &to)
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
 	struct tm toTime = *localtime(&to);
-	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << " "
+	std::string daySpace;
+	bool acrossDays = fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday;
+	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << (acrossDays ? " " : " ") // em space
 			<< setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
-	retVal << " -> ";
-	if (fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday)
+	retVal << " → ";
+	if (acrossDays)
 	{
-		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " ";
+		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " "; // em space
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
+	retVal << (acrossDays ? " " : " ") << "=" << (acrossDays ? " " : " ") << seconds2hhmm(difftime(to, from)); // em spaces
 	return retVal.str();
 }
 
