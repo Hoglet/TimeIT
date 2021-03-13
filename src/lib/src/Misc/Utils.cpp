@@ -191,20 +191,6 @@ time_t getTime(int year, int month, int day, int hour, int min, int sec)
 	return mktime(timeInfo);
 }
 
-std::string seconds2ddhhmm(int64_t s)
-{
-	stringstream retVal;
-	int64_t minutes;
-	int64_t hours;
-	int64_t days;
-	days = s / (24 * 60 * 60);
-	s -= days * (24 * 60 * 60);
-	hours = s / (60 * 60);
-	s -= hours * (60 * 60);
-	minutes = s / 60;
-	retVal << setfill('0') << setw(2) << days << " d " << setfill('0') << setw(2) << hours << " h " << setfill('0') << setw(2) << minutes << " m";
-	return retVal.str();
-}
 std::string seconds2hhmm(int64_t s)
 {
 	stringstream retVal;
@@ -213,7 +199,7 @@ std::string seconds2hhmm(int64_t s)
 	hours = s / (60 * 60);
 	s -= hours * (60 * 60);
 	minutes = s / 60;
-	retVal << setfill('0') << setw(2) << hours << " h " << setfill('0') << setw(2) << minutes << " m";
+	retVal << (hours < 10 ? " " : "") << hours << " h " << (minutes < 10 ? hours ? "0" : " " : "") << minutes << " m"; // figure spaces
 	return retVal.str();
 }
 std::string createDurationString(const time_t &from, const time_t &to)
@@ -231,7 +217,7 @@ std::string createDurationString(const time_t &from, const time_t &to)
 		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " "; // em space
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
-	retVal << (acrossDays ? " " : " ") << "=" << (acrossDays ? " " : " ") << seconds2hhmm(difftime(to, from)); // em spaces
+	retVal << (acrossDays ? " " : " ") << "= " << seconds2hhmm(difftime(to, from)); // em spaces
 	return retVal.str();
 }
 
