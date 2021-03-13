@@ -25,7 +25,6 @@ time_t getEndOfMonth(const time_t&);
 time_t getBeginingOfYear(const time_t&);
 time_t getEndOfYear(const time_t&);
 int getDaysInMonth(const time_t &rawtime);
-std::string seconds2ddhhmm(int64_t s);
 std::string seconds2hhmm(int64_t s);
 std::string createDurationString(const time_t &from, const time_t &to);
 uint64_t millisecondsSinceEpoch();
