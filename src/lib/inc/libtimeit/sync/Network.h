@@ -14,7 +14,6 @@
 
 struct asyncHTTPResponse
 {
-	HTTPRequest request;
 	std::shared_future<HTTPResponse> futureResponse;
 };
 

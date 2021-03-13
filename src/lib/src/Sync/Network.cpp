@@ -7,6 +7,7 @@
 
 //LCOV_EXCL_START
 
+using namespace std;
 INetwork::~INetwork()
 = default;
 
@@ -28,15 +29,20 @@ Network::~Network()
 std::shared_ptr<asyncHTTPResponse> Network::request(const std::string& url, std::string data, std::string username, std::string password,
 													bool ignoreCertificateErrors)
 {
-	std::shared_ptr<asyncHTTPResponse> result=std::make_shared<asyncHTTPResponse>();
 
-	result->request.ignoreCertErrors(ignoreCertificateErrors);
 
-	result->futureResponse =	std::async(
-					std::launch::async,
-					&HTTPRequest::PUT,
-					result->request,
-					url, data, username, password).share();
+	shared_ptr<asyncHTTPResponse> result=make_shared<asyncHTTPResponse>();
+
+
+	result->futureResponse =	async(
+					launch::async,
+					[ url, data, username, password,ignoreCertificateErrors]()
+					{
+						HTTPRequest request;
+						request.ignoreCertErrors(ignoreCertificateErrors);
+						return request.PUT(url, data, username, password);
+					}
+					).share();
 
 	return result;
 }

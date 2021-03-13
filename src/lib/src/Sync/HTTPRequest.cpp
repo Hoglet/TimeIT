@@ -65,6 +65,7 @@ size_t HTTPRequest::sendData(void *ptr, size_t size, size_t nmemb)
 HTTPRequest::~HTTPRequest()
 {
 	curl_easy_cleanup(curl);
+	curl = nullptr;
 };
 
 HTTPResponse HTTPRequest::PUT(
