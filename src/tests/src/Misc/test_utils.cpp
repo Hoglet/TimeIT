@@ -36,7 +36,7 @@ TEST( Utils, testGetDaysInMonth )
 TEST( Utils, convertSecondsToStrings )
 {
 	int timespan2 = 2 * 60 * 60 + 4 * 60;
-	ASSERT_EQ(  std::string(" 2 h 04 m"), libtimeit::seconds2hhmm(timespan2) ) <<
+	ASSERT_EQ(  std::string("\u20072 h 04 m"), libtimeit::seconds2hhmm(timespan2) ) <<
 		"Converting 2 hours and 4 minutes into a text string";
 }
 
@@ -45,13 +45,13 @@ TEST( Utils, convertTimespanToString )
 	time_t start = libtimeit::getTime(2013, 0, 4, 11, 0, 0);
 	time_t stop = libtimeit::getTime(2013, 0, 4, 12, 0, 0);
 	std::string result = libtimeit::createDurationString(start, stop);
-	std::string expected = "2013-01-04 11:00 → 12:00 =  1 h 00 m";
+	std::string expected = "2013-01-04\u200311:00 → 12:00\u2003= \u20071 h 00 m";
 	ASSERT_EQ( expected, result ) << "Converting a time span of one hour into a text string";
 
 	start = libtimeit::getTime(2012, 0, 4, 11, 0, 0);
 	stop = libtimeit::getTime(2013, 0, 4, 12, 0, 0);
 	result = libtimeit::createDurationString(start, stop);
-	expected = "2012-01-04 11:00 → 2013-01-04 12:00 = 8785 h 00 m";
+	expected = "2012-01-04 11:00 → 2013-01-04 12:00 = 8785 h 00 m";
 	ASSERT_EQ( expected, result ) << "Converting a time span of one year into a text string";
 }
 

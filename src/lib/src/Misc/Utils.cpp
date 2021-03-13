@@ -199,7 +199,7 @@ std::string seconds2hhmm(int64_t s)
 	hours = s / (60 * 60);
 	s -= hours * (60 * 60);
 	minutes = s / 60;
-	retVal << (hours < 10 ? " " : "") << hours << " h " << (minutes < 10 ? hours ? "0" : " " : "") << minutes << " m"; // figure spaces
+	retVal << (hours < 10 ? "\u2007" : "") << hours << " h " << (minutes < 10 ? hours ? "0" : "\u2007" : "") << minutes << " m";
 	return retVal.str();
 }
 std::string createDurationString(const time_t &from, const time_t &to)
@@ -209,15 +209,15 @@ std::string createDurationString(const time_t &from, const time_t &to)
 	struct tm toTime = *localtime(&to);
 	std::string daySpace;
 	bool acrossDays = fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday;
-	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << (acrossDays ? " " : " ") // em space
+	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << (acrossDays ? " " : "\u2003")
 			<< setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
 	retVal << " → ";
 	if (acrossDays)
 	{
-		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " "; // em space
+		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " ";
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
-	retVal << (acrossDays ? " " : " ") << "= " << seconds2hhmm(difftime(to, from)); // em spaces
+	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from));
 	return retVal.str();
 }
 
