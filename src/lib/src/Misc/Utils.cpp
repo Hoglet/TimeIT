@@ -202,12 +202,34 @@ std::string seconds2hhmm(int64_t s)
 	retVal << (hours < 10 ? "\u2007" : "") << hours << " h " << (minutes < 10 ? hours ? "0" : "\u2007" : "") << minutes << " m";
 	return retVal.str();
 }
-std::string createDurationString(const time_t &from, const time_t &to)
+
+std::string smallNumbers(std::string s)
+{
+	stringstream retVal;
+	for(auto i = s.cbegin(); i != s.cend(); ++i)
+	{
+		switch (*i) {
+			case '0': retVal << "₀"; break;
+			case '1': retVal << "₁"; break;
+			case '2': retVal << "₂"; break;
+			case '3': retVal << "₃"; break;
+			case '4': retVal << "₄"; break;
+			case '5': retVal << "₅"; break;
+			case '6': retVal << "₆"; break;
+			case '7': retVal << "₇"; break;
+			case '8': retVal << "₈"; break;
+			case '9': retVal << "₉"; break;
+			default: retVal << *i;
+		}
+	}
+	return retVal.str();
+}
+
+std::string createDurationString(const time_t &from, const time_t &to, const time_t *next)
 {
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
 	struct tm toTime = *localtime(&to);
-	std::string daySpace;
 	bool acrossDays = fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday;
 	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << (acrossDays ? " " : "\u2003")
 			<< setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
@@ -218,6 +240,11 @@ std::string createDurationString(const time_t &from, const time_t &to)
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
 	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from));
+	if (next)
+	{
+		int64_t toNextMin = difftime(*next, to) / 60;
+		retVal << (acrossDays ? "\u2003" : "\u2003\u2003\u2003") << "₋ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
+	}
 	return retVal.str();
 }
 
