@@ -176,7 +176,7 @@ void Details::populate()
 {
 	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
 	std::vector<TimeEntry>::iterator iter = timeList.begin();
-	for (; iter != timeList.end(); ++iter)
+	for (; iter != timeList.end(); )
 	{
 		TimeEntry te = *iter;
 		TreeModel::Row row;
@@ -188,7 +188,17 @@ void Details::populate()
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.ID();
-		row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
+		if (++iter != timeList.end()) // here iterate to next
+		{
+			TimeEntry nextTe = *iter;
+			time_t nextTime = nextTe.start();
+			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop(), &nextTime);
+		}
+		else
+		{
+			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop(), nullptr);
+			break;
+		}
 	}
 }
 
