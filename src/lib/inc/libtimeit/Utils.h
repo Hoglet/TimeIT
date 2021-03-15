@@ -27,7 +27,7 @@ time_t getEndOfYear(const time_t&);
 int getDaysInMonth(const time_t &rawtime);
 std::string seconds2hhmm(int64_t s);
 std::string createDurationString(const time_t &from, const time_t &to);
-std::string createDurationAndIdlingString(const time_t &from, const time_t &to, const time_t &next);
+std::string createIdlingString(const time_t &to, const time_t &next);
 uint64_t millisecondsSinceEpoch();
 
 template<typename ... Args>

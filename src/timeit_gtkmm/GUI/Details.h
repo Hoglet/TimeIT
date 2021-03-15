@@ -78,10 +78,12 @@ private:
 
 			add(m_col_id);
 			add(m_col_time);
+			add(m_col_idle);
 		}
 		;
 		Gtk::TreeModelColumn<int> m_col_id;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_idle;
 	};
 	ModelColumns m_columns;
 	Gtk::Calendar *m_calendar;

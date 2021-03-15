@@ -28,6 +28,7 @@ Details::Details(shared_ptr<IDatabase> &database) :
 	m_treeModel = ListStore::create(m_columns);
 	set_model(m_treeModel);
 	append_column("Time", m_columns.m_col_time);
+	append_column("Idle", m_columns.m_col_idle);
 	m_taskAccessor->attach(this);
 	set_headers_visible(false);
 	//Fill the popup menu:
@@ -188,15 +189,16 @@ void Details::populate()
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.ID();
+		row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
 		if (++iter != timeList.end()) // here iterate to next
 		{
 			TimeEntry nextTe = *iter;
 			time_t nextTime = nextTe.start();
-			row[m_columns.m_col_time] = libtimeit::createDurationAndIdlingString(te.start(), te.stop(), nextTime);
+			row[m_columns.m_col_idle] = libtimeit::createIdlingString(te.stop(), nextTime);
 		}
 		else
 		{
-			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
+			row[m_columns.m_col_idle] = "\u2003⋯";
 			break;
 		}
 	}
