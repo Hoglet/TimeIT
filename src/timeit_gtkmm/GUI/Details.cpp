@@ -31,8 +31,8 @@ Details::Details(shared_ptr<IDatabase> &database) :
 	m_morningColumnN = append_column("Morning", m_columns.m_col_morning) - 1;
 	get_column(m_morningColumnN)->set_visible(false);
 	append_column("Time", m_columns.m_col_time);
-	append_column("Idle", m_columns.m_col_idle);
 	append_column("Evening", m_columns.m_col_evening);
+	append_column("Idle", m_columns.m_col_idle);
 	m_taskAccessor->attach(this);
 	set_headers_visible(false);
 	//Fill the popup menu:
@@ -184,6 +184,7 @@ void Details::populate()
 	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
 	std::vector<TimeEntry>::iterator iter = timeList.begin();
 	time_t prevStartTime = 0;
+	bool first = true;
 	int64_t secondsInDay;
 	time_t now = time(nullptr);
 	bool isToday = !onDifferentDays(m_startTime, now);
@@ -207,14 +208,14 @@ void Details::populate()
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.ID();
-		row[m_columns.m_col_morning] = firstOnDay ? libtimeit::dayOfWeekAbbreviation(startTime) : "";
-		row[m_columns.m_col_time] = libtimeit::createDurationString(startTime, stopTime);
+		row[m_columns.m_col_morning] = firstOnDay ? dayOfWeekAbbreviation(startTime) : "";
+		row[m_columns.m_col_time] = createDurationString(startTime, stopTime);
 		if (++iter != timeList.end()) // here iterate to next
 		{
 			TimeEntry nextTe = *iter;
 			time_t nextStartTime = nextTe.start();
 			lastOnDay = onDifferentDays(startTime, nextStartTime);
-			row[m_columns.m_col_idle] = libtimeit::createIdlingString(stopTime, nextStartTime);
+			row[m_columns.m_col_idle] = "\u2003" + createIdlingString(stopTime, nextStartTime);
 		}
 		else
 		{
@@ -228,13 +229,15 @@ void Details::populate()
 				difftime(m_stopTime, stopTime) > 0 ? stopTime : m_stopTime,
 				difftime(startTime, m_startTime) > 0 ? startTime : m_startTime);
 		if (lastOnDay) {
-			row[m_columns.m_col_evening] = "\u2007≈" + libtimeit::seconds2hhmm(secondsInDay);
+			row[m_columns.m_col_evening] =
+				(first && onDifferentDays(startTime, m_startTime) ? "≠" : "≈") + seconds2hhmm(secondsInDay);
 		}
 		else
 		{
 			row[m_columns.m_col_evening] = "";
 		}
 		prevStartTime = startTime;
+		first = false;
 	}
 	columns_autosize();
 }

@@ -263,7 +263,7 @@ std::string createIdlingString(const time_t &to, const time_t &next)
 {
 	stringstream retVal;
 	int64_t toNextMin = difftime(next, to) / 60;
-	retVal << "\u2003⇣ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
+	retVal << "⇣ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
 	return retVal.str();
 }
 
