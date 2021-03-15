@@ -15,7 +15,6 @@
 #include <langinfo.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <optional>
 
 //using namespace Glib;
 using namespace std;
@@ -190,6 +189,13 @@ time_t getTime(int year, int month, int day, int hour, int min, int sec)
 	timeInfo->tm_sec = sec;
 	timeInfo->tm_isdst = -1;
 	return mktime(timeInfo);
+}
+
+bool onDifferentDays(const time_t &one, const time_t &other)
+{
+	struct tm oneTime = *localtime(&one);
+	struct tm otherTime = *localtime(&other);
+	return oneTime.tm_year != otherTime.tm_year || oneTime.tm_mon != otherTime.tm_mon || oneTime.tm_mday != otherTime.tm_mday;
 }
 
 std::string seconds2hhmm(int64_t s)

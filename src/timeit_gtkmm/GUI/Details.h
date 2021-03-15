@@ -79,13 +79,16 @@ private:
 			add(m_col_id);
 			add(m_col_time);
 			add(m_col_idle);
+			add(m_col_morning);
 		}
 		;
 		Gtk::TreeModelColumn<int> m_col_id;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_idle;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_morning;
 	};
 	ModelColumns m_columns;
+	int m_morningColumnN;
 	Gtk::Calendar *m_calendar;
 	int64_t m_taskID;
 //	time_t m_activeDay;
