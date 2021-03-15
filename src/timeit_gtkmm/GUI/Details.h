@@ -80,12 +80,14 @@ private:
 			add(m_col_time);
 			add(m_col_idle);
 			add(m_col_morning);
+			add(m_col_evening);
 		}
 		;
 		Gtk::TreeModelColumn<int> m_col_id;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_idle;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_morning;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_evening;
 	};
 	ModelColumns m_columns;
 	int m_morningColumnN;
