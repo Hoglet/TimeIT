@@ -198,6 +198,14 @@ bool onDifferentDays(const time_t &one, const time_t &other)
 	return oneTime.tm_year != otherTime.tm_year || oneTime.tm_mon != otherTime.tm_mon || oneTime.tm_mday != otherTime.tm_mday;
 }
 
+std::string dayOfWeekAbbreviation(const time_t &rawtime)
+{
+	struct tm *timeInfo = localtime(&rawtime);
+	std::array<char,15> abbreviation;
+	int length = strftime(abbreviation.data(), abbreviation.size(), "%a", timeInfo);
+	return length ? abbreviation.data() : "☼";
+}
+
 std::string seconds2hhmm(int64_t s)
 {
 	stringstream retVal;

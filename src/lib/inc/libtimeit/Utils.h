@@ -26,6 +26,7 @@ time_t getBeginingOfYear(const time_t&);
 time_t getEndOfYear(const time_t&);
 int getDaysInMonth(const time_t &rawtime);
 bool onDifferentDays(const time_t &one, const time_t &other);
+std::string dayOfWeekAbbreviation(const time_t &rawtime);
 std::string seconds2hhmm(int64_t s);
 std::string createDurationString(const time_t &from, const time_t &to);
 std::string createIdlingString(const time_t &to, const time_t &next);
