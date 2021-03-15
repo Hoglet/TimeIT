@@ -9,6 +9,7 @@
 #include <vector>
 #include <libtimeit/Utils.h>
 #include <glibmm/i18n.h>
+#include <optional>
 
 using namespace Gtk;
 using namespace std;
@@ -27,6 +28,8 @@ Details::Details(shared_ptr<IDatabase> &database) :
 	m_taskID = 0;
 	m_treeModel = ListStore::create(m_columns);
 	set_model(m_treeModel);
+	m_morningColumnN = append_column("Morning", m_columns.m_col_morning) - 1;
+	get_column(m_morningColumnN)->set_visible(false);
 	append_column("Time", m_columns.m_col_time);
 	append_column("Idle", m_columns.m_col_idle);
 	m_taskAccessor->attach(this);
@@ -152,12 +155,14 @@ void Details::on_completeUpdate()
 
 void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 {
+	bool acrossDays = onDifferentDays(startTime, stopTime);
 	if (ID > 0)
 	{
 		m_taskID = ID;
 		m_startTime = startTime;
 		m_stopTime = stopTime;
 		empty();
+		get_column(m_morningColumnN)->set_visible(acrossDays);
 		populate();
 	}
 	else
@@ -177,31 +182,37 @@ void Details::populate()
 {
 	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
 	std::vector<TimeEntry>::iterator iter = timeList.begin();
+	time_t prevStartTime = 0;
 	for (; iter != timeList.end(); )
 	{
 		TimeEntry te = *iter;
 		TreeModel::Row row;
 		TreeModel::iterator TMIter;
 		Gtk::TreeIter treeIter = findRow(te.ID());
+		time_t startTime = te.start();
+		time_t stopTime = te.stop();
 		if (treeIter == m_treeModel->children().end())
 		{
 			treeIter = m_treeModel->append();
 		}
 		row = *treeIter;
 		row[m_columns.m_col_id] = te.ID();
-		row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
+		row[m_columns.m_col_morning] = onDifferentDays(prevStartTime, startTime) ? "☼" : "";
+		row[m_columns.m_col_time] = libtimeit::createDurationString(startTime, stopTime);
 		if (++iter != timeList.end()) // here iterate to next
 		{
 			TimeEntry nextTe = *iter;
-			time_t nextTime = nextTe.start();
-			row[m_columns.m_col_idle] = libtimeit::createIdlingString(te.stop(), nextTime);
+			time_t nextStartTime = nextTe.start();
+			row[m_columns.m_col_idle] = libtimeit::createIdlingString(stopTime, nextStartTime);
 		}
 		else
 		{
 			row[m_columns.m_col_idle] = "\u2003⋯";
 			break;
 		}
+		prevStartTime = startTime;
 	}
+	columns_autosize();
 }
 
 void Details::on_menu_file_popup_edit()
