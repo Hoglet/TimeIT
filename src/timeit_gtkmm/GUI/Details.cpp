@@ -192,11 +192,11 @@ void Details::populate()
 		{
 			TimeEntry nextTe = *iter;
 			time_t nextTime = nextTe.start();
-			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop(), &nextTime);
+			row[m_columns.m_col_time] = libtimeit::createDurationAndIdlingString(te.start(), te.stop(), nextTime);
 		}
 		else
 		{
-			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop(), nullptr);
+			row[m_columns.m_col_time] = libtimeit::createDurationString(te.start(), te.stop());
 			break;
 		}
 	}

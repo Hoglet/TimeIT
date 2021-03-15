@@ -15,6 +15,7 @@
 #include <langinfo.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <optional>
 
 //using namespace Glib;
 using namespace std;
@@ -206,9 +207,9 @@ std::string seconds2hhmm(int64_t s)
 std::string smallNumbers(std::string s)
 {
 	stringstream retVal;
-	for(auto i = s.cbegin(); i != s.cend(); ++i)
+	for (auto c: s)
 	{
-		switch (*i) {
+		switch (c) {
 			case '0': retVal << "₀"; break;
 			case '1': retVal << "₁"; break;
 			case '2': retVal << "₂"; break;
@@ -219,13 +220,13 @@ std::string smallNumbers(std::string s)
 			case '7': retVal << "₇"; break;
 			case '8': retVal << "₈"; break;
 			case '9': retVal << "₉"; break;
-			default: retVal << *i;
+			default: retVal << c;
 		}
 	}
 	return retVal.str();
 }
 
-std::string createDurationString(const time_t &from, const time_t &to, const time_t *next)
+std::string createDurationStringImplementation(const time_t &from, const time_t &to, const std::optional<time_t> &next)
 {
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
@@ -242,10 +243,20 @@ std::string createDurationString(const time_t &from, const time_t &to, const tim
 	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from));
 	if (next)
 	{
-		int64_t toNextMin = difftime(*next, to) / 60;
-		retVal << (acrossDays ? "\u2003" : "\u2003\u2003\u2003") << "₋ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
+		int64_t toNextMin = difftime(next.value(), to) / 60;
+		retVal << (acrossDays ? "\u2003" : "\u2003\u2003\u2003") << "⇣ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
 	}
 	return retVal.str();
+}
+
+std::string createDurationString(const time_t &from, const time_t &to)
+{
+	return createDurationStringImplementation(from, to, {});
+}
+
+std::string createDurationAndIdlingString(const time_t &from, const time_t &to, const time_t &next)
+{
+	return createDurationStringImplementation(from, to, next);
 }
 
 time_t now()
