@@ -220,13 +220,14 @@ std::string smallNumbers(std::string s)
 			case '7': retVal << "₇"; break;
 			case '8': retVal << "₈"; break;
 			case '9': retVal << "₉"; break;
+			case '-': retVal << "₋"; break;
 			default: retVal << c;
 		}
 	}
 	return retVal.str();
 }
 
-std::string createDurationStringImplementation(const time_t &from, const time_t &to, const std::optional<time_t> &next)
+std::string createDurationString(const time_t &from, const time_t &to)
 {
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
@@ -240,23 +241,16 @@ std::string createDurationStringImplementation(const time_t &from, const time_t 
 		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " ";
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
-	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from));
-	if (next)
-	{
-		int64_t toNextMin = difftime(next.value(), to) / 60;
-		retVal << (acrossDays ? "\u2003" : "\u2003\u2003\u2003") << "⇣ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
-	}
+	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from)) << (acrossDays ? "" : "\u2003");
 	return retVal.str();
 }
 
-std::string createDurationString(const time_t &from, const time_t &to)
+std::string createIdlingString(const time_t &to, const time_t &next)
 {
-	return createDurationStringImplementation(from, to, {});
-}
-
-std::string createDurationAndIdlingString(const time_t &from, const time_t &to, const time_t &next)
-{
-	return createDurationStringImplementation(from, to, next);
+	stringstream retVal;
+	int64_t toNextMin = difftime(next, to) / 60;
+	retVal << "\u2003⇣ " << smallNumbers(std::to_string(toNextMin)) << " ₘ";
+	return retVal.str();
 }
 
 time_t now()
