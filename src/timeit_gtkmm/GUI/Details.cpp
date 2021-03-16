@@ -104,11 +104,12 @@ void Details::on_menu_file_popup_remove()
 			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
 			int64_t minutesToLose = difftime(te.stop(), te.start()) / 60;
+			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
 				minutesToLose > idleGt || minutesToLose > idleGz ?
 				string_printf(
-					_("Removing will lose <span color='red'>%d</span> minutes.\n\nRemoving will be permanent."),
-					minutesToLose) :
+					_("Removing will lose %s minutes.\n\nRemoving will be permanent."),
+					minutesString.c_str()) :
 				_("Gone, gone will not come again...");
 
 			Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
@@ -152,11 +153,12 @@ void Details::on_menu_file_popup_merge()
 			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
 			int64_t minutesToGain = difftime(te1.start(), te0.stop()) / 60;
+			std::string minutesString = string_printf("<span color='green'>%d</span>", minutesToGain);
 			std::string secondaryText =
 				minutesToGain > idleGt || minutesToGain > idleGz ?
 				string_printf(
-					_("Merging will add <span color='green'>%d</span> minutes.\n\nMerging with the next row will be permanent."),
-					minutesToGain) :
+					_("Merging will add %s minutes.\n\nMerging with the next row will be permanent."),
+					minutesString.c_str()) :
 				_("Merging with the next row will be permanent.");
 
 			Gtk::MessageDialog dialog(_("Do you really want to merge?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
