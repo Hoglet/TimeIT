@@ -16,6 +16,8 @@
 #include <libtimeit/db/Database.h>
 #include <libtimeit/db/TimeAccessor.h>
 
+#include <vector>
+
 namespace GUI
 {
 using namespace libtimeit;
@@ -45,6 +47,7 @@ public:
 	bool on_button_press_event(GdkEventButton *event);
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
+	void on_menu_file_popup_merge();
 	//EventObserver interface
 	virtual void on_taskAdded(int64_t)
 	{
@@ -57,6 +60,7 @@ public:
 	virtual void on_taskTimeChanged(int64_t);
 	//
 	int64_t getSelectedID();
+	std::vector<int64_t> getSelectedAndNextID();
 	//
 	void attach(DetailsObserver*);
 	void detach(DetailsObserver*);
@@ -100,6 +104,7 @@ private:
 	std::list<DetailsObserver*> observers;
 	shared_ptr<ITimeAccessor> m_timeAccessor;
 	shared_ptr<ITaskAccessor> m_taskAccessor;
+	shared_ptr<ISettingsAccessor> m_settingsAccessor;
 };
 }
 
