@@ -10,6 +10,8 @@
 #include <libtimeit/Utils.h>
 #include <glibmm/i18n.h>
 #include <optional>
+#include <vector>
+#include <libtimeit/db/DefaultValues.h>
 
 using namespace Gtk;
 using namespace std;
@@ -19,7 +21,8 @@ namespace GUI
 {
 
 Details::Details(shared_ptr<IDatabase> &database) :
-		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor())
+		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor()),
+		m_settingsAccessor(database->getSettingsAccessor())
 
 {
 	m_calendar = nullptr;
@@ -40,6 +43,7 @@ Details::Details(shared_ptr<IDatabase> &database) :
 		Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
+		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &Details::on_menu_file_popup_merge)));
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	m_Menu_Popup.accelerate(*this);
@@ -58,45 +62,127 @@ int64_t Details::getSelectedID()
 	Glib::RefPtr<TreeSelection> refTreeSelection = get_selection();
 	TreeModel::iterator iter;
 	iter = refTreeSelection->get_selected();
-	if (iter) //If anything is selected
+	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
 		retVal = row[m_columns.m_col_id];
-		//Do something with the row.
+	}
+	return retVal;
+}
+
+std::vector<int64_t> Details::getSelectedAndNextID()
+{
+	std::vector<int64_t> retVal(2, 0);
+	Glib::RefPtr<TreeSelection> refTreeSelection = get_selection();
+	TreeModel::iterator iter;
+	iter = refTreeSelection->get_selected();
+	if (iter) // if anything is selected
+	{
+		TreeModel::Row row = *iter;
+		retVal[0] = row[m_columns.m_col_id];
+		//std::cout << "one row" << std::endl;
+		++iter;
+		if (iter) // if there is a next row
+		{
+			TreeModel::Row nextRow = *iter;
+			retVal[1] = nextRow[m_columns.m_col_id];
+			//std::cout << "two rows" << std::endl;
+		}
 	}
 	return retVal;
 }
 
 void Details::on_menu_file_popup_remove()
 {
-	Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-	dialog.set_secondary_text(_("Gone, gone will not come again..."));
-
-	int result = dialog.run();
-
-	//Handle the response:
-	switch (result)
+	int64_t selectedID = getSelectedID();
+	if (selectedID > 0)
 	{
-	case (Gtk::RESPONSE_OK):
-	{
-		int64_t selectedID = getSelectedID();
-		if (selectedID > 0)
+		optional<TimeEntry> ote = m_timeAccessor->getByID(selectedID);
+		if (ote)
 		{
-			m_timeAccessor->remove(selectedID);
-			empty();
-			populate();
-			//DetailsDialog::instance().show();
-		}
-		break;
-	}
-	case (Gtk::RESPONSE_CANCEL):
-		std::cout << "Cancel clicked." << std::endl;
-		break;
-	default:
-		std::cout << "Unexpected button clicked." << std::endl;
-		break;
-	}
+			TimeEntry te = ote.value();
+			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
+			int64_t minutesToLose = difftime(te.stop(), te.start()) / 60;
+			std::string secondaryText =
+				minutesToLose > idleGt || minutesToLose > idleGz ?
+				string_printf(
+					_("Removing will lose <span color='red'>%d</span> minutes.\n\nRemoving will be permanent."),
+					minutesToLose) :
+				_("Gone, gone will not come again...");
 
+			Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+			dialog.set_secondary_text(secondaryText, true);
+
+			int result = dialog.run();
+
+			//Handle the response:
+			switch (result)
+			{
+			case (Gtk::RESPONSE_OK):
+			{
+				m_timeAccessor->remove(selectedID);
+				empty();
+				populate();
+				//DetailsDialog::instance().show();
+				break;
+			}
+			case (Gtk::RESPONSE_CANCEL):
+				//std::cout << "Cancel clicked." << std::endl;
+				break;
+			default:
+				//std::cout << "Unexpected button clicked." << std::endl;
+				break;
+			}
+		}
+	}
+}
+
+void Details::on_menu_file_popup_merge()
+{
+	std::vector<int64_t> selectedIDs = getSelectedAndNextID();
+	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
+	{
+		optional<TimeEntry> ote0 = m_timeAccessor->getByID(selectedIDs[0]);
+		optional<TimeEntry> ote1 = m_timeAccessor->getByID(selectedIDs[1]);
+		if (ote0 && ote1)
+		{
+			TimeEntry te0 = ote0.value();
+			TimeEntry te1 = ote1.value();
+			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
+			int64_t minutesToGain = difftime(te1.start(), te0.stop()) / 60;
+			std::string secondaryText =
+				minutesToGain > idleGt || minutesToGain > idleGz ?
+				string_printf(
+					_("Merging will add <span color='green'>%d</span> minutes.\n\nMerging with the next row will be permanent."),
+					minutesToGain) :
+				_("Merging with the next row will be permanent.");
+
+			Gtk::MessageDialog dialog(_("Do you really want to merge?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+			dialog.set_secondary_text(secondaryText, true);
+
+			int result = dialog.run();
+
+			//Handle the response:
+			switch (result)
+			{
+			case (Gtk::RESPONSE_OK):
+			{
+				time_t newStart = te0.start();
+				m_timeAccessor->remove(te0.ID());
+				m_timeAccessor->updateTime(te1.ID(), newStart, te1.stop());
+				empty();
+				populate();
+				break;
+			}
+			case (Gtk::RESPONSE_CANCEL):
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 bool Details::on_button_press_event(GdkEventButton *event)
