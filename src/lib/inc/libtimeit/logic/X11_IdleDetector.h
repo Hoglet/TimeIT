@@ -1,5 +1,5 @@
 /*
- * IdleDetector.h
+ * X11_IdleDetector.h
  *
  *  Created on: 2008-aug-27
  *      Author: hoglet
@@ -20,11 +20,12 @@ public:
 };
 
 
-class IdleDetector : public libtimeit::TimerObserver, public IIdleDetector
+class X11_IdleDetector : public libtimeit::TimerObserver, public IIdleDetector
 {
 public:
-	IdleDetector();
-	virtual ~IdleDetector();
+	static bool available();
+	X11_IdleDetector();
+	virtual ~X11_IdleDetector();
 	int minutesIdle();
 	time_t timeIdle();
 	void setIdleTimeout(int minutes);
@@ -32,7 +33,6 @@ public:
 	bool idle();
 private:
 	void pollStatus();
-	bool IdleDetectionPossible;
 	time_t idleSeconds;
 	time_t lastPoll = 0;
 	long idleTimeout;

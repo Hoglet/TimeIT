@@ -1,11 +1,11 @@
 /*
- * IdleDetector.cpp
+ * X11_IdleDetector.cpp
  *
  *  Created on: 2008-aug-27
  *      Author: hoglet
  */
 
-#include "libtimeit/logic/IdleDetector.h"
+#include "libtimeit/logic/X11_IdleDetector.h"
 #include <iostream>
 #include <libtimeit/Timer.h>
 #include <X11/Xlib.h>
@@ -13,6 +13,7 @@
 #include <X11/extensions/scrnsaver.h>
 #include <memory>
 #include <libtimeit/Utils.h>
+#include <exception>
 
 
 namespace
@@ -22,27 +23,38 @@ Display* display = 0;
 XScreenSaverInfo* XInfo = 0;
 }
 
+using namespace std;
+
 IIdleDetector::~IIdleDetector()
 {
 
 }
 
-IdleDetector::IdleDetector()
+bool X11_IdleDetector::available()
 {
 	int event_base, error_base;
-	if (display == 0)
+	auto dsp = XOpenDisplay(0);
+
+	if ( XScreenSaverQueryExtension(dsp, &event_base, &error_base))
 	{
-		display = XOpenDisplay(0);
+		return true;
 	}
-	if (XInfo == 0)
+	else
 	{
-		XInfo = XScreenSaverAllocInfo();
+		return false;
 	}
-	IdleDetectionPossible = false;
-	if (XScreenSaverQueryExtension(display, &event_base, &error_base))
+
+}
+
+X11_IdleDetector::X11_IdleDetector()
+{
+	if(!available())
 	{
-		IdleDetectionPossible = true;
+		cerr << "Unable to detect if user is idle. XScreenSaverQueryExtension not available\n";
+		throw runtime_error("X11 exception");
 	}
+	display = XOpenDisplay(0);
+	XInfo = XScreenSaverAllocInfo();
 	idleSeconds = 0;
 	lastPoll = libtimeit::now();
 	idleTimeout = 2000;
@@ -50,32 +62,30 @@ IdleDetector::IdleDetector()
 	isIdle = false;
 }
 
-IdleDetector::~IdleDetector()
+X11_IdleDetector::~X11_IdleDetector()
 {
 	if (XInfo)
 	{
-		//TODO safer allocation/dealocation!
 		XFree(XInfo);
-    XInfo = nullptr;
+	}
+	if(display)
+	{
+		XCloseDisplay(display);
 	}
 }
-void IdleDetector::setIdleTimeout(int minutes)
+void X11_IdleDetector::setIdleTimeout(int minutes)
 {
 	idleTimeout = minutes * 60;
 }
 
-void IdleDetector::reset()
+void X11_IdleDetector::reset()
 {
 	isIdle = false;
 	lastPoll = libtimeit::now();
 }
 
-void IdleDetector::pollStatus()
+void X11_IdleDetector::pollStatus()
 {
-	if (!IdleDetectionPossible)
-	{
-		return;
-	}
 	time_t now = libtimeit::now();
 	auto pollTime = now - lastPoll;
 	lastPoll = now;
@@ -88,7 +98,6 @@ void IdleDetector::pollStatus()
 		isIdle = true;
 		return;
 	}
-
 
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), XInfo);
 	idleSeconds = (XInfo->idle / 1000);
@@ -108,18 +117,18 @@ void IdleDetector::pollStatus()
 
 }
 
-bool IdleDetector::idle()
+bool X11_IdleDetector::idle()
 {
 	pollStatus();
 	return isIdle;
 }
 
-int IdleDetector::minutesIdle()
+int X11_IdleDetector::minutesIdle()
 {
 	return timeIdle() / secsPerMinute;
 }
 
-time_t IdleDetector::timeIdle()
+time_t X11_IdleDetector::timeIdle()
 {
 	pollStatus();
 	return idleSeconds;
