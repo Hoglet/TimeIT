@@ -150,6 +150,11 @@ void Controller::on_action_remove_task()
 
 void Controller::on_activityResumed()
 {
+	if( ! timeKeeper->hasRunningTasks())
+	{
+		timeKeeper->enable(false);
+		return;
+	}
 	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
 	if(quiet)
 	{
