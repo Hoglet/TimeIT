@@ -1,5 +1,7 @@
 
 #Roadmap
+Instead of creating a ticket for each thing this document outlines the
+direction of the development.
 
 ## Cleanup
 ### project tree
@@ -14,6 +16,9 @@
     * Update README
 
 ## Create lib
+* Containing all non gui logic.
+* Behaving like current "Quiet" mode.
+* Message based communication to gui.
 
 ## Googletest
 * In separate binary.
@@ -28,34 +33,54 @@
 ## Remove cmake package
 Use only native.
 
-## Separate the UI
+## Separate UI
 * gtkmm
 * wxWidgets?
+* console?
+
+## Optimization
+In order of importance:
+1. Readability and maintenance.
+2. Robustness.
+3. Performance.
 
 ## Readability 
-
-* no null.
-* pass by value.
+* Guidelines to contributors on what is expected.
+* Reduce complexity.
+* Pass by value.
 * camelCase -> snake_case.
 * parameter lists formatted as lists.
 * Remove noise
     * ::getName() -> ::name()
-    * liberal use of "using namespace" 
+    * liberal use of "using namespace".
 
 ## robustness
-* immutable.
-* no pointers if not needed.
-* no naked news.
-* No **un scoped** "using namespace" in header files
+* Immutable.
+* No smart pointers if not needed.
+* No raw pointers.
+* No naked news.
+* No null.
+* No **unscoped** "using namespace" in header files
 
-## C++20 (C++17 first)
-* Use the new stuff when beneficial
-* replace string_sprintf with fmt 
+## New language features
+Use the new stuff when beneficial.
+* optional.
+* replace string_sprintf with fmt
+* auto.
+* Copy elision (return value optimization).
+* Lambda
+* [[fallthrough]], [[nodiscard]] and [[maybe_unused]]
+* string_view
+* invoke?
+* filesystem
+
+And maybe more.
 
 
 # Done
 
 ## Cleanup of directory structure
  * Moving src to subdirectory
+ * async instead of thread
 
 
