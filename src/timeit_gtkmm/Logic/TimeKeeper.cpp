@@ -108,10 +108,7 @@ void Timekeeper::StartTask(int64_t id)
 		task.taskID = id;
 		activeTasks[id] = task;
 		m_timeAccessor->setRunning(task.dbHandle, true);
-		if (activeTasks.size() == 1)
-		{
-			notifyRunningChanged();
-		}
+		notifyRunningChanged();
 	}
 }
 
@@ -138,11 +135,7 @@ void Timekeeper::StopTask(int64_t id)
 		TaskTime task = it->second;
 		activeTasks.erase(it);
 		m_timeAccessor->setRunning(task.dbHandle, false);
-
-		if (activeTasks.empty() == true)
-		{
-			notifyRunningChanged();
-		}
+		notifyRunningChanged();
 	}
 }
 
@@ -153,10 +146,7 @@ void Timekeeper::on_taskRemoved(int64_t id)
 	if (it != activeTasks.end())
 	{
 		activeTasks.erase(it);
-		if (activeTasks.empty())
-		{
-			notifyRunningChanged();
-		}
+		notifyRunningChanged();
 	}
 }
 void Timekeeper::on_completeUpdate()

@@ -23,11 +23,16 @@ std::shared_ptr<DetailsDialog> DetailsDialog::create(shared_ptr<IDatabase>& data
 }
 
 DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
-		detailList(database), table(7, 4), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
+		table1(14, 1), taskName(""),
+		detailList(database),
+		table2(7, 4), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
 		startColonLabel(":"), toLabel("→"), stopColonLabel(":"),
 		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")),
-		timeAccessor(database->getTimeAccessor())
+		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor())
 {
+	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
+	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "blank.svg"), 24, 24, true);
+
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
 	stopTimeHour.set_range(0, 23);
@@ -45,25 +50,31 @@ DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
 	stopTime = 0;
 	oldStopTime = 1;
 
+	taskName.set_alignment(0.0, 0.5);
+	runningImage.set_alignment(0.0, 0.5);
+	runningImage.set(blankIcon);
+	taskName.set_padding(5, 3);
+	table1.attach(taskName, 0, 1, 0, 1);
+	table1.attach(runningImage, 1, 14, 0, 1);
 	//Layout
-	table.attach(startTimeLabel, 0, 3, 0, 1);
-	table.attach(stopTimeLabel, 4, 7, 0, 1);
- 	table.attach(startTimeHour, 0, 1, 1, 2);
-	table.attach(startColonLabel, 1, 2, 1, 2);
-	table.attach(startTimeMinute, 2, 3, 1, 2);
-	table.attach(toLabel, 3, 4, 1, 2);
-	table.attach(stopTimeHour, 4, 5, 1, 2);
-	table.attach(stopColonLabel, 5, 6, 1, 2);
-	table.attach(stopTimeMinute, 6, 7, 1, 2);
+	table2.attach(startTimeLabel, 0, 3, 0, 1);
+	table2.attach(stopTimeLabel, 4, 7, 0, 1);
+ 	table2.attach(startTimeHour, 0, 1, 1, 2);
+	table2.attach(startColonLabel, 1, 2, 1, 2);
+	table2.attach(startTimeMinute, 2, 3, 1, 2);
+	table2.attach(toLabel, 3, 4, 1, 2);
+	table2.attach(stopTimeHour, 4, 5, 1, 2);
+	table2.attach(stopColonLabel, 5, 6, 1, 2);
+	table2.attach(stopTimeMinute, 6, 7, 1, 2);
 
 	scrolledWindow.add(detailList);
+	get_vbox()->pack_start(table1, Gtk::PACK_SHRINK, 3);
 	get_vbox()->pack_start(scrolledWindow, Gtk::PACK_EXPAND_WIDGET, 3);
-	get_vbox()->pack_start(table, Gtk::PACK_SHRINK, 3);
+	get_vbox()->pack_start(table2, Gtk::PACK_SHRINK, 3);
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
 	get_action_area()->pack_start(CancelButton);
 	get_action_area()->pack_start(OKButton);
 	show_all_children();
-	updateTitle();
 
 	//Connect signals
 	OKButton.signal_clicked().connect(sigc::mem_fun(this,
@@ -93,7 +104,7 @@ void DetailsDialog::on_OKButton_clicked()
 {
 	if (startTime != oldStartTime)
 	{
-		auto te = timeAccessor->getByID(timeEntryID);
+		auto te = timeAccessor->getByID(m_timeEntryID);
 		if(te)
 		{
 			timeAccessor->update(te->withStart(startTime));
@@ -101,13 +112,13 @@ void DetailsDialog::on_OKButton_clicked()
 	}
 	if (stopTimeHour.sensitive())
 	{
-		auto te = timeAccessor->getByID(timeEntryID);
+		auto te = timeAccessor->getByID(m_timeEntryID);
 		if(te)
 		{
 			timeAccessor->update(te->withStop(stopTime));
 		}
 	}
-	detailList.set(id, rangeStart, rangeStop);
+	detailList.set(m_taskID, rangeStart, rangeStop);
 	oldStartTime = startTime;
 	oldStopTime = stopTime;
 	checkForChanges();
@@ -145,30 +156,42 @@ void DetailsDialog::setValues()
 	stopTimeMinute.set_value(stopTimeInfo.tm_min);
 }
 
-void DetailsDialog::on_selection_changed(int64_t ID, time_t startTime, time_t stopTime)
+void DetailsDialog::on_selection_changed(int64_t taskID, time_t startTime, time_t stopTime)
 {
-	set(ID, startTime, stopTime);
+	set(taskID, startTime, stopTime);
 }
 
-void DetailsDialog::on_edit_details(int64_t id)
+void DetailsDialog::on_edit_details(int64_t timeEntryID)
 {
-	setTimeEntryID(id);
+	setTimeEntryID(timeEntryID);
 }
 
 
-void DetailsDialog::set(int64_t ID, time_t startTime, time_t stopTime)
+void DetailsDialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 {
-	timeEntryID = 0;
-	id = ID;
+	m_timeEntryID = 0;
+	m_taskID = taskID;
 	rangeStart = startTime;
 	rangeStop = stopTime;
-	detailList.set(ID, rangeStart, rangeStop);
+
+	std::shared_ptr<Task> task = taskAccessor->getTask(taskID);
+	if (task)
+	{
+		taskName.set_text(task->name());
+	}
+	else
+	{
+		taskName.set_text("");
+	}
+
+	detailList.set(taskID, rangeStart, rangeStop);
 	checkForChanges();
+	on_runningTasksChanged();
 }
 
-void DetailsDialog::setTimeEntryID(int64_t id)
+void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 {
-	auto te = timeAccessor->getByID(id);
+	auto te = timeAccessor->getByID(timeEntryID);
 	if (te)
 	{
 		oldStartTime = te->start();
@@ -185,7 +208,7 @@ void DetailsDialog::setTimeEntryID(int64_t id)
 			stopTimeMinute.set_sensitive(true);
 			oldStopTime = te->stop();
 		}
-		timeEntryID = id;
+		m_timeEntryID = timeEntryID;
 		setValues();
 	}
 	else
@@ -199,7 +222,7 @@ void DetailsDialog::setTimeEntryID(int64_t id)
 
 void DetailsDialog::checkForChanges()
 {
-	if (timeEntryID > 0 && (oldStartTime != startTime || oldStopTime != stopTime))
+	if (m_timeEntryID > 0 && (oldStartTime != startTime || oldStopTime != stopTime))
 	{
 		OKButton.set_sensitive(true);
 		CancelButton.set_sensitive(true);
@@ -211,16 +234,32 @@ void DetailsDialog::checkForChanges()
 	}
 }
 
-void DetailsDialog::updateTitle()
+void DetailsDialog::on_runningTasksChanged()
 {
 	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
+	bool runningThisTaskID = false;
 	if (taskIDs.size() > 0)
 	{
 		set_title("TimeIT ⌚");
+		for (auto taskID : taskIDs)
+		{
+			if (taskID == m_taskID)
+			{
+				runningThisTaskID = true;
+			}
+		}
 	}
 	else
 	{
 		set_title("TimeIT");
+	}
+	if (runningThisTaskID)
+	{
+		runningImage.set(runningIcon);
+	}
+	else
+	{
+		runningImage.set(blankIcon);
 	}
 }
 
