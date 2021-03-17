@@ -78,6 +78,9 @@ public:
 	virtual ICalendar& getCalendar();
 
 	virtual void on_show();
+
+	void updateTitle();
+
 private:
 	//Action observer
 	virtual void on_action_task_selection_changed(int selectedTaskID);
@@ -138,6 +141,7 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
+	shared_ptr<ITimeAccessor> timeAccessor;
 	shared_ptr<IExtendedTaskAccessor> taskAccessor;
 	shared_ptr<ISettingsAccessor> settingsAccessor;
 	vector<Summary*> summaries;

@@ -63,6 +63,7 @@ DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
 	get_action_area()->pack_start(CancelButton);
 	get_action_area()->pack_start(OKButton);
 	show_all_children();
+	updateTitle();
 
 	//Connect signals
 	OKButton.signal_clicked().connect(sigc::mem_fun(this,
@@ -207,6 +208,19 @@ void DetailsDialog::checkForChanges()
 	{
 		OKButton.set_sensitive(false);
 		CancelButton.set_sensitive(false);
+	}
+}
+
+void DetailsDialog::updateTitle()
+{
+	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
+	if (taskIDs.size() > 0)
+	{
+		set_title("TimeIT ⌚");
+	}
+	else
+	{
+		set_title("TimeIT");
 	}
 }
 

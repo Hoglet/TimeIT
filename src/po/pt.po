@@ -242,8 +242,8 @@ msgstr "TimeIT website"
 
 #. Tagline
 #: src/GUI/StatusIcon.cpp:285
-msgid "TimeIt. the unobtrusive time tracker"
-msgstr "TimeIt. O cronometrista não obstrutivo"
+msgid "TimeIT. the unobtrusive time tracker"
+msgstr "TimeIT. O cronometrista não obstrutivo"
 
 #: src/GUI/StatusIcon.cpp:118
 msgid "Toggle main window"

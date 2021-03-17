@@ -249,7 +249,7 @@ msgstr "TimeIT spletna stran"
 
 #. Tagline
 #: src/GUI/StatusIcon.cpp:285
-msgid "TimeIt. the unobtrusive time tracker"
+msgid "TimeIT. the unobtrusive time tracker"
 msgstr ""
 
 #: src/GUI/StatusIcon.cpp:118

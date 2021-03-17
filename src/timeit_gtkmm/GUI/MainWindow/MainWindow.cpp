@@ -45,8 +45,9 @@ MainWindow::~MainWindow()
 
 MainWindow::MainWindow(std::shared_ptr<IDatabase> &database) :
 		taskList(database), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
-				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")), taskAccessor(
-				database->getExtendedTaskAccessor()), settingsAccessor(database->getSettingsAccessor())
+				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")),
+				timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor()),
+				settingsAccessor(database->getSettingsAccessor())
 
 {
 	settingsAccessor->attach(this);
@@ -54,7 +55,7 @@ MainWindow::MainWindow(std::shared_ptr<IDatabase> &database) :
 	relateWidgets();
 	attach(this);
 	show_all_children();
-
+	updateTitle();
 }
 
 ICalendar& MainWindow::getCalendar()
@@ -271,6 +272,19 @@ void MainWindow::classicLayout()
 
 		}
 		mainVBox.pack_start(statusbar, Gtk::PACK_SHRINK, 0);
+	}
+}
+
+void MainWindow::updateTitle()
+{
+	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
+	if (taskIDs.size() > 0)
+	{
+		set_title("TimeIT ⌚");
+	}
+	else
+	{
+		set_title("TimeIT");
 	}
 }
 

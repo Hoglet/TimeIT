@@ -271,7 +271,7 @@ void StatusIcon::setTooltip()
 	else
 	{
 		//Tagline
-		message << _("TimeIt. the unobtrusive time tracker");
+		message << _("TimeIT. the unobtrusive time tracker");
 	}
 	m_statusIcon->set_tooltip(message.str());
 }
