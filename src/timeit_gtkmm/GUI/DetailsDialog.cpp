@@ -38,7 +38,7 @@ DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database) :
 	stopTimeMinute.set_increments(1, 1);
 
 	scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolledWindow.set_size_request(240, 100);
+	scrolledWindow.set_size_request(480, 600);
 
 	startTime = 0;
 	oldStartTime = 1;
