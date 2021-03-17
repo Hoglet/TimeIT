@@ -43,6 +43,9 @@ public:
 	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+
+	void updateTitle();
+
 private:
 	DetailsDialog(std::shared_ptr<IDatabase>& database);
 

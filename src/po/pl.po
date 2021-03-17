@@ -249,7 +249,7 @@ msgstr "witryna TimeIT"
 
 #. Tagline
 #: src/GUI/StatusIcon.cpp:285
-msgid "TimeIt. the unobtrusive time tracker"
+msgid "TimeIT. the unobtrusive time tracker"
 msgstr "Timeit. Dyskretne mierzenie czasu twoich zadań"
 
 #: src/GUI/StatusIcon.cpp:118

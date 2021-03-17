@@ -25,7 +25,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 {
 	//set_transient_for(*this);
 
-	set_name("TimeIt");
+	set_name("TimeIT");
 	set_version(VERSION);
 
 	set_copyright("Kent Asplund");

@@ -3,7 +3,7 @@
 Version=1.0
 Exec=timeit
 Icon=timeit.svg
-Name=TimeIt
+Name=TimeIT
 GenericName=Time Tracker
 Comment=
 Encoding=UTF-8

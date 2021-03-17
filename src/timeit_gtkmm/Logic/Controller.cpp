@@ -14,6 +14,7 @@
 #include <libtimeit/db/DefaultValues.h>
 #include <GUIFactory.h>
 #include <libnotify/notify.h>
+#include <MainWindow/MainWindow.h>
 
 constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
@@ -240,6 +241,10 @@ void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t
 //LCOV_EXCL_START
 void Controller::on_runningChanged()
 {
+	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory->getWidget(MAIN_WINDOW));
+	mainWindow->updateTitle();
+	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory->getWidget(DETAILS_DIALOG));
+	detailsDialog->updateTitle();
 }
 void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime)
 {
