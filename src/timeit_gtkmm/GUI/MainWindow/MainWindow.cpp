@@ -55,7 +55,7 @@ MainWindow::MainWindow(std::shared_ptr<IDatabase> &database) :
 	relateWidgets();
 	attach(this);
 	show_all_children();
-	updateTitle();
+	on_runningTasksChanged();
 }
 
 ICalendar& MainWindow::getCalendar()
@@ -275,7 +275,7 @@ void MainWindow::classicLayout()
 	}
 }
 
-void MainWindow::updateTitle()
+void MainWindow::on_runningTasksChanged()
 {
 	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
 	if (taskIDs.size() > 0)

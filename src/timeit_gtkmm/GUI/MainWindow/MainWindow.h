@@ -79,7 +79,7 @@ public:
 
 	virtual void on_show();
 
-	void updateTitle();
+	void on_runningTasksChanged();
 
 private:
 	//Action observer

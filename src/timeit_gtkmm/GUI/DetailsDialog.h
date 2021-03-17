@@ -44,7 +44,7 @@ public:
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 
-	void updateTitle();
+	void on_runningTasksChanged();
 
 private:
 	DetailsDialog(std::shared_ptr<IDatabase>& database);
@@ -55,7 +55,7 @@ private:
 
 	//DetailsObserver
 	void on_selected_changed();
-	void on_edit_details(int64_t id);
+	void on_edit_details(int64_t timeEntryID);
 
 	void setValues();
 	void on_OKButton_clicked();
@@ -63,8 +63,13 @@ private:
 	void on_change();
 	void checkForChanges();
 
+	Gtk::Table table1;
+	Gtk::Label taskName;
+	Gtk::Image runningImage;
+	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
+	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	Details detailList;
-	Gtk::Table table;
+	Gtk::Table table2;
 	Gtk::Label startTimeLabel;
 	Gtk::Label stopTimeLabel;
 	Gtk::Label startColonLabel, toLabel, stopColonLabel;
@@ -82,10 +87,11 @@ private:
 	time_t  stopTime;
 	time_t  rangeStart;
 	time_t  rangeStop;
-	int64_t id;
-	int64_t timeEntryID;
+	int64_t m_taskID;
+	int64_t m_timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
 	std::shared_ptr<ITimeAccessor> timeAccessor;
+	std::shared_ptr<IExtendedTaskAccessor> taskAccessor;
 };
 }
 

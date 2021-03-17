@@ -247,9 +247,9 @@ void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t
 void Controller::on_runningChanged()
 {
 	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory->getWidget(MAIN_WINDOW));
-	mainWindow->updateTitle();
+	mainWindow->on_runningTasksChanged();
 	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory->getWidget(DETAILS_DIALOG));
-	detailsDialog->updateTitle();
+	detailsDialog->on_runningTasksChanged();
 }
 void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime)
 {
