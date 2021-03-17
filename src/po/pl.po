@@ -339,5 +339,5 @@ msgstr "Jarosław Ogrodnik, Maciej Mizgajski, Joanna Porankiewicz Asplund "
 #~ msgid "Quit"
 #~ msgstr "Wyjdź"
 
-#~ msgid "<b>Workspace</b>"
-#~ msgstr "<b>Obszar roboczy</b>"
+#~ msgid "Workspace"
+#~ msgstr "Obszar roboczy"

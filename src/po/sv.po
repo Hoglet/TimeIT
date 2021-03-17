@@ -326,8 +326,8 @@ msgstr "Kent Asplund"
 #~ msgid " -t, --test                                Run tests and exit"
 #~ msgstr " -?, --help                                Visa hjälp"
 
-#~ msgid "<b>Workspace tracking</b>"
-#~ msgstr "<b>Arbetsyta</b>"
+#~ msgid "Workspace tracking"
+#~ msgstr "Arbetsyta"
 
 #~ msgid "No activity has been detected for"
 #~ msgstr "Ingen aktivitet detekterad de senaste"
@@ -341,11 +341,11 @@ msgstr "Kent Asplund"
 #~ msgid "Quit"
 #~ msgstr "Avsluta"
 
-#~ msgid "<b>Desktop</b>"
-#~ msgstr "<b>Arbetsbord</b>"
+#~ msgid "Desktop"
+#~ msgstr "Arbetsbord"
 
 #~ msgid "Desktop tracking"
 #~ msgstr "Automatisk tracker"
 
-#~ msgid "<b>Workspace</b>"
+#~ msgid "Workspace"
 #~ msgstr "Arbetsytor"
