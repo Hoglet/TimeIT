@@ -6,7 +6,7 @@
 #include <libtimeit/Timer.h>
 #include <TimeKeeper.h>
 #include <libtimeit/db/Database.h>
-#include <libtimeit/logic/IdleDetector.h>
+#include <libtimeit/logic/X11_IdleDetector.h>
 #include <libtimeit/db/TaskAccessor.h>
 #include <IGUIFactory.h>
 
@@ -126,7 +126,7 @@ private:
 	libtimeit::Timer& m_timer;
 	std::shared_ptr<libtimeit::ISettingsAccessor> m_settingsAccessor;
 
-	IdleDetector m_idleDetector;
+	X11_IdleDetector m_idleDetector;
 };
 
 #endif /*TIMEKEEPER_H_*/

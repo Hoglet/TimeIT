@@ -1,4 +1,3 @@
-#include <IdleDialog.h>
 #include <libtimeit/Timer.h>
 #include <iostream>
 #include <libtimeit/db/DefaultValues.h>
@@ -21,6 +20,20 @@ ITimeKeeper::~ITimeKeeper()
 //LCOV_EXCL_START
 void Timekeeper::on_signal_1_second()
 {
+	auto idle=m_idleDetector.idle();
+	if(idle!=m_isIdle)
+	{
+		if(idle)
+		{
+			notifyIdleDetected();
+		}
+		else
+		{
+			notifyActivityResumed();
+
+		}
+		m_isIdle = idle;
+	}
 }
 //LCOV_EXCL_STOP
 
@@ -67,23 +80,6 @@ void Timekeeper::on_settingsChanged(const std::string& name)
 
 void Timekeeper::on_signal_10_seconds()
 {
-	auto idle=m_idleDetector.idle();
-	if(idle!=m_isIdle)
-	{
-		if(idle)
-		{
-			if (hasRunningTasks())
-			{
-				notifyIdleDetected();
-			}
-		}
-		else
-		{
-			notifyActivityResumed();
-
-		}
-		m_isIdle = idle;
-	}
 	if (m_enabled)
 	{
 		map<int64_t, TaskTime>::iterator it;
