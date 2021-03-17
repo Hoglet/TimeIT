@@ -326,9 +326,6 @@ msgstr "Kent Asplund"
 #~ msgid " -t, --test                                Run tests and exit"
 #~ msgstr " -?, --help                                Visa hjälp"
 
-#~ msgid "Workspace tracking"
-#~ msgstr "Arbetsyta"
-
 #~ msgid "No activity has been detected for"
 #~ msgstr "Ingen aktivitet detekterad de senaste"
 
