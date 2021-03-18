@@ -11,7 +11,7 @@
 class AutoTracker: public libtimeit::TimerObserver
 {
 public:
-	AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<libtimeit::IDatabase> &database, libtimeit::Timer& timer);
+	AutoTracker(std::shared_ptr<ITimeKeeper> &timeKeeper, const std::shared_ptr<libtimeit::IDatabase> &database, libtimeit::Timer& timer);
 	virtual ~AutoTracker();
 	private:
 	void check4Changes();
@@ -20,7 +20,7 @@ public:
 	virtual void on_signal_1_second();
 
 	int oldWorkspace;
-	std::shared_ptr<ITimeKeeper> m_timekeeper;
+	std::shared_ptr<ITimeKeeper> m_timeKeeper;
 	std::shared_ptr<libtimeit::IAutotrackAccessor> m_autotrackAccessor;
 	std::shared_ptr<libtimeit::ITaskAccessor> m_taskAccessor;
 	libtimeit::Timer& m_timer;

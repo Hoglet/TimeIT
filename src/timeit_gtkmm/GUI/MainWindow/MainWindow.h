@@ -41,7 +41,7 @@ class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, pu
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(shared_ptr<IDatabase>& database);
+	MainWindow(shared_ptr<IDatabase>& database, shared_ptr<ITimeKeeper> &timeKeeper);
 
 
 	// IWidget interface

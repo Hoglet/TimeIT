@@ -8,10 +8,10 @@
 using namespace libtimeit;
 using namespace std;
 
-AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timekeeper, const std::shared_ptr<IDatabase> &database,
+AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timeKeeper, const std::shared_ptr<IDatabase> &database,
 		Timer& timer): m_timer(timer)
 {
-	m_timekeeper = timekeeper;
+	m_timeKeeper = timeKeeper;
 	m_autotrackAccessor = database->getAutotrackAccessor();
 	m_taskAccessor = database->getTaskAccessor();
 	oldWorkspace = -1;
@@ -62,14 +62,14 @@ void AutoTracker::doTaskSwitching(int oldWorkspace, int newWorkspace)
 	{
 		if (false == contains(tasksToStart, taskID))
 		{
-			m_timekeeper->StopTask(taskID);
+			m_timeKeeper->StopTask(taskID);
 		}
 	}
 	for (int64_t taskID : tasksToStart)
 	{
 		try
 		{
-			m_timekeeper->StartTask(taskID);
+			m_timeKeeper->StartTask(taskID);
 		}
 		catch (...)
 		{

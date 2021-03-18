@@ -14,6 +14,7 @@
 #include "MainWindow/Summary.h"
 #include <libtimeit/db/Database.h>
 #include <IWidget.h>
+#include <TimeKeeper.h>
 
 namespace GUI
 {
@@ -31,7 +32,7 @@ public:
 class DetailsDialog: public Gtk::Dialog, public SummaryObserver, public DetailsObserver, public IDetailsDialog, public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<IDatabase>& database);
+	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<IDatabase>& database, std::shared_ptr<ITimeKeeper> &timeKeeper);
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -47,7 +48,7 @@ public:
 	void on_runningTasksChanged();
 
 private:
-	DetailsDialog(std::shared_ptr<IDatabase>& database);
+	DetailsDialog(std::shared_ptr<IDatabase>& database, shared_ptr<ITimeKeeper> &timeKeeper);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -67,6 +68,7 @@ private:
 	Gtk::Label taskName;
 	Gtk::Image runningImage;
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
+	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	Details detailList;
 	Gtk::Table table2;
@@ -90,8 +92,9 @@ private:
 	int64_t m_taskID;
 	int64_t m_timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
-	std::shared_ptr<ITimeAccessor> timeAccessor;
-	std::shared_ptr<IExtendedTaskAccessor> taskAccessor;
+	std::shared_ptr<ITimeAccessor> m_timeAccessor;
+	std::shared_ptr<IExtendedTaskAccessor> m_taskAccessor;
+	std::shared_ptr<ITimeKeeper> m_timeKeeper;
 };
 }
 

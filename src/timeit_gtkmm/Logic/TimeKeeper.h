@@ -27,7 +27,9 @@ public:
 	virtual void StopTask(int64_t id) = 0;
 	virtual void ToggleTask(int64_t id) = 0;
 
+	virtual bool isActiveTask(int64_t taskID) = 0;
 	virtual bool hasRunningTasks() = 0;
+	virtual bool isIdle() = 0;
 	virtual time_t timeIdle() = 0;
 
 	//Enable (or disable) automatic time keeping.
@@ -52,6 +54,7 @@ public:
 	void StopTask(int64_t id);
 	void ToggleTask(int64_t id);
 
+	bool isActiveTask(int64_t taskID);
 	bool hasRunningTasks();
 
 	//Enable (or disable) automatic time keeping.
@@ -68,6 +71,7 @@ public:
 	void detach(TimekeeperObserver*);
 
 	//
+	virtual bool isIdle();
 	virtual time_t timeIdle();
 	virtual int minutesIdle();
 

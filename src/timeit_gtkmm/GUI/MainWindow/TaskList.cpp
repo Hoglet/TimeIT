@@ -9,10 +9,12 @@ using namespace libtimeit;
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(shared_ptr<IDatabase> &database) :
-		taskAccessor(database->getExtendedTaskAccessor())
+TaskList::TaskList(shared_ptr<IDatabase> &database, shared_ptr<ITimeKeeper> &timeKeeper) :
+		taskAccessor(database->getExtendedTaskAccessor()), m_timeKeeper(timeKeeper)
 {
+	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
+	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running-idle.svg"), 24, 24, true);
 	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "blank.svg"), 24, 24, true);
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
@@ -203,10 +205,18 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 
 void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 {
-	row[columns.col_id] = task.ID();
+	int64_t taskID = task.ID();
+	row[columns.col_id] = taskID;
 	if (task.running())
 	{
-		row[columns.col_pixbuf] = runningIcon;
+		if (!m_timeKeeper->isIdle())
+		{
+			row[columns.col_pixbuf] = runningIcon;
+		}
+		else
+		{
+			row[columns.col_pixbuf] = runningIdleIcon;
+		}
 	}
 	else
 	{

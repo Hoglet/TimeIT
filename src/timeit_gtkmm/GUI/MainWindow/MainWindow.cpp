@@ -43,8 +43,8 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(std::shared_ptr<IDatabase> &database) :
-		taskList(database), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
+MainWindow::MainWindow(std::shared_ptr<IDatabase> &database, std::shared_ptr<ITimeKeeper> &timeKeeper) :
+		taskList(database, timeKeeper), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
 				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")),
 				timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor()),
 				settingsAccessor(database->getSettingsAccessor())
@@ -275,6 +275,7 @@ void MainWindow::classicLayout()
 	}
 }
 
+// also displays whether idle
 void MainWindow::on_runningTasksChanged()
 {
 	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
@@ -286,6 +287,7 @@ void MainWindow::on_runningTasksChanged()
 	{
 		set_title("TimeIT");
 	}
+	taskList.on_completeUpdate();
 }
 
 void MainWindow::on_show()

@@ -21,17 +21,19 @@ public:
 	MockTimeKeeper();
 	virtual ~MockTimeKeeper();
 
-	virtual void StartTask(int64_t id) ;
-	virtual void StopTask(int64_t id) ;
+	virtual void StartTask(int64_t id);
+	virtual void StopTask(int64_t id);
 	virtual void ToggleTask(int64_t id);
 
-	virtual bool hasRunningTasks() ;
+	virtual bool isActiveTask(int64_t taskID);
+	virtual bool hasRunningTasks();
+	virtual bool isIdle();
 	virtual time_t timeIdle();
 
 	//Enable (or disable) automatic time keeping.
 	virtual void enable(bool);
 	//Stop all tasks without saving new time records
-	virtual void stopAll() ;
+	virtual void stopAll();
 	//Stop all tasks, without saving new time records, and then start them again
 	virtual void stopAllAndContinue();
 

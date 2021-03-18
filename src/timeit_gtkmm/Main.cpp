@@ -127,10 +127,10 @@ int Main::run(int argc, char *argv[])
 			Timer timer;
 			sigc::connection connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(&timer, &Timer::on_signal_1_second), 1);
 
-			std::shared_ptr<ITimeKeeper> timekeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
-			guiFactory = std::shared_ptr<GUI::IGUIFactory>(new GUI::GUIFactory(timekeeper, database, timer));
+			std::shared_ptr<ITimeKeeper> timeKeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
+			guiFactory = std::shared_ptr<GUI::IGUIFactory>(new GUI::GUIFactory(timeKeeper, database, timer));
 
-			AutoTracker autotracker(timekeeper, database, timer);
+			AutoTracker autotracker(timeKeeper, database, timer);
 
 			shared_ptr<INetwork> network = shared_ptr<INetwork>(new Network());
 
@@ -138,7 +138,7 @@ int Main::run(int argc, char *argv[])
 
 			shared_ptr<Utils::IpcServer> ipcServer = shared_ptr<Utils::IpcServer>(new Utils::IpcServer(socketName, timer));
 
-			Controller controller(guiFactory, timekeeper, database, ipcServer);
+			Controller controller(guiFactory, timeKeeper, database, ipcServer);
 			controller.start();
 
 			//Then start message loop

@@ -51,6 +51,7 @@ public:
 	//
 	virtual void on_idleDetected();
 	virtual void on_activityResumed();
+	virtual void on_idleChanged();
 	virtual void on_runningChanged();
 	virtual void on_action_toggleMainWindow();
 	virtual void on_action_showMainWindow();
