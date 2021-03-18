@@ -34,11 +34,19 @@ void MockTimeKeeper::ToggleTask(int64_t id)
 	;
 }
 
+bool MockTimeKeeper::isActiveTask(int64_t taskID)
+{
+	return false;
+}
 bool MockTimeKeeper::hasRunningTasks()
 {
 	return false;
 }
 
+bool MockTimeKeeper::isIdle()
+{
+	return false;
+}
 time_t MockTimeKeeper::timeIdle()
 {
 	return 0;

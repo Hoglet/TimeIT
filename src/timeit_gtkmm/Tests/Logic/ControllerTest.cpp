@@ -24,7 +24,7 @@ void Controller_startSequence()
 	//Create a database object
 	shared_ptr<IDatabase> database = std::shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
-	shared_ptr<ITimeKeeper> timekeeper = shared_ptr<ITimeKeeper>(new MockTimeKeeper());
+	shared_ptr<ITimeKeeper> timeKeeper = shared_ptr<ITimeKeeper>(new MockTimeKeeper());
 	shared_ptr<MockGuiFactory> guiFactory = shared_ptr<MockGuiFactory>(new MockGuiFactory());
 	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket", timer));
 
@@ -35,7 +35,7 @@ void Controller_startSequence()
 
 	shared_ptr<GUI::IGUIFactory> gfactory = std::static_pointer_cast<GUI::IGUIFactory>(guiFactory);
 
-	Controller controller(gfactory, timekeeper, database, ipc);
+	Controller controller(gfactory, timeKeeper, database, ipc);
 	controller.start();
 	ASSERT_EQUALM("Checking status of status icon after start sequence ", true, statusIcon.visible);
 	ASSERT_EQUALM("Checking status of widgetIdentifier after start sequence ", GUI::MAIN_WINDOW, guiFactory->widgetIdentifier);
@@ -49,11 +49,11 @@ void Controller_testActions()
 	//Create a database object
 	shared_ptr<IDatabase> database = std::shared_ptr<IDatabase>(new TempDB(notifier));
 	Timer timer;
-	shared_ptr<MockTimeKeeper> timekeeper = std::shared_ptr<MockTimeKeeper>(new MockTimeKeeper());
+	shared_ptr<MockTimeKeeper> timeKeeper = std::shared_ptr<MockTimeKeeper>(new MockTimeKeeper());
 	shared_ptr<MockGuiFactory> guiFactory = std::shared_ptr<MockGuiFactory>(new MockGuiFactory());
 	shared_ptr<Utils::IpcServer> ipc = shared_ptr<Utils::IpcServer>(new Utils::IpcServer("timeit-test.socket", timer));
 	shared_ptr<GUI::IGUIFactory> gfactory = std::static_pointer_cast<GUI::IGUIFactory>(guiFactory);
-	shared_ptr<ITimeKeeper> tkeeper = std::shared_ptr<ITimeKeeper>(timekeeper);
+	shared_ptr<ITimeKeeper> tkeeper = std::shared_ptr<ITimeKeeper>(timeKeeper);
 
 	Controller controller(gfactory, tkeeper, database, ipc);
 
@@ -90,15 +90,15 @@ void Controller_testActions()
 	ASSERT_EQUALM("Checking status of mockWidget after toggling main window again", false, guiFactory->widget->is_visible());
 
 	int selectedTaskId = 4;
-	timekeeper->startedTask = 0;
+	timeKeeper->startedTask = 0;
 	controller.on_action_task_selection_changed(selectedTaskId);
 	controller.on_action_start_task();
-	ASSERT_EQUALM("Check that controller is starting the correct task ", selectedTaskId, timekeeper->startedTask);
+	ASSERT_EQUALM("Check that controller is starting the correct task ", selectedTaskId, timeKeeper->startedTask);
 
 	selectedTaskId++;
 	controller.on_action_task_selection_changed(selectedTaskId);
 	controller.on_action_stop_task();
-	ASSERT_EQUALM("Check that controller is starting the correct task ", selectedTaskId, timekeeper->stopedTask);
+	ASSERT_EQUALM("Check that controller is starting the correct task ", selectedTaskId, timeKeeper->stopedTask);
 
 }
 

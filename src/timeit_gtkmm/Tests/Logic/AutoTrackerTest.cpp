@@ -14,10 +14,10 @@ class AutoTrackerTest
 {
 public:
 	AutoTrackerTest() :
-			timekeeper(std::shared_ptr<ITimeKeeper>(new MockTimeKeeper())), database(
+			timeKeeper(std::shared_ptr<ITimeKeeper>(new MockTimeKeeper())), database(
 					std::shared_ptr<IDatabase>(new MockDatabase()))
 	{
-		tracker = new AutoTracker(timekeeper, database, timer);
+		tracker = new AutoTracker(timeKeeper, database, timer);
 	}
 
 	~AutoTrackerTest()
@@ -28,7 +28,7 @@ public:
 private:
 	AutoTracker* tracker;
 	Timer timer;
-	std::shared_ptr<ITimeKeeper> timekeeper;
+	std::shared_ptr<ITimeKeeper> timeKeeper;
 	std::shared_ptr<IDatabase> database;
 
 };

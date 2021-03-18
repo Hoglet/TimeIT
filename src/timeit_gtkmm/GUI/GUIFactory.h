@@ -51,7 +51,7 @@ private:
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
-	shared_ptr<ITimeKeeper> timekeeper;
+	shared_ptr<ITimeKeeper> timeKeeper;
 
 	shared_ptr<IDatabase> database;
 	Timer& timer;

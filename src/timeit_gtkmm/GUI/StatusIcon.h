@@ -75,7 +75,7 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> runningIconSmall;
 
 	Gtk::Menu m_Menu_Popup;
-	std::shared_ptr<ITimeKeeper> m_timekeeper;
+	std::shared_ptr<ITimeKeeper> m_timeKeeper;
 	std::shared_ptr<ITaskAccessor> m_taskaccessor;
 	std::shared_ptr<ITimeAccessor> m_timeaccessor;
 	std::list<IActionObserver*> observers;

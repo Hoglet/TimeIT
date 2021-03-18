@@ -21,8 +21,10 @@ ITimeKeeper::~ITimeKeeper()
 void Timekeeper::on_signal_1_second()
 {
 	auto idle=m_idleDetector.idle();
+	// std::cout << "Timekeeper::on_signal_1_second() was m_isIdle " << m_isIdle << " will be idle " << idle << std::endl;
 	if(idle!=m_isIdle)
 	{
+		m_isIdle = idle;
 		if(idle)
 		{
 			notifyIdleDetected();
@@ -30,9 +32,7 @@ void Timekeeper::on_signal_1_second()
 		else
 		{
 			notifyActivityResumed();
-
 		}
-		m_isIdle = idle;
 	}
 }
 //LCOV_EXCL_STOP
@@ -176,6 +176,11 @@ void Timekeeper::UpdateTask(int64_t id)
 	time_t now = libtimeit::now();
 	UpdateTask(id, now);
 }
+
+bool Timekeeper::isActiveTask(int64_t taskID)
+{
+	return activeTasks.find(taskID) != activeTasks.end();
+}
 bool Timekeeper::hasRunningTasks()
 {
 	return (activeTasks.empty() == false);
@@ -204,6 +209,10 @@ void Timekeeper::stopAllAndContinue()
 	}
 }
 
+bool Timekeeper::isIdle()
+{
+	return m_isIdle;
+}
 int Timekeeper::minutesIdle()
 {
 	return m_idleDetector.minutesIdle();

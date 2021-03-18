@@ -16,9 +16,9 @@
    inkscape:version="0.46"
    version="1.0"
    style="display:inline"
-   sodipodi:docname="icon.svg"
+   sodipodi:docname="running-idle.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/hoglet/Projects/workspace/TimeIt/src/Images/timeit.png"
+   inkscape:export-filename="/home/hoglet/Projects/workspace/TimeIt/src/Images/running-idle.png"
    inkscape:export-xdpi="4.6799998"
    inkscape:export-ydpi="4.6799998">
   <defs
@@ -336,7 +336,7 @@
      inkscape:groupmode="layer"
      id="layer1"
      inkscape:label="Blue"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <g
        id="g4473"
@@ -360,21 +360,21 @@
      id="layer6"
      inkscape:label="Green"
      sodipodi:insensitive="true"
-     style="display:none">
+     style="display:inline">
     <g
        id="g4469"
-       style="fill:#00e600;fill-opacity:1;stroke:none">
+       style="fill:#cdcdcd;fill-opacity:1;stroke:none">
       <path
          id="path4448"
          d="M 250,29.09375 C 128.06135,29.09375 29.093749,128.06135 29.09375,250 C 29.09375,371.93865 128.06135,470.90625 250,470.90625 C 371.93865,470.90625 470.90625,371.93865 470.90625,250 C 470.90625,128.06135 371.93865,29.09375 250,29.09375 z M 250,69.125 C 351.01386,69.124996 433,150.16047 433,250 C 433.00001,349.83953 351.01386,430.875 250,430.875 C 148.98614,430.875 67,349.83953 67,250 C 67.000001,150.16047 148.98614,69.125 250,69.125 z"
-         style="fill:#00e600;fill-opacity:1;stroke:none;stroke-width:1.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
+         style="fill:#cdcdcd;fill-opacity:1;stroke:none;stroke-width:1.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline" />
       <path
          sodipodi:nodetypes="ccccc"
          id="rect4466"
          d="M 41.820726,334.78226 L 184.25673,335.77563 C 197.70444,344.86241 201.22151,363.93447 182.41894,373.9814 L 41.967236,372.71206 C 24.216529,359.90592 28.529987,347.18087 41.820726,334.78226 z"
          inkscape:transform-center-y="-40.589301"
          inkscape:transform-center-x="-54.653769"
-         style="opacity:1;fill:#00e600;fill-opacity:1;stroke:none;stroke-width:1.99603689;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1"
+         style="opacity:1;fill:#cdcdcd;fill-opacity:1;stroke:none;stroke-width:1.99603689;stroke-linecap:round;stroke-miterlimit:4;stroke-opacity:1"
          transform="matrix(0.7976675,-0.6030975,0.5962231,0.8028188,0,0)" />
     </g>
   </g>

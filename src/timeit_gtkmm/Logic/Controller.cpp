@@ -170,6 +170,7 @@ void Controller::on_activityResumed()
 		idleDialog->setActiveTaskList(taskIDs);
 		idleDialog->show();
 	}
+	on_idleChanged();
 }
 
 void Controller::on_idleDetected()
@@ -177,6 +178,15 @@ void Controller::on_idleDetected()
 	timeKeeper->enable(false);
 	time_t now = time(0);
 	idleStartTime = now - timeKeeper->timeIdle();
+	on_idleChanged();
+}
+
+void Controller::on_idleChanged()
+{
+	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory->getWidget(MAIN_WINDOW));
+	mainWindow->on_runningTasksChanged();
+	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory->getWidget(DETAILS_DIALOG));
+	detailsDialog->on_runningTasksChanged();
 }
 
 void Controller::on_action_revertAndContinue()
