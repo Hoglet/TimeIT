@@ -30,3 +30,33 @@ Indent with tabs.
 * No naked new.
 * No null.
 * No **unscoped** "using namespace" in header files
+
+
+## Code example
+<pre>
+void Preference_dialog::on_data_changed()
+{
+  get_values();
+  if (gz < gt
+    &&
+    (
+      gz              != old_gz              ||
+      gt              != old_gt              ||
+      compact_layout  != old_compact_layout  ||
+      start_minimized != old_start_minimized ||
+      password        != old_password        ||
+      user            != old_user            ||
+      URL             != old_URL             ||
+      ignore_cert_err != old_ignore_cert_err ||
+      sync_interval   != old_sync_interval   ||
+      quietMode       != old_quiet_mode
+    ))
+  {
+    OK_button.set_sensitive(true);
+  }
+  else
+  {
+    OK_button.set_sensitive(false);
+  }
+}
+</pre>
