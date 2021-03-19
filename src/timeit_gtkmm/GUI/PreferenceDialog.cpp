@@ -171,9 +171,19 @@ void PreferenceDialog::on_data_changed()
 {
 	get_values();
 	if (gz < gt
-			&& (gz != oldGz || gt != oldGt || compactLayout != oldCompactLayout || startMinimized != oldStartMinimized
-					|| oldPassword != Password || oldUser != User || oldURL != URL || oldIgnoreCertErr != ignoreCertErr
-					|| oldSyncInterval != syncInterval))
+		&&
+		(
+			gz != oldGz ||
+			gt != oldGt ||
+			compactLayout != oldCompactLayout ||
+			startMinimized != oldStartMinimized ||
+			oldPassword != Password ||
+			oldUser != User ||
+			oldURL != URL ||
+			oldIgnoreCertErr != ignoreCertErr ||
+			oldSyncInterval != syncInterval ||
+			oldQuietMode != quietMode
+		))
 	{
 		OKButton.set_sensitive(true);
 	}
