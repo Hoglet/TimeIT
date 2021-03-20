@@ -4,7 +4,6 @@
 
 #include "Logic/AutoTrackerTest.h"
 #include "Logic/ControllerTest.h"
-#include "Logic/TimeKeeperTest.h"
 #include "Misc/test_exceptions.h"
 #include "Misc/test_OSAbstraction.h"
 #include "Misc/test_ApplicationLock.h"
@@ -17,7 +16,6 @@ namespace Test
 {
 TestRunner::TestRunner()
 {
-	s += make_suite_TimeKeeperTest();
 	s += make_suite_ControllerTest();
 	s += make_suite_AutoTrackerTest();
 	s += make_suite_AutoTrackerTest();

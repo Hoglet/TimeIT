@@ -19,7 +19,7 @@
 
 #include <glibmm.h>
 
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 #include <glibmm/i18n.h>
 #include <TestRunner.h>
 #include <libtimeit/sync/SyncManager.h>

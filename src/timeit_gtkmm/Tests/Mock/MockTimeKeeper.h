@@ -9,7 +9,7 @@
 #define MOCKTIMEKEEPER_H_
 
 
-#include "TimeKeeper.h"
+#include "libtimeit/logic/TimeKeeper.h"
 #include <stdint.h>
 
 namespace Test

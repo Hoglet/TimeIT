@@ -9,7 +9,7 @@
 #define GUIFACTORY_H_
 
 #include <libtimeit/db/Database.h>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 #include <IGUIFactory.h>
 #include <libtimeit/Timer.h>
 #include <gtkmm.h>

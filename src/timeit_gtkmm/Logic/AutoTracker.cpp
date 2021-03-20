@@ -3,7 +3,7 @@
 #include <libtimeit/Timer.h>
 #include <iostream>
 #include <vector>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 
 using namespace libtimeit;
 using namespace std;

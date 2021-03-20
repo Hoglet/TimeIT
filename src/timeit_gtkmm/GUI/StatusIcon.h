@@ -10,10 +10,11 @@
 
 #include <gtkmm.h>
 
-#include "TimeKeeper.h"
+#include "libtimeit/logic/TimeKeeper.h"
 #include <libtimeit/db/TaskAccessor.h>
 #include <libtimeit/db/TimeAccessor.h>
 #include "IActionObserver.h"
+#include "IStatusIcon.h"
 
 namespace GUI
 {

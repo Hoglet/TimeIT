@@ -9,7 +9,7 @@
 #include "libtimeit/Utils.h"
 #include <ctime>
 #include <glibmm/i18n.h>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 
 using namespace libtimeit;
 using namespace std;

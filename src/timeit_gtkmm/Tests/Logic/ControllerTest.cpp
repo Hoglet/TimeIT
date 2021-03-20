@@ -6,7 +6,7 @@
 #include "Mock/MockDatabase.h"
 #include "DB/TempDB.h"
 #include "libtimeit/Timer.h"
-#include "TimeKeeper.h"
+#include "libtimeit/logic/TimeKeeper.h"
 #include "Controller.h"
 
 #include "libtimeit/misc/IpcServer.h"

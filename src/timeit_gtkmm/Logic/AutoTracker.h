@@ -2,7 +2,7 @@
 #define AUTOTRACKER_H_
 #include <iostream>
 #include <libtimeit/Timer.h>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 #include <libtimeit/db/Database.h>
 #include <libtimeit/db/AutotrackAccessor.h>
 #include <libtimeit/logic/Workspace.h>

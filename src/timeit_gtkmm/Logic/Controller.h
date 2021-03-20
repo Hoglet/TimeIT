@@ -10,7 +10,7 @@
 #include <IActionObserver.h>
 #include <IGUIFactory.h>
 #include <IdleDialog.h>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 #include <libtimeit/db/ExtendedTaskAccessor.h>
 #include <MainWindow/Summary.h>
 #include <libtimeit/db/ISettingsAccessor.h>

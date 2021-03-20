@@ -24,7 +24,7 @@
 #include <libtimeit/db/ExtendedTask.h>
 #include "IActionObserver.h"
 #include <libtimeit/db/Database.h>
-#include <TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
 
 namespace GUI
 {
