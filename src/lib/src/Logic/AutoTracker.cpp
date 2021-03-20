@@ -1,8 +1,8 @@
-#include <gtkmm.h>
-#include <AutoTracker.h>
-#include <libtimeit/Timer.h>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <libtimeit/logic/AutoTracker.h>
+#include <libtimeit/Timer.h>
 #include <libtimeit/logic/TimeKeeper.h>
 
 using namespace libtimeit;
@@ -31,7 +31,6 @@ void AutoTracker::on_signal_1_second()
 
 void AutoTracker::check4Changes()
 {
-	//Check for changes
 	int newWorkspace;
 	newWorkspace = m_workspace.get_active();
 	if (newWorkspace >= 0 && oldWorkspace != newWorkspace)
@@ -43,7 +42,7 @@ void AutoTracker::check4Changes()
 
 bool contains(std::vector<int64_t> vec, int64_t item)
 {
-	if (std::find(vec.begin(), vec.end(), item) != vec.end())
+	if (find(vec.begin(), vec.end(), item) == vec.end())
 	{
 		return true;
 	}

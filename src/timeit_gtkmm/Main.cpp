@@ -15,13 +15,12 @@
 #include <libtimeit/misc/ApplicationLock.h>
 #include <libtimeit/OSAbstraction.h>
 #include <Controller.h>
-#include <AutoTracker.h>
+#include <libtimeit/logic/AutoTracker.h>
 
 #include <glibmm.h>
 
 #include <libtimeit/logic/TimeKeeper.h>
 #include <glibmm/i18n.h>
-#include <TestRunner.h>
 #include <libtimeit/sync/SyncManager.h>
 #include <MessageCenter.h>
 #include <libtimeit/misc/IpcServer.h>
@@ -70,12 +69,6 @@ Main::Main(int argc, char *argv[])
 				socketName = tmp + ".socket";
 			}
 		}
-		if (argument == "--test" || argument == "-t")
-		{
-			TestRunner testrunner;
-			testrunner.run(argc, argv);
-			exit(0);
-		}
 	}
 
 }
@@ -95,8 +88,6 @@ void Main::printHelp()
 	cout << _("Help Options:") << endl;
 	// Command line help, Line4. How to show help
 	cout << " -?, --help                                " << _("Show help") << endl;
-	// Command line help, how to run internal test
-	cout << " -t, --test                                " << _("Run tests and exit") << endl;
 	// Command line help, Line6. Will expand to "--db=[FILENAME]"
 	cout << "--db=[" << _("FILENAME") << "]" << endl;
 }

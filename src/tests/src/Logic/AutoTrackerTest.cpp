@@ -1,21 +1,23 @@
-#include "cute.h"
-#include "ide_listener.h"
-#include "cute_runner.h"
-#include "AutoTrackerTest.h"
-#include "AutoTracker.h"
+#include <gtest/gtest.h>
+#include <libtimeit/Timer.h>
+#include "libtimeit/logic/AutoTracker.h"
 
-#include "Mock/MockTimeKeeper.h"
-#include "Mock/MockDatabase.h"
+
+#include "../Mock/MockTimeKeeper.h"
+#include "../Mock/MockDatabase.h"
 
 namespace Test
 {
+
+using namespace libtimeit;
 
 class AutoTrackerTest
 {
 public:
 	AutoTrackerTest() :
-			timeKeeper(std::shared_ptr<ITimeKeeper>(new MockTimeKeeper())), database(
-					std::shared_ptr<IDatabase>(new MockDatabase()))
+			timeKeeper(
+					std::shared_ptr<ITimeKeeper>(new MockTimeKeeper())),
+					database(std::shared_ptr<IDatabase>(new test::MockDatabase()))
 	{
 		tracker = new AutoTracker(timeKeeper, database, timer);
 	}
@@ -33,9 +35,10 @@ private:
 
 };
 
-void WorkspaceSwitchTest()
+TEST( Auto_tracker, Workspace_switch_test)
 {
 	AutoTrackerTest test;
+	//TODO: Write this test.....
 	/*		database->get
 	 set task 2 to start on workspace 2
 	 set workspace 1
@@ -46,12 +49,6 @@ void WorkspaceSwitchTest()
 	 */
 }
 
-cute::suite make_suite_AutoTrackerTest()
-{
-	cute::suite s;
-	//s.push_back(CUTE(WorkspaceSwitchTest));
-	return s;
-}
 
 }
 
