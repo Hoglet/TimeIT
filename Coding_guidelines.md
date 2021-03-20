@@ -49,7 +49,7 @@ void Preference_dialog::on_data_changed()
       URL             != old_URL             ||
       ignore_cert_err != old_ignore_cert_err ||
       sync_interval   != old_sync_interval   ||
-      quietMode       != old_quiet_mode
+      quiet_mode      != old_quiet_mode
     ))
   {
     OK_button.set_sensitive(true);
