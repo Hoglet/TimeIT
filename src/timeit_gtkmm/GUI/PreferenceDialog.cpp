@@ -13,9 +13,10 @@
 namespace GUI
 {
 
-PreferenceDialog::PreferenceDialog(std::shared_ptr<libtimeit::IDatabase> &database) :
-		CancelButton(Gtk::StockID("gtk-cancel")), OKButton(Gtk::StockID("gtk-apply")), settingsAccessor(
-				database->getSettingsAccessor())
+PreferenceDialog::PreferenceDialog(IDatabase &database) :
+		CancelButton(Gtk::StockID("gtk-cancel")),
+		OKButton(Gtk::StockID("gtk-apply")),
+		settingsAccessor( database.getSettingsAccessor() )
 
 {
 	//The compact layout option is reducing the size of the toolbar in the main window

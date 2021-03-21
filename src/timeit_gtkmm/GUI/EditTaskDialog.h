@@ -14,6 +14,8 @@
 
 namespace GUI
 {
+using namespace std;
+using namespace libtimeit;
 
 class IEditTaskDialog
 {
@@ -32,7 +34,7 @@ public:
 class EditTaskDialog: public Gtk::Dialog, public IEditTaskDialog, public IAddTaskDialog, public IWidget
 {
 public:
-	EditTaskDialog( std::shared_ptr<libtimeit::IDatabase>& database);
+	EditTaskDialog( IDatabase& database);
 	virtual ~EditTaskDialog();
 	void on_OKButton_clicked();
 	void on_CancelButton_clicked();
@@ -49,8 +51,8 @@ public:
 private:
 	void createLayout();
 	void check4changes();
-	std::vector<int> getTickedWorkspaces();
-	void setTickedWorkspaces(std::vector<int> workspaces);
+	vector<int> getTickedWorkspaces();
+	void setTickedWorkspaces( vector<int> workspaces );
 
 	Gtk::Label NameLabel;
 	Gtk::HBox hbox1;
@@ -67,16 +69,16 @@ private:
 	Gtk::Label parentLabel;
 	ParentChooser parentChooser;
 
-	std::string name;
+	string name;
 	int taskID;
 	int numberOfWorkspaces;
 	int numColumns;
 	int numRows;
-	std::vector<int> workspaces;
+	vector<int> workspaces;
 	int parentID;
 
-	std::shared_ptr<libtimeit::IAutotrackAccessor> autoTrackAccessor;
-	std::shared_ptr<libtimeit::ITaskAccessor> taskAccessor;
+	shared_ptr<IAutotrackAccessor> autoTrackAccessor;
+	shared_ptr<ITaskAccessor> taskAccessor;
 	Workspace workspace;
 };
 }

@@ -5,15 +5,22 @@
 #include <libtimeit/Timer.h>
 #include <libtimeit/logic/TimeKeeper.h>
 
+namespace libtimeit
+{
+
 using namespace libtimeit;
 using namespace std;
 
-AutoTracker::AutoTracker(std::shared_ptr<ITimeKeeper> &timeKeeper, const std::shared_ptr<IDatabase> &database,
-		Timer& timer): m_timer(timer)
+AutoTracker::AutoTracker(
+		ITimeKeeper &time_keeper,
+		IDatabase   &database,
+		Timer &timer)
+		:
+		m_timer(timer),
+		m_timeKeeper(time_keeper)
 {
-	m_timeKeeper = timeKeeper;
-	m_autotrackAccessor = database->getAutotrackAccessor();
-	m_taskAccessor = database->getTaskAccessor();
+	m_autotrackAccessor = database.getAutotrackAccessor();
+	m_taskAccessor = database.getTaskAccessor();
 	oldWorkspace = -1;
 	on_signal_1_second(); //check if we should start anything;
 	m_timer.attach(this);
@@ -61,14 +68,14 @@ void AutoTracker::doTaskSwitching(int oldWorkspace, int newWorkspace)
 	{
 		if (false == contains(tasksToStart, taskID))
 		{
-			m_timeKeeper->StopTask(taskID);
+			m_timeKeeper.StopTask(taskID);
 		}
 	}
 	for (int64_t taskID : tasksToStart)
 	{
 		try
 		{
-			m_timeKeeper->StartTask(taskID);
+			m_timeKeeper.StartTask(taskID);
 		}
 		catch (...)
 		{
@@ -78,4 +85,5 @@ void AutoTracker::doTaskSwitching(int oldWorkspace, int newWorkspace)
 
 }
 
+}
 //http://library.gnome.org/devel/libwnck/stable/WnckScreen.html#wnck-screen-calc-workspace-layout

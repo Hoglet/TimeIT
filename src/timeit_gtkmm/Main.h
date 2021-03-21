@@ -12,6 +12,8 @@
 #include <libtimeit/Timer.h>
 #include <IGUIFactory.h>
 
+namespace GUI
+{
 
 class Main
 {
@@ -29,4 +31,5 @@ private:
 	bool test;
 };
 
+}
 #endif /* MAIN_H_ */

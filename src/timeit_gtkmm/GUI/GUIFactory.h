@@ -22,8 +22,7 @@ using namespace std;
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(shared_ptr<ITimeKeeper>&, shared_ptr<IDatabase> &database,
-			Timer& timer);
+	GUIFactory(ITimeKeeper&, IDatabase &database, Timer& timer);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual IStatusIcon& getStatusIcon();
@@ -51,9 +50,9 @@ private:
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
-	shared_ptr<ITimeKeeper> timeKeeper;
+	ITimeKeeper& timeKeeper;
 
-	shared_ptr<IDatabase> database;
+	IDatabase& database;
 	Timer& timer;
 };
 }

@@ -16,20 +16,30 @@ using namespace std;
 
 namespace GUI
 {
-std::shared_ptr<DetailsDialog> DetailsDialog::create(shared_ptr<IDatabase>& database, shared_ptr<ITimeKeeper> &timeKeeper)
+std::shared_ptr<DetailsDialog> DetailsDialog::create(IDatabase& database, ITimeKeeper &timeKeeper)
 {
 	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper));
 	retVal->weak_this_ptr = weak_ptr<DetailsDialog>(retVal);
 	return retVal;
 }
 
-DetailsDialog::DetailsDialog(shared_ptr<IDatabase>& database, shared_ptr<ITimeKeeper> &timeKeeper) :
-		table1(14, 1), taskName(""),
+DetailsDialog::DetailsDialog(
+		IDatabase   &database,
+		ITimeKeeper &timeKeeper)
+		:
+		table1(14, 1),
+		taskName(""),
 		detailList(database),
-		table2(7, 4), startTimeLabel(_("Start time")), stopTimeLabel(_("Stop time")),
-		startColonLabel(":"), toLabel("→"), stopColonLabel(":"),
-		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")),
-		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getExtendedTaskAccessor()),
+		table2(7, 4),
+		startTimeLabel(_("Start time")),
+		stopTimeLabel(_("Stop time")),
+		startColonLabel(":"),
+		toLabel("→"),
+		stopColonLabel(":"),
+		CancelButton(Gtk::StockID("gtk-revert-to-saved")),
+		OKButton(Gtk::StockID("gtk-apply")),
+		m_timeAccessor(database.getTimeAccessor()),
+		m_taskAccessor(database.getExtendedTaskAccessor()),
 		m_timeKeeper(timeKeeper)
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
@@ -261,7 +271,7 @@ void DetailsDialog::on_runningTasksChanged()
 	}
 	if (runningThisTaskID)
 	{
-		if (!m_timeKeeper->isIdle())
+		if (!m_timeKeeper.isIdle())
 		{
 			runningImage.set(runningIcon);
 		}

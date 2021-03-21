@@ -17,22 +17,22 @@ using namespace std;
 const int ONE_DAY = 60 * 60 * 24;
 
 SyncManager::SyncManager(
-		shared_ptr<IDatabase> &database,
-		shared_ptr<INetwork> &op_network,
+		IDatabase &database,
+		INetwork  &op_network,
 		Notifier& notifier,
-		Timer& timer
+		Timer&    timer
 		):
 		timer_(timer),
-		notifier_(notifier)
+		notifier_(notifier),
+		network(op_network)
 {
 	int len = 1;
 	auto text = unique_ptr<char[]>(new char[len]);
 
-	db = database;
-	taskAccessor = database->getTaskAccessor();
-	timeAccessor = database->getTimeAccessor();
-	settingsAccessor = database->getSettingsAccessor();
-	network = op_network;
+	taskAccessor = database.getTaskAccessor();
+	timeAccessor = database.getTimeAccessor();
+	settingsAccessor = database.getSettingsAccessor();
+
 	timer_.attach(this);
 }
 
@@ -248,7 +248,7 @@ shared_ptr <asyncHTTPResponse> SyncManager::requestTasks(time_t sincePointInTime
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 	std::string jsonString = toJson(tasks, username);
-	return network->request(url, jsonString, username, password, ignoreCertError);
+	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
 shared_ptr <asyncHTTPResponse> SyncManager::requestTimes(time_t sincePointInTime)
@@ -261,7 +261,7 @@ shared_ptr <asyncHTTPResponse> SyncManager::requestTimes(time_t sincePointInTime
 	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
 	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
-	return network->request(url, jsonString, username, password, ignoreCertError);
+	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
 void SyncManager::manageNetworkProblems()

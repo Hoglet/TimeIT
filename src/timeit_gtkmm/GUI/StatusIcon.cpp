@@ -17,11 +17,15 @@ namespace GUI
 using namespace std;
 using namespace libtimeit;
 
-StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timeKeeper, shared_ptr<ITaskAccessor> &taskaccessor, std::shared_ptr<ITimeAccessor> &timeaccessor)
+StatusIcon::StatusIcon(
+		ITimeKeeper &time_keeper,
+		shared_ptr<ITaskAccessor> &task_accessor,
+		shared_ptr<ITimeAccessor> &time_accessor)
+		:
+		m_timeKeeper(time_keeper)
 {
-	m_timeKeeper = timeKeeper;
-	m_taskaccessor = taskaccessor;
-	m_timeaccessor = timeaccessor;
+	m_taskaccessor = task_accessor;
+	m_timeaccessor = time_accessor;
 	const std::string &imagePath = libtimeit::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
@@ -37,7 +41,7 @@ StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timeKeeper, shared_ptr<ITas
 
 	Gtk::Window::set_default_icon(m_defaultIcon);
 
-	m_timeKeeper->attach(this);
+	m_timeKeeper.attach(this);
 
 	populateContextMenu();
 	setTooltip();
@@ -49,7 +53,7 @@ StatusIcon::StatusIcon(std::shared_ptr<ITimeKeeper> &timeKeeper, shared_ptr<ITas
 
 StatusIcon::~StatusIcon()
 {
-	m_timeKeeper->detach(this);
+	m_timeKeeper.detach(this);
 	m_taskaccessor->detach(this);
 }
 
@@ -153,7 +157,7 @@ void StatusIcon::on_menu_toggle_task5()
 
 void StatusIcon::toggleTask(int64_t id)
 {
-	m_timeKeeper->ToggleTask(id);
+	m_timeKeeper.ToggleTask(id);
 }
 
 void StatusIcon::on_activate()
@@ -278,7 +282,7 @@ void StatusIcon::setTooltip()
 
 void StatusIcon::setIcon()
 {
-	if (m_timeKeeper->hasRunningTasks())
+	if (m_timeKeeper.hasRunningTasks())
 	{
 		m_statusIcon->set(m_runningIcon);
 		Gtk::Window::set_default_icon(m_runningIcon);

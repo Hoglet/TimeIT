@@ -20,9 +20,10 @@ using namespace libtimeit;
 namespace GUI
 {
 
-Details::Details(shared_ptr<IDatabase> &database) :
-		m_timeAccessor(database->getTimeAccessor()), m_taskAccessor(database->getTaskAccessor()),
-		m_settingsAccessor(database->getSettingsAccessor())
+Details::Details(IDatabase &database):
+		m_timeAccessor(database.getTimeAccessor()),
+		m_taskAccessor(database.getTaskAccessor()),
+		m_settingsAccessor(database.getSettingsAccessor())
 
 {
 	m_calendar = nullptr;

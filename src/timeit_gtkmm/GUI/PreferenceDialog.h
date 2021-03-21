@@ -21,11 +21,13 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+using namespace std;
 
 class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(std::shared_ptr<libtimeit::IDatabase>& database);
+	PreferenceDialog(IDatabase& database);
 	virtual ~PreferenceDialog();
 
 	// IWidget interface
@@ -78,12 +80,12 @@ private:
 	bool	oldCompactLayout;
 	bool 	oldStartMinimized;
 	bool	oldQuietMode;
-	std::string oldURL;
-	std::string oldUser;
-	std::string oldPassword;
-	std::string URL;
-	std::string User;
-	std::string Password;
+	string  oldURL;
+	string  oldUser;
+	string  oldPassword;
+	string  URL;
+	string  User;
+	string  Password;
 	bool	oldIgnoreCertErr;
 	bool	ignoreCertErr;
 	int		oldSyncInterval;
@@ -94,7 +96,7 @@ private:
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	std::shared_ptr<libtimeit::ISettingsAccessor> settingsAccessor;
+	shared_ptr<ISettingsAccessor> settingsAccessor;
 };
 
 }

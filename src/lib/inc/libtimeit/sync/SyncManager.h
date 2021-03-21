@@ -9,6 +9,7 @@
 
 namespace libtimeit
 {
+using namespace std;
 
 enum class SyncState
 {
@@ -25,10 +26,10 @@ class SyncManager : public TimerObserver
 {
 public:
 	SyncManager(
-			std::shared_ptr<IDatabase>&,
-			std::shared_ptr<INetwork> &network,
-			Notifier& notifier,
-			Timer& timer);
+			IDatabase &database,
+			INetwork  &network,
+			Notifier  &notifier,
+			Timer     &timer);
 	virtual ~SyncManager();
 
 	SyncState status();
@@ -45,18 +46,17 @@ private:
 	void    syncTasksToDatabase();
 	void    manageNetworkProblems();
 
-	std::shared_ptr<asyncHTTPResponse> requestTasks(time_t sincePointInTime);
-	std::shared_ptr<asyncHTTPResponse> requestTimes(time_t sincePointInTime);
+	shared_ptr<asyncHTTPResponse> requestTasks(time_t sincePointInTime);
+	shared_ptr<asyncHTTPResponse> requestTimes(time_t sincePointInTime);
 
-	std::shared_ptr<IDatabase>         db;
-	std::shared_ptr<ITaskAccessor>     taskAccessor;
-	std::shared_ptr<ITimeAccessor>     timeAccessor;
-	std::shared_ptr<ISettingsAccessor> settingsAccessor;
-	std::shared_ptr<INetwork>          network;
+	shared_ptr<ITaskAccessor>     taskAccessor;
+	shared_ptr<ITimeAccessor>     timeAccessor;
+	shared_ptr<ISettingsAccessor> settingsAccessor;
+	INetwork&     network;
 
 	SyncState                           state          {SyncState::IDLE};
 	SyncState                           following_state{SyncState::IDLE};
-	std::shared_ptr <asyncHTTPResponse> outstandingRequest;
+	shared_ptr <asyncHTTPResponse> outstandingRequest;
 
 
 	Timer&     timer_;
@@ -65,8 +65,6 @@ private:
 	time_t     nextFullSync{0};
 	time_t     lastSync{0};
 	time_t     currentSync{0};
-
-
 };
 }
 #endif /* SYNCMANAGER_H_ */

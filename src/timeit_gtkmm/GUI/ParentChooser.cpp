@@ -15,8 +15,8 @@ namespace GUI
 {
 
 using namespace std;
-ParentChooser::ParentChooser(shared_ptr<IDatabase> &database) :
-		taskAccessor(database->getTaskAccessor())
+ParentChooser::ParentChooser(IDatabase &database) :
+		taskAccessor(database.getTaskAccessor())
 {
 	//Create the Tree model:
 	//m_refTreeModel = Gtk::TreeStore::create(m_Columns);

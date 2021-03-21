@@ -11,21 +11,26 @@
 #  include <libintl.h>
 #endif
 #include <signal.h>
-#include <GUIFactory.h>
-#include <libtimeit/misc/ApplicationLock.h>
-#include <libtimeit/OSAbstraction.h>
-#include <Controller.h>
-#include <libtimeit/logic/AutoTracker.h>
-
 #include <glibmm.h>
-
-#include <libtimeit/logic/TimeKeeper.h>
 #include <glibmm/i18n.h>
-#include <libtimeit/sync/SyncManager.h>
+
+#include <GUIFactory.h>
+#include <Controller.h>
 #include <MessageCenter.h>
+
+
+#include <libtimeit.h>
+#include <libtimeit/logic/AutoTracker.h>
+#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/misc/ApplicationLock.h>
 #include <libtimeit/misc/IpcServer.h>
 #include <libtimeit/misc/IpcClient.h>
-#include <libtimeit.h>
+#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/sync/SyncManager.h>
+
+namespace GUI
+{
 
 using namespace std;
 using namespace Test;
@@ -44,7 +49,7 @@ Main::Main(int argc, char *argv[])
 {
 	signal(SIGINT, &sighandler);
 
-	std::string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
+	string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
 	OSAbstraction::mkDir(dbPath);
 
 	dbName = Glib::build_filename(dbPath, "TimeIt.db");
@@ -52,20 +57,20 @@ Main::Main(int argc, char *argv[])
 	test = false;
 	for (int i = 0; i < argc; i++)
 	{
-		std::string argument = argv[i];
+		string argument = argv[i];
 		if (argument == "--help" || argument == "-?")
 		{
 			printHelp();
 		}
 		if (argument.substr(0, 5) == "--db=")
 		{
-			std::string filename = argument.substr(5, argument.length() - 5);
+			string filename = argument.substr(5, argument.length() - 5);
 			if (filename.length() > 0)
 			{
 				dbName = filename;
-				std::string tmp = dbName;
-				std::replace(tmp.begin(), tmp.end(), ' ', '.');
-				std::replace(tmp.begin(), tmp.end(), '/', '_');
+				string tmp = dbName;
+				replace(tmp.begin(), tmp.end(), ' ', '.');
+				replace(tmp.begin(), tmp.end(), '/', '_');
 				socketName = tmp + ".socket";
 			}
 		}
@@ -107,39 +112,35 @@ int Main::run(int argc, char *argv[])
 			Gtk::Main application(argc, argv);
 			Gtk::Main::init_gtkmm_internals();
 			libtimeit::init();
-
 			Notifier notifier;
+
 			//Create a database object
-			database = shared_ptr<IDatabase>(new Database(dbName,notifier));
+			Database database(dbName, notifier);
 
 			//Initiate all logic
-			std::shared_ptr<Utils::MessageCenter> messageCenter = std::shared_ptr<Utils::MessageCenter>(new Utils::MessageCenter());
+			Utils::MessageCenter messageCenter();
 
 			Timer timer;
-			sigc::connection connection = Glib::signal_timeout().connect_seconds(sigc::mem_fun(&timer, &Timer::on_signal_1_second), 1);
+			sigc::connection connection = Glib::signal_timeout().connect_seconds(
+					sigc::mem_fun(&timer, &Timer::on_signal_1_second), 1);
 
-			std::shared_ptr<ITimeKeeper> timeKeeper = std::shared_ptr<ITimeKeeper>(new Timekeeper(database, timer));
-			guiFactory = std::shared_ptr<GUI::IGUIFactory>(new GUI::GUIFactory(timeKeeper, database, timer));
-
-			AutoTracker autotracker(timeKeeper, database, timer);
-
-			shared_ptr<INetwork> network = shared_ptr<INetwork>(new Network());
-
+			Timekeeper time_keeper(database, timer);
+			GUIFactory guiFactory(time_keeper, database, timer);
+			AutoTracker autotracker(time_keeper, database, timer);
+			Network network;
 			SyncManager syncManager(database, network, notifier, timer);
+			IpcServer ipcServer(socketName, timer);
+			Controller controller(guiFactory, time_keeper, database, ipcServer);
 
-			shared_ptr<Utils::IpcServer> ipcServer = shared_ptr<Utils::IpcServer>(new Utils::IpcServer(socketName, timer));
-
-			Controller controller(guiFactory, timeKeeper, database, ipcServer);
 			controller.start();
 
 			//Then start message loop
 			application.run();
-			guiFactory.reset();
 			connection.disconnect();
 		}
 		else
 		{
-			Utils::IpcClient ipcClient(socketName);
+			IpcClient ipcClient(socketName);
 			ipcClient.window2front();
 		}
 	}
@@ -152,8 +153,10 @@ int Main::run(int argc, char *argv[])
 
 }
 
+} // namespace GUI
+
 int main(int argc, char *argv[])
 {
-	Main program(argc, argv);
+	GUI::Main program(argc, argv);
 	return program.run(argc, argv);
 }

@@ -44,10 +44,10 @@ public:
 	virtual void detach(SummaryObserver*) = 0;
 };
 
-class Summary: public Gtk::TreeView, public libtimeit::EventObserver, public ISummary
+class Summary: public Gtk::TreeView, public EventObserver, public ISummary
 {
 public:
-	Summary(std::shared_ptr<libtimeit::IDatabase> &database);
+	Summary(IDatabase &database);
 	virtual ~Summary();
 	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();

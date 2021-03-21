@@ -20,7 +20,7 @@ using namespace libtimeit;
 class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, ICalendar& calendar, std::shared_ptr<IDatabase>& database);
+	AddTime(int64_t taskId, ICalendar& calendar, IDatabase& database);
 	virtual ~AddTime();
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }

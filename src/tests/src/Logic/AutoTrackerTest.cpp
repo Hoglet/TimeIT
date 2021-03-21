@@ -14,10 +14,7 @@ using namespace libtimeit;
 class AutoTrackerTest
 {
 public:
-	AutoTrackerTest() :
-			timeKeeper(
-					std::shared_ptr<ITimeKeeper>(new MockTimeKeeper())),
-					database(std::shared_ptr<IDatabase>(new test::MockDatabase()))
+	AutoTrackerTest()
 	{
 		tracker = new AutoTracker(timeKeeper, database, timer);
 	}
@@ -30,8 +27,8 @@ public:
 private:
 	AutoTracker* tracker;
 	Timer timer;
-	std::shared_ptr<ITimeKeeper> timeKeeper;
-	std::shared_ptr<IDatabase> database;
+	MockTimeKeeper timeKeeper;
+	test::MockDatabase database;
 
 };
 

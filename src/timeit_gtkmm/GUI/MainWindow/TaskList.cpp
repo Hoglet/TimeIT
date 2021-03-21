@@ -9,8 +9,12 @@ using namespace libtimeit;
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
-TaskList::TaskList(shared_ptr<IDatabase> &database, shared_ptr<ITimeKeeper> &timeKeeper) :
-		taskAccessor(database->getExtendedTaskAccessor()), m_timeKeeper(timeKeeper)
+TaskList::TaskList(
+		IDatabase   &database,
+		ITimeKeeper &timeKeeper)
+		:
+		taskAccessor(database.getExtendedTaskAccessor()),
+		m_timeKeeper(timeKeeper)
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
@@ -209,7 +213,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 	row[columns.col_id] = taskID;
 	if (task.running())
 	{
-		if (!m_timeKeeper->isIdle())
+		if (!m_timeKeeper.isIdle())
 		{
 			row[columns.col_pixbuf] = runningIcon;
 		}

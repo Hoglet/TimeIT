@@ -16,8 +16,14 @@ using namespace std;
 
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-GUIFactory::GUIFactory(shared_ptr<ITimeKeeper> &op_timeKeeper, shared_ptr<IDatabase> &op_database, Timer& op_timer) :
-		timeKeeper(op_timeKeeper), database(op_database), timer(op_timer)
+GUIFactory::GUIFactory(
+		ITimeKeeper &op_timeKeeper,
+		IDatabase &op_database,
+		Timer& op_timer)
+		:
+		timeKeeper(op_timeKeeper),
+		database(op_database),
+		timer(op_timer)
 {
 
 }
@@ -69,7 +75,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case IDLE_DIALOG:
 		if (idleDialogInstance == 0)
 		{
-			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database->getTaskAccessor()));
+			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database.getTaskAccessor()));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_idleDialog_hide));
 			idleDialogInstance = dialog;
 		}
@@ -139,8 +145,8 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon *statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		shared_ptr<ITaskAccessor> taskaccessor = database->getTaskAccessor();
-		shared_ptr<ITimeAccessor> timeaccessor = database->getTimeAccessor();
+		shared_ptr<ITaskAccessor> taskaccessor = database.getTaskAccessor();
+		shared_ptr<ITimeAccessor> timeaccessor = database.getTimeAccessor();
 
 		statusIcon = (IStatusIcon*) (new StatusIcon(timeKeeper, taskaccessor, timeaccessor));
 	}

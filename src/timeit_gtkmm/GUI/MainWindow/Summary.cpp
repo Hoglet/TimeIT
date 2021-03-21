@@ -39,8 +39,9 @@ void SummaryObserver::detach(ISummary *subject)
 	}
 }
 
-Summary::Summary(std::shared_ptr<IDatabase> &database) :
-		timeAccessor(database->getTimeAccessor()), taskAccessor(database->getTaskAccessor())
+Summary::Summary(IDatabase &database) :
+		timeAccessor(database.getTimeAccessor()),
+		taskAccessor(database.getTaskAccessor())
 {
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);

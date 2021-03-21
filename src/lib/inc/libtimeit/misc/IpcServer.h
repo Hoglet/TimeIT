@@ -15,7 +15,7 @@
 #include <iostream>
 #include "libtimeit/misc/Ipc.h"
 
-namespace Utils
+namespace libtimeit
 {
 using namespace std;
 using namespace libtimeit;
@@ -37,7 +37,7 @@ public:
 	int sock;
 };
 
-} /* namespace Utils */
+} /* namespace libtimeit */
 
 
 #endif /* SRC_MISC_IPCSERVER_H_ */

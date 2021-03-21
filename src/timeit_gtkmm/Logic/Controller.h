@@ -18,15 +18,24 @@
 #include <libtimeit/misc/IpcServer.h>
 #include <libtimeit/EventObserver.h>
 
-class Controller:
+namespace GUI
+{
+
+using namespace std;
+using namespace libtimeit;
+
+class Controller :
 		public IActionObserver,
 		public TimekeeperObserver,
-		public GUI::SummaryObserver,
-		public libtimeit::EventObserver
+		public SummaryObserver,
+		public EventObserver
 {
 public:
-	Controller(std::shared_ptr<GUI::IGUIFactory> &guiFactory, std::shared_ptr<ITimeKeeper> &timeKeeper,
-			std::shared_ptr<libtimeit::IDatabase> &database, std::shared_ptr<Utils::IpcServer>&);
+	Controller(
+			IGUIFactory &guiFactory,
+			ITimeKeeper &timeKeeper,
+			IDatabase &database,
+			IpcServer &);
 	virtual ~Controller();
 	void start();
 
@@ -45,7 +54,7 @@ public:
 	virtual void on_action_report_bug();
 
 	//SummaryObserver
-	virtual void on_showDetailsClicked(GUI::ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime);
+	virtual void on_showDetailsClicked(GUI::ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime);
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime);
 
 	//
@@ -61,12 +70,12 @@ public:
 	virtual void on_action_stopTimers();
 
 private:
-	std::shared_ptr<GUI::IGUIFactory> guiFactory;
-	std::shared_ptr<ITimeKeeper> timeKeeper;
-	std::shared_ptr<GUI::IdleDialog> idleDialog;
-	std::shared_ptr<libtimeit::IExtendedTaskAccessor> taskAccessor;
-	std::shared_ptr<libtimeit::ITimeAccessor> timeAccessor;
-	std::shared_ptr<libtimeit::ISettingsAccessor> settingsAccessor;
+	IGUIFactory &guiFactory;
+	ITimeKeeper &timeKeeper;
+	shared_ptr<IdleDialog> idleDialog;
+	shared_ptr<IExtendedTaskAccessor> taskAccessor;
+	shared_ptr<ITimeAccessor> timeAccessor;
+	shared_ptr<ISettingsAccessor> settingsAccessor;
 
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;
@@ -74,5 +83,5 @@ private:
 	long idleStartTime = 0;
 
 };
-
+}
 #endif /* CONTROLLER_H_ */

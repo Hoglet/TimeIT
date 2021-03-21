@@ -14,7 +14,7 @@
 #include <iostream>
 #include <fcntl.h>
 
-namespace Utils
+namespace libtimeit
 {
 using namespace std;
 
@@ -60,4 +60,4 @@ void IpcClient::window2front()
 	}
 }
 
-} /* namespace Utils */
+} /* namespace libtimeit */

@@ -14,12 +14,11 @@ using namespace libtimeit;
 
 TEST( SyncManager, fullSyncEmptyClient )
 {
-	Notifier notifier;
-	shared_ptr<IDatabase> db = shared_ptr<IDatabase>(new TempDB(notifier));
-	shared_ptr<MockNetwork> mockNetwork = shared_ptr<MockNetwork>(new MockNetwork());
-	shared_ptr<INetwork> network = static_pointer_cast<INetwork>(mockNetwork);
+	Notifier    notifier;
+	TempDB      db (notifier);
+	MockNetwork network;
 
-	shared_ptr<ISettingsAccessor> settings = db->getSettingsAccessor();
+	shared_ptr<ISettingsAccessor> settings = db.getSettingsAccessor();
 	settings->SetStringByName("Username", "testman");
 	settings->SetStringByName("URL", "localhost");
 
@@ -47,8 +46,8 @@ TEST( SyncManager, fullSyncEmptyClient )
 			"\"task\":{\"id\":\"00b3015e-00d6-418e-81c8-0125012d0172\"},"
 			"\"start\": 1363597429, \"stop\": 1363597541, \"deleted\": false,"
 			"\"changed\": 1376388171}]";
-	mockNetwork->setResponse(taskKey, taskResponse);
-	mockNetwork->setResponse(timesKey, timesResponse);
+	network.setResponse(taskKey, taskResponse);
+	network.setResponse(timesKey, timesResponse);
 
 
 	while(syncManager.status() == SyncState::IDLE)
@@ -60,7 +59,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	shared_ptr<ITaskAccessor> taskAccessor = db->getTaskAccessor();
+	shared_ptr<ITaskAccessor> taskAccessor = db.getTaskAccessor();
 	shared_ptr<vector<Task> > tasks = taskAccessor->getTasksChangedSince();
 	ASSERT_EQ( 2, tasks->size()) << "Checking amount of tasks in database";
 	for (Task task : *tasks)
@@ -80,7 +79,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 			FAIL( ) << "Unknown task in list";
 		}
 	}
-	shared_ptr<ITimeAccessor> timeAccessor = db->getTimeAccessor();
+	shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
 	TimeList times = timeAccessor->getTimesChangedSince();
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)

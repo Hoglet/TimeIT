@@ -15,7 +15,7 @@
 #include <iostream>
 #include <fcntl.h>
 
-namespace Utils
+namespace libtimeit
 {
 using namespace std;
 
@@ -115,4 +115,4 @@ void IpcServer::on_show_menu()
 		observer->on_action_showMainWindow();
 	}
 }
-} /* namespace Utils */
+} /* namespace libtimeit */

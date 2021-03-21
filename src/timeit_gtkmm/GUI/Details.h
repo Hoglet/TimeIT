@@ -40,7 +40,7 @@ public:
 class Details: public Gtk::TreeView, public EventObserver
 {
 public:
-	Details(shared_ptr<IDatabase> &database);
+	Details(IDatabase &database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);

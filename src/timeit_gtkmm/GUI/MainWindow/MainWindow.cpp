@@ -43,12 +43,24 @@ MainWindow::~MainWindow()
 	settingsAccessor->detach(this);
 }
 
-MainWindow::MainWindow(std::shared_ptr<IDatabase> &database, std::shared_ptr<ITimeKeeper> &timeKeeper) :
-		taskList(database, timeKeeper), daySummary(database), weekSummary(database), monthSummary(database), yearSummary(database), labelDay(
-				_("Day")), labelWeek(_("Week")), labelMonth(_("Month")), labelYear(_("Year")),
-				timeAccessor(database->getTimeAccessor()), taskAccessor(database->getExtendedTaskAccessor()),
-				settingsAccessor(database->getSettingsAccessor())
-
+MainWindow::MainWindow(
+		IDatabase &database,
+		ITimeKeeper &timeKeeper)
+		:
+		taskList(database, timeKeeper),
+		daySummary(database),
+		weekSummary(database),
+		monthSummary(database),
+		yearSummary(database),
+		labelDay(
+				_("Day")),
+				labelWeek(_("Week")),
+				labelMonth(_("Month")),
+				labelYear(_("Year")),
+				timeAccessor(database.getTimeAccessor()),
+				taskAccessor(database.getExtendedTaskAccessor()),
+				settingsAccessor(database.getSettingsAccessor()
+				)
 {
 	settingsAccessor->attach(this);
 	createLayout();

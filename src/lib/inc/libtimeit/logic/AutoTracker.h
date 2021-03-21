@@ -7,24 +7,28 @@
 #include <libtimeit/db/AutotrackAccessor.h>
 #include <libtimeit/logic/Workspace.h>
 
+namespace libtimeit
+{
+using namespace std;
 
-class AutoTracker: public libtimeit::TimerObserver
+class AutoTracker : public libtimeit::TimerObserver
 {
 public:
-	AutoTracker(std::shared_ptr<ITimeKeeper> &timeKeeper, const std::shared_ptr<libtimeit::IDatabase> &database, libtimeit::Timer& timer);
+	AutoTracker(ITimeKeeper &timeKeeper,  IDatabase &database, Timer &timer);
 	virtual ~AutoTracker();
-	private:
+private:
 	void check4Changes();
 	void doTaskSwitching(int oldWorkspace, int newWorkspace);
 	//TimerObserver
 	virtual void on_signal_1_second();
 
 	int oldWorkspace;
-	std::shared_ptr<ITimeKeeper> m_timeKeeper;
-	std::shared_ptr<libtimeit::IAutotrackAccessor> m_autotrackAccessor;
-	std::shared_ptr<libtimeit::ITaskAccessor> m_taskAccessor;
-	libtimeit::Timer& m_timer;
+	ITimeKeeper& m_timeKeeper;
+	std::shared_ptr<IAutotrackAccessor> m_autotrackAccessor;
+	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	libtimeit::Timer &m_timer;
 	Workspace m_workspace;
 };
 
+}
 #endif /*AUTOTRACKER_H_*/

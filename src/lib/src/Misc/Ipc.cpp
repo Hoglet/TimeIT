@@ -12,7 +12,8 @@
 #include <iostream>
 #include <fcntl.h>
 #include <sys/stat.h>
-namespace Utils
+
+namespace libtimeit
 {
 
 using namespace std;

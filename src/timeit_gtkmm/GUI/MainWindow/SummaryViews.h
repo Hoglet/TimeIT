@@ -20,7 +20,7 @@ using namespace libtimeit;
 class DaySummary: public Summary
 {
 public:
-	DaySummary( shared_ptr<IDatabase>& database) :
+	DaySummary( IDatabase& database) :
 		Summary( database)
 	{
 		init();
@@ -41,7 +41,7 @@ private:
 class WeekSummary: public Summary
 {
 public:
-	WeekSummary( shared_ptr<IDatabase>& database) :
+	WeekSummary( IDatabase& database) :
 		Summary( database)
 	{
 		init();
@@ -62,7 +62,7 @@ private:
 class MonthSummary: public Summary
 {
 public:
-	MonthSummary( shared_ptr<IDatabase>& database) :
+	MonthSummary( IDatabase& database) :
 		Summary( database)
 	{
 		init();
@@ -83,7 +83,7 @@ private:
 class YearSummary: public Summary
 {
 public:
-	YearSummary( shared_ptr<IDatabase>& database) :
+	YearSummary( IDatabase& database) :
 		Summary( database)
 	{
 		init();

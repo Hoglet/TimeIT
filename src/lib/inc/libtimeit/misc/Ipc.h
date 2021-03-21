@@ -10,8 +10,9 @@
 
 #include <string>
 
-namespace Utils
+namespace libtimeit
 {
+using namespace std;
 
 class Ipc
 {
@@ -19,9 +20,9 @@ public:
 	Ipc();
 	virtual ~Ipc();
 protected:
-	std::string prepareSocketDir();
+	string prepareSocketDir();
 };
 
-} /* namespace Utils */
+} /* namespace libtimeit */
 
 #endif /* SRC_MISC_IPC_H_ */

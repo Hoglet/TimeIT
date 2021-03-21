@@ -15,11 +15,13 @@
 
 namespace GUI
 {
+using namespace libtimeit;
+using namespace std;
 
 class ParentChooser: public Gtk::ComboBox
 {
 public:
-	ParentChooser(std::shared_ptr<libtimeit::IDatabase>& database);
+	ParentChooser(IDatabase& database);
 	virtual ~ParentChooser();
 
 	void setID(int ID);
@@ -28,7 +30,7 @@ public:
 private:
 	//Signal handlers:
 	virtual void on_combo_changed();
-	void populate(std::string& baseString, int parentID);
+	void populate(string& baseString, int parentID);
 
 	Gtk::TreeModel::iterator findRow(int id);
 
@@ -51,7 +53,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	std::shared_ptr<libtimeit::ITaskAccessor> taskAccessor;
+	shared_ptr<ITaskAccessor> taskAccessor;
 	int parentID;
 };
 

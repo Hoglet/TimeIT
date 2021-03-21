@@ -29,10 +29,15 @@ public:
 	virtual void  show() = 0;
 };
 
-class DetailsDialog: public Gtk::Dialog, public SummaryObserver, public DetailsObserver, public IDetailsDialog, public IWidget
+class DetailsDialog:
+		public Gtk::Dialog,
+		public SummaryObserver,
+		public DetailsObserver,
+		public IDetailsDialog,
+		public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(std::shared_ptr<IDatabase>& database, std::shared_ptr<ITimeKeeper> &timeKeeper);
+	static std::shared_ptr<DetailsDialog> create(IDatabase& database, ITimeKeeper &timeKeeper);
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -48,7 +53,7 @@ public:
 	void on_runningTasksChanged();
 
 private:
-	DetailsDialog(std::shared_ptr<IDatabase>& database, shared_ptr<ITimeKeeper> &timeKeeper);
+	DetailsDialog(IDatabase& database, ITimeKeeper &timeKeeper);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -94,7 +99,7 @@ private:
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
 	std::shared_ptr<ITimeAccessor> m_timeAccessor;
 	std::shared_ptr<IExtendedTaskAccessor> m_taskAccessor;
-	std::shared_ptr<ITimeKeeper> m_timeKeeper;
+	ITimeKeeper& m_timeKeeper;
 };
 }
 

@@ -15,7 +15,7 @@
 #include <iostream>
 #include "Ipc.h"
 
-namespace Utils
+namespace libtimeit
 {
 
 class IpcClient: public Ipc
@@ -28,6 +28,6 @@ private:
 	std::string socketName;
 };
 
-} /* namespace Utils */
+} /* namespace libtimeit */
 
 #endif /* SRC_MISC_IPCCLIENT_H_ */

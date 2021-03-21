@@ -9,10 +9,12 @@ namespace GUI
 {
 using namespace libtimeit;
 using namespace std;
-EditTaskDialog::EditTaskDialog(std::shared_ptr<IDatabase> &database) :
-		CancelButton(Gtk::StockID("gtk-revert-to-saved")), OKButton(Gtk::StockID("gtk-apply")), parentChooser(database), autoTrackAccessor(
-				database->getAutotrackAccessor()), taskAccessor(database->getTaskAccessor())
-
+EditTaskDialog::EditTaskDialog(IDatabase &database) :
+		CancelButton(Gtk::StockID("gtk-revert-to-saved")),
+		OKButton(Gtk::StockID("gtk-apply")),
+		parentChooser(database),
+		autoTrackAccessor(database.getAutotrackAccessor()),
+		taskAccessor(database.getTaskAccessor())
 {
 	parentID = 0;
 	taskID = 0;
