@@ -24,9 +24,8 @@ Indent with tabs.
 
 ## robustness
 * Immutable.
-* No smart pointers if not really needed.
+* Avoid pointers.
 * Pass by value.
-* No raw pointers 
 * No naked new.
 * No null.
 * No **unscoped** "using namespace" in header files
