@@ -25,8 +25,8 @@ public:
 	virtual void setIdleStartTime(time_t idleStartTime) = 0;
 	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs) = 0;
 	virtual void show() = 0;
-	virtual void attach(IActionObserver*) = 0;
-	virtual void detach(IActionObserver*) = 0;
+	virtual void attach(ActionObserver*) = 0;
+	virtual void detach(ActionObserver*) = 0;
 };
 
 enum IdleDialogResponse{
@@ -38,12 +38,12 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
 {
 public:
-	IdleDialog(Timer& timer, std::shared_ptr<libtimeit::ITaskAccessor> accessor);
+	IdleDialog(Timer& timer, Database& database);
 	virtual void setIdleStartTime(time_t idleStartTime);
 	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
 	virtual ~IdleDialog();
-	virtual void attach(IActionObserver*);
-	virtual void detach(IActionObserver*);
+	virtual void attach(ActionObserver*);
+	virtual void detach(ActionObserver*);
 	// IWidget interface
 	virtual void show();
 	virtual void hide() { Gtk::Dialog::hide(); }
@@ -63,9 +63,9 @@ private:
 	Timer& m_timer;
 	time_t m_idleStartTime;
 	std::string taskString;
-	std::shared_ptr<libtimeit::ITaskAccessor> taskAccessor;
+	TaskAccessor taskAccessor;
 
-	std::list<IActionObserver*> observers;
+	std::list<ActionObserver*> observers;
 	void responseHandler(int result);
 };
 

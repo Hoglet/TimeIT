@@ -5,6 +5,8 @@
 #include <libtimeit/exceptions/dbexception.h>
 #include <libtimeit/db/DataCell.h>
 #include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/TimeAccessor.h>
 #include <sstream>
 #include <string>
 
@@ -80,18 +82,18 @@ TEST( database, testUpgrade )
 	createVersion4db(dbname);
 	Notifier notifier;
 	Database db("/tmp/dbtest.db", notifier);
-	shared_ptr<ITaskAccessor> taskAccessor = db.getTaskAccessor();
-	ASSERT_EQ( 2, taskAccessor->getTasksChangedSince()->size()) << "Numbers of tasks in tasks";
-	shared_ptr<Task> task1 = taskAccessor->getTask(1);
+	TaskAccessor taskAccessor(db);
+	ASSERT_EQ( 2, taskAccessor.getTasksChangedSince().size()) << "Numbers of tasks in tasks";
+	auto task1 = taskAccessor.getTask(1);
 	ASSERT_EQ( string("Test"), task1->name()) << "Task 1 name ";
 	ASSERT_EQ( 0, task1->parentID()) << "Task 1 parent ";
 
-	shared_ptr<Task> task2 = taskAccessor->getTask(2);
+	auto task2 = taskAccessor.getTask(2);
 	ASSERT_EQ( string("Sub task"), task2->name()) << "Task 2 name ";
 	ASSERT_EQ( 1, task2->parentID()) << "Task 2 parent ";
 
-	shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
-	vector<TimeEntry> times = timeAccessor->getTimesChangedSince();
+	TimeAccessor timeAccessor(db);
+	vector<TimeEntry> times = timeAccessor.getTimesChangedSince();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
 	TimeEntry te = times.at(0);
 	ASSERT_EQ( 1, te.ID()) << "Time id ";
@@ -133,11 +135,11 @@ TEST( database, testTransactions)
 	Notifier notifier;
 	TempDB db(notifier);
 	db.beginTransaction();
-	std::shared_ptr<ITaskAccessor> taskAccessor = db.getTaskAccessor();
-	taskAccessor->newTask("Test", 0);
-	ASSERT_EQ( 1, taskAccessor->getTasksChangedSince()->size()) << "Checking number of tasks after adding one";
+	TaskAccessor taskAccessor(db);
+	taskAccessor.newTask("Test", 0);
+	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after adding one";
 	db.endTransaction();
-	ASSERT_EQ( 1, taskAccessor->getTasksChangedSince()->size()) << "Checking number of tasks after commit";
+	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after commit";
 }
 
 TEST( database, testTransactions_rollback )
@@ -145,11 +147,11 @@ TEST( database, testTransactions_rollback )
 	Notifier notifier;
 	TempDB db(notifier);
 	db.beginTransaction();
-	std::shared_ptr<ITaskAccessor> taskAccessor = db.getTaskAccessor();
-	taskAccessor->newTask("Test", 0);
-	ASSERT_EQ( 1, taskAccessor->getTasksChangedSince()->size()) << "Checking number of tasks after adding one";
+	TaskAccessor taskAccessor(db);
+	taskAccessor.newTask("Test", 0);
+	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after adding one";
 	db.tryRollback();
-	ASSERT_EQ( 0, taskAccessor->getTasksChangedSince()->size()) << "Checking number of tasks after rollback";
+	ASSERT_EQ( 0, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after rollback";
 }
 
 TEST( database, testTransactionsSanity)

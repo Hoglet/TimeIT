@@ -3,8 +3,7 @@
 #include "libtimeit/logic/AutoTracker.h"
 
 
-#include "../Mock/MockTimeKeeper.h"
-#include "../Mock/MockDatabase.h"
+#include "libtimeit/logic/TimeKeeper.h"
 
 namespace Test
 {
@@ -16,20 +15,20 @@ class AutoTrackerTest
 public:
 	AutoTrackerTest()
 	{
-		tracker = new AutoTracker(timeKeeper, database, timer);
+		//tracker = new AutoTracker(timeKeeper, database, timer);
 	}
 
 	~AutoTrackerTest()
 	{
-		delete tracker;
+		//delete tracker;
 	}
 
 private:
-	AutoTracker* tracker;
+/*	AutoTracker* tracker;
 	Timer timer;
-	MockTimeKeeper timeKeeper;
-	test::MockDatabase database;
-
+	TimeKeeper timeKeeper;
+	TempDB database;
+*/
 };
 
 TEST( Auto_tracker, Workspace_switch_test)

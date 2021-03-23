@@ -19,8 +19,9 @@ namespace GUI
 using namespace::std;
 using namespace libtimeit;
 
-IdleDialog::IdleDialog(Timer& timer, shared_ptr<ITaskAccessor> accessor) :
-		m_timer(timer), taskAccessor(accessor)
+IdleDialog::IdleDialog(Timer& timer, Database& database) :
+		m_timer(timer),
+		taskAccessor(database)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
@@ -53,11 +54,11 @@ IdleDialog::~IdleDialog()
 	m_timer.detach(this);
 }
 
-void IdleDialog::attach(IActionObserver *observer)
+void IdleDialog::attach(ActionObserver *observer)
 {
 	observers.push_back(observer);
 }
-void IdleDialog::detach(IActionObserver *observer)
+void IdleDialog::detach(ActionObserver *observer)
 {
 	observers.remove(observer);
 }
@@ -73,7 +74,7 @@ void IdleDialog::setActiveTaskList(vector<int64_t> activeTaskIDs)
 	int i = 0;
 	for (int64_t taskID : activeTaskIDs)
 	{
-		std::shared_ptr<libtimeit::Task> task = taskAccessor->getTask(taskID);
+		auto task = taskAccessor.getTask(taskID);
 		if (i++ > 0)
 		{
 			text << ", ";
@@ -118,11 +119,11 @@ void IdleDialog::setText()
 
 void IdleDialog::responseHandler(int result)
 {
-	std::list<IActionObserver*>::iterator iter;
-	std::list<IActionObserver*> observers = this->observers;
+	std::list<ActionObserver*>::iterator iter;
+	std::list<ActionObserver*> observers = this->observers;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		switch (result)
 		{
 		case (RESPONSE_REVERT):

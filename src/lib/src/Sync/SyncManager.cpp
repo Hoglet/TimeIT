@@ -17,22 +17,21 @@ using namespace std;
 const int ONE_DAY = 60 * 60 * 24;
 
 SyncManager::SyncManager(
-		IDatabase &database,
+		Database &database,
 		INetwork  &op_network,
 		Notifier& notifier,
 		Timer&    timer
 		):
 		timer_(timer),
 		notifier_(notifier),
-		network(op_network)
+		network(op_network),
+		taskAccessor(database),
+		timeAccessor(database),
+		settingsAccessor(database)
+
 {
 	int len = 1;
 	auto text = unique_ptr<char[]>(new char[len]);
-
-	taskAccessor = database.getTaskAccessor();
-	timeAccessor = database.getTimeAccessor();
-	settingsAccessor = database.getSettingsAccessor();
-
 	timer_.attach(this);
 }
 
@@ -127,15 +126,15 @@ bool SyncManager::requestDone()
 time_t SyncManager::getNextSync( time_t referencePoint )
 {
 
-	int syncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	int syncInterval = settingsAccessor.GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
 	int secondBetweenSyncs = syncInterval * 60;
 	return referencePoint + secondBetweenSyncs;
 }
 
 bool SyncManager::isActive()
 {
-	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
-	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
+	string baseUrl = settingsAccessor.GetStringByName("URL", DEFAULT_URL);
+	string username = settingsAccessor.GetStringByName("Username", DEFAULT_USER);
 	if (baseUrl.length() > 0 && username.length() > 0)
 	{
 		return true;
@@ -148,12 +147,12 @@ bool SyncManager::isActive()
 void SyncManager::syncTasksToDatabase()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	shared_ptr<std::vector<Task> > tasks = toTasks(result.response());
+	vector<Task> tasks = toTasks(result.response());
 
-	shared_ptr<std::vector<Task> > tasksToUpdate = shared_ptr<vector<Task>>(new vector<Task>);
-	for (Task task : *tasks)
+	vector<Task> tasksToUpdate;
+	for (Task task : tasks)
 	{
-		int64_t id = taskAccessor->uuidToId(task.getUUID());
+		int64_t id = taskAccessor.uuidToId(task.getUUID());
 		auto parentUUID = task.parentUUID();
 		bool completed = task.completed();
 		int64_t parent = 0;
@@ -163,40 +162,40 @@ void SyncManager::syncTasksToDatabase()
 		bool deleted = task.deleted();
 		if (parentUUID)
 		{
-			parent = taskAccessor->uuidToId(*parentUUID);
+			parent = taskAccessor.uuidToId(*parentUUID);
 			if (parent == 0)
 			{
-				tasksToUpdate->push_back(task);
+				tasksToUpdate.push_back(task);
 			}
 		}
 		Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
 		if (id > 0)
 		{
-			taskAccessor->updateTask(tempTask);
+			taskAccessor.updateTask(tempTask);
 		}
 		else
 		{
-			taskAccessor->newTask(tempTask);
+			taskAccessor.newTask(tempTask);
 		}
 	}
 //Update tasks that had missing data earlier
-	for (Task task : *tasksToUpdate)
+	for (Task task : tasksToUpdate)
 	{
 		auto parentUUID = task.parentUUID();
 		if (parentUUID)
 		{
-			int64_t id = taskAccessor->uuidToId(task.getUUID());
-			int64_t parent = taskAccessor->uuidToId(*parentUUID);
+			int64_t id = taskAccessor.uuidToId(task.getUUID());
+			int64_t parent = taskAccessor.uuidToId(*parentUUID);
 			bool completed = task.completed();
 			time_t lastChanged = task.lastChanged();
 			string name = task.name();
 			auto uuid = task.getUUID();
 			bool deleted = task.deleted();
 			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
-			taskAccessor->updateTask(tempTask);
+			taskAccessor.updateTask(tempTask);
 		}
 	}
-	taskAccessor->enableNotifications(true);
+	taskAccessor.enableNotifications(true);
 }
 
 void SyncManager::syncTimesToDatabase()
@@ -204,14 +203,14 @@ void SyncManager::syncTimesToDatabase()
 	auto result = outstandingRequest->futureResponse.get();
 	TimeList times = toTimes(result.response());
 
-	taskAccessor->enableNotifications(false);
+	taskAccessor.enableNotifications(false);
 
 	for (TimeEntry item : times)
 	{
 		auto taskUUID = item.taskUUID();
-		int64_t taskID = taskAccessor->uuidToId(*taskUUID);
+		int64_t taskID = taskAccessor.uuidToId(*taskUUID);
 		auto uuid = item.getUUID();
-		int id = timeAccessor->uuidToId(uuid);
+		int id = timeAccessor.uuidToId(uuid);
 		time_t changed = item.changed();
 		bool deleted = item.deleted();
 		time_t start = item.start();
@@ -219,7 +218,7 @@ void SyncManager::syncTimesToDatabase()
 		bool running = false;
 		if (id > 0)
 		{
-			auto originalItem = timeAccessor->getByID(id);
+			auto originalItem = timeAccessor.getByID(id);
 			if(originalItem)
 			{
 				running = originalItem->running();
@@ -229,37 +228,37 @@ void SyncManager::syncTimesToDatabase()
 		TimeEntry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);
 		if (id > 0)
 		{
-			timeAccessor->update(te);
+			timeAccessor.update(te);
 		}
 		else
 		{
-			timeAccessor->newEntry(te);
+			timeAccessor.newEntry(te);
 		}
 	}
-	taskAccessor->enableNotifications(true);
+	taskAccessor.enableNotifications(true);
 }
 
 shared_ptr <asyncHTTPResponse> SyncManager::requestTasks(time_t sincePointInTime)
 {
-	std::shared_ptr<std::vector<Task> > tasks = taskAccessor->getTasksChangedSince(sincePointInTime);
-	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
-	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
-	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
+	vector<Task> tasks = taskAccessor.getTasksChangedSince(sincePointInTime);
+	string baseUrl = settingsAccessor.GetStringByName("URL", DEFAULT_URL);
+	string username = settingsAccessor.GetStringByName("Username", DEFAULT_USER);
+	string password = settingsAccessor.GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	std::string jsonString = toJson(tasks, username);
+	bool ignoreCertError = settingsAccessor.GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	string jsonString = toJson(tasks, username);
 	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
 shared_ptr <asyncHTTPResponse> SyncManager::requestTimes(time_t sincePointInTime)
 {
-	TimeList times = timeAccessor->getTimesChangedSince(sincePointInTime);
+	TimeList times = timeAccessor.getTimesChangedSince(sincePointInTime);
 	std::string jsonString = toJson(times);
-	string baseUrl = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
-	string username = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
-	string password = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
+	string baseUrl = settingsAccessor.GetStringByName("URL", DEFAULT_URL);
+	string username = settingsAccessor.GetStringByName("Username", DEFAULT_USER);
+	string password = settingsAccessor.GetStringByName("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	bool ignoreCertError = settingsAccessor.GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
 	return network.request(url, jsonString, username, password, ignoreCertError);
 }

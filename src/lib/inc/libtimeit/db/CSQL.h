@@ -5,29 +5,28 @@
 #include <sqlite3.h>
 #include <string>
 #include <vector>
-#include "DataCell.h"
+#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/QueryResult.h>
 #include <stdint.h>
 #include <memory>
 
 namespace libtimeit
 {
 
+using namespace std;
 class CSQL;
-
-typedef  std::vector<std::vector<DataCell>> QueryResult;
 
 class Statement
 {
 public:
-	Statement(sqlite3_stmt* stmt, std::shared_ptr<CSQL> db);
+	Statement(sqlite3_stmt* stmt, CSQL& db);
 	~Statement();
 	void bindValue(int index, int64_t value);
-	void bindValue(int index, const std::string& text);
+	void bindValue(int index, const string& text);
 	void bindNullValue(int index);
 	QueryResult execute();
 private:
-	Statement();
-	std::shared_ptr<CSQL> db;
+	CSQL& db;
 	sqlite3_stmt* stmt;
 	dbexception e;
 	int ncol;
@@ -50,10 +49,10 @@ protected:
 	void init(const std::string& databasename);
 private:
 	CSQL();
-	sqlite3 *db;
+	sqlite3 *db = nullptr;
 	dbexception e;
-	bool inTransaction;
-	bool threadsafe;
+	bool inTransaction = false;
+	bool threadsafe = false;
 };
 
 }

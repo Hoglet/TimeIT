@@ -22,9 +22,10 @@
 
 #include <gtkmm.h>
 #include <libtimeit/db/ExtendedTask.h>
-#include "IActionObserver.h"
+#include "ActionObserver.h"
 #include <libtimeit/db/Database.h>
 #include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/db/ExtendedTaskAccessor.h>
 
 namespace GUI
 {
@@ -33,7 +34,7 @@ using namespace libtimeit;
 class TaskList: public Gtk::TreeView, public EventObserver
 {
 public:
-	TaskList(IDatabase &database, ITimeKeeper &timeKeeper);
+	TaskList(Database &database, ITimeKeeper &timeKeeper);
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
@@ -47,8 +48,8 @@ public:
 
 	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
 	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
-	void attach(IActionObserver *observer);
-	void detach(IActionObserver *observer);
+	void attach(ActionObserver *observer);
+	void detach(ActionObserver *observer);
 private:
 	void on_selection_changed();
 	void empty();
@@ -87,8 +88,8 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();
-	std::list<IActionObserver*> observers;
-	std::shared_ptr<IExtendedTaskAccessor> taskAccessor;
+	std::list<ActionObserver*> observers;
+	ExtendedTaskAccessor taskAccessor;
 	ITimeKeeper& m_timeKeeper;
 };
 }

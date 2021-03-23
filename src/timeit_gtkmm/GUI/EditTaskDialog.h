@@ -34,7 +34,7 @@ public:
 class EditTaskDialog: public Gtk::Dialog, public IEditTaskDialog, public IAddTaskDialog, public IWidget
 {
 public:
-	EditTaskDialog( IDatabase& database);
+	EditTaskDialog( Database& database);
 	virtual ~EditTaskDialog();
 	void on_OKButton_clicked();
 	void on_CancelButton_clicked();
@@ -77,9 +77,9 @@ private:
 	vector<int> workspaces;
 	int parentID;
 
-	shared_ptr<IAutotrackAccessor> autoTrackAccessor;
-	shared_ptr<ITaskAccessor> taskAccessor;
-	Workspace workspace;
+	AutotrackAccessor autoTrackAccessor;
+	TaskAccessor      taskAccessor;
+	Workspace         workspace;
 };
 }
 #endif /*EDITTASKDIALOG_H_*/

@@ -9,12 +9,12 @@ namespace GUI
 {
 using namespace libtimeit;
 using namespace std;
-EditTaskDialog::EditTaskDialog(IDatabase &database) :
+EditTaskDialog::EditTaskDialog(Database &database) :
 		CancelButton(Gtk::StockID("gtk-revert-to-saved")),
 		OKButton(Gtk::StockID("gtk-apply")),
 		parentChooser(database),
-		autoTrackAccessor(database.getAutotrackAccessor()),
-		taskAccessor(database.getTaskAccessor())
+		autoTrackAccessor(database),
+		taskAccessor(database)
 {
 	parentID = 0;
 	taskID = 0;
@@ -122,13 +122,13 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 void EditTaskDialog::setTaskID(int64_t ID)
 {
 	taskID = ID;
-	std::shared_ptr<Task> task = taskAccessor->getTask(taskID);
-	if (task)
+	auto task = taskAccessor.getTask(taskID);
+	if (task.has_value())
 	{
 		name = task->name();
 		setParent(task->parentID());
 		taskNameEntry.set_text(name);
-		std::vector<int> workspaces = autoTrackAccessor->getWorkspaces(ID);
+		std::vector<int> workspaces = autoTrackAccessor.getWorkspaces(ID);
 		setTickedWorkspaces(workspaces);
 		OKButton.set_sensitive(false);
 		this->workspaces = workspaces;
@@ -176,18 +176,18 @@ void EditTaskDialog::on_OKButton_clicked()
 
 	if (taskID < 1)
 	{
-		taskID = taskAccessor->newTask(name, parentID);
+		taskID = taskAccessor.newTask(name, parentID);
 	}
 	else
 	{
-		taskAccessor->setParentID(taskID, parentID);
-		shared_ptr<Task> task = taskAccessor->getTask(taskID);
-		if (task)
+		taskAccessor.setParentID(taskID, parentID);
+		auto task = taskAccessor.getTask(taskID);
+		if (task.has_value())
 		{
-			taskAccessor->updateTask(task->withName(name));
+			taskAccessor.updateTask(task->withName(name));
 		}
 	}
-	autoTrackAccessor->setWorkspaces(taskID, workspaces);
+	autoTrackAccessor.setWorkspaces(taskID, workspaces);
 	taskID = -1;
 	parentID = 0;
 	hide();

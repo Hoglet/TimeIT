@@ -15,8 +15,8 @@ namespace GUI
 {
 
 using namespace std;
-ParentChooser::ParentChooser(IDatabase &database) :
-		taskAccessor(database.getTaskAccessor())
+ParentChooser::ParentChooser(Database &database) :
+		taskAccessor(database)
 {
 	//Create the Tree model:
 	//m_refTreeModel = Gtk::TreeStore::create(m_Columns);
@@ -96,14 +96,14 @@ Gtk::TreeModel::iterator ParentChooser::findRow(int id)
 
 void ParentChooser::populate(std::string &baseString, int parentID)
 {
-	std::shared_ptr<vector<Task>> tasks = taskAccessor->getTasks(parentID);
+	vector<Task> tasks = taskAccessor.getTasks(parentID);
 
-	for (int i = 0; i < (int) tasks->size(); i++)
+	for (int i = 0; i < (int) tasks.size(); i++)
 	{
 		Gtk::TreeModel::Row row;
 		Gtk::TreeModel::iterator iter = model->append();
 		row = *(iter);
-		Task &task = tasks->at(i);
+		Task &task = tasks.at(i);
 
 		string name;
 		if (baseString.length() > 0)

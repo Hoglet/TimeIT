@@ -13,10 +13,10 @@
 namespace GUI
 {
 
-PreferenceDialog::PreferenceDialog(IDatabase &database) :
+PreferenceDialog::PreferenceDialog(Database &database) :
 		CancelButton(Gtk::StockID("gtk-cancel")),
 		OKButton(Gtk::StockID("gtk-apply")),
-		settingsAccessor( database.getSettingsAccessor() )
+		settingsAccessor(database)
 
 {
 	//The compact layout option is reducing the size of the toolbar in the main window
@@ -124,16 +124,16 @@ PreferenceDialog::~PreferenceDialog()
 
 void PreferenceDialog::set_values()
 {
-	oldCompactLayout = settingsAccessor->GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT);
-	oldStartMinimized = settingsAccessor->GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED);
-	oldGt = settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
-	oldGz = settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
-	oldQuietMode = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
-	oldURL = settingsAccessor->GetStringByName("URL", DEFAULT_URL);
-	oldUser = settingsAccessor->GetStringByName("Username", DEFAULT_USER);
-	oldPassword = settingsAccessor->GetStringByName("Password", DEFAULT_PASSWORD);
-	oldIgnoreCertErr = settingsAccessor->GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	oldSyncInterval = settingsAccessor->GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	oldCompactLayout = settingsAccessor.GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT);
+	oldStartMinimized = settingsAccessor.GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED);
+	oldGt = settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
+	oldGz = settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
+	oldQuietMode = settingsAccessor.GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
+	oldURL = settingsAccessor.GetStringByName("URL", DEFAULT_URL);
+	oldUser = settingsAccessor.GetStringByName("Username", DEFAULT_USER);
+	oldPassword = settingsAccessor.GetStringByName("Password", DEFAULT_PASSWORD);
+	oldIgnoreCertErr = settingsAccessor.GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	oldSyncInterval = settingsAccessor.GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
 	GzEntry.set_value(oldGz);
 	GtEntry.set_value(oldGt);
 	CompactLayoutButton.set_active(oldCompactLayout);
@@ -213,34 +213,34 @@ void PreferenceDialog::on_CancelButton_clicked()
 
 void PreferenceDialog::save()
 {
-	compactLayout = settingsAccessor->SetBoolByName("CompactLayout", compactLayout);
+	compactLayout = settingsAccessor.SetBoolByName("CompactLayout", compactLayout);
 	oldCompactLayout = compactLayout;
 
-	settingsAccessor->SetIntByName("Gz", gz);
+	settingsAccessor.SetIntByName("Gz", gz);
 	oldGz = gz;
 
-	settingsAccessor->SetIntByName("Gt", gt);
+	settingsAccessor.SetIntByName("Gt", gt);
 	oldGt = gt;
 
-	settingsAccessor->SetBoolByName("StartMinimized", startMinimized);
+	settingsAccessor.SetBoolByName("StartMinimized", startMinimized);
 	oldStartMinimized = startMinimized;
 
-	settingsAccessor->SetBoolByName("Quiet", quietMode);
+	settingsAccessor.SetBoolByName("Quiet", quietMode);
 	quietMode = oldQuietMode;
 
-	settingsAccessor->SetStringByName("Username", User);
+	settingsAccessor.SetStringByName("Username", User);
 	oldUser = User;
 
-	settingsAccessor->SetStringByName("Password", Password);
+	settingsAccessor.SetStringByName("Password", Password);
 	oldPassword = Password;
 
-	settingsAccessor->SetStringByName("URL", URL);
+	settingsAccessor.SetStringByName("URL", URL);
 	oldURL = URL;
 
-	settingsAccessor->SetBoolByName("IgnoreCertErr", ignoreCertErr);
+	settingsAccessor.SetBoolByName("IgnoreCertErr", ignoreCertErr);
 	oldIgnoreCertErr = ignoreCertErr;
 
-	settingsAccessor->SetIntByName("SyncInterval", syncInterval);
+	settingsAccessor.SetIntByName("SyncInterval", syncInterval);
 	oldSyncInterval = syncInterval;
 }
 

@@ -10,10 +10,10 @@ using namespace std;
 using namespace Gtk;
 using namespace Glib;
 TaskList::TaskList(
-		IDatabase   &database,
+		Database   &database,
 		ITimeKeeper &timeKeeper)
 		:
-		taskAccessor(database.getExtendedTaskAccessor()),
+		taskAccessor(database),
 		m_timeKeeper(timeKeeper)
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
@@ -28,7 +28,7 @@ TaskList::TaskList(
 	Gtk::TreeView::Column *pColumn = get_column(1);
 	pColumn->set_min_width(60);
 	treeModel->set_sort_column(columns.col_name, Gtk::SORT_ASCENDING); // Initial sorting column
-	taskAccessor->attach(this);
+	taskAccessor.attach(this);
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &TaskList::on_selection_changed));
 	populate();
 
@@ -49,13 +49,13 @@ TaskList::TaskList(
 TaskList::~TaskList()
 {
 	int64_t selectedID = 0;
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_task_selection_changed(selectedID);
 	}
-	taskAccessor->detach(this);
+	taskAccessor.detach(this);
 }
 
 bool TaskList::on_button_press_event(GdkEventButton *event)
@@ -78,13 +78,13 @@ void TaskList::on_row_expanded(const TreeModel::iterator &iter, const TreeModel:
 {
 	TreeModel::Row row = *iter;
 	int id = row[columns.col_id];
-	taskAccessor->setTaskExpanded(id, true);
+	taskAccessor.setTaskExpanded(id, true);
 }
 void TaskList::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel::Path &path)
 {
 	TreeModel::Row row = *iter;
 	int id = row[columns.col_id];
-	taskAccessor->setTaskExpanded(id, false);
+	taskAccessor.setTaskExpanded(id, false);
 }
 
 void TaskList::on_taskAdded(int64_t taskID)
@@ -94,10 +94,10 @@ void TaskList::on_taskAdded(int64_t taskID)
 
 void TaskList::on_taskUpdated(int64_t taskID)
 {
-	shared_ptr<vector<ExtendedTask> > tasks = taskAccessor->getExtendedTask(taskID);
-	if (tasks->size() > 0)
+	auto tasks = taskAccessor.getExtendedTask(taskID);
+	if (tasks.size() > 0)
 	{
-		ExtendedTask &task = tasks->at(0);
+		ExtendedTask &task = tasks.at(0);
 		Gtk::TreeIter iter = findRow(taskID);
 		if (iter != treeModel->children().end())
 		{
@@ -134,10 +134,10 @@ void TaskList::on_taskRemoved(int64_t taskID)
 void TaskList::on_selection_changed()
 {
 	int64_t selectedID = getSelectedID();
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_task_selection_changed(selectedID);
 	}
 }
@@ -240,9 +240,9 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 
 void TaskList::populate(TreeModel::Row *parent, int parentID)
 {
-	shared_ptr<vector<ExtendedTask>> tasks = taskAccessor->getExtendedTasks(parentID);
+	auto tasks = taskAccessor.getExtendedTasks(parentID);
 
-	for (int i = 0; i < (int) tasks->size(); i++)
+	for (int i = 0; i < (int) tasks.size(); i++)
 	{
 		TreeModel::Row row;
 		TreeModel::iterator iter;
@@ -255,9 +255,9 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 			iter = treeModel->append();
 		}
 		row = *iter;
-		assignValuesToRow(row, tasks->at(i));
-		populate(&row, tasks->at(i).ID());
-		if (tasks->at(i).expanded())
+		assignValuesToRow(row, tasks.at(i));
+		populate(&row, tasks.at(i).ID());
+		if (tasks.at(i).expanded())
 		{
 			TreeModel::Path path(iter);
 			this->expand_to_path(path);
@@ -267,65 +267,65 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 
 void TaskList::on_menu_start()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_start_task();
 	}
 }
 void TaskList::on_menu_stop()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_stop_task();
 	}
 }
 void TaskList::on_menu_edit()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_edit_task();
 	}
 }
 void TaskList::on_menu_add_time()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_add_time();
 	}
 }
 void TaskList::on_menu_add_task()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_add_task();
 	}
 }
 
 void TaskList::on_menu_remove_task()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_remove_task();
 	}
 }
 
-void TaskList::attach(IActionObserver *observer)
+void TaskList::attach(ActionObserver *observer)
 {
 	observers.push_back(observer);
 }
-void TaskList::detach(IActionObserver *observer)
+void TaskList::detach(ActionObserver *observer)
 {
 	observers.remove(observer);
 }

@@ -7,13 +7,13 @@
 
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
-#include <IActionObserver.h>
+#include <ActionObserver.h>
 #include <IGUIFactory.h>
 #include <IdleDialog.h>
 #include <libtimeit/logic/TimeKeeper.h>
 #include <libtimeit/db/ExtendedTaskAccessor.h>
 #include <MainWindow/Summary.h>
-#include <libtimeit/db/ISettingsAccessor.h>
+#include <libtimeit/db/SettingsAccessor.h>
 #include <libtimeit/db/Database.h>
 #include <libtimeit/misc/IpcServer.h>
 #include <libtimeit/EventObserver.h>
@@ -25,7 +25,7 @@ using namespace std;
 using namespace libtimeit;
 
 class Controller :
-		public IActionObserver,
+		public ActionObserver,
 		public TimekeeperObserver,
 		public SummaryObserver,
 		public EventObserver
@@ -34,7 +34,7 @@ public:
 	Controller(
 			IGUIFactory &guiFactory,
 			ITimeKeeper &timeKeeper,
-			IDatabase &database,
+			Database &database,
 			IpcServer &);
 	virtual ~Controller();
 	void start();
@@ -73,9 +73,9 @@ private:
 	IGUIFactory &guiFactory;
 	ITimeKeeper &timeKeeper;
 	shared_ptr<IdleDialog> idleDialog;
-	shared_ptr<IExtendedTaskAccessor> taskAccessor;
-	shared_ptr<ITimeAccessor> timeAccessor;
-	shared_ptr<ISettingsAccessor> settingsAccessor;
+	ExtendedTaskAccessor taskAccessor;
+	TimeAccessor         timeAccessor;
+	SettingsAccessor     settingsAccessor;
 
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;

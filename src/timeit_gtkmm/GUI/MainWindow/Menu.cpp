@@ -70,127 +70,127 @@ void Menu::setTaskIsSelected(bool show)
 
 void Menu::on_menu_about()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_about();
 	}
 }
 
 void Menu::on_menu_help()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_help();
 	}
 }
 
 void Menu::on_menu_add_task()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_add_task();
 	}
 }
 
 void Menu::on_menu_remove_task()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_remove_task();
 	}
 }
 
 void Menu::on_menu_add_time()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_add_time();
 	}
 }
 void Menu::on_menu_quit()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_quit();
 	}
 }
 
 void Menu::on_menu_start()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_start_task();
 	}
 }
 void Menu::on_menu_stop()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_stop_task();
 	}
 }
 
 void Menu::on_menu_stop_all()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_stopTimers();
 	}
 }
 
 void Menu::on_menu_edit()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_edit_task();
 	}
 }
 void Menu::on_menu_preferences()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_preferences();
 	}
 }
 void Menu::on_menu_report_bug()
 {
-	std::list<IActionObserver*>::iterator iter;
+	std::list<ActionObserver*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		IActionObserver* observer = *iter;
+		ActionObserver* observer = *iter;
 		observer->on_action_report_bug();
 	}
 }
 
 
 
-void Menu::attach(IActionObserver* observer)
+void Menu::attach(ActionObserver* observer)
 {
 	observers.push_back(observer);
 }
-void Menu::detach(IActionObserver* observer)
+void Menu::detach(ActionObserver* observer)
 {
 	observers.remove(observer);
 }

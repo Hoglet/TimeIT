@@ -47,7 +47,7 @@ public:
 class Summary: public Gtk::TreeView, public EventObserver, public ISummary
 {
 public:
-	Summary(IDatabase &database);
+	Summary(Database &database);
 	virtual ~Summary();
 	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();
@@ -94,7 +94,7 @@ protected:
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, std::shared_ptr<Task> task, time_t totalTime);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, Task& task, time_t totalTime);
 
 	Glib::RefPtr<Gtk::TreeStore> treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
@@ -119,8 +119,8 @@ protected:
 	time_t startTime = 0;
 	time_t stopTime = 0;
 	std::list<SummaryObserver*> observers;
-	std::shared_ptr<ITimeAccessor> timeAccessor;
-	std::shared_ptr<ITaskAccessor> taskAccessor;
+	TimeAccessor timeAccessor;
+	TaskAccessor taskAccessor;
 private:
 	bool isVisible();
 	bool needsRePopulation = true;

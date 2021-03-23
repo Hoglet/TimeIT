@@ -40,11 +40,11 @@ namespace GUI
 MainWindow::~MainWindow()
 {
 	detach(this);
-	settingsAccessor->detach(this);
+	settingsAccessor.detach(this);
 }
 
 MainWindow::MainWindow(
-		IDatabase &database,
+		Database &database,
 		ITimeKeeper &timeKeeper)
 		:
 		taskList(database, timeKeeper),
@@ -57,12 +57,11 @@ MainWindow::MainWindow(
 				labelWeek(_("Week")),
 				labelMonth(_("Month")),
 				labelYear(_("Year")),
-				timeAccessor(database.getTimeAccessor()),
-				taskAccessor(database.getExtendedTaskAccessor()),
-				settingsAccessor(database.getSettingsAccessor()
-				)
+				timeAccessor(database),
+				taskAccessor(database),
+				settingsAccessor(database)
 {
-	settingsAccessor->attach(this);
+	settingsAccessor.attach(this);
 	createLayout();
 	relateWidgets();
 	attach(this);
@@ -96,7 +95,7 @@ void MainWindow::detach(SummaryObserver *observer)
 	}
 }
 
-void MainWindow::attach(IActionObserver *observer)
+void MainWindow::attach(ActionObserver *observer)
 {
 	detach(observer); //To avoid duplicates
 	taskList.attach(observer);
@@ -109,7 +108,7 @@ void MainWindow::attach(IActionObserver *observer)
 	}
 }
 
-void MainWindow::detach(IActionObserver *observer)
+void MainWindow::detach(ActionObserver *observer)
 {
 	taskList.detach(observer);
 	toolbar.detach(observer);
@@ -205,7 +204,7 @@ void MainWindow::on_settingsChanged(const std::string &name)
 }
 void MainWindow::doLayout()
 {
-	if (settingsAccessor->GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT))
+	if (settingsAccessor.GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT))
 	{
 		emptyContainers();
 		defaultLayout();
@@ -290,7 +289,7 @@ void MainWindow::classicLayout()
 // also displays whether idle
 void MainWindow::on_runningTasksChanged()
 {
-	std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
+	std::vector<int64_t> taskIDs = timeAccessor.getRunningTasks();
 	if (taskIDs.size() > 0)
 	{
 		set_title("TimeIT ⌚");
@@ -344,7 +343,7 @@ void MainWindow::on_action_remove_task()
 	{
 	case (Gtk::RESPONSE_OK):
 		//Remove task
-		taskAccessor->removeTask(selectedTaskID);
+		taskAccessor.removeTask(selectedTaskID);
 		break;
 	case (Gtk::RESPONSE_CANCEL):
 		break;

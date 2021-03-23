@@ -16,7 +16,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <IWidget.h>
-#include <libtimeit/db/ISettingsAccessor.h>
+#include <libtimeit/db/SettingsAccessor.h>
 #include <libtimeit/db/Database.h>
 
 namespace GUI
@@ -27,7 +27,7 @@ using namespace std;
 class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(IDatabase& database);
+	PreferenceDialog(Database& database);
 	virtual ~PreferenceDialog();
 
 	// IWidget interface
@@ -96,7 +96,7 @@ private:
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	shared_ptr<ISettingsAccessor> settingsAccessor;
+	SettingsAccessor settingsAccessor;
 };
 
 }

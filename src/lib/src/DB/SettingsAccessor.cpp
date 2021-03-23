@@ -15,9 +15,8 @@ using namespace std;
 namespace libtimeit
 {
 
-SettingsAccessor::SettingsAccessor(shared_ptr<CSQL>& op_db)
+SettingsAccessor::SettingsAccessor(Database& op_database): database(op_database)
 {
-	db = op_db;
 	idleGT = 7;
 	idleGZ = 1;
 	shortFilterTime = 1;
@@ -36,14 +35,14 @@ void SettingsAccessor::SetShortFilterTime(int value)
 	shortFilterTime = value;
 }
 
-void SettingsAccessor::attach(ISettingsAccessorObserver* observer)
+void SettingsAccessor::attach(SettingsAccessorObserver* observer)
 {
 	if (observer)
 	{
 		observers.push_back(observer);
 	}
 }
-void SettingsAccessor::detach(ISettingsAccessorObserver* observer)
+void SettingsAccessor::detach(SettingsAccessorObserver* observer)
 {
 	if (observer)
 	{
@@ -59,7 +58,7 @@ int SettingsAccessor::GetIntByName(const std::string& name, int defaultValue)
 
 	int retVal = defaultValue;
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		vector<DataCell> row = rows.at(0);
@@ -80,14 +79,14 @@ bool SettingsAccessor::SetIntByName(const std::string& name, int value)
 
 	bool retVal = false;
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
 		statement << " SET intValue = " << value;
 		statement << " WHERE name = '" << name << "'";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -97,7 +96,7 @@ bool SettingsAccessor::SetIntByName(const std::string& name, int value)
 		statement << "INSERT INTO settings";
 		statement << " (intValue, name) ";
 		statement << " VALUES (" << value << ", '" << name << "') ";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -112,7 +111,7 @@ bool SettingsAccessor::GetBoolByName(const std::string& name, bool defaultValue)
 
 	bool retVal = defaultValue;
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		vector<DataCell> row = rows.at(0);
@@ -132,14 +131,14 @@ bool SettingsAccessor::SetBoolByName(const std::string& name, bool value)
 	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
 		statement << " SET boolValue = " << value;
 		statement << " WHERE name = '" << name << "'";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -149,7 +148,7 @@ bool SettingsAccessor::SetBoolByName(const std::string& name, bool value)
 		statement << "INSERT INTO settings";
 		statement << " (boolValue, name) ";
 		statement << " VALUES (" << value << ", '" << name << "') ";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -164,7 +163,7 @@ std::string SettingsAccessor::GetStringByName(const std::string& name, const std
 
 	std::string retVal = defaultValue;
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		vector<DataCell> row = rows.at(0);
@@ -184,14 +183,14 @@ bool SettingsAccessor::SetStringByName(const std::string& name, const std::strin
 	statement << " WHERE name = '" << name << "'";
 
 	bool retVal = false;
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size())
 	{
 		statement.str("");
 		statement << "UPDATE settings";
 		statement << " SET stringValue = '" << value << "'";
 		statement << " WHERE name = '" << name << "'";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -201,7 +200,7 @@ bool SettingsAccessor::SetStringByName(const std::string& name, const std::strin
 		statement << "INSERT INTO settings";
 		statement << " (stringValue, name) ";
 		statement << " VALUES ('" << value << "', '" << name << "') ";
-		db->exe(statement.str());
+		database.exe(statement.str());
 		SettingsChanged(name);
 		retVal = true;
 	}
@@ -211,7 +210,7 @@ bool SettingsAccessor::SetStringByName(const std::string& name, const std::strin
 
 void SettingsAccessor::SettingsChanged(const std::string& name)
 {
-	for (ISettingsAccessorObserver* observer : observers)
+	for (SettingsAccessorObserver* observer : observers)
 	{
 		observer->on_settingsChanged(name);
 	}

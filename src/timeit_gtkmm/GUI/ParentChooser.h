@@ -8,10 +8,11 @@
 #ifndef PARENTCHOOSER_H_
 #define PARENTCHOOSER_H_
 
+#include <string>
 #include <gtkmm/combobox.h>
 #include <gtkmm/liststore.h>
 #include <libtimeit/db/Database.h>
-#include <string>
+#include <libtimeit/db/TaskAccessor.h>
 
 namespace GUI
 {
@@ -21,7 +22,7 @@ using namespace std;
 class ParentChooser: public Gtk::ComboBox
 {
 public:
-	ParentChooser(IDatabase& database);
+	ParentChooser(Database& database);
 	virtual ~ParentChooser();
 
 	void setID(int ID);
@@ -53,7 +54,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	shared_ptr<ITaskAccessor> taskAccessor;
+	TaskAccessor taskAccessor;
 	int parentID;
 };
 

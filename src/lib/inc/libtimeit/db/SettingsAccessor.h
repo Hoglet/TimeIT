@@ -8,16 +8,25 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-#include <libtimeit/db/ISettingsAccessor.h>
+#include <libtimeit/db/Database.h>
 #include "CSQL.h"
 
 namespace libtimeit
 {
 
-class SettingsAccessor: public ISettingsAccessor
+using namespace std;
+
+class SettingsAccessorObserver
 {
 public:
-	SettingsAccessor(std::shared_ptr<CSQL>& op_db);
+	virtual ~SettingsAccessorObserver() = default;
+	virtual void on_settingsChanged(const string& name) = 0;
+};
+
+class SettingsAccessor
+{
+public:
+	SettingsAccessor(Database& database);
 	virtual ~SettingsAccessor();
 	/* ShortFilterTime
 	 * Time in minutes that is the shortest time counted as work.
@@ -36,16 +45,16 @@ public:
 	virtual bool SetStringByName(const std::string& name, const std::string& value);
 
 
-	virtual void attach(ISettingsAccessorObserver* observer);
-	virtual void detach(ISettingsAccessorObserver* observer);
+	virtual void attach(SettingsAccessorObserver* observer);
+	virtual void detach(SettingsAccessorObserver* observer);
 private:
 	SettingsAccessor();
 	void SettingsChanged(const std::string& name);
 	int idleGT;
 	int idleGZ;
 	int shortFilterTime;
-	std::shared_ptr<CSQL> db;
-	std::list<ISettingsAccessorObserver*> observers;
+	Database& database;
+	std::list<SettingsAccessorObserver*> observers;
 };
 }
 

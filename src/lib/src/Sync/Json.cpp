@@ -5,18 +5,16 @@
 #include <libtimeit/db/Task.h>
 #include <libtimeit/exceptions/GeneralException.h>
 
-using namespace std;
-
-
 namespace libtimeit
 {
+using namespace std;
 
 GeneralException ge;
 
-string toJson(shared_ptr<vector<Task>> tasks, string username)
+string toJson(vector<Task> tasks, string username)
 {
 	json_t *array = json_array();
-	for (Task task : *tasks)
+	for (Task task : tasks)
 	{
 		json_t *obj = json_object();
 		json_object_set(obj, "name", json_string(task.name().c_str()));
@@ -104,13 +102,13 @@ string toJson(const TimeList& times)
 	return result;
 }
 
-shared_ptr<vector<Task>> toTasks(const string &text)
+vector<Task> toTasks(const string &text)
 {
 
 	json_t *root;
 	json_error_t error;
 
-	shared_ptr<vector<Task>> retVal = shared_ptr<vector<Task>>(new vector<Task>);
+	vector<Task> retVal;
 
 	root = json_loads(text.c_str(), 0, &error);
 
@@ -178,7 +176,7 @@ shared_ptr<vector<Task>> toTasks(const string &text)
 		{
 			auto parent = toUuid(parentString);
 			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted);
-			retVal->push_back(task);
+			retVal.push_back(task);
 		}
 	}
 	return retVal;

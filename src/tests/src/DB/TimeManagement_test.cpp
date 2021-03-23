@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
+#include <libtimeit/db/ExtendedTaskAccessor.h>
 
 namespace test
 {
@@ -9,13 +10,13 @@ ExtendedTask getTask(time_t start = 0, time_t stop = 0)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	auto taskAccessor = tempdb.getExtendedTaskAccessor();
-	auto timeAccessor = tempdb.getTimeAccessor();
-	auto taskID = taskAccessor->newTask("task", 0);
-	auto subTaskID = taskAccessor->newTask("subtask", taskID);
-	timeAccessor->newTime(taskID, 100, 200);
-	timeAccessor->newTime(subTaskID, 150, 200);
-	return taskAccessor->getExtendedTask(taskID, start, stop)->at(0);
+	ExtendedTaskAccessor taskAccessor(tempdb);
+	TimeAccessor timeAccessor(tempdb);
+	auto taskID = taskAccessor.newTask("task", 0);
+	auto subTaskID = taskAccessor.newTask("subtask", taskID);
+	timeAccessor.newTime(taskID, 100, 200);
+	timeAccessor.newTime(subTaskID, 150, 200);
+	return taskAccessor.getExtendedTask(taskID, start, stop).at(0);
 }
 
 TEST(TimeManagement, tasksTimeIs100)

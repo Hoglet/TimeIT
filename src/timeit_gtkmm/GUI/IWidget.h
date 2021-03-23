@@ -8,7 +8,7 @@
 #ifndef IWIDGET_H_
 #define IWIDGET_H_
 
-#include <IActionObserver.h>
+#include <ActionObserver.h>
 
 class IWidget
 {
@@ -20,8 +20,8 @@ public:
 	virtual bool is_visible() = 0;
 	virtual void get_position(int& Window_x, int& Window_y) = 0;
 
-	virtual void attach(IActionObserver*) {};
-	virtual void detach(IActionObserver*) {};
+	virtual void attach(ActionObserver*) {};
+	virtual void detach(ActionObserver*) {};
 };
 
 #endif /* IWIDGET_H_ */

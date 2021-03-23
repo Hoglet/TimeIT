@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 #include <list>
-#include "IActionObserver.h"
+#include "ActionObserver.h"
 namespace GUI
 {
 
@@ -19,8 +19,8 @@ class Toolbar : public Gtk::Toolbar
 public:
 	Toolbar();
 	virtual ~Toolbar();
-	void attach(IActionObserver*);
-	void detach(IActionObserver*);
+	void attach(ActionObserver*);
+	void detach(ActionObserver*);
 	void setTaskIsSelected(bool);
 private:
 	Gtk::ToolButton  m_startButton;
@@ -35,7 +35,7 @@ private:
 	void on_stop_clicked();
 	void on_edit_clicked();
 	void on_remove_clicked();
-	std::list<IActionObserver*> observers;
+	std::list<ActionObserver*> observers;
 };
 
 }

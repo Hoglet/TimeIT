@@ -15,26 +15,18 @@ using namespace std;
 
 void Database::createTablesPartOne()
 {
-	db->exe("PRAGMA foreign_keys = ON");
+	db.exe("PRAGMA foreign_keys = ON");
 	//Create necessary tables
-	db->exe("CREATE TABLE IF NOT EXISTS autotrack (taskID      INTEGER, workspace   INTEGER)");
-	db->exe(
-			"CREATE TABLE IF NOT EXISTS parameters (id          VARCHAR PRIMARY KEY, string      VARCHAR, value       INTEGER, boolean     BOOL) ");
-	db->exe(
-			"CREATE TABLE IF NOT EXISTS settings(name        VARCHAR PRIMARY KEY, intValue    INTEGER, boolValue   BOOL, stringValue VARCHAR) ");
+	TimeAccessor time_accessor(*this);
+	TaskAccessor task_accessor(*this);
+	time_accessor.createTable();
+	task_accessor.createTable();
+	db.exe("CREATE TABLE IF NOT EXISTS autotrack (taskID INTEGER, workspace   INTEGER)");
+	db.exe("CREATE TABLE IF NOT EXISTS parameters (id VARCHAR PRIMARY KEY, string      VARCHAR, value       INTEGER, boolean     BOOL) ");
+	db.exe("CREATE TABLE IF NOT EXISTS settings(name  VARCHAR PRIMARY KEY, intValue    INTEGER, boolValue   BOOL, stringValue VARCHAR) ");
 }
 
-void Database::createAccessors()
-{
-	m_timeAccessor = shared_ptr<TimeAccessor>(new TimeAccessor(db, m_notifier));
-	m_timeAccessor->createTable();
-	m_taskAccessor = shared_ptr<TaskAccessor>(new TaskAccessor(db, m_notifier));
-	m_taskAccessor->createTable();
-	m_extendedTaskAccessor = shared_ptr<ExtendedTaskAccessor>(
-			new ExtendedTaskAccessor(db, m_notifier, m_timeAccessor));
-	m_autotrackAccessor = shared_ptr<AutotrackAccessor>(new AutotrackAccessor(db, m_extendedTaskAccessor));
-	m_settingsAccessor = shared_ptr<SettingsAccessor>(new SettingsAccessor(db));
-}
+
 
 int Database::getCurrentDBVersion()
 {
@@ -43,7 +35,7 @@ int Database::getCurrentDBVersion()
 	statement << "SELECT value FROM parameters ";
 	statement << " WHERE id == \"dbversion\"";
 	//Do upgrade if necessary
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = db.exe(statement.str());
 	if (rows.size() > 0)
 	{
 		vector<DataCell> row = rows.at(0);
@@ -61,7 +53,7 @@ void Database::upgradeIfNeeded(int DBVersion, const int expectedDBVersion)
 		{
 			//Empty database. Populate with data
 			statement.str("INSERT INTO parameters (id, value) VALUES ( \"dbversion\", 1 )");
-			db->exe(statement.str());
+			db.exe(statement.str());
 		}
 		else
 		{
@@ -69,46 +61,50 @@ void Database::upgradeIfNeeded(int DBVersion, const int expectedDBVersion)
 			//LCOV_EXCL_START
 			if (DBVersion < 4)
 			{
-				db->exe("DROP VIEW v_timesSummary;");
-				db->exe("DROP VIEW v_tasks;");
+				db.exe("DROP VIEW v_timesSummary;");
+				db.exe("DROP VIEW v_tasks;");
 			}
 			//LCOV_EXCL_STOP
 			if (DBVersion < 5)
 			{
-				m_taskAccessor->upgradeToDB5();
-				m_timeAccessor->upgradeToDB5();
+				TaskAccessor task_accessor(*this);
+				TimeAccessor time_accessor(*this);
+				task_accessor.upgradeToDB5();
+				time_accessor.upgradeToDB5();
 			}
 		}
 		statement.str("");
 		statement << "UPDATE parameters SET value = ";
 		statement << expectedDBVersion;
 		statement << " WHERE id = \"dbversion\";";
-		db->exe(statement.str());
+		db.exe(statement.str());
 	}
 }
 
 void Database::createViews()
 {
 	//Create views
-	db->exe("DROP VIEW IF EXISTS v_running");
-	db->exe("CREATE VIEW v_running AS SELECT taskID, running FROM times WHERE running =\"1\"");
-	db->exe("DROP VIEW IF EXISTS v_tasks");
-	db->exe(
+	db.exe("DROP VIEW IF EXISTS v_running");
+	db.exe("CREATE VIEW v_running AS SELECT taskID, running FROM times WHERE running =\"1\"");
+	db.exe("DROP VIEW IF EXISTS v_tasks");
+	db.exe(
 			"CREATE VIEW v_tasks AS SELECT tasks.*, IFNULL(v_running.running,0) as running FROM tasks    LEFT JOIN v_running    ON tasks.id=v_running.taskId");
-	m_timeAccessor->createViews();
+	TimeAccessor time_accessor(*this);
+	time_accessor.createViews();
 }
 
-Database::Database(const std::string& dbname, Notifier& notifier) : m_notifier(notifier)
+Database::Database(
+		const std::string& dbname, Notifier& notifier)
+		:
+		m_notifier(notifier),
+		db(dbname)
 {
-	db = shared_ptr<CSQL>(new CSQL(dbname));
-
 	try
 	{
-		db->exe("PRAGMA foreign_keys = OFF");
+		db.exe("PRAGMA foreign_keys = OFF");
 		beginTransaction();
 
 		createTablesPartOne();
-		createAccessors();
 
 		const int expectedDBVersion = 5;
 
@@ -117,9 +113,10 @@ Database::Database(const std::string& dbname, Notifier& notifier) : m_notifier(n
 		createViews();
 
 		endTransaction();
-		db->exe("PRAGMA foreign_keys = ON");
+		db.exe("PRAGMA foreign_keys = ON");
 
-		m_timeAccessor->removeShortTimeSpans();
+		TimeAccessor time_accessor(*this);
+		time_accessor.removeShortTimeSpans();
 	//LCOV_EXCL_START
 	} catch (dbexception& e)
 	{
@@ -137,48 +134,56 @@ Database::~Database()
 
 bool Database::isThreadSafe()
 {
-	return db->isThreadSafe();
+	return db.isThreadSafe();
 }
 
 
 void Database::beginTransaction()
 {
-	db->beginTransaction();
+	db.beginTransaction();
 }
 
 void Database::tryRollback()
 {
-	db->tryRollback();
+	db.tryRollback();
 }
 
 void Database::endTransaction()
 {
-	db->endTransaction();
+	db.endTransaction();
+}
+void Database::enableNotifications(bool state)
+{
+	m_notifier.enabled(state);
 }
 
-shared_ptr<IAutotrackAccessor> Database::getAutotrackAccessor()
+void Database::sendNotification(MessageType type, int64_t taskId)
 {
-	return m_autotrackAccessor;
+	m_notifier.sendNotification(type,taskId);
 }
 
-shared_ptr<ITimeAccessor> Database::getTimeAccessor()
+void Database::attach(EventObserver *observer)
 {
-	return m_timeAccessor;
+	m_notifier.attach(observer);
 }
 
-shared_ptr<IExtendedTaskAccessor> Database::getExtendedTaskAccessor()
+void Database::detach(EventObserver *observer)
 {
-	return m_extendedTaskAccessor;
+	m_notifier.detach(observer);
 }
 
-shared_ptr<ITaskAccessor> Database::getTaskAccessor()
+QueryResult Database::exe(string statement)
 {
-	return m_taskAccessor;
+	return db.exe(statement);
+}
+Statement Database::prepare(string statement)
+{
+	return db.prepare(statement.c_str());
 }
 
-shared_ptr<ISettingsAccessor> Database::getSettingsAccessor()
+int64_t Database::getIDOfLastInsert()
 {
-	return m_settingsAccessor;
+	return db.getIDOfLastInsert();
 }
 
 }

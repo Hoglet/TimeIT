@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "libtimeit/sync/Network.h"
 #include "libtimeit/sync/Json.h"
-#include "../Mock/MockDatabase.h"
 #include "../Mock/MockNetwork.h"
 #include "libtimeit/Timer.h"
 #include "libtimeit/sync/SyncManager.h"
@@ -18,9 +17,9 @@ TEST( SyncManager, fullSyncEmptyClient )
 	TempDB      db (notifier);
 	MockNetwork network;
 
-	shared_ptr<ISettingsAccessor> settings = db.getSettingsAccessor();
-	settings->SetStringByName("Username", "testman");
-	settings->SetStringByName("URL", "localhost");
+	SettingsAccessor settings( db);
+	settings.SetStringByName("Username", "testman");
+	settings.SetStringByName("URL", "localhost");
 
 	Timer timer;
 	SyncManager syncManager(db, network, notifier, timer);
@@ -59,10 +58,10 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	shared_ptr<ITaskAccessor> taskAccessor = db.getTaskAccessor();
-	shared_ptr<vector<Task> > tasks = taskAccessor->getTasksChangedSince();
-	ASSERT_EQ( 2, tasks->size()) << "Checking amount of tasks in database";
-	for (Task task : *tasks)
+	TaskAccessor taskAccessor(db);
+	vector<Task> tasks = taskAccessor.getTasksChangedSince();
+	ASSERT_EQ( 2, tasks.size()) << "Checking amount of tasks in database";
+	for (Task task : tasks)
 	{
 		if (task.name() == "Parent")
 		{
@@ -79,8 +78,8 @@ TEST( SyncManager, fullSyncEmptyClient )
 			FAIL( ) << "Unknown task in list";
 		}
 	}
-	shared_ptr<ITimeAccessor> timeAccessor = db.getTimeAccessor();
-	TimeList times = timeAccessor->getTimesChangedSince();
+	TimeAccessor timeAccessor(db);
+	TimeList times = timeAccessor.getTimesChangedSince();
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)
 	{
@@ -103,9 +102,9 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	tasks = taskAccessor->getTasksChangedSince();
-	times = timeAccessor->getTimesChangedSince();
-	ASSERT_EQ( 2, tasks->size()) << "Checking number of tasks after repeat syncing ";
+	tasks = taskAccessor.getTasksChangedSince();
+	times = timeAccessor.getTimesChangedSince();
+	ASSERT_EQ( 2, tasks.size()) << "Checking number of tasks after repeat syncing ";
 	ASSERT_EQ( 1, times.size()) << "Checking number of times after repeat syncing ";
 }
 

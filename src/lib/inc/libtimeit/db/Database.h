@@ -1,42 +1,35 @@
 #ifndef DATABASE_H_
 #define DATABASE_H_
 
-#include "IDatabase.h"
-#include "AutotrackAccessor.h"
-#include "TimeAccessor.h"
-#include "ExtendedTaskAccessor.h"
-#include "ISettingsAccessor.h"
 #include "Notifier.h"
 #include <memory>
-
+#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/QueryResult.h>
 
 
 namespace libtimeit
 {
 class CSQL;
 
-class Database: public IDatabase
+class Database
 {
 public:
 	Database(const std::string& dbname, Notifier& notifier);
 	virtual ~Database();
-	std::shared_ptr<IAutotrackAccessor> getAutotrackAccessor();
-	std::shared_ptr<ITimeAccessor> getTimeAccessor();
-	std::shared_ptr<ITaskAccessor> getTaskAccessor();
-	std::shared_ptr<IExtendedTaskAccessor> getExtendedTaskAccessor();
-	std::shared_ptr<ISettingsAccessor> getSettingsAccessor();
 	bool isThreadSafe();
 	void beginTransaction();
 	void tryRollback();
 	void endTransaction();
+	void enableNotifications(bool);
+	void sendNotification(MessageType type, int64_t taskId);
+	void attach(EventObserver *observer);
+	void detach(EventObserver *observer);
+	QueryResult exe(string statement);
+	Statement prepare(string statement);
+	int64_t getIDOfLastInsert();
 protected:
-	std::shared_ptr<IAutotrackAccessor> m_autotrackAccessor;
-	std::shared_ptr<TimeAccessor> m_timeAccessor;
-	std::shared_ptr<IExtendedTaskAccessor> m_extendedTaskAccessor;
-	std::shared_ptr<TaskAccessor> m_taskAccessor;
-	std::shared_ptr<ISettingsAccessor> m_settingsAccessor;
 	Notifier& m_notifier;
-	std::shared_ptr<CSQL> db;
+	CSQL db;
 
 	void createTablesPartOne();
 	void createAccessors();

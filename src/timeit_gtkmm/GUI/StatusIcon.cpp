@@ -19,13 +19,12 @@ using namespace libtimeit;
 
 StatusIcon::StatusIcon(
 		ITimeKeeper &time_keeper,
-		shared_ptr<ITaskAccessor> &task_accessor,
-		shared_ptr<ITimeAccessor> &time_accessor)
+		Database &database)
 		:
-		m_timeKeeper(time_keeper)
+		m_timeKeeper(time_keeper),
+		m_taskaccessor(database),
+		m_timeaccessor(database)
 {
-	m_taskaccessor = task_accessor;
-	m_timeaccessor = time_accessor;
 	const std::string &imagePath = libtimeit::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
@@ -48,13 +47,13 @@ StatusIcon::StatusIcon(
 	m_statusIcon->signal_activate().connect(sigc::mem_fun(this, &StatusIcon::on_activate));
 	m_statusIcon->signal_popup_menu().connect(sigc::mem_fun(this, &StatusIcon::on_popup_menu));
 
-	m_taskaccessor->attach(this);
+	m_taskaccessor.attach(this);
 }
 
 StatusIcon::~StatusIcon()
 {
 	m_timeKeeper.detach(this);
-	m_taskaccessor->detach(this);
+	m_taskaccessor.detach(this);
 }
 
 void StatusIcon::populateContextMenu()
@@ -62,18 +61,18 @@ void StatusIcon::populateContextMenu()
 	Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 	menulist.clear();
 
-	latestTasks = m_timeaccessor->getLatestTasks(5);
-	std::vector<int64_t> runningTasks = m_timeaccessor->getRunningTasks();
+	latestTasks = m_timeaccessor.getLatestTasks(5);
+	std::vector<int64_t> runningTasks = m_timeaccessor.getRunningTasks();
 	for (int i = 0; i < (int) latestTasks.size(); i++)
 	{
 		try
 		{
 			int64_t id = latestTasks[i];
-			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
-			std::string menuLine = completeTaskPath(latestTasks[i]);
+			auto task = m_taskaccessor.getTask(id);
+			string menuLine = completeTaskPath(latestTasks[i]);
 
 			Gtk::Image *menuIcon = Gtk::manage(new Gtk::Image());
-			if (std::find(runningTasks.begin(), runningTasks.end(), id) != runningTasks.end())
+			if (find(runningTasks.begin(), runningTasks.end(), id) != runningTasks.end())
 			{
 				menuIcon->set(runningIconSmall);
 			}
@@ -118,8 +117,8 @@ void StatusIcon::populateContextMenu()
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
 	std::string taskName = "";
-	std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
-	if (task)
+	auto task = m_taskaccessor.getTask(id);
+	if (task.has_value())
 	{
 		taskName = task->name();
 		if (task->parentID() > 0)
@@ -166,19 +165,19 @@ void StatusIcon::on_activate()
 }
 void StatusIcon::toggleMainWindow()
 {
-	std::list<IActionObserver*>::iterator iter = observers.begin();
+	std::list<ActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_toggleMainWindow();
 	}
 }
 
-void StatusIcon::attach(IActionObserver *observer)
+void StatusIcon::attach(ActionObserver *observer)
 {
 	observers.push_back(observer);
 }
-void StatusIcon::detach(IActionObserver *observer)
+void StatusIcon::detach(ActionObserver *observer)
 {
 	observers.remove(observer);
 }
@@ -193,30 +192,30 @@ void StatusIcon::on_menu_file_popup_quit()
 }
 void StatusIcon::on_menu_stop_all_timers()
 {
-	std::list<IActionObserver*>::iterator iter = observers.begin();
+	std::list<ActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_stopTimers();
 	}
 }
 
 void StatusIcon::on_menu_about()
 {
-	std::list<IActionObserver*>::iterator iter = observers.begin();
+	std::list<ActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_about();
 	}
 }
 
 void StatusIcon::on_menu_preferences()
 {
-	std::list<IActionObserver*>::iterator iter = observers.begin();
+	std::list<ActionObserver*>::iterator iter = observers.begin();
 	for (; iter != observers.end(); ++iter)
 	{
-		IActionObserver *observer = *iter;
+		ActionObserver *observer = *iter;
 		observer->on_action_preferences();
 	}
 }
@@ -259,7 +258,7 @@ void StatusIcon::on_runningChanged()
 void StatusIcon::setTooltip()
 {
 	std::stringstream message { };
-	std::vector<int64_t> taskIDs = m_timeaccessor->getRunningTasks();
+	std::vector<int64_t> taskIDs = m_timeaccessor.getRunningTasks();
 	if (taskIDs.size() > 0)
 	{
 		//Figure out start and end of today
@@ -267,9 +266,9 @@ void StatusIcon::setTooltip()
 		time_t stopTime = libtimeit::getEndOfDay(time(0));
 		for (int64_t id : taskIDs)
 		{
-			std::shared_ptr<Task> task = m_taskaccessor->getTask(id);
+			auto task = m_taskaccessor.getTask(id);
 			message << setw(15) << setiosflags(ios::left) << task->name();
-			message << " " << libtimeit::seconds2hhmm(m_timeaccessor->getTime(id, startTime, stopTime));
+			message << " " << libtimeit::seconds2hhmm(m_timeaccessor.getTime(id, startTime, stopTime));
 		}
 	}
 	else

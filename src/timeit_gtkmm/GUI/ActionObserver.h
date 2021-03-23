@@ -8,10 +8,10 @@
 #ifndef _IACTIONOBSERVER_H_
 #define _IACTIONOBSERVER_H_
 
-class IActionObserver
+class ActionObserver
 {
 public:
-	virtual ~IActionObserver(){};
+	virtual ~ActionObserver(){};
 	virtual void on_action_task_selection_changed(int selectedTaskID)=0;
 	virtual void on_action_add_task()=0;
 	virtual void on_action_remove_task()=0;

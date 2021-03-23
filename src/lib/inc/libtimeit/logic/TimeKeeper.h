@@ -2,12 +2,19 @@
 #define TIMEKEEPER_H_
 
 #include <list>
+#include <map>
 #include <libtimeit/db/Task.h>
 #include <libtimeit/Timer.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/IDatabase.h>
+#include <libtimeit/db/Database.h>
 #include <libtimeit/logic/X11_IdleDetector.h>
 #include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/TimeAccessor.h>
+
+namespace libtimeit
+{
+using namespace std;
 
 class TimekeeperObserver
 {
@@ -39,14 +46,18 @@ public:
 	virtual void stopAllAndContinue() = 0;
 
 	//
-	virtual void attach(TimekeeperObserver*) = 0;
-	virtual void detach(TimekeeperObserver*) = 0;
+	virtual void attach(TimekeeperObserver *) = 0;
+	virtual void detach(TimekeeperObserver *) = 0;
 };
 
-class Timekeeper: public libtimeit::TimerObserver, public ITimeKeeper, public libtimeit::EventObserver, public libtimeit::ISettingsAccessorObserver
+class Timekeeper :
+		public TimerObserver,
+		public ITimeKeeper,
+		public EventObserver,
+		public SettingsAccessorObserver
 {
 public:
-	Timekeeper(libtimeit::IDatabase &database, libtimeit::Timer &timer);
+	Timekeeper(Database &database, Timer &timer);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);
@@ -66,8 +77,8 @@ public:
 	void stopAllAndContinue();
 
 	//
-	void attach(TimekeeperObserver*);
-	void detach(TimekeeperObserver*);
+	void attach(TimekeeperObserver *);
+	void detach(TimekeeperObserver *);
 
 	//
 	virtual bool isIdle();
@@ -83,28 +94,27 @@ private:
 
 	virtual void on_taskAdded(int64_t)
 	{
-	}
-	;
+	};
+
 	virtual void on_taskUpdated(int64_t)
 	{
-	}
-	;
+	};
+
 	virtual void on_taskNameChanged(int64_t)
 	{
-	}
-	;
+	};
+
 	virtual void on_taskTimeChanged(int64_t)
 	{
-	}
-	;
+	};
 	virtual void on_taskRemoved(int64_t);
-	virtual void on_settingsChanged(const std::string&);
+	virtual void on_settingsChanged(const string &);
 	virtual void on_completeUpdate();
 
 	void UpdateTask(int64_t id);
 
-	bool m_enabled;
-	bool m_isIdle;
+	bool enabled;
+	bool is_idle;
 
 	struct TaskTime
 	{
@@ -113,22 +123,22 @@ private:
 		time_t startTime;
 		time_t stopTime; //Latest confirmed point in time
 	};
-	std::map<int64_t, TaskTime> activeTasks;
+	map<int64_t, TaskTime> active_tasks;
 
-	int m_idleGz;
-	int m_idleGt;
+	int idle_Gz;
+	int idle_Gt;
 
 	void notifyRunningChanged();
 	void notifyIdleDetected();
 	void notifyActivityResumed();
-	std::list<TimekeeperObserver*> observers;
+	list<TimekeeperObserver *> observers;
 
-	std::shared_ptr<libtimeit::ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<libtimeit::ITaskAccessor> m_taskAccessor;
-	libtimeit::Timer& m_timer;
-	std::shared_ptr<libtimeit::ISettingsAccessor> m_settingsAccessor;
+	TimeAccessor      time_accessor;
+	TaskAccessor      task_accessor;
+	Timer            &timer;
+	SettingsAccessor  settings_accessor;
 
-	X11_IdleDetector m_idleDetector;
+	X11_IdleDetector idle_detector;
 };
-
+}
 #endif /*TIMEKEEPER_H_*/

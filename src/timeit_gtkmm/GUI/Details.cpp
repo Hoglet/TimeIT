@@ -20,10 +20,10 @@ using namespace libtimeit;
 namespace GUI
 {
 
-Details::Details(IDatabase &database):
-		m_timeAccessor(database.getTimeAccessor()),
-		m_taskAccessor(database.getTaskAccessor()),
-		m_settingsAccessor(database.getSettingsAccessor())
+Details::Details(Database &database):
+		m_timeAccessor(database),
+		m_taskAccessor(database),
+		m_settingsAccessor(database)
 
 {
 	m_calendar = nullptr;
@@ -37,7 +37,7 @@ Details::Details(IDatabase &database):
 	append_column("Time", m_columns.m_col_time);
 	append_column("Evening", m_columns.m_col_evening);
 	append_column("Idle", m_columns.m_col_idle);
-	m_taskAccessor->attach(this);
+	m_taskAccessor.attach(this);
 	set_headers_visible(false);
 	//Fill the popup menu:
 	{
@@ -54,7 +54,7 @@ Details::Details(IDatabase &database):
 
 Details::~Details()
 {
-	m_taskAccessor->detach(this);
+	m_taskAccessor.detach(this);
 }
 
 int64_t Details::getSelectedID()
@@ -98,12 +98,12 @@ void Details::on_menu_file_popup_remove()
 	int64_t selectedID = getSelectedID();
 	if (selectedID > 0)
 	{
-		optional<TimeEntry> ote = m_timeAccessor->getByID(selectedID);
+		optional<TimeEntry> ote = m_timeAccessor.getByID(selectedID);
 		if (ote)
 		{
 			TimeEntry te = ote.value();
-			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
+			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
 			int64_t minutesToLose = difftime(te.stop(), te.start()) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
@@ -123,7 +123,7 @@ void Details::on_menu_file_popup_remove()
 			{
 			case (Gtk::RESPONSE_OK):
 			{
-				m_timeAccessor->remove(selectedID);
+				m_timeAccessor.remove(selectedID);
 				empty();
 				populate();
 				//DetailsDialog::instance().show();
@@ -145,14 +145,14 @@ void Details::on_menu_file_popup_merge()
 	std::vector<int64_t> selectedIDs = getSelectedAndNextID();
 	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
 	{
-		optional<TimeEntry> ote0 = m_timeAccessor->getByID(selectedIDs[0]);
-		optional<TimeEntry> ote1 = m_timeAccessor->getByID(selectedIDs[1]);
+		optional<TimeEntry> ote0 = m_timeAccessor.getByID(selectedIDs[0]);
+		optional<TimeEntry> ote1 = m_timeAccessor.getByID(selectedIDs[1]);
 		if (ote0 && ote1)
 		{
 			TimeEntry te0 = ote0.value();
 			TimeEntry te1 = ote1.value();
-			int idleGt = m_settingsAccessor->GetIntByName("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor->GetIntByName("Gz", DEFAULT_GZ);
+			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
 			int64_t minutesToGain = difftime(te1.start(), te0.stop()) / 60;
 			std::string minutesString = string_printf("<span color='green'>%d</span>", minutesToGain);
 			std::string secondaryText =
@@ -173,8 +173,8 @@ void Details::on_menu_file_popup_merge()
 			case (Gtk::RESPONSE_OK):
 			{
 				time_t newStart = te0.start();
-				m_timeAccessor->remove(te0.ID());
-				m_timeAccessor->updateTime(te1.ID(), newStart, te1.stop());
+				m_timeAccessor.remove(te0.ID());
+				m_timeAccessor.updateTime(te1.ID(), newStart, te1.stop());
 				empty();
 				populate();
 				break;
@@ -270,7 +270,7 @@ void Details::empty()
 
 void Details::populate()
 {
-	std::vector<TimeEntry> timeList = m_timeAccessor->getDetailTimeList(m_taskID, m_startTime, m_stopTime);
+	std::vector<TimeEntry> timeList = m_timeAccessor.getDetailTimeList(m_taskID, m_startTime, m_stopTime);
 	std::vector<TimeEntry>::iterator iter = timeList.begin();
 	time_t prevStartTime = 0;
 	bool first = true;

@@ -6,6 +6,8 @@
 #include <libtimeit/Timer.h>
 #include <libtimeit/sync/Network.h>
 #include <libtimeit/sync/Json.h>
+#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/TaskAccessor.h>
 
 namespace libtimeit
 {
@@ -26,7 +28,7 @@ class SyncManager : public TimerObserver
 {
 public:
 	SyncManager(
-			IDatabase &database,
+			Database &database,
 			INetwork  &network,
 			Notifier  &notifier,
 			Timer     &timer);
@@ -49,10 +51,10 @@ private:
 	shared_ptr<asyncHTTPResponse> requestTasks(time_t sincePointInTime);
 	shared_ptr<asyncHTTPResponse> requestTimes(time_t sincePointInTime);
 
-	shared_ptr<ITaskAccessor>     taskAccessor;
-	shared_ptr<ITimeAccessor>     timeAccessor;
-	shared_ptr<ISettingsAccessor> settingsAccessor;
-	INetwork&     network;
+	TaskAccessor     taskAccessor;
+	TimeAccessor     timeAccessor;
+	SettingsAccessor settingsAccessor;
+	INetwork&        network;
 
 	SyncState                           state          {SyncState::IDLE};
 	SyncState                           following_state{SyncState::IDLE};

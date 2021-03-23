@@ -9,17 +9,20 @@
 #define MENU_H_
 
 #include <gtkmm.h>
-#include "IActionObserver.h"
+#include <ActionObserver.h>
 
 namespace GUI
 {
+
+using namespace std;
+
 class Menu: public Gtk::MenuBar
 {
 public:
 	Menu();
 	virtual ~Menu();
-	void attach(IActionObserver*);
-	void detach(IActionObserver*);
+	void attach(ActionObserver*);
+	void detach(ActionObserver*);
 	void setTaskIsSelected(bool);
 private:
 	Gtk::Menu m_fileMenu;
@@ -40,7 +43,7 @@ private:
 	void on_menu_preferences();
 	void on_menu_report_bug();
 
-	std::list<IActionObserver*> observers;
+	list<ActionObserver*> observers;
 };
 
 }

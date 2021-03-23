@@ -18,7 +18,7 @@ namespace GUI
 AddTime::AddTime(
 		int64_t    op_taskID,
 		ICalendar& op_calendar,
-		IDatabase& database)
+		Database& database)
 		:
 		table(7, 4),
 		yearLabel(_("Year")),
@@ -30,14 +30,14 @@ AddTime::AddTime(
 		startColonLabel(":"), toLabel("→"),
 		stopColonLabel(":"),
 		calendar(op_calendar), taskID(op_taskID),
-		m_timeAccessor(database.getTimeAccessor()),
-		m_taskAccessor(database.getTaskAccessor())
+		m_timeAccessor(database),
+		m_taskAccessor(database)
 {
 	set_deletable(false);
 	//OKButton.set_sensitive(false);
 
-	std::shared_ptr<Task> task = m_taskAccessor->getTask(taskID);
-	if (task)
+	auto task = m_taskAccessor.getTask(taskID);
+	if (task.has_value())
 	{
 		taskName.set_text(task->name());
 	}
@@ -137,7 +137,7 @@ void AddTime::on_response(int response_id)
 
 		time_t startTime = libtimeit::getTime(y, m, d, startH, startM);
 		time_t stopTime = libtimeit::getTime(y, m, d, stopH, stopM);
-		m_timeAccessor->newTime(taskID, startTime, stopTime);
+		m_timeAccessor.newTime(taskID, startTime, stopTime);
 	}
 }
 

@@ -25,6 +25,7 @@
 #include <IMainWindow.h>
 #include "TaskList.h"
 #include <libtimeit/db/ExtendedTask.h>
+#include <libtimeit/db/SettingsAccessor.h>
 #include "SummaryViews.h"
 #include "TimeItAboutDialog.h"
 #include "Details.h"
@@ -37,11 +38,11 @@ namespace GUI
 using namespace libtimeit;
 using namespace std;
 
-class MainWindow: public Gtk::Window, public IActionObserver, public IWidget, public IMainWindow, public ISettingsAccessorObserver
+class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, public IMainWindow, public SettingsAccessorObserver
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(IDatabase& database, ITimeKeeper &timeKeeper);
+	MainWindow(Database& database, ITimeKeeper &timeKeeper);
 
 
 	// IWidget interface
@@ -72,8 +73,8 @@ public:
 
 	virtual void attach(SummaryObserver* observer);
 	virtual void detach(SummaryObserver* observer);
-	virtual void attach(IActionObserver*);
-	virtual void detach(IActionObserver*);
+	virtual void attach(ActionObserver*);
+	virtual void detach(ActionObserver*);
 
 	virtual ICalendar& getCalendar();
 
@@ -141,9 +142,9 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
-	shared_ptr<ITimeAccessor> timeAccessor;
-	shared_ptr<IExtendedTaskAccessor> taskAccessor;
-	shared_ptr<ISettingsAccessor> settingsAccessor;
+	TimeAccessor         timeAccessor;
+	ExtendedTaskAccessor taskAccessor;
+	SettingsAccessor     settingsAccessor;
 	vector<Summary*> summaries;
 };
 }

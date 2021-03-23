@@ -15,7 +15,7 @@ file( GLOB_RECURSE sources *.cpp)
 add_library( libtimeit STATIC
 		${sources}
 		${headers}
-		)
+        inc/libtimeit/db/MessageType.h inc/libtimeit/db/QueryResult.h)
 
 target_link_libraries( libtimeit
         ${SQLITE_LIBRARIES}

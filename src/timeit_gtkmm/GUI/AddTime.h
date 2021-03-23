@@ -12,6 +12,8 @@
 #include "LZSpinButton.h"
 #include "ICalendar.h"
 #include <libtimeit/db/Database.h>
+#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/TimeAccessor.h>
 #include <IWidget.h>
 namespace GUI
 {
@@ -20,7 +22,7 @@ using namespace libtimeit;
 class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, ICalendar& calendar, IDatabase& database);
+	AddTime(int64_t taskId, ICalendar& calendar, Database& database);
 	virtual ~AddTime();
 	// IWidget interface
 	virtual void show() { Gtk::Dialog::show(); }
@@ -59,8 +61,8 @@ private:
 	ICalendar& calendar;
 
 	int64_t taskID;
-	std::shared_ptr<ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<ITaskAccessor> m_taskAccessor;
+	TimeAccessor m_timeAccessor;
+	TaskAccessor m_taskAccessor;
 };
 }
 

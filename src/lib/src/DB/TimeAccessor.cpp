@@ -7,13 +7,8 @@ using namespace std;
 namespace libtimeit
 {
 
-ITimeAccessor::~ITimeAccessor()
+TimeAccessor::TimeAccessor(Database &op_database) : database(op_database)
 {
-}
-
-TimeAccessor::TimeAccessor(shared_ptr<CSQL> &op_db, Notifier &op_notifier) : notifier(op_notifier)
-{
-	db = op_db;
 }
 
 TimeAccessor::~TimeAccessor()
@@ -21,7 +16,7 @@ TimeAccessor::~TimeAccessor()
 
 void TimeAccessor::stopAllRunning()
 {
-	db->exe("UPDATE times SET running = 0");
+	database.exe("UPDATE times SET running = 0");
 }
 
 int64_t TimeAccessor::newTime(int64_t taskID, time_t start, time_t stop)
@@ -41,8 +36,8 @@ void TimeAccessor::updateTime(int64_t timeID, time_t startTime, time_t stopTime)
 		statement << "UPDATE times SET start = " << startTime << ", stop=" << stopTime;
 		statement << ", changed=" << now;
 		statement << " WHERE id=" << timeID;
-		db->exe(statement.str());
-		notifier.sendNotification(TASK_UPDATED, te->taskID());
+		database.exe(statement.str());
+		database.sendNotification(TASK_UPDATED, te->taskID());
 	}
 }
 
@@ -57,7 +52,7 @@ void TimeAccessor::remove(int64_t id)
 
 std::optional<TimeEntry> TimeAccessor::getByID(int64_t id)
 {
-	Statement statement = db->prepare(
+	Statement statement = database.prepare(
 			"SELECT taskID, start, stop, running, changed, deleted, uuid, taskUUID FROM v_times WHERE id = ?");
 	statement.bindValue(1, id);
 
@@ -107,7 +102,7 @@ int TimeAccessor::getTimeCompletelyWithinLimits(int64_t &taskID, time_t &start, 
 	QueryResult rows;
 	if (stop > 0)
 	{
-		Statement statement_timeCompletelyWithinLimits = db->prepare("SELECT SUM(stop-start) AS time "
+		Statement statement_timeCompletelyWithinLimits = database.prepare("SELECT SUM(stop-start) AS time "
 				" FROM times  WHERE taskID = ? AND start>=? AND stop<=? and deleted=0;");
 		statement_timeCompletelyWithinLimits.bindValue(1, taskID);
 		statement_timeCompletelyWithinLimits.bindValue(2, start);
@@ -116,7 +111,7 @@ int TimeAccessor::getTimeCompletelyWithinLimits(int64_t &taskID, time_t &start, 
 	}
 	else
 	{
-		Statement statement_getTime = db->prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
+		Statement statement_getTime = database.prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
 		statement_getTime.bindValue(1, taskID);
 		rows = statement_getTime.execute();
 	}
@@ -143,7 +138,7 @@ int TimeAccessor::getTimePassingEndLimit(int64_t &taskID, time_t &start, time_t 
 	statement << " AND stop  > " << stop;
 	statement << " AND start > " << start;
 	statement << " AND deleted=0 ";
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size() == 1)
 	{
 		vector<DataCell> row = rows.at(0);
@@ -166,7 +161,7 @@ int TimeAccessor::getTimePassingStartLimit(int64_t taskID, time_t start, time_t 
 	statement << " AND stop  >  " << start;
 	statement << " AND stop  <  " << stop;
 	statement << " AND deleted=0 ";
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	if (rows.size() == 1)
 	{
 		vector<DataCell> row = rows.at(0);
@@ -185,7 +180,7 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 	statement << "SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' ORDER BY times.stop DESC LIMIT "
 			<< amount;
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 
 	for (vector<DataCell> row : rows)
 	{
@@ -199,7 +194,7 @@ std::vector<int64_t> TimeAccessor::getLatestTasks(int amount)
 std::vector<int64_t> TimeAccessor::getRunningTasks()
 {
 	std::vector<int64_t> resultList;
-	Statement statement_getRunningTasks = db->prepare(
+	Statement statement_getRunningTasks = database.prepare(
 			"SELECT DISTINCT times.taskid FROM times WHERE times.running;");
 	QueryResult rows = statement_getRunningTasks.execute();
 
@@ -221,7 +216,7 @@ TimeList TimeAccessor::getDetailTimeList(int64_t taskID, time_t startTime, time_
 	statement << " AND taskID = " << taskID;
 	statement << " AND deleted=0 ";
 
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
@@ -250,8 +245,8 @@ void TimeAccessor::setRunning(int64_t timeID, bool running)
 		statement << "UPDATE times SET running = " << (int) running;
 		statement << " WHERE id=" << timeID;
 
-		db->exe(statement.str());
-		notifier.sendNotification(TASK_UPDATED, taskID);
+		database.exe(statement.str());
+		database.sendNotification(TASK_UPDATED, taskID);
 	}
 }
 
@@ -259,7 +254,7 @@ TimeList TimeAccessor::getTimesChangedSince(time_t timestamp)
 {
 	TimeList result;
 
-	Statement statement = db->prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
+	Statement statement = database.prepare("SELECT taskID, start, stop, running, changed, deleted, uuid, id, taskUUID FROM v_times WHERE changed>=?");
 
 	statement.bindValue(1, timestamp);
 
@@ -287,7 +282,7 @@ TimeList TimeAccessor::getTimesChangedSince(time_t timestamp)
 int64_t TimeAccessor::uuidToId(UUID uuid)
 {
 	int64_t id = 0;
-	Statement statement_uuidToId = db->prepare("SELECT id FROM times WHERE uuid=?;");
+	Statement statement_uuidToId = database.prepare("SELECT id FROM times WHERE uuid=?;");
 	statement_uuidToId.bindValue(1, uuid.c_str());
 	QueryResult rows = statement_uuidToId.execute();
 	for (std::vector<DataCell> row : rows)
@@ -303,7 +298,7 @@ bool TimeAccessor::update(const TimeEntry &item)
 	auto existingItem = getByID(id);
 	if (existingItem && item != *existingItem && item.changed() >= existingItem->changed())
 	{
-		Statement statement_updateTime = db->prepare(
+		Statement statement_updateTime = database.prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
 		statement_updateTime.bindValue(1, item.getUUID().c_str());
 		statement_updateTime.bindValue(2, item.taskID());
@@ -316,21 +311,21 @@ bool TimeAccessor::update(const TimeEntry &item)
 
 		statement_updateTime.execute();
 
-		notifier.sendNotification(TASK_UPDATED, item.taskID());
+		database.sendNotification(TASK_UPDATED, item.taskID());
 		return true;
 	}
 	return false;
 }
-shared_ptr<vector<int64_t>> TimeAccessor::getChildrenIDs(int64_t taskID)
+vector<int64_t> TimeAccessor::getChildrenIDs(int64_t taskID)
 {
-	shared_ptr<vector<int64_t>> result = shared_ptr<vector<int64_t> >(new vector<int64_t>);
-	Statement statement_getChildrenIDs = db->prepare("SELECT id FROM tasks WHERE parent=?;");
+	vector<int64_t> result;
+	Statement statement_getChildrenIDs = database.prepare("SELECT id FROM tasks WHERE parent=?;");
 	statement_getChildrenIDs.bindValue(1, taskID);
 	QueryResult rows = statement_getChildrenIDs.execute();
 	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
-		result->push_back(id);
+		result.push_back(id);
 	}
 	return result;
 }
@@ -338,8 +333,8 @@ shared_ptr<vector<int64_t>> TimeAccessor::getChildrenIDs(int64_t taskID)
 time_t TimeAccessor::getTotalTimeWithChildren(int64_t taskID, time_t start, time_t stop)
 {
 	time_t totalTime = getTime(taskID, start, stop);
-	shared_ptr<vector<int64_t>> children = getChildrenIDs(taskID);
-	for (int64_t child : *children)
+	vector<int64_t> children = getChildrenIDs(taskID);
+	for (int64_t child : children)
 	{
 		totalTime += getTotalTimeWithChildren(child, start, stop);
 	}
@@ -348,7 +343,7 @@ time_t TimeAccessor::getTotalTimeWithChildren(int64_t taskID, time_t start, time
 
 int64_t TimeAccessor::newEntry(const TimeEntry &item)
 {
-	Statement statement_newEntry = db->prepare(
+	Statement statement_newEntry = database.prepare(
 			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
 	statement_newEntry.bindValue(1, item.getUUID().c_str());
 	statement_newEntry.bindValue(2, item.taskID());
@@ -360,21 +355,21 @@ int64_t TimeAccessor::newEntry(const TimeEntry &item)
 
 	if (item.start() != item.stop())
 	{
-		notifier.sendNotification(TASK_UPDATED, item.taskID());
+		database.sendNotification(TASK_UPDATED, item.taskID());
 	}
-	return db->getIDOfLastInsert();
+	return database.getIDOfLastInsert();
 }
 
 void TimeAccessor::upgradeToDB5()
 {
 	time_t now = time(nullptr);
 
-	db->exe("DELETE FROM times WHERE taskID = 0");
-	db->exe("ALTER TABLE times RENAME TO times_backup");
+	database.exe("DELETE FROM times WHERE taskID = 0");
+	database.exe("ALTER TABLE times RENAME TO times_backup");
 	createTable();
 	createViews();
 
-	Statement statement = db->prepare("SELECT id, taskID, start, stop FROM  times_backup");
+	Statement statement = database.prepare("SELECT id, taskID, start, stop FROM  times_backup");
 	QueryResult rows = statement.execute();
 	for (vector<DataCell> row : rows)
 	{
@@ -389,7 +384,7 @@ void TimeAccessor::upgradeToDB5()
 
 void TimeAccessor::createTable()
 {
-	db->exe("CREATE TABLE IF NOT EXISTS times "
+	database.exe("CREATE TABLE IF NOT EXISTS times "
 			"(id          INTEGER PRIMARY KEY,"
 			" uuid        TEXT UNIQUE,"
 			" taskID      INTEGER,"
@@ -404,9 +399,9 @@ void TimeAccessor::createTable()
 
 void TimeAccessor::createViews()
 {
-	db->exe("DROP VIEW IF EXISTS v_times");
+	database.exe("DROP VIEW IF EXISTS v_times");
 
-	db->exe("CREATE VIEW v_times AS"
+	database.exe("CREATE VIEW v_times AS"
 			" SELECT times.*, tasks.uuid AS taskUUID "
 			" FROM times "
 			" LEFT JOIN tasks "
@@ -415,14 +410,14 @@ void TimeAccessor::createViews()
 
 void TimeAccessor::removeShortTimeSpans()
 {
-	db->exe("DELETE FROM times WHERE stop-start < 30");
+	database.exe("DELETE FROM times WHERE stop-start < 30");
 }
 
 std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
 {
 	std::vector<int64_t> resultList;
 	Statement statement_getTasks =
-			db->prepare(
+			database.prepare(
 					"SELECT DISTINCT times.taskid FROM times JOIN tasks ON times.taskID = tasks.id AND tasks.deleted='0' WHERE (times.start>=? AND times.start<=?) OR (times.stop>=? AND times.stop<=?) OR (times.start<? AND times.stop>?)  AND times.deleted=0;");
 	statement_getTasks.bindValue(1, start);
 	statement_getTasks.bindValue(2, stop);
@@ -440,7 +435,5 @@ std::vector<int64_t> TimeAccessor::getActiveTasks(time_t start, time_t stop)
 	}
 	return resultList;
 }
-
-
 
 }

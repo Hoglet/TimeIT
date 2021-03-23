@@ -9,18 +9,12 @@
 #include "libtimeit/db/AutotrackAccessor.h"
 #include "libtimeit/db/ExtendedTaskAccessor.h"
 
-using namespace std;
 namespace libtimeit
 {
+using namespace std;
 
-IAutotrackAccessor::~IAutotrackAccessor()
+AutotrackAccessor::AutotrackAccessor(Database& op_database) : database(op_database), task_accessor(op_database)
 {
-}
-
-AutotrackAccessor::AutotrackAccessor(shared_ptr<CSQL>& op_db, std::shared_ptr<IExtendedTaskAccessor>& taskAccessor)
-{
-	db = op_db;
-	m_taskAccessor = taskAccessor;
 }
 
 AutotrackAccessor::~AutotrackAccessor()
@@ -32,11 +26,12 @@ std::vector<int64_t> AutotrackAccessor::getTaskIDs(int workspace)
 	std::vector<int64_t> retVal;
 	stringstream statement;
 	statement << "SELECT taskID FROM autotrack where workspace =" << workspace;
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	for (vector<DataCell> row : rows)
 	{
 		int64_t id = row[0].getInt();
-		if(m_taskAccessor->getTask(id)->deleted() == false)
+		auto task = task_accessor.getTask(id);
+		if(task.has_value() && task->deleted() == false)
 		{
 			retVal.push_back(id);
 		}
@@ -49,7 +44,7 @@ std::vector<int> AutotrackAccessor::getWorkspaces(int64_t taskID)
 	std::vector<int> retVal;
 	stringstream statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
-	QueryResult rows = db->exe(statement.str());
+	QueryResult rows = database.exe(statement.str());
 	for (vector<DataCell> row : rows)
 	{
 		int workspace = row[0].getInt();
@@ -62,13 +57,13 @@ void AutotrackAccessor::setWorkspaces(int64_t taskID, std::vector<int> workspace
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << taskID;
-	db->exe(statement.str());
+	database.exe(statement.str());
 
 	for (int workspace : workspaces)
 	{
 		statement.str("");
 		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << taskID << ", " << workspace << ")";
-		db->exe(statement.str());
+		database.exe(statement.str());
 	}
 }
 

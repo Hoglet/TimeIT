@@ -16,26 +16,19 @@
 namespace libtimeit
 {
 
-class IAutotrackAccessor
-{
-public:
-	virtual ~IAutotrackAccessor();
-	virtual std::vector<int64_t> getTaskIDs(int workspace) = 0;
-	virtual std::vector<int> getWorkspaces(int64_t taskID) = 0;
-	virtual void setWorkspaces(int64_t taskID, std::vector<int> workspaces) = 0;
-};
+using namespace std;
 
-class AutotrackAccessor : public IAutotrackAccessor
+class AutotrackAccessor
 {
 public:
-	AutotrackAccessor(std::shared_ptr<CSQL>& db,  std::shared_ptr<IExtendedTaskAccessor>& taskAccessor);
+	AutotrackAccessor(Database& db);
 	virtual ~AutotrackAccessor();
-	std::vector<int64_t> getTaskIDs(int workspace);
-	std::vector<int> getWorkspaces(int64_t taskID);
-	void setWorkspaces(int64_t taskID,std::vector<int> workspaces);
+	vector<int64_t> getTaskIDs(int workspace);
+	vector<int> getWorkspaces(int64_t taskID);
+	void setWorkspaces(int64_t taskID, vector<int> workspaces);
 private:
-	std::shared_ptr<IExtendedTaskAccessor> m_taskAccessor;
-	std::shared_ptr<CSQL> db;
+	ExtendedTaskAccessor task_accessor;
+	Database& database;
 };
 
 }

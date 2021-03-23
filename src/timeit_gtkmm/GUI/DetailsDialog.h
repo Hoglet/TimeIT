@@ -15,6 +15,7 @@
 #include <libtimeit/db/Database.h>
 #include <IWidget.h>
 #include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/db/ExtendedTaskAccessor.h>
 
 namespace GUI
 {
@@ -37,7 +38,7 @@ class DetailsDialog:
 		public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(IDatabase& database, ITimeKeeper &timeKeeper);
+	static std::shared_ptr<DetailsDialog> create(Database& database, ITimeKeeper &timeKeeper);
 	virtual ~DetailsDialog();
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -53,7 +54,7 @@ public:
 	void on_runningTasksChanged();
 
 private:
-	DetailsDialog(IDatabase& database, ITimeKeeper &timeKeeper);
+	DetailsDialog(Database& database, ITimeKeeper &timeKeeper);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -97,9 +98,9 @@ private:
 	int64_t m_taskID;
 	int64_t m_timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
-	std::shared_ptr<ITimeAccessor> m_timeAccessor;
-	std::shared_ptr<IExtendedTaskAccessor> m_taskAccessor;
-	ITimeKeeper& m_timeKeeper;
+	TimeAccessor         m_timeAccessor;
+	ExtendedTaskAccessor m_taskAccessor;
+	ITimeKeeper&         m_timeKeeper;
 };
 }
 

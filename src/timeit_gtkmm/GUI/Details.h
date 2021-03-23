@@ -15,6 +15,7 @@
 
 #include <libtimeit/db/Database.h>
 #include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/SettingsAccessor.h>
 
 #include <vector>
 
@@ -40,7 +41,7 @@ public:
 class Details: public Gtk::TreeView, public EventObserver
 {
 public:
-	Details(IDatabase &database);
+	Details(Database &database);
 	virtual ~Details();
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
@@ -102,9 +103,9 @@ private:
 	time_t m_stopTime;
 	Gtk::Menu m_Menu_Popup;
 	std::list<DetailsObserver*> observers;
-	shared_ptr<ITimeAccessor> m_timeAccessor;
-	shared_ptr<ITaskAccessor> m_taskAccessor;
-	shared_ptr<ISettingsAccessor> m_settingsAccessor;
+	TimeAccessor     m_timeAccessor;
+	TaskAccessor     m_taskAccessor;
+	SettingsAccessor m_settingsAccessor;
 };
 }
 

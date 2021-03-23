@@ -11,8 +11,6 @@ namespace libtimeit
 
 CSQL::CSQL(const string& dbname)
 {
-	db = nullptr;
-	threadsafe=false;
 	if (sqlite3_config(SQLITE_CONFIG_SERIALIZED) == SQLITE_OK)
 	{
 		threadsafe=true;
@@ -66,8 +64,7 @@ Statement CSQL::prepare(const char *buffer)
 		tryRollback();
 		throw e;
 	}
-	std::shared_ptr<CSQL> sharedMe = shared_from_this();
-	return Statement(stmt, sharedMe);
+	return Statement(stmt, *this);
 }
 
 QueryResult CSQL::exe(const std::string& s_exe)
@@ -112,20 +109,13 @@ std::string CSQL::getLastErrorMessage()
 	return sqlite3_errmsg(db);
 }
 
-//LCOV_EXCL_START
-Statement::Statement()
-{
-	stmt = nullptr;
-	ncol = 0;
-}
-//LCOV_EXCL_STOP
 
 Statement::~Statement()
 {
 	sqlite3_finalize(stmt);
 }
 
-Statement::Statement(sqlite3_stmt* op_stmt, std::shared_ptr<CSQL> op_db): db(op_db)
+Statement::Statement(sqlite3_stmt* op_stmt, CSQL& op_db): db(op_db)
 {
 	stmt = op_stmt;
 	ncol = sqlite3_column_count(stmt);
@@ -182,7 +172,7 @@ QueryResult Statement::execute()
 				{
 					//LCOV_EXCL_START
 					e.setMessage("Unmanaged data type");
-					db->tryRollback();
+					db.tryRollback();
 					throw e;
 					//LCOV_EXCL_STOP
 				}
@@ -194,10 +184,10 @@ QueryResult Statement::execute()
 			//LCOV_EXCL_START
 			e.setReturnCode(rc);
 			stringstream message;
-			message << " (" << db->getLastErrorMessage() << ")";
+			message << " (" << db.getLastErrorMessage() << ")";
 			message << "Statement failed";
 			e.setMessage(message.str());
-			db->tryRollback();
+			db.tryRollback();
 			throw e;
 			//LCOV_EXCL_STOP
 		}

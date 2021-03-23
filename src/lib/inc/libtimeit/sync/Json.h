@@ -10,11 +10,13 @@
 
 namespace libtimeit
 {
-std::shared_ptr<std::vector<Task>> toTasks(const std::string&);
-std::vector<TimeEntry> toTimes(const std::string&);
+using namespace std;
 
-std::string toJson(std::shared_ptr<std::vector<Task>>, std::string username);
-std::string toJson(const std::vector<TimeEntry>&);
+vector<Task>      toTasks(const string&);
+vector<TimeEntry> toTimes(const string&);
+
+string toJson(vector<Task>, string username);
+string toJson(const vector<TimeEntry>&);
 }
 
 #endif /* JSON_H_ */

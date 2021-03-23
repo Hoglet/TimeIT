@@ -14,8 +14,9 @@ class Network_test;
 namespace libtimeit
 {
 class TaskAccessor;
-using std::string;
-using std::optional;
+
+using namespace std;
+
 class Task
 {
 	friend class TaskAccessor;

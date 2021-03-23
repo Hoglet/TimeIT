@@ -13,7 +13,7 @@
 #include "libtimeit/logic/TimeKeeper.h"
 #include <libtimeit/db/TaskAccessor.h>
 #include <libtimeit/db/TimeAccessor.h>
-#include "IActionObserver.h"
+#include "ActionObserver.h"
 #include "IStatusIcon.h"
 
 namespace GUI
@@ -24,13 +24,13 @@ class StatusIcon: public TimekeeperObserver, public IStatusIcon, public EventObs
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(ITimeKeeper&, std::shared_ptr<ITaskAccessor>&, std::shared_ptr<ITimeAccessor>&);
+	StatusIcon(ITimeKeeper&, Database&);
 	virtual void show()
 	{
 	}
 	; //Shown directly on creation. Might change
-	virtual void attach(IActionObserver *observer);
-	virtual void detach(IActionObserver *observer);
+	virtual void attach(ActionObserver *observer);
+	virtual void detach(ActionObserver *observer);
 private:
 	void on_activate();
 	void setIcon();
@@ -77,9 +77,9 @@ private:
 
 	Gtk::Menu m_Menu_Popup;
 	ITimeKeeper& m_timeKeeper;
-	std::shared_ptr<ITaskAccessor> m_taskaccessor;
-	std::shared_ptr<ITimeAccessor> m_timeaccessor;
-	std::list<IActionObserver*> observers;
+	TaskAccessor m_taskaccessor;
+	TimeAccessor m_timeaccessor;
+	std::list<ActionObserver*> observers;
 	std::vector<int64_t> latestTasks;
 
 };

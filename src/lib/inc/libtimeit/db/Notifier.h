@@ -9,24 +9,15 @@
 
 #pragma once
 
-#include "libtimeit/EventObserver.h"
 #include <cstdint>
 #include <list>
 #include <string>
+#include <libtimeit/EventObserver.h>
+#include <libtimeit/db/MessageType.h>
 
 namespace libtimeit
 {
 
-enum MessageType
-{
-	TASK_UPDATED,
-	TASK_REMOVED,
-	TASK_ADDED,
-	TASK_PARENT_CHANGED,
-	COMPLETE_UPDATE,
-	TASK_NAME_CHANGED,
-	TASK_TIME_CHANGED
-};
 
 struct NotificationMessage
 {

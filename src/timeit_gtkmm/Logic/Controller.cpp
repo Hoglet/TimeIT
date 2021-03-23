@@ -25,14 +25,14 @@ using namespace std;
 Controller::Controller(
 		IGUIFactory &op_guiFactory,
 		ITimeKeeper &op_timeKeeper,
-		IDatabase   &database,
+		Database   &database,
 		IpcServer   &ipc)
 		:
 		guiFactory(op_guiFactory),
 		timeKeeper(op_timeKeeper),
-		taskAccessor(database.getExtendedTaskAccessor()),
-		timeAccessor(database.getTimeAccessor()),
-		settingsAccessor(database.getSettingsAccessor())
+		taskAccessor(database),
+		timeAccessor(database),
+		settingsAccessor(database)
 {
 	timeKeeper.attach(this);
 	ipc.attach(this);
@@ -48,7 +48,7 @@ void Controller::start()
 {
 	guiFactory.getStatusIcon().show();
 	guiFactory.getStatusIcon().attach(this);
-	if (!settingsAccessor->GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
+	if (!settingsAccessor.GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
 	{
 		WidgetPtr mainWindow = guiFactory.getWidget(MAIN_WINDOW);
 		mainWindow->attach(this);
@@ -163,7 +163,7 @@ void Controller::on_activityResumed()
 		timeKeeper.enable(false);
 		return;
 	}
-	bool quiet = settingsAccessor->GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
+	bool quiet = settingsAccessor.GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
 	if(quiet)
 	{
 		on_action_revertAndContinue();
@@ -173,7 +173,7 @@ void Controller::on_activityResumed()
 		idleDialog = std::dynamic_pointer_cast<IdleDialog>(guiFactory.getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
-		std::vector<int64_t> taskIDs = timeAccessor->getRunningTasks();
+		std::vector<int64_t> taskIDs = timeAccessor.getRunningTasks();
 		idleDialog->setActiveTaskList(taskIDs);
 		idleDialog->show();
 	}
