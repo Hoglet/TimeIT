@@ -215,6 +215,7 @@ TimeList TimeAccessor::getDetailTimeList(int64_t taskID, time_t startTime, time_
 	statement << " AND start <" << stopTime;
 	statement << " AND taskID = " << taskID;
 	statement << " AND deleted=0 ";
+	statement << " ORDER BY start";
 
 	QueryResult rows = database.exe(statement.str());
 	for (vector<DataCell> row : rows)
