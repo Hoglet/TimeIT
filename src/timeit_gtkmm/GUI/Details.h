@@ -49,6 +49,7 @@ public:
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
 	void on_menu_file_popup_merge();
+	void on_menu_file_popup_split();
 	//EventObserver interface
 	virtual void on_taskAdded(int64_t)
 	{
@@ -102,6 +103,7 @@ private:
 	time_t m_startTime;
 	time_t m_stopTime;
 	Gtk::Menu m_Menu_Popup;
+	Glib::RefPtr<Gtk::MenuItem> m_split_menu_item;
 	std::list<DetailsObserver*> observers;
 	TimeAccessor     m_timeAccessor;
 	TaskAccessor     m_taskAccessor;

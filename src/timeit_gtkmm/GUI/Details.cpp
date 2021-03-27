@@ -45,6 +45,9 @@ Details::Details(Database &database):
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &Details::on_menu_file_popup_merge)));
+		Gtk::Menu_Helpers::MenuElem split_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Split"), sigc::mem_fun(*this, &Details::on_menu_file_popup_split));
+		m_split_menu_item = split_menu_elem.get_child();
+		menulist.push_back(split_menu_elem);
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	m_Menu_Popup.accelerate(*this);
@@ -107,7 +110,7 @@ void Details::on_menu_file_popup_remove()
 			int64_t minutesToLose = difftime(te.stop(), te.start()) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
-				minutesToLose > idleGt || minutesToLose > idleGz ?
+				minutesToLose > idleGt || minutesToLose > idleGz || minutesToLose < 0 ?
 				string_printf(
 					_("Removing will lose %s minutes.\n\nRemoving will be permanent."),
 					minutesString.c_str()) :
@@ -154,9 +157,10 @@ void Details::on_menu_file_popup_merge()
 			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
 			int64_t minutesToGain = difftime(te1.start(), te0.stop()) / 60;
-			std::string minutesString = string_printf("<span color='green'>%d</span>", minutesToGain);
+			std::string minutesString = string_printf(
+				minutesToGain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutesToGain);
 			std::string secondaryText =
-				minutesToGain > idleGt || minutesToGain > idleGz ?
+				minutesToGain > idleGt || minutesToGain > idleGz || minutesToGain < 0 ?
 				string_printf(
 					_("Merging will add %s minutes.\n\nMerging with the next row will be permanent."),
 					minutesString.c_str()) :
@@ -165,10 +169,10 @@ void Details::on_menu_file_popup_merge()
 			Gtk::MessageDialog dialog(_("Do you really want to merge?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 			dialog.set_secondary_text(secondaryText, true);
 
-			int result = dialog.run();
+			int dialog_result = dialog.run();
 
 			//Handle the response:
-			switch (result)
+			switch (dialog_result)
 			{
 			case (Gtk::RESPONSE_OK):
 			{
@@ -188,6 +192,65 @@ void Details::on_menu_file_popup_merge()
 	}
 }
 
+bool offer_to_split(TimeEntry &time_entry)
+{
+	time_t start_time = time_entry.start();
+	time_t stop_time = time_entry.stop();
+	int64_t seconds_to_split = difftime(stop_time, start_time);
+	bool across_days = onDifferentDays(start_time, stop_time);
+	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
+	return across_days || seconds_to_split > 120;
+}
+
+void Details::on_menu_file_popup_split()
+{
+	int64_t selected_id = getSelectedID();
+	if (selected_id > 0)
+	{
+		optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selected_id);
+		if (optional_time_entry)
+		{
+			TimeEntry time_entry = optional_time_entry.value();
+			time_t start_time = time_entry.start();
+			time_t stop_time = time_entry.stop();
+			int64_t seconds_to_split = difftime(stop_time, start_time);
+			bool across_days = onDifferentDays(start_time, stop_time);
+			// code while considering this could be an active task
+			if (offer_to_split(time_entry))
+			{
+				int64_t time_id = time_entry.ID();
+				int64_t task_id = time_entry.taskID();
+				time_t split_stop_time;
+				time_t split_start_time;
+				if (across_days)
+				{
+					// use sufficient margins to stay clear of leap seconds
+					struct tm first_day = *localtime(&start_time);
+					first_day.tm_hour = 23;
+					first_day.tm_min = 59;
+					first_day.tm_sec = 57;
+					split_stop_time = mktime(&first_day);
+					split_start_time = split_stop_time + 6;
+				}
+				else
+				{
+					// if on same day then halfway
+					split_stop_time = (start_time + (stop_time - start_time) / 2 - 1);
+					split_start_time = split_stop_time + 2;
+				}
+				m_timeAccessor.updateTime(time_id, split_start_time, stop_time);
+				m_timeAccessor.newTime(task_id, start_time, split_stop_time);
+				empty();
+				populate();
+			}
+			else
+			{
+				// don't
+			}
+		}
+	}
+}
+
 bool Details::on_button_press_event(GdkEventButton *event)
 {
 	//Call base class, to allow normal handling,
@@ -197,7 +260,24 @@ bool Details::on_button_press_event(GdkEventButton *event)
 	//Then do our custom stuff:
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		m_Menu_Popup.popup(event->button, event->time);
+		int64_t selected_id = getSelectedID();
+		if (selected_id > 0)
+		{
+			optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selected_id);
+			if (optional_time_entry)
+			{
+				if (offer_to_split(optional_time_entry.value()))
+				{
+					m_split_menu_item->set_sensitive(true);
+				}
+				else
+				{
+					m_split_menu_item->set_sensitive(false);
+				}
+
+				m_Menu_Popup.popup(event->button, event->time);
+			}
+		}
 	}
 
 	return return_value;
