@@ -165,7 +165,9 @@ void Details::on_menu_file_popup_merge()
 			TimeEntry time_entry_1 = optional_time_entry_1.value();
 			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
+
 			int64_t minutesToGain = difftime(time_entry_1.start(), time_entry_0.stop()) / 60;
+
 			std::string minutesString = string_printf(
 				minutesToGain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutesToGain);
 			std::string secondaryText =
@@ -225,7 +227,9 @@ void Details::on_menu_file_popup_split()
 			time_t stop_time = time_entry.stop();
 			int64_t seconds_to_split = difftime(stop_time, start_time);
 			bool across_days = onDifferentDays(start_time, stop_time);
+
 			// coded considering time_entry could be currently running
+
 			if (offer_to_split(time_entry))
 			{
 				int64_t time_id = time_entry.ID();
