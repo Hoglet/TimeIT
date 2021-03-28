@@ -101,13 +101,13 @@ void Details::on_menu_file_popup_remove()
 	int64_t selectedID = getSelectedID();
 	if (selectedID > 0)
 	{
-		optional<TimeEntry> ote = m_timeAccessor.getByID(selectedID);
-		if (ote)
+		optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selectedID);
+		if (optional_time_entry)
 		{
-			TimeEntry te = ote.value();
+			TimeEntry time_entry = optional_time_entry.value();
 			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
-			int64_t minutesToLose = difftime(te.stop(), te.start()) / 60;
+			int64_t minutesToLose = difftime(time_entry.stop(), time_entry.start()) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
 				minutesToLose > idleGt || minutesToLose > idleGz || minutesToLose < 0 ?
@@ -126,7 +126,16 @@ void Details::on_menu_file_popup_remove()
 			{
 			case (Gtk::RESPONSE_OK):
 			{
-				m_timeAccessor.remove(selectedID);
+				// coded considering time_entry could be currently running
+				if (!time_entry.running())
+				{
+					m_timeAccessor.remove(selectedID);
+				}
+				else
+				{
+					// if running then keep running, starting over with zero length
+					m_timeAccessor.updateTime(time_entry.ID(), time_entry.stop(), time_entry.stop());
+				}
 				empty();
 				populate();
 				//DetailsDialog::instance().show();
@@ -148,15 +157,17 @@ void Details::on_menu_file_popup_merge()
 	std::vector<int64_t> selectedIDs = getSelectedAndNextID();
 	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
 	{
-		optional<TimeEntry> ote0 = m_timeAccessor.getByID(selectedIDs[0]);
-		optional<TimeEntry> ote1 = m_timeAccessor.getByID(selectedIDs[1]);
-		if (ote0 && ote1)
+		optional<TimeEntry> optional_time_entry_0 = m_timeAccessor.getByID(selectedIDs[0]);
+		optional<TimeEntry> optional_time_entry_1 = m_timeAccessor.getByID(selectedIDs[1]);
+		if (optional_time_entry_0 && optional_time_entry_1)
 		{
-			TimeEntry te0 = ote0.value();
-			TimeEntry te1 = ote1.value();
+			TimeEntry time_entry_0 = optional_time_entry_0.value();
+			TimeEntry time_entry_1 = optional_time_entry_1.value();
 			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
-			int64_t minutesToGain = difftime(te1.start(), te0.stop()) / 60;
+
+			int64_t minutesToGain = difftime(time_entry_1.start(), time_entry_0.stop()) / 60;
+
 			std::string minutesString = string_printf(
 				minutesToGain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutesToGain);
 			std::string secondaryText =
@@ -176,9 +187,10 @@ void Details::on_menu_file_popup_merge()
 			{
 			case (Gtk::RESPONSE_OK):
 			{
-				time_t newStart = te0.start();
-				m_timeAccessor.remove(te0.ID());
-				m_timeAccessor.updateTime(te1.ID(), newStart, te1.stop());
+				// coded considering time_entry_1 could be currently running
+				time_t new_start = time_entry_0.start();
+				m_timeAccessor.remove(time_entry_0.ID());
+				m_timeAccessor.updateTime(time_entry_1.ID(), new_start, time_entry_1.stop());
 				empty();
 				populate();
 				break;
@@ -215,7 +227,9 @@ void Details::on_menu_file_popup_split()
 			time_t stop_time = time_entry.stop();
 			int64_t seconds_to_split = difftime(stop_time, start_time);
 			bool across_days = onDifferentDays(start_time, stop_time);
-			// code while considering this could be an active task
+
+			// coded considering time_entry could be currently running
+
 			if (offer_to_split(time_entry))
 			{
 				int64_t time_id = time_entry.ID();
