@@ -371,6 +371,7 @@ void Details::populate()
 	int64_t secondsInDay;
 	time_t now = time(nullptr);
 	bool isToday = !onDifferentDays(m_startTime, now);
+	bool isPast = difftime(now, m_stopTime) > 0;
 	if (!isToday && !get_column(m_morningColumnN)->get_visible())
 	{
 		get_column(m_morningColumnN)->set_visible(true);
@@ -404,7 +405,7 @@ void Details::populate()
 		{
 			// last
 			lastOnDay = true;
-			row[m_columns.m_col_idle] = "\u2003⋯";
+			row[m_columns.m_col_idle] = std::string("\u2003") + (te.running() ? "⌚" : (isPast ? "⇣" : ""));
 		}
 		secondsInDay = (firstOnDay ? 0 : secondsInDay) +
 			// within limits only instead of simply difftime(stopTime, startTime)
