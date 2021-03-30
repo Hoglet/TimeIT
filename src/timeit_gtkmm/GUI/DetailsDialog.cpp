@@ -30,6 +30,7 @@ DetailsDialog::DetailsDialog(
 		table1(14, 1),
 		taskName(""),
 		detailList(database),
+		taskTotalTime(""),
 		table2(7, 4),
 		startTimeLabel(_("Start time")),
 		stopTimeLabel(_("Stop time")),
@@ -68,8 +69,11 @@ DetailsDialog::DetailsDialog(
 	runningImage.set_alignment(0.0, 0.5);
 	runningImage.set(blankIcon);
 	taskName.set_padding(5, 3);
+	taskTotalTime.set_padding(5, 3);
+	taskTotalTime.set_alignment(0.0, 0.5);
 	table1.attach(taskName, 0, 1, 0, 1);
-	table1.attach(runningImage, 1, 14, 0, 1);
+	table1.attach(runningImage, 1, 2, 0, 1);
+	table1.attach(taskTotalTime, 2, 14, 0, 1);
 	//Layout
 	table2.attach(startTimeLabel, 0, 3, 0, 1);
 	table2.attach(stopTimeLabel, 4, 7, 0, 1);
@@ -103,6 +107,7 @@ DetailsDialog::DetailsDialog(
 			&DetailsDialog::on_change));
 	stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this,
 			&DetailsDialog::on_change));
+	m_taskAccessor.attach(this);
 
 	detailList.attach(this);
 
@@ -180,6 +185,18 @@ void DetailsDialog::on_edit_details(int64_t timeEntryID)
 	setTimeEntryID(timeEntryID);
 }
 
+void DetailsDialog::on_taskUpdated(int64_t task_id)
+{
+	//std::cout << "DetailsDialog::on_taskUpdated " << task_id << std::endl;
+	on_task_total_time_updated(task_id);
+}
+
+void DetailsDialog::on_taskNameChanged(int64_t task_id)
+{
+	//std::cout << "DetailsDialog::on_taskNameChanged " << task_id << std::endl;
+	on_task_name_updated(task_id);
+}
+
 
 void DetailsDialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 {
@@ -188,15 +205,8 @@ void DetailsDialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 	rangeStart = startTime;
 	rangeStop = stopTime;
 
-	auto task = m_taskAccessor.getTask(taskID);
-	if (task.has_value())
-	{
-		taskName.set_text(task->name());
-	}
-	else
-	{
-		taskName.set_text("");
-	}
+	on_task_name_updated(taskID);
+	on_task_total_time_updated(taskID);
 
 	detailList.set(taskID, rangeStart, rangeStop);
 	checkForChanges();
@@ -283,6 +293,56 @@ void DetailsDialog::on_runningTasksChanged()
 	else
 	{
 		runningImage.set(blankIcon);
+	}
+}
+
+void DetailsDialog::on_task_name_updated(int64_t task_id)
+{
+	if (task_id == m_taskID)
+	{
+		auto task = m_taskAccessor.getTask(m_taskID);
+		if (task.has_value())
+		{
+			taskName.set_text(task->name());
+		}
+		else
+		{
+			taskName.set_text("");
+		}
+	}
+	else
+	{
+		// ignore any other task being updated
+	}
+}
+
+void DetailsDialog::on_task_total_time_updated(int64_t task_id)
+{
+	if (task_id == m_taskID)
+	{
+		if (difftime(rangeStop, rangeStart) > 86403)
+		{
+			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
+			auto task = m_taskAccessor.getTask(m_taskID);
+			if (task.has_value())
+			{
+				time_t total_time = m_timeAccessor.getTotalTimeWithChildren(m_taskID, rangeStart, rangeStop);
+				taskTotalTime.set_text("∑ = " + libtimeit::seconds2hhmm(total_time));
+			}
+			else
+			{
+				taskTotalTime.set_text("");
+			}
+		}
+		else
+		{
+			// if one day only then don't show here because it shows a daily total in the last row anyway
+			taskTotalTime.set_text("");
+		}
+	}
+	else
+	{
+		// ignore any other task being updated
 	}
 }
 
