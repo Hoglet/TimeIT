@@ -12,7 +12,7 @@
 #include <libtimeit/Timer.h>
 #include <IWidget.h>
 #include <memory>
-#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/task_accessor.h>
 
 namespace GUI
 {
@@ -63,7 +63,7 @@ private:
 	Timer& m_timer;
 	time_t m_idleStartTime;
 	std::string taskString;
-	TaskAccessor taskAccessor;
+	Task_accessor taskAccessor;
 
 	std::list<ActionObserver*> observers;
 	void responseHandler(int result);

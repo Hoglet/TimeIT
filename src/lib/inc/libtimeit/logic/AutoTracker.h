@@ -3,8 +3,8 @@
 #include <iostream>
 #include <libtimeit/Timer.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/Database.h>
-#include <libtimeit/db/AutotrackAccessor.h>
+#include <libtimeit/db/database.h>
+#include <libtimeit/db/autotrack_accessor.h>
 #include <libtimeit/logic/Workspace.h>
 
 namespace libtimeit
@@ -25,8 +25,8 @@ private:
 	int oldWorkspace;
 	ITimeKeeper        &time_keeper;
 	Timer              &timer;
-	AutotrackAccessor  autotrack_accessor;
-	TaskAccessor       task_accessor;
+	Autotrack_accessor  autotrack_accessor;
+	Task_accessor       task_accessor;
 	Workspace          workspace;
 };
 

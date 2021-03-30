@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/exceptions/dbexception.h>
-#include <libtimeit/db/TimeAccessor.h>
-#include <libtimeit/db/TaskAccessor.h>
-#include <libtimeit/db/ExtendedTaskAccessor.h>
+#include <libtimeit/exceptions/db_exception.h>
+#include <libtimeit/db/time_accessor.h>
+#include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/extended_task_accessor.h>
 
 namespace test
 {
@@ -16,11 +16,11 @@ TEST(TimeAccessor, simpleTest)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	timeAccessor.newTime(taskId, 0, 1000);
-	int result = timeAccessor.getTime(taskId, 0, 0);
+	Time_accessor timeAccessor(tempdb);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	timeAccessor.create(taskId, 0, 1000);
+	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(1000, result);
 }
 
@@ -28,16 +28,16 @@ TEST(TimeAccessor, ChangeEndTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeAccessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.newTime(taskId, 0, 1000);
-	auto te = timeAccessor.getByID(timeId);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_accessor timeAccessor(tempdb);
+	int64_t timeId = timeAccessor.create(taskId, 0, 1000);
+	auto te = timeAccessor.by_ID(timeId);
 	if (te)
 	{
-		timeAccessor.update(te->withStop(1300));
+		timeAccessor.update(te->with_stop(1300));
 	}
-	int result = timeAccessor.getTime(taskId, 0, 0);
+	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(1300, result);
 
 }
@@ -46,13 +46,13 @@ TEST(TimeAccessor, ChangeStartTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeAccessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.newTime(taskId, 0, 1000);
-	auto te = timeAccessor.getByID(timeId);
-	timeAccessor.update(te->withStart(300));
-	int result = timeAccessor.getTime(taskId, 0, 0);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_accessor timeAccessor(tempdb);
+	int64_t timeId = timeAccessor.create(taskId, 0, 1000);
+	auto te = timeAccessor.by_ID(timeId);
+	timeAccessor.update(te->with_start(300));
+	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(700, result);
 
 }
@@ -61,12 +61,12 @@ TEST(TimeAccessor, UpdateTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeAccessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.newTime(taskId, 0, 1000);
-	timeAccessor.updateTime(timeId, 300, 700);
-	int result = timeAccessor.getTime(taskId, 0, 0);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_accessor timeAccessor(tempdb);
+	int64_t timeId = timeAccessor.create(taskId, 0, 1000);
+	timeAccessor.update(timeId, 300, 700);
+	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(400, result);
 
 }
@@ -75,13 +75,13 @@ TEST(TimeAccessor, RemoveTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeAccessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.newTime(taskId, 0, 1000);
-	timeAccessor.newTime(taskId, 2000, 2300);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_accessor timeAccessor(tempdb);
+	int64_t timeId = timeAccessor.create(taskId, 0, 1000);
+	timeAccessor.create(taskId, 2000, 2300);
 	timeAccessor.remove(timeId);
-	int result = timeAccessor.getTime(taskId, 0, 0);
+	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(300, result);
 }
 
@@ -89,15 +89,15 @@ TEST(TimeAccessor, GetLatestTasks)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeAccessor timeAccessor(tempdb);
-	timeAccessor.newTime(taskId, 0, 1000);
-	vector<int64_t> result = timeAccessor.getLatestTasks(10);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_accessor timeAccessor(tempdb);
+	timeAccessor.create(taskId, 0, 1000);
+	vector<int64_t> result = timeAccessor.latest_active_tasks(10);
 	ASSERT_EQ(1, result.size());
 	ASSERT_EQ(taskId, result[0]);
-	taskAccessor.removeTask(taskId);
-	result = timeAccessor.getLatestTasks(10);
+	taskAccessor.remove(taskId);
+	result = timeAccessor.latest_active_tasks(10);
 	ASSERT_EQ(0, result.size());
 }
 
@@ -105,13 +105,13 @@ TEST(TimeAccessor, GetDetailTimeList)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	ExtendedTaskAccessor taskAccessor(tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	timeAccessor.newTime(taskId, 10, 100);
-	vector<TimeEntry> result = timeAccessor.getDetailTimeList(taskId, 0, 10000);
+	Time_accessor timeAccessor(tempdb);
+	Extended_task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	timeAccessor.create(taskId, 10, 100);
+	vector<Time_entry> result = timeAccessor.time_list(taskId, 0, 10000);
 	ASSERT_EQ(1, result.size());
-	TimeEntry te = result[0];
+	Time_entry te = result[0];
 	ASSERT_EQ(10, te.start());
 	ASSERT_EQ(100, te.stop());
 }
@@ -120,12 +120,12 @@ TEST(TimeAccessor, testGetByID)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	ExtendedTaskAccessor taskAccessor( tempdb);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	int64_t timeEntryID = timeAccessor.newTime(taskId, 10, 100);
-	auto te = timeAccessor.getByID(timeEntryID);
-	ASSERT_EQ(taskId, te->taskID()) << "Check task ID";
+	Time_accessor timeAccessor(tempdb);
+	Extended_task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	int64_t timeEntryID = timeAccessor.create(taskId, 10, 100);
+	auto te = timeAccessor.by_ID(timeEntryID);
+	ASSERT_EQ(taskId, te->task_ID()) << "Check task ID";
 	ASSERT_EQ(10, te->start()) << "Check start";
 	ASSERT_EQ(100, te->stop()) << "Check stop";
 
@@ -135,28 +135,28 @@ TEST(TimeAccessor, newItem)
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	TimeAccessor timeAccessor(db);
-	ExtendedTaskAccessor taskAccessor(db);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeEntry item1(0, UUID(), taskId, {}, 100, 200, false, false, 200);
+	Time_accessor timeAccessor(db);
+	Extended_task_accessor taskAccessor(db);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_entry item1(0, UUID(), taskId, {}, 100, 200, false, false, 200);
 
-	int64_t timeEntryID = timeAccessor.newEntry(item1);
-	auto item2 = timeAccessor.getByID(timeEntryID);
+	int64_t timeEntryID = timeAccessor.create(item1);
+	auto item2 = timeAccessor.by_ID(timeEntryID);
 
-	ASSERT_EQ(item1.getUUID(), item2->getUUID()) << "UUID: ";
-	ASSERT_EQ(item1.taskID(), item2->taskID()) << "TaskID: ";
+	ASSERT_EQ(item1.get_UUID(), item2->get_UUID()) << "UUID: ";
+	ASSERT_EQ(item1.task_ID(), item2->task_ID()) << "Task_ID: ";
 	ASSERT_EQ(item1.start(), item2->start()) << "Start: ";
 	ASSERT_EQ(item1.stop(), item2->stop()) << "Stop: ";
 	ASSERT_EQ(item1.deleted(), item2->deleted()) << "Deleted: ";
 	ASSERT_EQ(item1.running(), item2->running()) << "Running: ";
 	ASSERT_EQ(item1.changed(), item2->changed()) << "Changed: ";
 
-	ASSERT_THROW(timeAccessor.newEntry(item1), dbexception);
+	ASSERT_THROW(timeAccessor.create(item1), db_exception);
 //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
 
-//	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string taskUUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
+//	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string task_UUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
 
-//	TimeEntry item2( item1.getID(), item1.getUUID(), item1.getTaskID(), item1.getTaskUUID(), item1.getStart(),   )
+//	TimeEntry item2( item1.getID(), item1.get_UUID(), item1.getTaskID(), item1.getTaskUUID(), item1.getStart(),   )
 
 	//TimeEntry faultyItem1(0, uuidManager.randomUUID(), taskId + 1, "", 100, 200, false, false, 200);
 
@@ -166,14 +166,14 @@ TEST(TimeAccessor, GetTotalTimeWithChildren)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	TaskAccessor taskAccessor(tempdb);
-	const int64_t parentId = taskAccessor.newTask("test", 0);
-	const int64_t taskId = taskAccessor.newTask("test", parentId);
-	timeAccessor.newTime(taskId, 4000, 5000);
-	int parentTotalTime = timeAccessor.getTotalTimeWithChildren(parentId, 0, 0);
+	Time_accessor timeAccessor(tempdb);
+	Task_accessor taskAccessor(tempdb);
+	const int64_t parentId = taskAccessor.create(Task("test", 0));
+	const int64_t taskId = taskAccessor.create(Task("test", parentId));
+	timeAccessor.create(taskId, 4000, 5000);
+	int parentTotalTime = timeAccessor.total_cumulative_time(parentId, 0, 0);
 	ASSERT_EQ(1000, parentTotalTime);
-	int childTotalTime = timeAccessor.getTotalTimeWithChildren(taskId, 0, 0);
+	int childTotalTime = timeAccessor.total_cumulative_time(taskId, 0, 0);
 	ASSERT_EQ(1000, childTotalTime);
 }
 
@@ -181,18 +181,18 @@ TEST(TimeAccessor, getTimesChangedSince)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	TaskAccessor taskAccessor(tempdb);
+	Time_accessor timeAccessor(tempdb);
+	Task_accessor taskAccessor(tempdb);
 
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	int64_t timeid = timeAccessor.newTime(taskId, 0, 1000);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	int64_t timeid = timeAccessor.create(taskId, 0, 1000);
 
-	auto item = timeAccessor.getByID(timeid);
-	vector<TimeEntry> result = timeAccessor.getTimesChangedSince(0);
+	auto item = timeAccessor.by_ID(timeid);
+	vector<Time_entry> result = timeAccessor.times_changed_since(0);
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor.getTimesChangedSince(item->changed());
+	result = timeAccessor.times_changed_since(item->changed());
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor.getTimesChangedSince(item->changed() + 1);
+	result = timeAccessor.times_changed_since(item->changed() + 1);
 	ASSERT_EQ(0, result.size());
 }
 
@@ -200,34 +200,34 @@ TEST(TimeAccessor, getActiveTasks)
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	TimeAccessor timeAccessor (db);
-	ExtendedTaskAccessor taskAccessor(db);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeEntry item(0, UUID(), taskId, {}, 100, 600, false, false, 200);
+	Time_accessor timeAccessor (db);
+	Extended_task_accessor taskAccessor(db);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_entry item(0, UUID(), taskId, {}, 100, 600, false, false, 200);
 
-	timeAccessor.newEntry(item);
+	timeAccessor.create(item);
 
-	vector<long int> result = timeAccessor.getActiveTasks(0, 50000);
+	vector<long int> result = timeAccessor.active_tasks(0, 50000);
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.getActiveTasks(110, 500);
+	result = timeAccessor.active_tasks(110, 500);
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
 
-	result = timeAccessor.getActiveTasks(90, 100);
+	result = timeAccessor.active_tasks(90, 100);
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.getActiveTasks(600, 800);
+	result = timeAccessor.active_tasks(600, 800);
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.getActiveTasks(0, 99);
+	result = timeAccessor.active_tasks(0, 99);
 	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.getActiveTasks(601, 8000);
+	result = timeAccessor.active_tasks(601, 8000);
 	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
-	taskAccessor.removeTask(taskId);
-	result = timeAccessor.getActiveTasks(110, 500);
+	taskAccessor.remove(taskId);
+	result = timeAccessor.active_tasks(110, 500);
 	ASSERT_EQ(0, result.size()) << "Deleted task is shown";
 
 }
@@ -236,17 +236,17 @@ TEST(TimeAccessor, removeShortTimeSpans)
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	TimeAccessor timeAccessor(db);
-	ExtendedTaskAccessor taskAccessor(db);
-	const int64_t taskId = taskAccessor.newTask("test", 0);
-	TimeEntry item1(0, UUID(), taskId, {}, 100, 110, false, false, 200);
-	TimeEntry item2(0, UUID(), taskId, {}, 100, 160, false, false, 200);
+	Time_accessor timeAccessor(db);
+	Extended_task_accessor taskAccessor(db);
+	const int64_t taskId = taskAccessor.create(Task("test", 0));
+	Time_entry item1(0, UUID(), taskId, {}, 100, 110, false, false, 200);
+	Time_entry item2(0, UUID(), taskId, {}, 100, 160, false, false, 200);
 
-	timeAccessor.newEntry(item1);
-	timeAccessor.newEntry(item2);
-	timeAccessor.removeShortTimeSpans();
+	timeAccessor.create(item1);
+	timeAccessor.create(item2);
+	timeAccessor.remove_short_time_spans();
 
-	vector<TimeEntry> items = timeAccessor.getDetailTimeList(taskId, 0, 1000);
+	vector<Time_entry> items = timeAccessor.time_list(taskId, 0, 1000);
 
 	ASSERT_EQ(1, items.size());
 }

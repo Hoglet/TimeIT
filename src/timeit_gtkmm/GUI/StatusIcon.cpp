@@ -61,14 +61,14 @@ void StatusIcon::populateContextMenu()
 	Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 	menulist.clear();
 
-	latestTasks = m_timeaccessor.getLatestTasks(5);
-	std::vector<int64_t> runningTasks = m_timeaccessor.getRunningTasks();
+	latestTasks = m_timeaccessor.latest_active_tasks(5);
+	std::vector<int64_t> runningTasks = m_timeaccessor.currently_running();
 	for (int i = 0; i < (int) latestTasks.size(); i++)
 	{
 		try
 		{
 			int64_t id = latestTasks[i];
-			auto task = m_taskaccessor.getTask(id);
+			auto task = m_taskaccessor.by_ID(id);
 			string menuLine = completeTaskPath(latestTasks[i]);
 
 			Gtk::Image *menuIcon = Gtk::manage(new Gtk::Image());
@@ -117,13 +117,13 @@ void StatusIcon::populateContextMenu()
 std::string StatusIcon::completeTaskPath(int64_t id)
 {
 	std::string taskName = "";
-	auto task = m_taskaccessor.getTask(id);
+	auto task = m_taskaccessor.by_ID(id);
 	if (task.has_value())
 	{
 		taskName = task->name();
-		if (task->parentID() > 0)
+		if (task->parent_ID() > 0)
 		{
-			taskName = completeTaskPath(task->parentID()) + " / " + taskName;
+			taskName = completeTaskPath(task->parent_ID()) + " / " + taskName;
 		}
 	}
 	return taskName;
@@ -225,25 +225,25 @@ void StatusIcon::on_popup_menu(guint button, guint32 activate_time)
 	m_Menu_Popup.popup(button, activate_time);
 }
 
-void StatusIcon::on_taskUpdated(int64_t)
+void StatusIcon::on_task_updated(int64_t)
 {
 	setTooltip();
 	populateContextMenu();
 }
 
-void StatusIcon::on_taskNameChanged(int64_t)
+void StatusIcon::on_task_name_changed(int64_t)
 {
 	setTooltip();
 	populateContextMenu();
 }
 
-void StatusIcon::on_taskTimeChanged(int64_t)
+void StatusIcon::on_task_time_changed(int64_t)
 {
 	setTooltip();
 	populateContextMenu();
 }
 
-void StatusIcon::on_completeUpdate()
+void StatusIcon::on_complete_update()
 {
 	setTooltip();
 	populateContextMenu();
@@ -258,7 +258,7 @@ void StatusIcon::on_runningChanged()
 void StatusIcon::setTooltip()
 {
 	std::stringstream message { };
-	std::vector<int64_t> taskIDs = m_timeaccessor.getRunningTasks();
+	std::vector<int64_t> taskIDs = m_timeaccessor.currently_running();
 	if (taskIDs.size() > 0)
 	{
 		//Figure out start and end of today
@@ -266,9 +266,9 @@ void StatusIcon::setTooltip()
 		time_t stopTime = libtimeit::getEndOfDay(time(0));
 		for (int64_t id : taskIDs)
 		{
-			auto task = m_taskaccessor.getTask(id);
+			auto task = m_taskaccessor.by_ID(id);
 			message << setw(15) << setiosflags(ios::left) << task->name();
-			message << " " << libtimeit::seconds2hhmm(m_timeaccessor.getTime(id, startTime, stopTime));
+			message << " " << libtimeit::seconds2hhmm(m_timeaccessor.duration_time(id, startTime, stopTime));
 		}
 	}
 	else

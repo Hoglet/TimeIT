@@ -117,24 +117,25 @@ DetailsDialog::DetailsDialog(
 
 DetailsDialog::~DetailsDialog()
 {
+	m_taskAccessor.detach(this);
 }
 
 void DetailsDialog::on_OKButton_clicked()
 {
 	if (startTime != oldStartTime)
 	{
-		auto te = m_timeAccessor.getByID(m_timeEntryID);
+		auto te = m_timeAccessor.by_ID(m_timeEntryID);
 		if(te)
 		{
-			m_timeAccessor.update(te->withStart(startTime));
+			m_timeAccessor.update(te->with_start(startTime));
 		}
 	}
 	if (stopTimeHour.sensitive())
 	{
-		auto te = m_timeAccessor.getByID(m_timeEntryID);
+		auto te = m_timeAccessor.by_ID(m_timeEntryID);
 		if(te)
 		{
-			m_timeAccessor.update(te->withStop(stopTime));
+			m_timeAccessor.update(te->with_stop(stopTime));
 		}
 	}
 	detailList.set(m_taskID, rangeStart, rangeStop);
@@ -187,13 +188,11 @@ void DetailsDialog::on_edit_details(int64_t timeEntryID)
 
 void DetailsDialog::on_taskUpdated(int64_t task_id)
 {
-	//std::cout << "DetailsDialog::on_taskUpdated " << task_id << std::endl;
 	on_task_total_time_updated(task_id);
 }
 
 void DetailsDialog::on_taskNameChanged(int64_t task_id)
 {
-	//std::cout << "DetailsDialog::on_taskNameChanged " << task_id << std::endl;
 	on_task_name_updated(task_id);
 }
 
@@ -215,7 +214,7 @@ void DetailsDialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 
 void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 {
-	auto te = m_timeAccessor.getByID(timeEntryID);
+	auto te = m_timeAccessor.by_ID(timeEntryID);
 	if (te)
 	{
 		oldStartTime = te->start();
@@ -261,7 +260,7 @@ void DetailsDialog::checkForChanges()
 // also displays whether idle
 void DetailsDialog::on_runningTasksChanged()
 {
-	std::vector<int64_t> taskIDs = m_timeAccessor.getRunningTasks();
+	std::vector<int64_t> taskIDs = m_timeAccessor.currently_running();
 	bool runningThisTaskID = false;
 	if (taskIDs.size() > 0)
 	{
@@ -300,7 +299,7 @@ void DetailsDialog::on_task_name_updated(int64_t task_id)
 {
 	if (task_id == m_taskID)
 	{
-		auto task = m_taskAccessor.getTask(m_taskID);
+		auto task = m_taskAccessor.by_ID(m_taskID);
 		if (task.has_value())
 		{
 			taskName.set_text(task->name());
@@ -323,10 +322,10 @@ void DetailsDialog::on_task_total_time_updated(int64_t task_id)
 		if (difftime(rangeStop, rangeStart) > 86403)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto task = m_taskAccessor.getTask(m_taskID);
+			auto task = m_taskAccessor.by_ID(m_taskID);
 			if (task.has_value())
 			{
-				time_t total_time = m_timeAccessor.getTotalTimeWithChildren(m_taskID, rangeStart, rangeStop);
+				time_t total_time = m_timeAccessor.total_cumulative_time(m_taskID, rangeStart, rangeStop);
 				taskTotalTime.set_text("∑ = " + libtimeit::seconds2hhmm(total_time));
 			}
 			else

@@ -96,23 +96,23 @@ void IpcServer::on_signal_1_second()
 	poll();
 }
 
-void IpcServer::attach(EventObserver *observer)
+void IpcServer::attach(Event_observer *observer)
 {
 	observers.push_back(observer);
 }
 
-void IpcServer::detach(EventObserver *observer)
+void IpcServer::detach(Event_observer *observer)
 {
 	observers.remove(observer);
 }
 
 void IpcServer::on_show_menu()
 {
-	std::list<EventObserver*>::iterator iter;
+	std::list<Event_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		EventObserver *observer = *iter;
-		observer->on_action_showMainWindow();
+		Event_observer *observer = *iter;
+		observer->on_show_main_window();
 	}
 }
 } /* namespace libtimeit */

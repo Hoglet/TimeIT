@@ -11,7 +11,7 @@
 #include <glibmm/i18n.h>
 #include <optional>
 #include <vector>
-#include <libtimeit/db/DefaultValues.h>
+#include <libtimeit/db/default_values.h>
 
 using namespace Gtk;
 using namespace std;
@@ -101,12 +101,12 @@ void Details::on_menu_file_popup_remove()
 	int64_t selectedID = getSelectedID();
 	if (selectedID > 0)
 	{
-		optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selectedID);
+		optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selectedID);
 		if (optional_time_entry)
 		{
-			TimeEntry time_entry = optional_time_entry.value();
-			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
+			Time_entry time_entry = optional_time_entry.value();
+			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
 			int64_t minutesToLose = difftime(time_entry.stop(), time_entry.start()) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
@@ -134,7 +134,7 @@ void Details::on_menu_file_popup_remove()
 				else
 				{
 					// if running then keep running, starting over with zero length
-					m_timeAccessor.updateTime(time_entry.ID(), time_entry.stop(), time_entry.stop());
+					m_timeAccessor.update(time_entry.ID(), time_entry.stop(), time_entry.stop());
 				}
 				empty();
 				populate();
@@ -157,14 +157,14 @@ void Details::on_menu_file_popup_merge()
 	std::vector<int64_t> selectedIDs = getSelectedAndNextID();
 	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
 	{
-		optional<TimeEntry> optional_time_entry_0 = m_timeAccessor.getByID(selectedIDs[0]);
-		optional<TimeEntry> optional_time_entry_1 = m_timeAccessor.getByID(selectedIDs[1]);
+		optional<Time_entry> optional_time_entry_0 = m_timeAccessor.by_ID(selectedIDs[0]);
+		optional<Time_entry> optional_time_entry_1 = m_timeAccessor.by_ID(selectedIDs[1]);
 		if (optional_time_entry_0 && optional_time_entry_1)
 		{
-			TimeEntry time_entry_0 = optional_time_entry_0.value();
-			TimeEntry time_entry_1 = optional_time_entry_1.value();
-			int idleGt = m_settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
+			Time_entry time_entry_0 = optional_time_entry_0.value();
+			Time_entry time_entry_1 = optional_time_entry_1.value();
+			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
+			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
 
 			int64_t minutesToGain = difftime(time_entry_1.start(), time_entry_0.stop()) / 60;
 
@@ -190,7 +190,7 @@ void Details::on_menu_file_popup_merge()
 				// coded considering time_entry_1 could be currently running
 				time_t new_start = time_entry_0.start();
 				m_timeAccessor.remove(time_entry_0.ID());
-				m_timeAccessor.updateTime(time_entry_1.ID(), new_start, time_entry_1.stop());
+				m_timeAccessor.update(time_entry_1.ID(), new_start, time_entry_1.stop());
 				empty();
 				populate();
 				break;
@@ -204,7 +204,7 @@ void Details::on_menu_file_popup_merge()
 	}
 }
 
-bool offer_to_split(TimeEntry &time_entry)
+bool offer_to_split(Time_entry &time_entry)
 {
 	time_t start_time = time_entry.start();
 	time_t stop_time = time_entry.stop();
@@ -219,10 +219,10 @@ void Details::on_menu_file_popup_split()
 	int64_t selected_id = getSelectedID();
 	if (selected_id > 0)
 	{
-		optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selected_id);
+		optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selected_id);
 		if (optional_time_entry)
 		{
-			TimeEntry time_entry = optional_time_entry.value();
+			Time_entry time_entry = optional_time_entry.value();
 			time_t start_time = time_entry.start();
 			time_t stop_time = time_entry.stop();
 			int64_t seconds_to_split = difftime(stop_time, start_time);
@@ -233,7 +233,7 @@ void Details::on_menu_file_popup_split()
 			if (offer_to_split(time_entry))
 			{
 				int64_t time_id = time_entry.ID();
-				int64_t task_id = time_entry.taskID();
+				int64_t task_id = time_entry.task_ID();
 				time_t split_stop_time;
 				time_t split_start_time;
 				if (across_days)
@@ -252,8 +252,8 @@ void Details::on_menu_file_popup_split()
 					split_stop_time = (start_time + (stop_time - start_time) / 2 - 1);
 					split_start_time = split_stop_time + 2;
 				}
-				m_timeAccessor.updateTime(time_id, split_start_time, stop_time);
-				m_timeAccessor.newTime(task_id, start_time, split_stop_time);
+				m_timeAccessor.update(time_id, split_start_time, stop_time);
+				m_timeAccessor.create(task_id, start_time, split_stop_time);
 				empty();
 				populate();
 			}
@@ -277,7 +277,7 @@ bool Details::on_button_press_event(GdkEventButton *event)
 		int64_t selected_id = getSelectedID();
 		if (selected_id > 0)
 		{
-			optional<TimeEntry> optional_time_entry = m_timeAccessor.getByID(selected_id);
+			optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selected_id);
 			if (optional_time_entry)
 			{
 				if (offer_to_split(optional_time_entry.value()))
@@ -310,28 +310,28 @@ Gtk::TreeModel::iterator Details::findRow(int id)
 	}
 	return iter;
 }
-void Details::on_taskUpdated(int64_t)
+void Details::on_task_updated(int64_t)
 {
 	populate();
 }
 
-void Details::on_taskNameChanged(int64_t)
+void Details::on_task_name_changed(int64_t)
 {
 	populate();
 }
 
-void Details::on_taskTimeChanged(int64_t)
+void Details::on_task_time_changed(int64_t)
 {
 	populate();
 }
 
-void Details::on_taskRemoved(int64_t)
+void Details::on_task_removed(int64_t)
 {
 	empty();
 	populate();
 }
 
-void Details::on_completeUpdate()
+void Details::on_complete_update()
 {
 	empty();
 	populate();
@@ -364,8 +364,8 @@ void Details::empty()
 
 void Details::populate()
 {
-	std::vector<TimeEntry> timeList = m_timeAccessor.getDetailTimeList(m_taskID, m_startTime, m_stopTime);
-	std::vector<TimeEntry>::iterator iter = timeList.begin();
+	std::vector<Time_entry> time_list = m_timeAccessor.time_list(m_taskID, m_startTime, m_stopTime);
+	std::vector<Time_entry>::iterator iter = time_list.begin();
 	time_t prevStartTime = 0;
 	bool first = true;
 	int64_t secondsInDay;
@@ -376,9 +376,9 @@ void Details::populate()
 	{
 		get_column(m_morningColumnN)->set_visible(true);
 	}
-	for (; iter != timeList.end(); )
+	for (; iter != time_list.end(); )
 	{
-		TimeEntry te = *iter;
+		Time_entry te = *iter;
 		TreeModel::Row row;
 		TreeModel::iterator TMIter;
 		Gtk::TreeIter treeIter = findRow(te.ID());
@@ -394,9 +394,9 @@ void Details::populate()
 		row[m_columns.m_col_id] = te.ID();
 		row[m_columns.m_col_morning] = firstOnDay ? dayOfWeekAbbreviation(startTime) : "";
 		row[m_columns.m_col_time] = createDurationString(startTime, stopTime);
-		if (++iter != timeList.end()) // here iterate to next
+		if (++iter != time_list.end()) // here iterate to next
 		{
-			TimeEntry nextTe = *iter;
+			Time_entry nextTe = *iter;
 			time_t nextStartTime = nextTe.start();
 			lastOnDay = onDifferentDays(startTime, nextStartTime);
 			row[m_columns.m_col_idle] = "\u2003" + createIdlingString(stopTime, nextStartTime);
@@ -405,7 +405,7 @@ void Details::populate()
 		{
 			// last
 			lastOnDay = true;
-			row[m_columns.m_col_idle] = std::string("\u2003") + (te.running() ? "⌚" : (isPast ? "⇣" : ""));
+			row[m_columns.m_col_idle] = string("\u2003") + (te.running() ? "⌚" : (isPast ? "⇣" : ""));
 		}
 		secondsInDay = (firstOnDay ? 0 : secondsInDay) +
 			// within limits only instead of simply difftime(stopTime, startTime)

@@ -12,10 +12,10 @@
 #include "LZSpinButton.h"
 #include "Details.h"
 #include "MainWindow/Summary.h"
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 #include <IWidget.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/ExtendedTaskAccessor.h>
+#include <libtimeit/db/extended_task_accessor.h>
 
 namespace GUI
 {
@@ -34,7 +34,7 @@ class DetailsDialog:
 		public Gtk::Dialog,
 		public SummaryObserver,
 		public DetailsObserver,
-		public EventObserver,
+		public Event_observer,
 		public IDetailsDialog,
 		public IWidget
 {
@@ -80,11 +80,11 @@ private:
 	Gtk::Table table1;
 	Gtk::Label taskName;
 	Gtk::Image runningImage;
+	Details detailList;
 	Gtk::Label taskTotalTime;
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
-	Details detailList;
 	Gtk::Table table2;
 	Gtk::Label startTimeLabel;
 	Gtk::Label stopTimeLabel;
@@ -106,8 +106,8 @@ private:
 	int64_t m_taskID;
 	int64_t m_timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
-	TimeAccessor         m_timeAccessor;
-	ExtendedTaskAccessor m_taskAccessor;
+	Time_accessor         m_timeAccessor;
+	Extended_task_accessor m_taskAccessor;
 	ITimeKeeper&         m_timeKeeper;
 };
 }

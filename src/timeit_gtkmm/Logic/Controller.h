@@ -11,12 +11,12 @@
 #include <IGUIFactory.h>
 #include <IdleDialog.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/ExtendedTaskAccessor.h>
+#include <libtimeit/db/extended_task_accessor.h>
 #include <MainWindow/Summary.h>
-#include <libtimeit/db/SettingsAccessor.h>
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/settings_accessor.h>
+#include <libtimeit/db/database.h>
 #include <libtimeit/misc/IpcServer.h>
-#include <libtimeit/EventObserver.h>
+#include <libtimeit/Event_observer.h>
 
 namespace GUI
 {
@@ -28,7 +28,7 @@ class Controller :
 		public ActionObserver,
 		public TimekeeperObserver,
 		public SummaryObserver,
-		public EventObserver
+		public Event_observer
 {
 public:
 	Controller(
@@ -63,7 +63,7 @@ public:
 	virtual void on_idleChanged();
 	virtual void on_runningChanged();
 	virtual void on_action_toggleMainWindow();
-	virtual void on_action_showMainWindow();
+	virtual void on_show_main_window();
 	virtual void on_action_revertAndContinue();
 	virtual void on_action_revertAndStop();
 	virtual void on_action_continue();
@@ -73,9 +73,9 @@ private:
 	IGUIFactory &guiFactory;
 	ITimeKeeper &timeKeeper;
 	shared_ptr<IdleDialog> idleDialog;
-	ExtendedTaskAccessor taskAccessor;
-	TimeAccessor         timeAccessor;
-	SettingsAccessor     settingsAccessor;
+	Extended_task_accessor taskAccessor;
+	Time_accessor         timeAccessor;
+	Settings_accessor     settingsAccessor;
 
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;

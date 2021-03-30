@@ -6,11 +6,11 @@
 #include <string>
 #include <vector>
 #include <EditTaskDialog.h>
-#include <libtimeit/db/AutotrackAccessor.h>
+#include <libtimeit/db/autotrack_accessor.h>
 #include <ParentChooser.h>
 #include <IWidget.h>
 #include <libtimeit/logic/Workspace.h>
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 
 namespace GUI
 {
@@ -77,8 +77,8 @@ private:
 	vector<int> workspaces;
 	int parentID;
 
-	AutotrackAccessor autoTrackAccessor;
-	TaskAccessor      taskAccessor;
+	Autotrack_accessor autoTrackAccessor;
+	Task_accessor      taskAccessor;
 	Workspace         workspace;
 };
 }

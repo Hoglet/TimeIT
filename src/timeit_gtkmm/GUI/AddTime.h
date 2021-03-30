@@ -11,9 +11,9 @@
 #include <gtkmm.h>
 #include "LZSpinButton.h"
 #include "ICalendar.h"
-#include <libtimeit/db/Database.h>
-#include <libtimeit/db/TaskAccessor.h>
-#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/database.h>
+#include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/time_accessor.h>
 #include <IWidget.h>
 namespace GUI
 {
@@ -61,8 +61,8 @@ private:
 	ICalendar& calendar;
 
 	int64_t taskID;
-	TimeAccessor m_timeAccessor;
-	TaskAccessor m_taskAccessor;
+	Time_accessor m_timeAccessor;
+	Task_accessor m_taskAccessor;
 };
 }
 

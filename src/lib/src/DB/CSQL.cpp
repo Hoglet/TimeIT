@@ -9,12 +9,8 @@ using namespace std;
 namespace libtimeit
 {
 
-CSQL::CSQL(const string& dbname)
+CSQL::CSQL(string dbname)
 {
-	if (sqlite3_config(SQLITE_CONFIG_SERIALIZED) == SQLITE_OK)
-	{
-		threadsafe=true;
-	}
 	init(dbname);
 }
 
@@ -26,85 +22,75 @@ CSQL::~CSQL()
 	}
 }
 
-void CSQL::init(const std::string& dbname)
+void CSQL::init(string dbname)
 {
-	inTransaction = false;
+	in_transaction = false;
 	int rc = sqlite3_open(dbname.c_str(), &db);
 	if (rc)
 	{
-		e.setReturnCode(rc);
-		e.setMessage(sqlite3_errmsg(db));
+		auto message = sqlite3_errmsg(db);
 		sqlite3_close(db);
-		throw e;
+		throw db_exception(message, rc);
 	}
 }
 
-bool CSQL::isThreadSafe()
-{
-	return threadsafe;
-}
-
-int64_t CSQL::getIDOfLastInsert()
+int64_t CSQL::ID_of_last_insert()
 {
 	return sqlite3_last_insert_rowid(db);
 }
 
-Statement CSQL::prepare(const char *buffer)
+Statement CSQL::prepare(const string& query)
 {
 	sqlite3_stmt* stmt;
-	int rc = sqlite3_prepare_v2(db, buffer, strlen(buffer), &stmt, NULL);
+	int rc = sqlite3_prepare_v2(db, query.c_str(), strlen(query.c_str()), &stmt, NULL);
 	if (rc != SQLITE_OK)
 	{
-		e.setReturnCode(rc);
 		std::stringstream message;
 		message << " (" << sqlite3_errmsg(db) << ")";
-		message << "In statement: ";
-		message << buffer;
-		e.setMessage(message.str());
-		tryRollback();
-		throw e;
+		message << "In query: ";
+		message << query;
+		try_rollback();
+		throw db_exception(message.str(), rc);
 	}
 	return Statement(stmt, *this);
 }
 
-QueryResult CSQL::exe(const std::string& s_exe)
+Query_result CSQL::execute(const string& query)
 {
-	Statement statement = prepare(s_exe.c_str());
+	Statement statement = prepare(query.data());
 	return statement.execute();
 }
 
-void CSQL::beginTransaction()
+void CSQL::begin_transaction()
 {
-	if (inTransaction)
+	if (in_transaction)
 	{
-		e.setMessage("Already in transaction");
-		tryRollback();
-		throw e;
+		try_rollback();
+		throw db_exception("Already in transaction");
 	}
-	exe("BEGIN TRANSACTION");
-	inTransaction = true;
+	execute("BEGIN TRANSACTION");
+	in_transaction = true;
 }
 
-void CSQL::endTransaction()
+void CSQL::end_transaction()
 {
-	if (inTransaction == false)
+	if (in_transaction == false)
 	{
-		e.setMessage("No transaction in progress");
-		throw e;
+		throw db_exception("No transaction in progress");
 	}
-	exe("COMMIT");
-	inTransaction = false;
+	execute("COMMIT");
+	in_transaction = false;
 }
-void CSQL::tryRollback()
+void CSQL::try_rollback()
 {
-	if (inTransaction)
+	if (in_transaction)
 	{
-		exe("ROLLBACK");
-		inTransaction = false;
+		execute("ROLLBACK");
+		in_transaction = false;
 	}
 }
 
-std::string CSQL::getLastErrorMessage()
+string CSQL::last_error_message()
 {
 	return sqlite3_errmsg(db);
 }
@@ -121,24 +107,24 @@ Statement::Statement(sqlite3_stmt* op_stmt, CSQL& op_db): db(op_db)
 	ncol = sqlite3_column_count(stmt);
 }
 
-void Statement::bindValue(int index, int64_t value)
+void Statement::bind_value(int index, int64_t value)
 {
 	sqlite3_bind_int(stmt, index, value);
 }
 
-void Statement::bindValue(int index, const std::string& text)
+void Statement::bind_value(int index, const std::string& text)
 {
 	sqlite3_bind_text(stmt, index, text.c_str(), -1, SQLITE_TRANSIENT);
 }
 
-void Statement::bindNullValue(int index)
+void Statement::bind_null_value(int index)
 {
 	sqlite3_bind_null(stmt, index);
 }
 
-QueryResult Statement::execute()
+Query_result Statement::execute()
 {
-	QueryResult rows;
+	Query_result rows;
 	while (true)
 	{
 		int rc = sqlite3_step(stmt);
@@ -149,31 +135,30 @@ QueryResult Statement::execute()
 		}
 		else if (rc == SQLITE_ROW)
 		{
-			vector<DataCell> row;
+			vector<Data_cell> row;
 			for (int c = 0; c < ncol; c++)
 			{
 				int type = sqlite3_column_type(stmt, c);
 				if (type == SQLITE_INTEGER)
 				{
-					DataCell icell(sqlite3_column_int(stmt, c));
+					Data_cell icell(sqlite3_column_int(stmt, c));
 					row.push_back(icell);
 				}
 				else if (type == SQLITE_TEXT)
 				{
-					DataCell tcell((const char*) sqlite3_column_text(stmt, c));
+					Data_cell tcell((const char*) sqlite3_column_text(stmt, c));
 					row.push_back(tcell);
 				}
 				else if (type == SQLITE_NULL)
 				{
-					DataCell tcell;
+					Data_cell tcell;
 					row.push_back(tcell);
 				}
 				else
 				{
 					//LCOV_EXCL_START
-					e.setMessage("Unmanaged data type");
-					db.tryRollback();
-					throw e;
+					db.try_rollback();
+					throw db_exception("Unmanaged data type");
 					//LCOV_EXCL_STOP
 				}
 			}
@@ -182,13 +167,11 @@ QueryResult Statement::execute()
 		else
 		{
 			//LCOV_EXCL_START
-			e.setReturnCode(rc);
 			stringstream message;
-			message << " (" << db.getLastErrorMessage() << ")";
+			message << " (" << db.last_error_message() << ")";
 			message << "Statement failed";
-			e.setMessage(message.str());
-			db.tryRollback();
-			throw e;
+			db.try_rollback();
+			throw db_exception(message.str(), rc);
 			//LCOV_EXCL_STOP
 		}
 	}

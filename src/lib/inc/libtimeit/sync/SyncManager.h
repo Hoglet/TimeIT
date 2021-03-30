@@ -2,12 +2,12 @@
 #define SYNCMANAGER_H_
 
 #include <memory>
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 #include <libtimeit/Timer.h>
 #include <libtimeit/sync/Network.h>
 #include <libtimeit/sync/Json.h>
-#include <libtimeit/db/SettingsAccessor.h>
-#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/settings_accessor.h>
+#include <libtimeit/db/task_accessor.h>
 
 namespace libtimeit
 {
@@ -51,9 +51,9 @@ private:
 	shared_ptr<asyncHTTPResponse> requestTasks(time_t sincePointInTime);
 	shared_ptr<asyncHTTPResponse> requestTimes(time_t sincePointInTime);
 
-	TaskAccessor     taskAccessor;
-	TimeAccessor     timeAccessor;
-	SettingsAccessor settingsAccessor;
+	Task_accessor     taskAccessor;
+	Time_accessor     timeAccessor;
+	Settings_accessor settingsAccessor;
 	INetwork&        network;
 
 	SyncState                           state          {SyncState::IDLE};

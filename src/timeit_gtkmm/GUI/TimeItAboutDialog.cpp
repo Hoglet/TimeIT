@@ -31,7 +31,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	set_copyright("Kent Asplund");
 	//Tagline
 	set_comments(_("The unobtrusive time tracker\n"));
-	//This is the licence text
+	//This is the licence txt
 	set_license(_("This program is licenced under GNU General Public Licence (GPL) version 2."));
 
 	std::string iconPath = Glib::build_filename( libtimeit::getImagePath(), "icon.svg" );

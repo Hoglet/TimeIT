@@ -24,7 +24,7 @@ TempDB::~TempDB()
 
 void TempDB::execute(string statement)
 {
-	db.exe(statement);
+	db.execute(statement);
 }
 
 }

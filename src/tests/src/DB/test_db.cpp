@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 #include <libtimeit/OSAbstraction.h>
-#include <libtimeit/exceptions/dbexception.h>
-#include <libtimeit/db/DataCell.h>
+#include <libtimeit/exceptions/db_exception.h>
+#include <libtimeit/db/data_cell.h>
 #include <libtimeit/db/CSQL.h>
-#include <libtimeit/db/TaskAccessor.h>
-#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/time_accessor.h>
 #include <sstream>
 #include <string>
 
@@ -21,28 +21,33 @@ void createVersion4db(const char *dbname)
 	shared_ptr<CSQL> db = shared_ptr<CSQL>(new CSQL(dbname));
 
 	//Create necessary tables
-	db->exe("CREATE TABLE IF NOT EXISTS tasks "
+	db->execute(
+			"CREATE TABLE IF NOT EXISTS tasks "
 			"(id          INTEGER PRIMARY KEY,"
 			" name        VARCHAR,"
 			" parent      INTEGER,"
 			" running     BOOL DEFAULT false,"
 			" expanded    BOOL DEFAULT false,"
 			" deleted     BOOL DEFAULT false)");
-	db->exe("CREATE TABLE IF NOT EXISTS times "
+	db->execute(
+			"CREATE TABLE IF NOT EXISTS times "
 			"(id          INTEGER PRIMARY KEY,"
 			" taskID      INTEGER,"
 			" start       INTEGER,"
 			" stop        INTEGER,"
 			" running     BOOL    DEFAULT false) ");
-	db->exe("CREATE TABLE IF NOT EXISTS autotrack "
+	db->execute(
+			"CREATE TABLE IF NOT EXISTS autotrack "
 			"(taskID      INTEGER,"
 			" workspace   INTEGER)");
-	db->exe("CREATE TABLE IF NOT EXISTS parameters "
+	db->execute(
+			"CREATE TABLE IF NOT EXISTS parameters "
 			"(id          VARCHAR PRIMARY KEY,"
 			" string      VARCHAR,"
 			" value       INTEGER,"
 			" boolean     BOOL) ");
-	db->exe("CREATE TABLE IF NOT EXISTS settings"
+	db->execute(
+			"CREATE TABLE IF NOT EXISTS settings"
 			"(name        VARCHAR PRIMARY KEY,"
 			" intValue    INTEGER,"
 			" boolValue   BOOL,"
@@ -51,10 +56,10 @@ void createVersion4db(const char *dbname)
 	const int expectedDBVersion = 4;
 	stringstream statement;
 	statement << "INSERT INTO parameters (id, value) VALUES ( \"dbversion\"," << expectedDBVersion << " )";
-	db->exe(statement.str());
-	db->exe("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (1,'Test',0,0,1);");
-	db->exe("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (2,'Sub task',1,1,0);");
-	db->exe("INSERT INTO times (id,taskID,start,stop,running) VALUES (1,2,10,100,0);");
+	db->execute(statement.str());
+	db->execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (1,'Test',0,0,1);");
+	db->execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (2,'Sub task',1,1,0);");
+	db->execute("INSERT INTO times (id,taskID,start,stop,running) VALUES (1,2,10,100,0);");
 }
 
 void openAndCloseDB()
@@ -73,7 +78,7 @@ TEST( database, testCreation )
 
 	//Testing failing creation
 	Notifier notifier;
-	ASSERT_THROW(Database db("not/existing/path/dbtest.db", notifier), dbexception);
+	ASSERT_THROW(Database db("not/existing/path/dbtest.db", notifier), db_exception);
 }
 
 TEST( database, testUpgrade )
@@ -82,22 +87,22 @@ TEST( database, testUpgrade )
 	createVersion4db(dbname);
 	Notifier notifier;
 	Database db("/tmp/dbtest.db", notifier);
-	TaskAccessor taskAccessor(db);
-	ASSERT_EQ( 2, taskAccessor.getTasksChangedSince().size()) << "Numbers of tasks in tasks";
-	auto task1 = taskAccessor.getTask(1);
+	Task_accessor taskAccessor(db);
+	ASSERT_EQ( 2, taskAccessor.changed_since().size()) << "Numbers of tasks in tasks";
+	auto task1 = taskAccessor.by_ID(1);
 	ASSERT_EQ( string("Test"), task1->name()) << "Task 1 name ";
-	ASSERT_EQ( 0, task1->parentID()) << "Task 1 parent ";
+	ASSERT_EQ( 0, task1->parent_ID()) << "Task 1 parent ";
 
-	auto task2 = taskAccessor.getTask(2);
+	auto task2 = taskAccessor.by_ID(2);
 	ASSERT_EQ( string("Sub task"), task2->name()) << "Task 2 name ";
-	ASSERT_EQ( 1, task2->parentID()) << "Task 2 parent ";
+	ASSERT_EQ( 1, task2->parent_ID()) << "Task 2 parent ";
 
-	TimeAccessor timeAccessor(db);
-	vector<TimeEntry> times = timeAccessor.getTimesChangedSince();
+	Time_accessor timeAccessor(db);
+	vector<Time_entry> times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
-	TimeEntry te = times.at(0);
+	Time_entry te = times.at(0);
 	ASSERT_EQ( 1, te.ID()) << "Time id ";
-	ASSERT_EQ( 2, te.taskID()) << "Time taskID ";
+	ASSERT_EQ( 2, te.task_ID()) << "Time taskID ";
 	ASSERT_EQ( 10, te.start()) << "Time start ";
 	ASSERT_EQ( 100, te.stop()) << "Time stop ";
 
@@ -107,17 +112,17 @@ TEST( database, testUpgrade )
 TEST( database, testDatacell )
 {
 	std::string data("Text");
-	DataCell dc1(data.c_str());
-	DataCell dc2("");
+	Data_cell dc1(data.c_str());
+	Data_cell dc2("");
 
 	dc2 = dc1;
-	ASSERT_EQ( data, dc2.getString());
-	ASSERT_THROW(dc2.getInt(), dbexception);
-	ASSERT_THROW(dc2.getBool(), dbexception);
+	ASSERT_EQ( data, dc2.text());
+	ASSERT_THROW(dc2.integer(), db_exception);
+	ASSERT_THROW(dc2.boolean(), db_exception);
 
-	DataCell dci(1);
-	ASSERT_EQ(1, dci.getInt());
-	ASSERT_THROW(dci.getString(), dbexception);
+	Data_cell dci(1);
+	ASSERT_EQ(1, dci.integer());
+	ASSERT_THROW(dci.text(), db_exception);
 
 }
 
@@ -127,40 +132,40 @@ TEST( database, testSQLErrorManagement)
 	createVersion4db(dbname);
 	CSQL db(dbname);
 	string faultyStatement = "select * from tmies";
-	ASSERT_THROW(db.exe(faultyStatement), dbexception);
+	ASSERT_THROW(db.execute(faultyStatement), db_exception);
 }
 
 TEST( database, testTransactions)
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	db.beginTransaction();
-	TaskAccessor taskAccessor(db);
-	taskAccessor.newTask("Test", 0);
-	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after adding one";
-	db.endTransaction();
-	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after commit";
+	db.begin_transaction();
+	Task_accessor taskAccessor(db);
+	taskAccessor.create(Task("Test", 0));
+	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after adding one";
+	db.end_transaction();
+	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after commit";
 }
 
 TEST( database, testTransactions_rollback )
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	db.beginTransaction();
-	TaskAccessor taskAccessor(db);
-	taskAccessor.newTask("Test", 0);
-	ASSERT_EQ( 1, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after adding one";
-	db.tryRollback();
-	ASSERT_EQ( 0, taskAccessor.getTasksChangedSince().size()) << "Checking number of tasks after rollback";
+	db.begin_transaction();
+	Task_accessor taskAccessor(db);
+	taskAccessor.create(Task("Test", 0));
+	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after adding one";
+	db.try_rollback();
+	ASSERT_EQ( 0, taskAccessor.changed_since().size()) << "Checking number of tasks after rollback";
 }
 
 TEST( database, testTransactionsSanity)
 {
 	Notifier notifier;
 	TempDB db(notifier);
-	db.beginTransaction();
-	ASSERT_THROW(db.beginTransaction(), dbexception);
-	ASSERT_THROW(db.endTransaction(), dbexception);
+	db.begin_transaction();
+	ASSERT_THROW(db.begin_transaction(), db_exception);
+	ASSERT_THROW(db.end_transaction(), db_exception);
 }
 
 } /* namespace Test */

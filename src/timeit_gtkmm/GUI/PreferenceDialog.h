@@ -16,8 +16,8 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <IWidget.h>
-#include <libtimeit/db/SettingsAccessor.h>
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/settings_accessor.h>
+#include <libtimeit/db/database.h>
 
 namespace GUI
 {
@@ -96,7 +96,7 @@ private:
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	SettingsAccessor settingsAccessor;
+	Settings_accessor settingsAccessor;
 };
 
 }

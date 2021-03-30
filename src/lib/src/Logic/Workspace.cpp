@@ -21,7 +21,7 @@ Workspace::Workspace()
 	{
 		x11.getCardinal("_NET_DESKTOP_LAYOUT", 1);
 	}
-	catch (const GeneralException &e)
+	catch (const General_exception &e)
 	{
 		supportsLayout = false;
 	}
@@ -87,7 +87,7 @@ void Workspace::findLayout()
 			}
 		}
 	}
-	catch (const GeneralException &e)
+	catch (const General_exception &e)
 	{
 		std::cerr << e.what();
 	}
@@ -112,7 +112,7 @@ int Workspace::get_active()
 		{
 			active = x11.getCardinal("_NET_CURRENT_DESKTOP", 0);
 		}
-		catch (const GeneralException &e)
+		catch (const General_exception &e)
 		{
 			std::cerr << e.what();
 		}
@@ -135,7 +135,7 @@ std::string Workspace::get_name(int workspaceNR)
 			retVal = names.at(workspaceNR);
 		}
 	}
-	catch (const GeneralException &e)
+	catch (const General_exception &e)
 	{
 		std::cerr << e.what();
 	}

@@ -27,7 +27,7 @@ EditTaskDialog::EditTaskDialog(Database &database) :
 	// Parent task and child task.
 	parentLabel.set_text(_("Parent: "));
 	NameLabel.set_text(_("Name: "));
-	/* This text is the headline for the area where you choose
+	/* This txt is the headline for the area where you choose
 	 on what workspace the task should be automatically started */
 	std::string text = libtimeit::string_printf("<b>%s</b>", _("Workspace tracking"));
 	label1.set_text(text);
@@ -122,13 +122,13 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 void EditTaskDialog::setTaskID(int64_t ID)
 {
 	taskID = ID;
-	auto task = taskAccessor.getTask(taskID);
+	auto task = taskAccessor.by_ID(taskID);
 	if (task.has_value())
 	{
 		name = task->name();
-		setParent(task->parentID());
+		setParent(task->parent_ID());
 		taskNameEntry.set_text(name);
-		std::vector<int> workspaces = autoTrackAccessor.getWorkspaces(ID);
+		std::vector<int> workspaces = autoTrackAccessor.workspaces(ID);
 		setTickedWorkspaces(workspaces);
 		OKButton.set_sensitive(false);
 		this->workspaces = workspaces;
@@ -176,18 +176,19 @@ void EditTaskDialog::on_OKButton_clicked()
 
 	if (taskID < 1)
 	{
-		taskID = taskAccessor.newTask(name, parentID);
+		Task task(name,parentID);
+		taskID = taskAccessor.create(task);
 	}
 	else
 	{
 		taskAccessor.setParentID(taskID, parentID);
-		auto task = taskAccessor.getTask(taskID);
+		auto task = taskAccessor.by_ID(taskID);
 		if (task.has_value())
 		{
-			taskAccessor.updateTask(task->withName(name));
+			taskAccessor.update(task->with_name(name));
 		}
 	}
-	autoTrackAccessor.setWorkspaces(taskID, workspaces);
+	autoTrackAccessor.set_workspaces(taskID, workspaces);
 	taskID = -1;
 	parentID = 0;
 	hide();

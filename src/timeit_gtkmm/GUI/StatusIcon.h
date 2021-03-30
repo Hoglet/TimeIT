@@ -11,8 +11,8 @@
 #include <gtkmm.h>
 
 #include "libtimeit/logic/TimeKeeper.h"
-#include <libtimeit/db/TaskAccessor.h>
-#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/time_accessor.h>
 #include "ActionObserver.h"
 #include "IStatusIcon.h"
 
@@ -20,7 +20,7 @@ namespace GUI
 {
 using namespace libtimeit;
 
-class StatusIcon: public TimekeeperObserver, public IStatusIcon, public EventObserver
+class StatusIcon: public TimekeeperObserver, public IStatusIcon, public Event_observer
 {
 public:
 	virtual ~StatusIcon();
@@ -56,19 +56,19 @@ private:
 	void toggleTask(int64_t id);
 	std::string completeTaskPath(int64_t id);
 
-	virtual void on_taskAdded(int64_t)
+	virtual void on_task_added(int64_t)
 	{
 	}
 	;
-	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskNameChanged(int64_t);
-	virtual void on_taskTimeChanged(int64_t);
+	virtual void on_task_updated(int64_t);
+	virtual void on_task_name_changed(int64_t);
+	virtual void on_task_time_changed(int64_t);
 
-	virtual void on_taskRemoved(int64_t)
+	virtual void on_task_removed(int64_t)
 	{
 	}
 	;
-	virtual void on_completeUpdate();
+	virtual void on_complete_update();
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_runningIcon;
@@ -77,8 +77,8 @@ private:
 
 	Gtk::Menu m_Menu_Popup;
 	ITimeKeeper& m_timeKeeper;
-	TaskAccessor m_taskaccessor;
-	TimeAccessor m_timeaccessor;
+	Task_accessor m_taskaccessor;
+	Time_accessor m_timeaccessor;
 	std::list<ActionObserver*> observers;
 	std::vector<int64_t> latestTasks;
 

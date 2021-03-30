@@ -2,14 +2,14 @@
 #include <string>
 #include <jansson.h>
 #include <libtimeit/sync/Json.h>
-#include <libtimeit/db/Task.h>
-#include <libtimeit/exceptions/GeneralException.h>
+#include <libtimeit/db/task.h>
+#include <libtimeit/exceptions/general_exception.h>
 
 namespace libtimeit
 {
 using namespace std;
 
-GeneralException ge;
+General_exception ge;
 
 string toJson(vector<Task> tasks, string username)
 {
@@ -18,11 +18,11 @@ string toJson(vector<Task> tasks, string username)
 	{
 		json_t *obj = json_object();
 		json_object_set(obj, "name", json_string(task.name().c_str()));
-		json_object_set(obj, "id", json_string(task.getUUID().c_str()));
-		if (task.parentUUID())
+		json_object_set(obj, "id", json_string(task.get_UUID().c_str()));
+		if (task.parent_UUID())
 		{
 			json_t *parent = json_object();
-			json_object_set(parent, "id", json_string(task.parentUUID()->c_str()));
+			json_object_set(parent, "id", json_string(task.parent_UUID()->c_str()));
 			json_object_set(obj, "parent", parent);
 		}
 		if (task.completed())
@@ -33,7 +33,7 @@ string toJson(vector<Task> tasks, string username)
 		{
 			json_object_set(obj, "completed", json_false());
 		}
-		json_object_set(obj, "lastChange", json_integer(task.lastChanged()));
+		json_object_set(obj, "lastChange", json_integer(task.last_changed()));
 		if (task.deleted())
 		{
 			json_object_set(obj, "deleted", json_true());
@@ -62,14 +62,14 @@ string toJson(vector<Task> tasks, string username)
 
 	return result;
 }
-string toJson(const TimeList& times)
+string toJson(const Time_list& times)
 {
 	json_t *array = json_array();
-	for (TimeEntry time : times)
+	for (Time_entry time : times)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "id", json_string(time.getUUID().c_str()));
-		json_object_set(obj, "task", json_string(time.taskUUID()->c_str()));
+		json_object_set(obj, "id", json_string(time.get_UUID().c_str()));
+		json_object_set(obj, "task", json_string(time.task_UUID()->c_str()));
 		json_object_set(obj, "start", json_integer(time.start()));
 		json_object_set(obj, "stop", json_integer(time.stop()));
 		if (time.deleted())
@@ -83,7 +83,7 @@ string toJson(const TimeList& times)
 		json_object_set(obj, "changed", json_integer(time.changed()));
 
 		json_t *task = json_object();
-		json_object_set(task, "id", json_string(time.taskUUID()->c_str()));
+		json_object_set(task, "id", json_string(time.task_UUID()->c_str()));
 		json_object_set(obj, "task", task);
 
 		json_array_append(array, obj);
@@ -182,13 +182,13 @@ vector<Task> toTasks(const string &text)
 	return retVal;
 }
 
-TimeList toTimes(const string &input)
+Time_list toTimes(const string &input)
 {
 
 	json_t *root;
 	json_error_t error;
 
-	TimeList retVal;
+	Time_list retVal;
 
 	root = json_loads(input.c_str(), 0, &error);
 
@@ -249,7 +249,7 @@ TimeList toTimes(const string &input)
 		auto taskID= toUuid(taskIDString);
 		if(uuid && taskID)
 		{
-			TimeEntry item(id, *uuid, 0, *taskID, start, stop, deleted, false, changed);
+			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, false, changed);
 			retVal.push_back(item);
 		}
 	}

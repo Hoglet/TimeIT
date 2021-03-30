@@ -11,7 +11,7 @@
 #include <libtimeit/OSAbstraction.h>
 #include <iostream>
 #include <libtimeit/Utils.h>
-#include <libtimeit/db/DefaultValues.h>
+#include <libtimeit/db/default_values.h>
 #include <GUIFactory.h>
 #include <libnotify/notify.h>
 #include <MainWindow/MainWindow.h>
@@ -48,7 +48,7 @@ void Controller::start()
 {
 	guiFactory.getStatusIcon().show();
 	guiFactory.getStatusIcon().attach(this);
-	if (!settingsAccessor.GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED))
+	if (!settingsAccessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED))
 	{
 		WidgetPtr mainWindow = guiFactory.getWidget(MAIN_WINDOW);
 		mainWindow->attach(this);
@@ -83,7 +83,7 @@ void Controller::on_action_toggleMainWindow()
 		mainWindow->show();
 	}
 }
-void Controller::on_action_showMainWindow()
+void Controller::on_show_main_window()
 {
 	WidgetPtr mainWindow = guiFactory.getWidget(MAIN_WINDOW);
 	mainWindow->show();
@@ -163,7 +163,7 @@ void Controller::on_activityResumed()
 		timeKeeper.enable(false);
 		return;
 	}
-	bool quiet = settingsAccessor.GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
+	bool quiet = settingsAccessor.get_bool("Quiet", DEFAULT_QUIET_MODE);
 	if(quiet)
 	{
 		on_action_revertAndContinue();
@@ -173,7 +173,7 @@ void Controller::on_activityResumed()
 		idleDialog = std::dynamic_pointer_cast<IdleDialog>(guiFactory.getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
-		std::vector<int64_t> taskIDs = timeAccessor.getRunningTasks();
+		std::vector<int64_t> taskIDs = timeAccessor.currently_running();
 		idleDialog->setActiveTaskList(taskIDs);
 		idleDialog->show();
 	}

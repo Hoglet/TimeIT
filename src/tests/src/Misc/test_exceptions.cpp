@@ -1,25 +1,24 @@
 #include <string>
 #include <gtest/gtest.h>
-#include <libtimeit/exceptions/dbexception.h>
-#include <libtimeit/exceptions/GeneralException.h>
+#include <libtimeit/exceptions/db_exception.h>
+#include <libtimeit/exceptions/general_exception.h>
 
 namespace Test
 {
 
+using namespace libtimeit;
 using namespace std;
 
 TEST( Exception, dbException )
 {
-	dbexception dbe;
-	dbe.setMessage("I'm a teapot");
-	dbe.setReturnCode(418);
+	db_exception dbe("I'm a teapot", 418);
 	string expected("Error 418 I'm a teapot\n");
 	ASSERT_EQ(expected, dbe.what());
 }
 
 TEST( Exceptions, generalException)
 {
-	GeneralException ge;
+	General_exception ge;
 	ge.setMessage("Something happened");
 	string expected("Something happened");
 	ASSERT_EQ(expected, ge.what());

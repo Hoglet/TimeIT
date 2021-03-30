@@ -1,12 +1,12 @@
 #ifndef TIMEIT_CSQL_H_
 #define TIMEIT_CSQL_H_
 
-#include <libtimeit/exceptions/dbexception.h>
+#include <libtimeit/exceptions/db_exception.h>
 #include <sqlite3.h>
 #include <string>
 #include <vector>
 #include <libtimeit/db/CSQL.h>
-#include <libtimeit/db/QueryResult.h>
+#include <libtimeit/db/query_result.h>
 #include <stdint.h>
 #include <memory>
 
@@ -21,38 +21,37 @@ class Statement
 public:
 	Statement(sqlite3_stmt* stmt, CSQL& db);
 	~Statement();
-	void bindValue(int index, int64_t value);
-	void bindValue(int index, const string& text);
-	void bindNullValue(int index);
-	QueryResult execute();
+	void bind_value(int index, int64_t value);
+	void bind_value(int index, const string& text);
+	void bind_null_value(int index);
+	Query_result execute();
 private:
-	CSQL& db;
+	CSQL&         db;
 	sqlite3_stmt* stmt;
-	dbexception e;
-	int ncol;
+	int           ncol;
 };
 
-class CSQL: public std::enable_shared_from_this<CSQL>
+class CSQL
 {
 public:
-	CSQL(const std::string& databasename);
+	CSQL(string database_name);
 	virtual ~CSQL();
-	QueryResult exe(const std::string& statement);
-	int64_t getIDOfLastInsert();
-	Statement prepare(const char *);
-	void beginTransaction();
-	void endTransaction();
-	void tryRollback();
-	std::string getLastErrorMessage();
-	bool isThreadSafe();
+	Query_result execute(const string& statement);
+	int64_t      ID_of_last_insert();
+	Statement    prepare(const string& query);
+	string       last_error_message();
+	void         begin_transaction();
+	void         end_transaction();
+	void         try_rollback();
 protected:
-	void init(const std::string& databasename);
+	void         init(string database_name);
 private:
 	CSQL();
-	sqlite3 *db = nullptr;
-	dbexception e;
-	bool inTransaction = false;
-	bool threadsafe = false;
+	CSQL(const CSQL&);
+	void operator=(const CSQL&);
+
+	sqlite3 *db             = nullptr;
+	bool     in_transaction = false;
 };
 
 }

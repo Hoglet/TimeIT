@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
-#include <libtimeit/db/Notifier.h>
+#include <libtimeit/db/notifier.h>
 
 using namespace libtimeit;
 
 namespace Test
 {
 
-class NotifyTester: public EventObserver
+class NotifyTester: public Event_observer
 {
 public:
 	NotifyTester()
@@ -24,37 +24,37 @@ public:
 	{
 	}
 
-	virtual void on_taskUpdated(int64_t t_id)
+	virtual void on_task_updated(int64_t t_id)
 	{
 		task_id_updated = t_id;
 	}
 
-	virtual void on_taskAdded(int64_t t_id)
+	virtual void on_task_added(int64_t t_id)
 	{
 		task_id_added = t_id;
 	}
 
-	virtual void on_taskRemoved(int64_t t_id)
+	virtual void on_task_removed(int64_t t_id)
 	{
 		task_id_removed = t_id;
 	}
 
-	virtual void on_taskParentChanged(int64_t t_id)
+	virtual void on_parent_changed(int64_t t_id)
 	{
 		task_id_parent = t_id;
 	}
 
-	virtual void on_taskNameChanged(int64_t t_id)
+	virtual void on_task_name_changed(int64_t t_id)
 	{
 		task_id_name = t_id;
 	}
 
-	virtual void on_taskTimeChanged(int64_t t_id)
+	virtual void on_task_time_changed(int64_t t_id)
 	{
 		task_id_time = t_id;
 	}
 
-	virtual void on_completeUpdate()
+	virtual void on_complete_update()
 	{
 
 	}
@@ -72,7 +72,7 @@ public:
 TEST( Notifier, TaskUpdated)
 {
 	NotifyTester test;
-	test.notifier.sendNotification(TASK_UPDATED, 1);
+	test.notifier.send_notification(TASK_UPDATED, 1);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -82,7 +82,7 @@ TEST( Notifier, TaskUpdated)
 TEST(Notifier, TaskAdded)
 {
 	NotifyTester test;
-	test.notifier.sendNotification(TASK_ADDED, 2);
+	test.notifier.send_notification(TASK_ADDED, 2);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -92,7 +92,7 @@ TEST(Notifier, TaskAdded)
 TEST(Notifier,TaskRemoved)
 {
 	NotifyTester test;
-	test.notifier.sendNotification(TASK_REMOVED, 3);
+	test.notifier.send_notification(TASK_REMOVED, 3);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
@@ -101,7 +101,7 @@ TEST(Notifier,TaskRemoved)
 TEST(Notifier,TaskParentChanged)
 {
 	NotifyTester test;
-	test.notifier.sendNotification(TASK_PARENT_CHANGED, 4);
+	test.notifier.send_notification(TASK_PARENT_CHANGED, 4);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_removed);

@@ -11,7 +11,7 @@
 #include <string>
 #include <memory>
 #include <libtimeit/Timer.h>
-#include <libtimeit/EventObserver.h>
+#include <libtimeit/Event_observer.h>
 #include <iostream>
 #include "libtimeit/misc/Ipc.h"
 
@@ -27,13 +27,13 @@ public:
 	virtual ~IpcServer();
 	void poll();
 	virtual void on_signal_1_second();
-	void attach(EventObserver*);
-	void detach(EventObserver*);
+	void attach(Event_observer*);
+	void detach(Event_observer*);
 	private:
 	void on_show_menu();
 	string socketName;
 	Timer& timer;
-	list<EventObserver*> observers;
+	list<Event_observer*> observers;
 	int sock;
 };
 

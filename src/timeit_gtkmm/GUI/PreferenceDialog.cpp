@@ -8,7 +8,7 @@
 #include "PreferenceDialog.h"
 #include <glibmm/i18n.h>
 #include <iostream>
-#include <libtimeit/db/DefaultValues.h>
+#include <libtimeit/db/default_values.h>
 
 namespace GUI
 {
@@ -124,16 +124,16 @@ PreferenceDialog::~PreferenceDialog()
 
 void PreferenceDialog::set_values()
 {
-	oldCompactLayout = settingsAccessor.GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT);
-	oldStartMinimized = settingsAccessor.GetBoolByName("StartMinimized", DEFAULT_START_MINIMIZED);
-	oldGt = settingsAccessor.GetIntByName("Gt", DEFAULT_GT);
-	oldGz = settingsAccessor.GetIntByName("Gz", DEFAULT_GZ);
-	oldQuietMode = settingsAccessor.GetBoolByName("Quiet", DEFAULT_QUIET_MODE);
-	oldURL = settingsAccessor.GetStringByName("URL", DEFAULT_URL);
-	oldUser = settingsAccessor.GetStringByName("Username", DEFAULT_USER);
-	oldPassword = settingsAccessor.GetStringByName("Password", DEFAULT_PASSWORD);
-	oldIgnoreCertErr = settingsAccessor.GetBoolByName("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	oldSyncInterval = settingsAccessor.GetIntByName("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	oldCompactLayout = settingsAccessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
+	oldStartMinimized = settingsAccessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
+	oldGt = settingsAccessor.get_int("Gt", DEFAULT_GT);
+	oldGz = settingsAccessor.get_int("Gz", DEFAULT_GZ);
+	oldQuietMode = settingsAccessor.get_bool("Quiet", DEFAULT_QUIET_MODE);
+	oldURL = settingsAccessor.get_string("URL", DEFAULT_URL);
+	oldUser = settingsAccessor.get_string("Username", DEFAULT_USER);
+	oldPassword = settingsAccessor.get_string("Password", DEFAULT_PASSWORD);
+	oldIgnoreCertErr = settingsAccessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	oldSyncInterval = settingsAccessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
 	GzEntry.set_value(oldGz);
 	GtEntry.set_value(oldGt);
 	CompactLayoutButton.set_active(oldCompactLayout);
@@ -213,34 +213,34 @@ void PreferenceDialog::on_CancelButton_clicked()
 
 void PreferenceDialog::save()
 {
-	compactLayout = settingsAccessor.SetBoolByName("CompactLayout", compactLayout);
+	compactLayout = settingsAccessor.set_bool("CompactLayout", compactLayout);
 	oldCompactLayout = compactLayout;
 
-	settingsAccessor.SetIntByName("Gz", gz);
+	settingsAccessor.set_int("Gz", gz);
 	oldGz = gz;
 
-	settingsAccessor.SetIntByName("Gt", gt);
+	settingsAccessor.set_int("Gt", gt);
 	oldGt = gt;
 
-	settingsAccessor.SetBoolByName("StartMinimized", startMinimized);
+	settingsAccessor.set_bool("StartMinimized", startMinimized);
 	oldStartMinimized = startMinimized;
 
-	settingsAccessor.SetBoolByName("Quiet", quietMode);
+	settingsAccessor.set_bool("Quiet", quietMode);
 	quietMode = oldQuietMode;
 
-	settingsAccessor.SetStringByName("Username", User);
+	settingsAccessor.set_string("Username", User);
 	oldUser = User;
 
-	settingsAccessor.SetStringByName("Password", Password);
+	settingsAccessor.set_string("Password", Password);
 	oldPassword = Password;
 
-	settingsAccessor.SetStringByName("URL", URL);
+	settingsAccessor.set_string("URL", URL);
 	oldURL = URL;
 
-	settingsAccessor.SetBoolByName("IgnoreCertErr", ignoreCertErr);
+	settingsAccessor.set_bool("IgnoreCertErr", ignoreCertErr);
 	oldIgnoreCertErr = ignoreCertErr;
 
-	settingsAccessor.SetIntByName("SyncInterval", syncInterval);
+	settingsAccessor.set_int("SyncInterval", syncInterval);
 	oldSyncInterval = syncInterval;
 }
 

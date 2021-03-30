@@ -74,7 +74,7 @@ void IdleDialog::setActiveTaskList(vector<int64_t> activeTaskIDs)
 	int i = 0;
 	for (int64_t taskID : activeTaskIDs)
 	{
-		auto task = taskAccessor.getTask(taskID);
+		auto task = taskAccessor.by_ID(taskID);
 		if (i++ > 0)
 		{
 			text << ", ";
@@ -109,7 +109,7 @@ void IdleDialog::setText()
 	if (taskString.size() > 0)
 	{
 		str << "\n\n";
-		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
+		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this txt it will be a list of tasks
 		str << ngettext("Task affected: ", "Tasks affected: ", taskString.size());
 		str << taskString << std::endl;
 	}

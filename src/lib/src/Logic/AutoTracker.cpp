@@ -62,8 +62,8 @@ bool contains(std::vector<int64_t> vec, int64_t item)
 
 void AutoTracker::doTaskSwitching(int oldWorkspace, int newWorkspace)
 {
-	std::vector<int64_t> tasksToStop = autotrack_accessor.getTaskIDs(oldWorkspace);
-	std::vector<int64_t> tasksToStart = autotrack_accessor.getTaskIDs(newWorkspace);
+	std::vector<int64_t> tasksToStop = autotrack_accessor.task_IDs(oldWorkspace);
+	std::vector<int64_t> tasksToStart = autotrack_accessor.task_IDs(newWorkspace);
 	for (int64_t taskID : tasksToStop)
 	{
 		if (false == contains(tasksToStart, taskID))

@@ -24,8 +24,8 @@
 #include <IWidget.h>
 #include <IMainWindow.h>
 #include "TaskList.h"
-#include <libtimeit/db/ExtendedTask.h>
-#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/extended_task.h>
+#include <libtimeit/db/settings_accessor.h>
 #include "SummaryViews.h"
 #include "TimeItAboutDialog.h"
 #include "Details.h"
@@ -38,7 +38,7 @@ namespace GUI
 using namespace libtimeit;
 using namespace std;
 
-class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, public IMainWindow, public SettingsAccessorObserver
+class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, public IMainWindow, public Settings_accessor_observer
 {
 public:
 	virtual ~MainWindow();
@@ -96,7 +96,7 @@ private:
 	virtual void on_action_quit() {};
 	virtual void on_action_preferences() {};
 
-	virtual void on_settingsChanged(const std::string& name);
+	virtual void on_settings_changed(string name);
 
 
 //	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) {};
@@ -142,9 +142,9 @@ private:
 	Gtk::VBox  mainVBox;
 	Gtk::HBox  mainHBox;
 
-	TimeAccessor         timeAccessor;
-	ExtendedTaskAccessor taskAccessor;
-	SettingsAccessor     settingsAccessor;
+	Time_accessor         timeAccessor;
+	Extended_task_accessor taskAccessor;
+	Settings_accessor     settingsAccessor;
 	vector<Summary*> summaries;
 };
 }

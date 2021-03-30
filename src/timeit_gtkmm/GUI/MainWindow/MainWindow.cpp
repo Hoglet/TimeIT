@@ -28,7 +28,7 @@
 #include <glibmm/i18n.h>
 #include "Summary.h"
 #include "DetailsDialog.h"
-#include <libtimeit/db/DefaultValues.h>
+#include <libtimeit/db/default_values.h>
 #include <glibmm.h>
 
 using namespace Gtk;
@@ -195,7 +195,7 @@ void MainWindow::emptyContainers()
 	removeChildren(summaryTabs);
 }
 
-void MainWindow::on_settingsChanged(const std::string &name)
+void MainWindow::on_settings_changed(string name)
 {
 	if (name == "CompactLayout")
 	{
@@ -204,7 +204,7 @@ void MainWindow::on_settingsChanged(const std::string &name)
 }
 void MainWindow::doLayout()
 {
-	if (settingsAccessor.GetBoolByName("CompactLayout", DEFAULT_COMPACTLAYOUT))
+	if (settingsAccessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT))
 	{
 		emptyContainers();
 		defaultLayout();
@@ -289,7 +289,7 @@ void MainWindow::classicLayout()
 // also displays whether idle
 void MainWindow::on_runningTasksChanged()
 {
-	std::vector<int64_t> taskIDs = timeAccessor.getRunningTasks();
+	std::vector<int64_t> taskIDs = timeAccessor.currently_running();
 	if (taskIDs.size() > 0)
 	{
 		set_title("TimeIT ⌚");
@@ -298,7 +298,7 @@ void MainWindow::on_runningTasksChanged()
 	{
 		set_title("TimeIT");
 	}
-	taskList.on_completeUpdate();
+	taskList.on_complete_update();
 }
 
 void MainWindow::on_show()
@@ -343,7 +343,7 @@ void MainWindow::on_action_remove_task()
 	{
 	case (Gtk::RESPONSE_OK):
 		//Remove task
-		taskAccessor.removeTask(selectedTaskID);
+		taskAccessor.remove(selectedTaskID);
 		break;
 	case (Gtk::RESPONSE_CANCEL):
 		break;

@@ -9,9 +9,9 @@
 #define SUMMARY_H_
 
 #include <gtkmm.h>
-#include <libtimeit/db/TimeAccessor.h>
-#include <libtimeit/db/Database.h>
-#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/time_accessor.h>
+#include <libtimeit/db/database.h>
+#include <libtimeit/db/task_accessor.h>
 
 namespace GUI
 {
@@ -44,7 +44,7 @@ public:
 	virtual void detach(SummaryObserver*) = 0;
 };
 
-class Summary: public Gtk::TreeView, public EventObserver, public ISummary
+class Summary: public Gtk::TreeView, public Event_observer, public ISummary
 {
 public:
 	Summary(Database &database);
@@ -78,16 +78,16 @@ protected:
 	//
 	void connectSignals();
 	void on_dateChanged();
-	virtual void on_taskAdded(int64_t)
+	virtual void on_task_added(int64_t)
 	{
 	}
 	;
 	void on_menu_showDetails();
-	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskRemoved(int64_t);
-	virtual void on_completeUpdate();
-	virtual void on_taskNameChanged(int64_t);
-	virtual void on_taskTimeChanged(int64_t);
+	virtual void on_task_updated(int64_t);
+	virtual void on_task_removed(int64_t);
+	virtual void on_complete_update();
+	virtual void on_task_name_changed(int64_t);
+	virtual void on_task_time_changed(int64_t);
 	void init();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	void empty();
@@ -119,8 +119,8 @@ protected:
 	time_t startTime = 0;
 	time_t stopTime = 0;
 	std::list<SummaryObserver*> observers;
-	TimeAccessor timeAccessor;
-	TaskAccessor taskAccessor;
+	Time_accessor timeAccessor;
+	Task_accessor taskAccessor;
 private:
 	bool isVisible();
 	bool needsRePopulation = true;

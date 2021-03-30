@@ -87,42 +87,41 @@ void TaskList::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel
 	taskAccessor.setTaskExpanded(id, false);
 }
 
-void TaskList::on_taskAdded(int64_t taskID)
+void TaskList::on_task_added(int64_t taskID)
 {
 	doUpdate();
 }
 
-void TaskList::on_taskUpdated(int64_t taskID)
+void TaskList::on_task_updated(int64_t taskID)
 {
-	auto tasks = taskAccessor.getExtendedTask(taskID);
-	if (tasks.size() > 0)
+	auto task = taskAccessor.by_ID(taskID);
+	if (task.has_value())
 	{
-		ExtendedTask &task = tasks.at(0);
 		Gtk::TreeIter iter = findRow(taskID);
 		if (iter != treeModel->children().end())
 		{
 			TreeModel::Row row = *iter;
-			assignValuesToRow(row, task);
+			assignValuesToRow(row, *task);
 		}
-		int64_t parentID = task.parentID();
+		int64_t parentID = task->parent_ID();
 		if (parentID > 0)
 		{
-			on_taskUpdated(parentID);
+			on_task_updated(parentID);
 		}
 	}
 }
 
-void TaskList::on_taskNameChanged(int64_t taskID)
+void TaskList::on_task_name_changed(int64_t taskID)
 {
-	on_taskUpdated(taskID);
+	on_task_updated(taskID);
 }
 
-void TaskList::on_taskTimeChanged(int64_t taskID)
+void TaskList::on_task_time_changed(int64_t taskID)
 {
-	on_taskUpdated(taskID);
+	on_task_updated(taskID);
 }
 
-void TaskList::on_taskRemoved(int64_t taskID)
+void TaskList::on_task_removed(int64_t taskID)
 {
 	Gtk::TreeIter iter = findRow(taskID);
 	if (iter != treeModel->children().end())
@@ -142,12 +141,12 @@ void TaskList::on_selection_changed()
 	}
 }
 
-void TaskList::on_taskParentChanged(int64_t)
+void TaskList::on_parent_changed(int64_t)
 {
 	doUpdate();
 }
 
-void TaskList::on_completeUpdate()
+void TaskList::on_complete_update()
 {
 	doUpdate();
 }
@@ -207,7 +206,7 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 	return iter;
 }
 
-void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
+void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 {
 	int64_t taskID = task.ID();
 	row[columns.col_id] = taskID;
@@ -227,7 +226,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 		row[columns.col_pixbuf] = blankIcon;
 	}
 	row[columns.col_name] = task.name();
-	time_t totalTime = task.totalTime();
+	time_t totalTime = task.total_time();
 	if (totalTime > 0)
 	{
 		row[columns.col_time] = libtimeit::seconds2hhmm(totalTime);
@@ -240,7 +239,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const ExtendedTask &task)
 
 void TaskList::populate(TreeModel::Row *parent, int parentID)
 {
-	auto tasks = taskAccessor.getExtendedTasks(parentID);
+	auto tasks = taskAccessor.by_parent_ID(parentID);
 
 	for (int i = 0; i < (int) tasks.size(); i++)
 	{

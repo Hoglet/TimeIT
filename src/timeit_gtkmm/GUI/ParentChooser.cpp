@@ -96,7 +96,7 @@ Gtk::TreeModel::iterator ParentChooser::findRow(int id)
 
 void ParentChooser::populate(std::string &baseString, int parentID)
 {
-	vector<Task> tasks = taskAccessor.getTasks(parentID);
+	vector<Task> tasks = taskAccessor.by_parent_ID(parentID);
 
 	for (int i = 0; i < (int) tasks.size(); i++)
 	{

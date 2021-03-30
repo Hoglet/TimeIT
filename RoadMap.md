@@ -53,6 +53,7 @@ In order of importance:
 * Remove noise
     * ::getName() -> ::name()
     * liberal use of "using namespace".
+* One publisher of events for whole library.
 
 ## robustness
 * Immutable.
@@ -68,11 +69,14 @@ Use the new stuff when beneficial.
 * replace string_sprintf with fmt
 * auto.
 * Copy elision (return value optimization).
-* Lambda
+* Move constructors for entities.
+* Lambda.
 * [[fallthrough]], [[nodiscard]] and [[maybe_unused]]
 * string_view
 * invoke?
 * filesystem
+* Multi line strings: R"(....)"; 
+* std::format when available. Meanwhile: https://github.com/fmtlib/fmt
 
 And maybe more.
 

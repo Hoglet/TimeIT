@@ -36,7 +36,7 @@ AddTime::AddTime(
 	set_deletable(false);
 	//OKButton.set_sensitive(false);
 
-	auto task = m_taskAccessor.getTask(taskID);
+	auto task = m_taskAccessor.by_ID(taskID);
 	if (task.has_value())
 	{
 		taskName.set_text(task->name());
@@ -137,7 +137,7 @@ void AddTime::on_response(int response_id)
 
 		time_t startTime = libtimeit::getTime(y, m, d, startH, startM);
 		time_t stopTime = libtimeit::getTime(y, m, d, stopH, stopM);
-		m_timeAccessor.newTime(taskID, startTime, stopTime);
+		m_timeAccessor.create(taskID, startTime, stopTime);
 	}
 }
 

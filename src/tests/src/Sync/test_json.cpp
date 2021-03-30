@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <libtimeit/sync/Json.h>
-#include <libtimeit/db/Task.h>
+#include <libtimeit/db/task.h>
 #include <jansson.h>
 
 using namespace libtimeit;
@@ -25,11 +25,11 @@ TEST( Json, simpleTaskTest )
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQ( expectedName, task.name()) << "Name: ";
-		ASSERT_EQ( expectedUUID, task.getUUID().c_str()) << "UUID: ";
-		ASSERT_EQ( expectedParent, task.parentUUID()->c_str()) << "Parent: ";
+		ASSERT_EQ( expectedUUID, task.get_UUID().c_str()) << "UUID: ";
+		ASSERT_EQ( expectedParent, task.parent_UUID()->c_str()) << "Parent: ";
 		ASSERT_EQ( expectedCompleted, task.completed()) << "completed: ";
 		ASSERT_EQ( expectedDeleted, task.deleted()) << "Deleted: ";
-		ASSERT_EQ( expectedChangeTime, task.lastChanged()) << "Expected change time: ";
+		ASSERT_EQ( expectedChangeTime, task.last_changed()) << "Expected change time: ";
 	}
 }
 
@@ -53,11 +53,11 @@ TEST( Json, simpleTaskTest2 )
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQ( expectedName, task.name()) << "Name: ";
-		ASSERT_EQ( expectedUUID, task.getUUID().c_str()) << "UUID: ";
-		ASSERT_EQ( expectedParent, task.parentUUID()->c_str()) << "Parent: ";
+		ASSERT_EQ( expectedUUID, task.get_UUID().c_str()) << "UUID: ";
+		ASSERT_EQ( expectedParent, task.parent_UUID()->c_str()) << "Parent: ";
 		ASSERT_EQ( expectedCompleted, task.completed()) << "Completed: ";
 		ASSERT_EQ( expectedDeleted, task.deleted()) << "Deleted: ";
-		ASSERT_EQ( expectedChangeTime, task.lastChanged()) << "Expected change time: ";
+		ASSERT_EQ( expectedChangeTime, task.last_changed()) << "Expected change time: ";
 	}
 }
 
@@ -74,11 +74,11 @@ TEST( Json, threeWayTaskTest )
 	Task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name(), task2.name()) << "Name ";
-	ASSERT_EQ( task1.getUUID(), task2.getUUID()) << "UUID: ";
-	ASSERT_EQ( *task1.parentUUID(), *task2.parentUUID()) << "Parent: ";
+	ASSERT_EQ(task1.get_UUID(), task2.get_UUID()) << "UUID: ";
+	ASSERT_EQ(*task1.parent_UUID(), *task2.parent_UUID()) << "Parent: ";
 	ASSERT_EQ( task1.completed(), task2.completed()) << "Completed: ";
 	ASSERT_EQ( task1.deleted(), task2.deleted()) << "Deleted: ";
-	ASSERT_EQ( task1.lastChanged(), task2.lastChanged()) << "Expected change time: ";
+	ASSERT_EQ(task1.last_changed(), task2.last_changed()) << "Expected change time: ";
 
 }
 
@@ -95,11 +95,11 @@ TEST( Json, threeWayTaskTest2 )
 	Task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name(), task2.name()) << "Name ";
-	ASSERT_EQ( task1.getUUID(), task2.getUUID()) << "UUID: ";
-	ASSERT_EQ( *task1.parentUUID(), *task2.parentUUID()) << "Parent: ";
+	ASSERT_EQ(task1.get_UUID(), task2.get_UUID()) << "UUID: ";
+	ASSERT_EQ(*task1.parent_UUID(), *task2.parent_UUID()) << "Parent: ";
 	ASSERT_EQ( task1.completed(), task2.completed()) << "Completed: ";
 	ASSERT_EQ( task1.deleted(), task2.deleted()) << "Deleted: ";
-	ASSERT_EQ( task1.lastChanged(), task2.lastChanged()) << "Expected change time: ";
+	ASSERT_EQ(task1.last_changed(), task2.last_changed()) << "Expected change time: ";
 
 }
 
@@ -107,7 +107,7 @@ TEST( Json, simpleTimeTest )
 {
 	string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	vector<TimeEntry> times = toTimes(json_string);
+	vector<Time_entry> times = toTimes(json_string);
 
 	string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -119,10 +119,10 @@ TEST( Json, simpleTimeTest )
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		TimeEntry item = times.at(0);
+		Time_entry item = times.at(0);
 		bool expectedDeleted = false;
-		ASSERT_EQ( expectedUUID, item.getUUID().c_str()) << "ID: ";
-		ASSERT_EQ( expectedTaskID, item.taskUUID()->c_str()) << "TaskID: ";
+		ASSERT_EQ( expectedUUID, item.get_UUID().c_str()) << "ID: ";
+		ASSERT_EQ( expectedTaskID, item.task_UUID()->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedDeleted, item.deleted()) << "Deleted: ";
 		ASSERT_EQ( expectedStart, item.start()) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop()) << "Stop: ";
@@ -135,7 +135,7 @@ TEST( Json, simpleTimeTest2 )
 	string json_string = R"(
 [ {
   "id": "01bd0176-00ed-4135-b181-014101790130","task":{"id":"00e1010f-00f2-40df-90b3-00f900ab009e"},"start": 1363339855,"stop": 1363342626,"deleted": true,"changed": 1376059170, "owner":{"username":"tester"}}])";
-	TimeList times = toTimes(json_string);
+	Time_list times = toTimes(json_string);
 
 	string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -147,10 +147,10 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		TimeEntry item = times.at(0);
+		Time_entry item = times.at(0);
 		bool expectedDeleted = true;
-		ASSERT_EQ( expectedUUID, item.getUUID().c_str()) << "ID: ";
-		ASSERT_EQ( expectedTaskID, item.taskUUID()->c_str()) << "TaskID: ";
+		ASSERT_EQ( expectedUUID, item.get_UUID().c_str()) << "ID: ";
+		ASSERT_EQ( expectedTaskID, item.task_UUID()->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedDeleted, item.deleted()) << "Deleted: ";
 		ASSERT_EQ( expectedStart, item.start()) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop()) << "Stop: ";
@@ -175,15 +175,15 @@ TEST( Json, threeWayTimeTest )
 	"owner":{"username":"tester"}
 }])";
 
-	vector<TimeEntry> items = toTimes(json_string);
-	TimeEntry item1 = items.at(0);
+	vector<Time_entry> items = toTimes(json_string);
+	Time_entry item1 = items.at(0);
 	//Convert once more to be able to compare
 	std::string result = toJson(items);
 	items = toTimes(result);
-	TimeEntry item2 = items.at(0);
+	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ( item1.getUUID(), item2.getUUID()) << "ID ";
-	ASSERT_EQ( item1.taskUUID(), item2.taskUUID()) << "TaskID: ";
+	ASSERT_EQ(item1.get_UUID(), item2.get_UUID()) << "ID ";
+	ASSERT_EQ(item1.task_UUID(), item2.task_UUID()) << "Task_ID: ";
 	ASSERT_EQ( item1.start(), item2.start()) << "Start: ";
 	ASSERT_EQ( item1.stop(), item2.stop()) << "Stop: ";
 	ASSERT_EQ( item1.deleted(), item2.deleted()) << "Deleted: ";
@@ -206,15 +206,15 @@ TEST( Json, threeWayTimeTest2 )
 	"deleted": true,
 	"changed": 1376059170,"owner": {"username":"tester"}
 }])";
-	vector<TimeEntry> items = toTimes(json_string);
-	TimeEntry item1 = items.at(0);
+	vector<Time_entry> items = toTimes(json_string);
+	Time_entry item1 = items.at(0);
 	//Convert once more to be able to compare
 	std::string result = toJson(items);
 	items = toTimes(result);
-	TimeEntry item2 = items.at(0);
+	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ( item1.getUUID(), item2.getUUID()) << "ID ";
-	ASSERT_EQ( item1.taskUUID(), item2.taskUUID()) << "TaskID: ";
+	ASSERT_EQ(item1.get_UUID(), item2.get_UUID()) << "ID ";
+	ASSERT_EQ(item1.task_UUID(), item2.task_UUID()) << "Task_ID: ";
 	ASSERT_EQ( item1.start(), item2.start()) << "Start: ";
 	ASSERT_EQ( item1.stop(), item2.stop()) << "Stop: ";
 	ASSERT_EQ( item1.deleted(), item2.deleted()) << "Deleted: ";

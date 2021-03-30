@@ -153,21 +153,21 @@ void Summary::calculateTimeSpan()
 {
 }
 
-void Summary::on_taskUpdated(int64_t taskID)
+void Summary::on_task_updated(int64_t taskID)
 {
 	if (isVisible())
 	{
-		auto task = taskAccessor.getTask(taskID);
+		auto task = taskAccessor.by_ID(taskID);
 		Gtk::TreeIter iter = findRow(taskID);
 		if (task.has_value() && iter != treeModel->children().end())
 		{
 			TreeModel::Row row = *iter;
-			time_t totalTime = timeAccessor.getTotalTimeWithChildren(taskID, startTime, stopTime);
+			time_t totalTime = timeAccessor.total_cumulative_time(taskID, startTime, stopTime);
 			assignValuesToRow(row, *task, totalTime);
-			int64_t parentID = task->parentID();
+			int64_t parentID = task->parent_ID();
 			if (parentID > 0)
 			{
-				on_taskUpdated(parentID);
+				on_task_updated(parentID);
 			}
 		}
 		else
@@ -182,17 +182,17 @@ void Summary::on_taskUpdated(int64_t taskID)
 	}
 }
 
-void Summary::on_taskNameChanged(int64_t id)
+void Summary::on_task_name_changed(int64_t id)
 {
-	on_taskUpdated(id);
+	on_task_updated(id);
 }
 
-void Summary::on_taskTimeChanged(int64_t id)
+void Summary::on_task_time_changed(int64_t id)
 {
-	on_taskUpdated(id);
+	on_task_updated(id);
 }
 
-void Summary::on_completeUpdate()
+void Summary::on_complete_update()
 {
 	if (isVisible())
 	{
@@ -205,7 +205,7 @@ void Summary::on_completeUpdate()
 	}
 }
 
-void Summary::on_taskRemoved(int64_t taskID)
+void Summary::on_task_removed(int64_t taskID)
 {
 	Gtk::TreeIter iter = findRow(taskID);
 	if (iter != treeModel->children().end())
@@ -271,9 +271,9 @@ bool Summary::isVisible()
 
 TreeModel::Row Summary::add(int64_t id)
 {
-	auto task = taskAccessor.getTask(id);
+	auto task = taskAccessor.by_ID(id);
 	TreeModel::Row row;
-	int64_t parentID = task->parentID();
+	int64_t parentID = task->parent_ID();
 	if (parentID)
 	{
 		Gtk::TreeIter iter = findRow(parentID);
@@ -292,7 +292,7 @@ TreeModel::Row Summary::add(int64_t id)
 		TreeModel::iterator iter = treeModel->append();
 		row = *iter;
 	}
-	time_t totalTime = timeAccessor.getTotalTimeWithChildren(id, startTime, stopTime);
+	time_t totalTime = timeAccessor.total_cumulative_time(id, startTime, stopTime);
 	assignValuesToRow(row, *task, totalTime);
 	return row;
 }
@@ -304,7 +304,7 @@ void Summary::populate(Gtk::TreeModel::Row *parent, int parentID)
 {
 	if (isVisible())
 	{
-		std::vector<int64_t> taskIDs = timeAccessor.getActiveTasks(startTime, stopTime);
+		std::vector<int64_t> taskIDs = timeAccessor.active_tasks(startTime, stopTime);
 
 		for (int64_t id : taskIDs)
 		{

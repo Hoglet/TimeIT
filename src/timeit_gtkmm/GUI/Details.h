@@ -13,9 +13,9 @@
 
 #include "MainWindow/Summary.h"
 
-#include <libtimeit/db/Database.h>
-#include <libtimeit/db/TimeAccessor.h>
-#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/database.h>
+#include <libtimeit/db/time_accessor.h>
+#include <libtimeit/db/settings_accessor.h>
 
 #include <vector>
 
@@ -38,7 +38,7 @@ public:
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details: public Gtk::TreeView, public EventObserver
+class Details: public Gtk::TreeView, public Event_observer
 {
 public:
 	Details(Database &database);
@@ -51,15 +51,15 @@ public:
 	void on_menu_file_popup_merge();
 	void on_menu_file_popup_split();
 	//EventObserver interface
-	virtual void on_taskAdded(int64_t)
+	virtual void on_task_added(int64_t)
 	{
 	}
 	;
-	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskRemoved(int64_t);
-	virtual void on_completeUpdate();
-	virtual void on_taskNameChanged(int64_t);
-	virtual void on_taskTimeChanged(int64_t);
+	virtual void on_task_updated(int64_t);
+	virtual void on_task_removed(int64_t);
+	virtual void on_complete_update();
+	virtual void on_task_name_changed(int64_t);
+	virtual void on_task_time_changed(int64_t);
 	//
 	int64_t getSelectedID();
 	std::vector<int64_t> getSelectedAndNextID();
@@ -105,9 +105,9 @@ private:
 	Gtk::Menu m_Menu_Popup;
 	Glib::RefPtr<Gtk::MenuItem> m_split_menu_item;
 	std::list<DetailsObserver*> observers;
-	TimeAccessor     m_timeAccessor;
-	TaskAccessor     m_taskAccessor;
-	SettingsAccessor m_settingsAccessor;
+	Time_accessor     m_timeAccessor;
+	Task_accessor     m_taskAccessor;
+	Settings_accessor m_settingsAccessor;
 };
 }
 

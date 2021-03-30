@@ -11,8 +11,8 @@
 #include <string>
 #include <gtkmm/combobox.h>
 #include <gtkmm/liststore.h>
-#include <libtimeit/db/Database.h>
-#include <libtimeit/db/TaskAccessor.h>
+#include <libtimeit/db/database.h>
+#include <libtimeit/db/task_accessor.h>
 
 namespace GUI
 {
@@ -54,7 +54,7 @@ private:
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	TaskAccessor taskAccessor;
+	Task_accessor taskAccessor;
 	int parentID;
 };
 

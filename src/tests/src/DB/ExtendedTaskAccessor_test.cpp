@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/db/ExtendedTaskAccessor.h>
-#include <libtimeit/exceptions/dbexception.h>
+#include <libtimeit/db/extended_task_accessor.h>
+#include <libtimeit/exceptions/db_exception.h>
 
 namespace test
 {
@@ -10,131 +10,130 @@ namespace test
 using namespace libtimeit;
 using namespace std;
 
-TEST(ExtendedTaskAccessor, getExtendedTask)
+TEST(ExtendedTaskAccessor, by_ID)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	ExtendedTaskAccessor taskAccessor(tempdb);
-	int64_t taskId = taskAccessor.newTask("Test", 0);
-	int64_t taskId2 = taskAccessor.newTask("Test2", taskId);
+	Extended_task_accessor taskAccessor(tempdb);
+	int64_t taskId = taskAccessor.create(Task("Test", 0));
+	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
-	TimeAccessor timeAccessor(tempdb);
-	timeAccessor.newTime(taskId, 0, 1000);
-	timeAccessor.newTime(taskId2, 0, 1000);
+	Time_accessor timeAccessor(tempdb);
+	timeAccessor.create(taskId, 0, 1000);
+	timeAccessor.create(taskId2, 0, 1000);
 
-	ExtendedTask task = taskAccessor.getExtendedTask(taskId).at(0);
-	ASSERT_EQ("Test", task.name());
-	ASSERT_EQ(2000, task.totalTime());
+	auto task = taskAccessor.by_ID(taskId);
+	ASSERT_EQ("Test", task->name());
+	ASSERT_EQ(2000, task->total_time());
 
-	ExtendedTask task2 = taskAccessor.getExtendedTask(taskId2).at(0);
-	ASSERT_EQ("Test2", task2.name());
-	ASSERT_EQ(1000, task2.totalTime());
+	auto task2 = taskAccessor.by_ID(taskId2);
+	ASSERT_EQ("Test2", task2->name());
+	ASSERT_EQ(1000, task2->total_time());
 }
 
-TEST(ExtendedTaskAccessor, getExtendedTasks)
+TEST(ExtendedTaskAccessor, by_parent_ID)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	ExtendedTaskAccessor taskAccessor(tempdb);
-	TimeAccessor timeAccessor(tempdb);
+	Extended_task_accessor taskAccessor(tempdb);
+	Time_accessor timeAccessor(tempdb);
 
-	int64_t taskId = taskAccessor.newTask("Test", 0);
+	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
-	vector<ExtendedTask> tasks = taskAccessor.getExtendedTasks();
+	vector<Extended_task> tasks = taskAccessor.by_parent_ID();
 	ASSERT_EQ(1, tasks.size());
 
-	taskAccessor.newTask("NextTask", 0);
-	tasks = taskAccessor.getExtendedTasks();
+	taskAccessor.create(Task("NextTask", 0));
+	tasks = taskAccessor.by_parent_ID();
 	ASSERT_EQ(2, tasks.size());
 
-	int64_t taskId2 = taskAccessor.newTask("Test2", taskId);
-	timeAccessor.newTime(taskId2, 0, 1000);
+	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
+	timeAccessor.create(taskId2, 0, 1000);
 
-	tasks = taskAccessor.getExtendedTasks();
-	ExtendedTask &task = tasks.at(0);
+	tasks = taskAccessor.by_parent_ID();
+	Extended_task &task = tasks.at(0);
 	ASSERT_EQ("Test", task.name());
-	ASSERT_EQ(1000, task.totalTime());
+	ASSERT_EQ(1000, task.total_time());
 }
 
 TEST(ExtendedTaskAccessor, getRunningTasks)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	ExtendedTaskAccessor taskAccessor( tempdb );
-	int64_t taskId = taskAccessor.newTask("Test", 0);
+	Extended_task_accessor taskAccessor(tempdb );
+	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
-	int64_t taskId2 = taskAccessor.newTask("Test2", taskId);
+	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
-	TimeAccessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.newTime(taskId2, 0, 1000);
+	Time_accessor timeAccessor(tempdb);
+	int64_t timeId = timeAccessor.create(taskId2, 0, 1000);
 	timeAccessor.setRunning(timeId, true);
 
 	auto tasks = taskAccessor.getRunningTasks();
 	ASSERT_EQ(1, tasks.size());
-	ExtendedTask task = tasks.at(0);
+	Extended_task task = tasks.at(0);
 	ASSERT_EQ("Test2", task.name());
 
-	tasks = taskAccessor.getExtendedTasks();
+	tasks = taskAccessor.by_parent_ID();
 	auto task2 = tasks.at(0);
-	ASSERT_EQ(1000, task2.totalTime());
+	ASSERT_EQ(1000, task2.total_time());
 }
 
 TEST(ExtendedTaskAccessor, testTotalTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	ExtendedTaskAccessor taskAccessor( tempdb );
-	int64_t taskId = taskAccessor.newTask("Test", 0);
-	int64_t taskId2 = taskAccessor.newTask("Test2", taskId);
+	Extended_task_accessor taskAccessor(tempdb );
+	int64_t taskId = taskAccessor.create(Task("Test", 0));
+	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
-	TimeAccessor timeAccessor(tempdb);
-	timeAccessor.newTime(taskId2, 0, 1000);
+	Time_accessor timeAccessor(tempdb);
+	timeAccessor.create(taskId2, 0, 1000);
 
-	ExtendedTask task = taskAccessor.getExtendedTask(taskId).at(0);
-	ASSERT_EQ(1000, task.totalTime());
+	auto task = taskAccessor.by_ID(taskId);
+	ASSERT_EQ(1000, task->total_time());
 }
 
 TEST(ExtendedTaskAccessor, setExpandedTasks)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	ExtendedTaskAccessor taskAccessor(tempdb);
-	int64_t taskId = taskAccessor.newTask("Test", 0);
-	ExtendedTask task = taskAccessor.getExtendedTask(taskId).at(0);
-	ASSERT_EQ(false, task.expanded());
+	Extended_task_accessor taskAccessor(tempdb);
+	int64_t taskId = taskAccessor.create(Task("Test", 0));
+	auto task = taskAccessor.by_ID(taskId);
+	ASSERT_EQ(false, task->expanded());
 	taskAccessor.setTaskExpanded(taskId, true);
-	auto task2 = taskAccessor.getExtendedTask(taskId).at(0);
-	ASSERT_EQ(true, task2.expanded());
+	auto task2 = taskAccessor.by_ID(taskId);
+	ASSERT_EQ(true, task2->expanded());
 }
 
 TEST(ExtendedTaskAccessor, testTimeReporting)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TimeAccessor timeAccessor(tempdb);
-	ExtendedTaskAccessor taskAccessor(tempdb);
-	const int64_t parentId = taskAccessor.newTask("test", 0);
-	const int64_t taskId = taskAccessor.newTask("test", parentId);
-	timeAccessor.newTime(taskId, 4000, 5000);
+	Time_accessor timeAccessor(tempdb);
+	Extended_task_accessor taskAccessor(tempdb);
+	const int64_t parentId = taskAccessor.create(Task("test", 0));
+	const int64_t taskId = taskAccessor.create(Task("test", parentId));
+	timeAccessor.create(taskId, 4000, 5000);
 
-	auto tasks = taskAccessor.getExtendedTask(parentId, 0, 0);
-	ExtendedTask task = tasks.at(0);
-	int result = task.totalTime();
+	auto tasks = taskAccessor.by_parent_ID(parentId);
+	Extended_task task = tasks.at(0);
+	int result = task.total_time();
 	ASSERT_EQ(1000, result);
 
-	tasks = taskAccessor.getExtendedTask(taskId, 0, 0);
-	auto task2 = tasks.at(0);
-	result = task2.totalTime();
+	auto task2 = taskAccessor.by_ID(taskId);
+	result = task2->total_time();
 	ASSERT_EQ(1000, result);
 
-	tasks = taskAccessor.getExtendedTasks(0, 0, 0);
+	tasks = taskAccessor.by_parent_ID(0, 0, 0);
 	auto task3 = tasks.at(0);
-	result = task.totalTime();
+	result = task.total_time();
 	ASSERT_EQ(1000, result);
 
-	tasks = taskAccessor.getExtendedTasks(parentId, 0, 0);
+	tasks = taskAccessor.by_parent_ID(parentId, 0, 0);
 	auto task4 = tasks.at(0);
-	result = task4.totalTime();
+	result = task4.total_time();
 	ASSERT_EQ(1000, result);
 
 }

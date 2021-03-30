@@ -1,6 +1,6 @@
 #include <libtimeit/Timer.h>
 #include <iostream>
-#include <libtimeit/db/DefaultValues.h>
+#include <libtimeit/db/default_values.h>
 #include "libtimeit/logic/TimeKeeper.h"
 #include <libtimeit/Utils.h>
 
@@ -47,11 +47,11 @@ Timekeeper::Timekeeper(
 		timer( op_timer )
 
 {
-	time_accessor.stopAllRunning();
+	time_accessor.stop_all();
 
 	settings_accessor;
 	settings_accessor.attach(this);
-	on_settingsChanged("");
+	on_settings_changed("");
 	enabled = true;
 	is_idle = false;
 	timer.attach(this);
@@ -71,16 +71,16 @@ Timekeeper::~Timekeeper()
 	}
 }
 
-void Timekeeper::on_settingsChanged(const std::string& name)
+void Timekeeper::on_settings_changed(string name)
 {
 	if (name.length() < 1 || name == "Gt")
 	{
-		long idleGt = settings_accessor.GetIntByName("Gt", DEFAULT_GT);
+		long idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
 		idle_detector.setIdleTimeout(idleGt);
 	}
 	if (name.length() < 1 || name == "Gz")
 	{
-		idle_Gz = settings_accessor.GetIntByName("Gz", DEFAULT_GZ);
+		idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 	}
 }
 
@@ -110,7 +110,7 @@ void Timekeeper::StartTask(int64_t id)
 		TaskTime task;
 		task.startTime = libtimeit::now();
 		task.stopTime = libtimeit::now();
-		task.dbHandle = time_accessor.newTime(id, task.startTime, task.stopTime);
+		task.dbHandle = time_accessor.create(id, task.startTime, task.stopTime);
 		task.taskID = id;
 		active_tasks[id] = task;
 		time_accessor.setRunning(task.dbHandle, true);
@@ -145,7 +145,7 @@ void Timekeeper::StopTask(int64_t id)
 	}
 }
 
-void Timekeeper::on_taskRemoved(int64_t id)
+void Timekeeper::on_task_removed(int64_t id)
 {
 	map<int64_t, TaskTime>::iterator it;
 	it = active_tasks.find(id);
@@ -155,7 +155,7 @@ void Timekeeper::on_taskRemoved(int64_t id)
 		notifyRunningChanged();
 	}
 }
-void Timekeeper::on_completeUpdate()
+void Timekeeper::on_complete_update()
 {
 	//TODO Detect task removal during syncing
 }
@@ -169,10 +169,10 @@ void Timekeeper::UpdateTask(int64_t id, time_t now)
 		it->second.stopTime = libtimeit::now();
 		TaskTime task = it->second;
 
-		auto te = time_accessor.getByID(task.dbHandle);
+		auto te = time_accessor.by_ID(task.dbHandle);
 		if(te)
 		{
-			time_accessor.update(te->withStop(task.stopTime));
+			time_accessor.update(te->with_stop(task.stopTime));
 		}
 	}
 }

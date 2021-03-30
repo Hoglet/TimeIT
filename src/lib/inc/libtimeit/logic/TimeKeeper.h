@@ -3,14 +3,14 @@
 
 #include <list>
 #include <map>
-#include <libtimeit/db/Task.h>
+#include <libtimeit/db/task.h>
 #include <libtimeit/Timer.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 #include <libtimeit/logic/X11_IdleDetector.h>
-#include <libtimeit/db/TaskAccessor.h>
-#include <libtimeit/db/SettingsAccessor.h>
-#include <libtimeit/db/TimeAccessor.h>
+#include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/settings_accessor.h>
+#include <libtimeit/db/time_accessor.h>
 
 namespace libtimeit
 {
@@ -53,8 +53,8 @@ public:
 class Timekeeper :
 		public TimerObserver,
 		public ITimeKeeper,
-		public EventObserver,
-		public SettingsAccessorObserver
+		public Event_observer,
+		public Settings_accessor_observer
 {
 public:
 	Timekeeper(Database &database, Timer &timer);
@@ -92,24 +92,24 @@ public:
 private:
 	void UpdateTask(int64_t id, time_t now);
 
-	virtual void on_taskAdded(int64_t)
+	virtual void on_task_added(int64_t)
 	{
 	};
 
-	virtual void on_taskUpdated(int64_t)
+	virtual void on_task_updated(int64_t)
 	{
 	};
 
-	virtual void on_taskNameChanged(int64_t)
+	virtual void on_task_name_changed(int64_t)
 	{
 	};
 
-	virtual void on_taskTimeChanged(int64_t)
+	virtual void on_task_time_changed(int64_t)
 	{
 	};
-	virtual void on_taskRemoved(int64_t);
-	virtual void on_settingsChanged(const string &);
-	virtual void on_completeUpdate();
+	virtual void on_task_removed(int64_t);
+	virtual void on_settings_changed(string);
+	virtual void on_complete_update();
 
 	void UpdateTask(int64_t id);
 
@@ -133,10 +133,10 @@ private:
 	void notifyActivityResumed();
 	list<TimekeeperObserver *> observers;
 
-	TimeAccessor      time_accessor;
-	TaskAccessor      task_accessor;
+	Time_accessor      time_accessor;
+	Task_accessor      task_accessor;
 	Timer            &timer;
-	SettingsAccessor  settings_accessor;
+	Settings_accessor  settings_accessor;
 
 	X11_IdleDetector idle_detector;
 };

@@ -1,47 +1,38 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/db/SettingsAccessor.h>
+#include <libtimeit/db/settings_accessor.h>
 
 namespace test
 {
 using namespace libtimeit;
 using namespace std;
 
-TEST(SettingsAccessor, ShortFilterTimeAccessor)
+
+TEST(Settings_accessor, IntAccessor)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	SettingsAccessor settingsAccessor(tempdb);
-	settingsAccessor.SetShortFilterTime(30);
-
-	ASSERT_EQ(30, settingsAccessor.GetShortFilterTime());
+	Settings_accessor settingsAccessor(tempdb );
+	ASSERT_EQ(10, settingsAccessor.get_int("Tjohopp", 10));
+	settingsAccessor.set_int("Tjohopp", 30);
+	ASSERT_EQ(30, settingsAccessor.get_int("Tjohopp", 10));
 }
 
-TEST(SettingsAccessor, IntAccessor)
+TEST(Settings_accessor, BoolAccessor)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	SettingsAccessor settingsAccessor( tempdb );
-	ASSERT_EQ(10, settingsAccessor.GetIntByName("Tjohopp", 10));
-	settingsAccessor.SetIntByName("Tjohopp", 30);
-	ASSERT_EQ(30, settingsAccessor.GetIntByName("Tjohopp", 10));
+	Settings_accessor settingsAccessor(tempdb);
+	ASSERT_EQ(true, settingsAccessor.get_bool("Tjohopp", true));
+	settingsAccessor.set_bool("Tjohopp", false);
+	ASSERT_EQ(false, settingsAccessor.get_bool("Tjohopp", true));
 }
 
-TEST(SettingsAccessor, BoolAccessor)
-{
-	Notifier notifier;
-	TempDB tempdb(notifier);
-	SettingsAccessor settingsAccessor(tempdb);
-	ASSERT_EQ(true, settingsAccessor.GetBoolByName("Tjohopp", true));
-	settingsAccessor.SetBoolByName("Tjohopp", false);
-	ASSERT_EQ(false, settingsAccessor.GetBoolByName("Tjohopp", true));
-}
-
-class Observer : public SettingsAccessorObserver
+class Observer : public Settings_accessor_observer
 {
 public:
 
-	void on_settingsChanged(const std::string &name)
+	void on_settings_changed(string name)
 	{
 		changed_setting = name;
 	}
@@ -49,16 +40,16 @@ public:
 	std::string changed_setting;
 };
 
-TEST(SettingsAccessor, notification)
+TEST(Settings_accessor, notification)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
 	Observer observer;
 	ASSERT_EQ("", observer.changed_setting);
 
-	SettingsAccessor settingsAccessor(tempdb);
+	Settings_accessor settingsAccessor(tempdb);
 	settingsAccessor.attach(&observer);
-	settingsAccessor.SetBoolByName("Tjohopp", false);
+	settingsAccessor.set_bool("Tjohopp", false);
 	ASSERT_EQ("Tjohopp", observer.changed_setting);
 	settingsAccessor.detach(&observer);
 

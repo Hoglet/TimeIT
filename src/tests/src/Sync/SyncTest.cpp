@@ -17,9 +17,9 @@ TEST( SyncManager, fullSyncEmptyClient )
 	TempDB      db (notifier);
 	MockNetwork network;
 
-	SettingsAccessor settings( db);
-	settings.SetStringByName("Username", "testman");
-	settings.SetStringByName("URL", "localhost");
+	Settings_accessor settings(db);
+	settings.set_string("Username", "testman");
+	settings.set_string("URL", "localhost");
 
 	Timer timer;
 	SyncManager syncManager(db, network, notifier, timer);
@@ -58,34 +58,34 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	TaskAccessor taskAccessor(db);
-	vector<Task> tasks = taskAccessor.getTasksChangedSince();
+	Task_accessor taskAccessor(db);
+	vector<Task> tasks = taskAccessor.changed_since();
 	ASSERT_EQ( 2, tasks.size()) << "Checking amount of tasks in database";
 	for (Task task : tasks)
 	{
 		if (task.name() == "Parent")
 		{
-			ASSERT_EQ( 1375358076, task.lastChanged()) << "Checking Parent's change time";
+			ASSERT_EQ( 1375358076, task.last_changed()) << "Checking Parent's change time";
 		}
 		else if (task.name() == "Child")
 		{
 			string parentUUID = "013900e6-00dd-40f7-b0d6-00de00bf006b";
-			ASSERT_EQ( 1375358093, task.lastChanged()) << "Checking Child's change time";
-			ASSERT_EQ( parentUUID, task.parentUUID()->c_str()) << "Checking Child's parent ";
+			ASSERT_EQ( 1375358093, task.last_changed()) << "Checking Child's change time";
+			ASSERT_EQ( parentUUID, task.parent_UUID()->c_str()) << "Checking Child's parent ";
 		}
 		else
 		{
 			FAIL( ) << "Unknown task in list";
 		}
 	}
-	TimeAccessor timeAccessor(db);
-	TimeList times = timeAccessor.getTimesChangedSince();
+	Time_accessor timeAccessor(db);
+	Time_list times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)
 	{
 		ASSERT_EQ( 1, item.ID()) << "TimeEntry ID";
-		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", item.getUUID().c_str()) << "TimeEntry UUID";
-		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", item.taskUUID()->c_str()) << "TimeEntry taskUUD";
+		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", item.get_UUID().c_str()) << "TimeEntry UUID";
+		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", item.task_UUID()->c_str()) << "TimeEntry taskUUD";
 		ASSERT_EQ( 1363597429, item.start()) << "TimeEntry start";
 		ASSERT_EQ( 1363597541, item.stop()) << "TimeEntry stop";
 		ASSERT_EQ( 1376388171, item.changed()) << "TimeEntry changed";
@@ -102,8 +102,8 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	tasks = taskAccessor.getTasksChangedSince();
-	times = timeAccessor.getTimesChangedSince();
+	tasks = taskAccessor.changed_since();
+	times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 2, tasks.size()) << "Checking number of tasks after repeat syncing ";
 	ASSERT_EQ( 1, times.size()) << "Checking number of times after repeat syncing ";
 }

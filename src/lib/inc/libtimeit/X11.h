@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
-#include <libtimeit/exceptions/GeneralException.h>
+#include <libtimeit/exceptions/general_exception.h>
 
 class X11
 {
@@ -24,7 +24,7 @@ public:
 private:
 	Display* display;
 	Window rootWindow;
-	GeneralException e;
+	General_exception e;
 };
 
 #endif /* X11PROPERTY_H_ */

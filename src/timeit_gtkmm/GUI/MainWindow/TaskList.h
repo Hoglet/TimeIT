@@ -21,30 +21,30 @@
 #define _TASK_LIST_HPP_
 
 #include <gtkmm.h>
-#include <libtimeit/db/ExtendedTask.h>
+#include <libtimeit/db/extended_task.h>
 #include "ActionObserver.h"
-#include <libtimeit/db/Database.h>
+#include <libtimeit/db/database.h>
 #include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/db/ExtendedTaskAccessor.h>
+#include <libtimeit/db/extended_task_accessor.h>
 
 namespace GUI
 {
 using namespace libtimeit;
 
-class TaskList: public Gtk::TreeView, public EventObserver
+class TaskList: public Gtk::TreeView, public Event_observer
 {
 public:
 	TaskList(Database &database, ITimeKeeper &timeKeeper);
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
-	virtual void on_taskAdded(int64_t);
-	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskRemoved(int64_t);
-	virtual void on_taskParentChanged(int64_t);
-	virtual void on_completeUpdate();
-	virtual void on_taskNameChanged(int64_t);
-	virtual void on_taskTimeChanged(int64_t);
+	virtual void on_task_added(int64_t);
+	virtual void on_task_updated(int64_t);
+	virtual void on_task_removed(int64_t);
+	virtual void on_parent_changed(int64_t);
+	virtual void on_complete_update();
+	virtual void on_task_name_changed(int64_t);
+	virtual void on_task_time_changed(int64_t);
 
 	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
 	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
@@ -83,13 +83,13 @@ private:
 	void on_menu_remove_task();
 	void on_menu_add_time();
 	virtual bool on_button_press_event(GdkEventButton *event);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, const ExtendedTask &task);
+	void assignValuesToRow(Gtk::TreeModel::Row &row, const Extended_task &task);
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	void doUpdate();
 	std::list<ActionObserver*> observers;
-	ExtendedTaskAccessor taskAccessor;
+	Extended_task_accessor taskAccessor;
 	ITimeKeeper& m_timeKeeper;
 };
 }
