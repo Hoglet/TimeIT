@@ -34,6 +34,7 @@ class DetailsDialog:
 		public Gtk::Dialog,
 		public SummaryObserver,
 		public DetailsObserver,
+		public EventObserver,
 		public IDetailsDialog,
 		public IWidget
 {
@@ -52,6 +53,8 @@ public:
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 
 	void on_runningTasksChanged();
+	void on_task_name_updated(int64_t task_id);
+	void on_task_total_time_updated(int64_t task_id);
 
 private:
 	DetailsDialog(Database& database, ITimeKeeper &timeKeeper);
@@ -64,6 +67,10 @@ private:
 	void on_selected_changed();
 	void on_edit_details(int64_t timeEntryID);
 
+	//EventObserver
+	virtual void on_taskUpdated(int64_t);
+	virtual void on_taskNameChanged(int64_t);
+
 	void setValues();
 	void on_OKButton_clicked();
 	void on_CancelButton_clicked();
@@ -73,6 +80,7 @@ private:
 	Gtk::Table table1;
 	Gtk::Label taskName;
 	Gtk::Image runningImage;
+	Gtk::Label taskTotalTime;
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
