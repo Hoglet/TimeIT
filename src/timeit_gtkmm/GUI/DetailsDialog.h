@@ -68,8 +68,8 @@ private:
 	void on_edit_details(int64_t timeEntryID);
 
 	//EventObserver
-	virtual void on_taskUpdated(int64_t);
-	virtual void on_taskNameChanged(int64_t);
+	virtual void on_task_time_changed(int64_t task_ID);
+	virtual void on_task_name_changed(int64_t task_ID);
 
 	void setValues();
 	void on_OKButton_clicked();

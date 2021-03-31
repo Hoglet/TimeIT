@@ -4,6 +4,7 @@
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/extended_task_accessor.h>
+#include "notify_observer.h"
 
 namespace test
 {
@@ -61,13 +62,17 @@ TEST(TimeAccessor, UpdateTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
+	Notify_observer observer;
+	notifier.attach(&observer);
 	Task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	Time_accessor timeAccessor(tempdb);
 	int64_t timeId = timeAccessor.create(taskId, 0, 1000);
+	observer.task_id_time = 0;
 	timeAccessor.update(timeId, 300, 700);
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(400, result);
+	ASSERT_EQ(observer.task_id_time, taskId );
 
 }
 

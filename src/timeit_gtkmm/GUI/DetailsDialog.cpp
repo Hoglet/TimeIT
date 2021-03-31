@@ -186,14 +186,14 @@ void DetailsDialog::on_edit_details(int64_t timeEntryID)
 	setTimeEntryID(timeEntryID);
 }
 
-void DetailsDialog::on_taskUpdated(int64_t task_id)
+void DetailsDialog::on_task_time_changed(int64_t task_ID)
 {
-	on_task_total_time_updated(task_id);
+	on_task_total_time_updated(task_ID);
 }
 
-void DetailsDialog::on_taskNameChanged(int64_t task_id)
+void DetailsDialog::on_task_name_changed(int64_t task_ID)
 {
-	on_task_name_updated(task_id);
+	on_task_name_updated(task_ID);
 }
 
 

@@ -1,73 +1,28 @@
 #include <gtest/gtest.h>
 #include <libtimeit/db/notifier.h>
+#include "notify_observer.h"
 
 using namespace libtimeit;
 
-namespace Test
+namespace test
 {
 
-class NotifyTester: public Event_observer
+class NotifyTester : public Notify_observer
 {
 public:
 	NotifyTester()
 	{
-		task_id_added = 0;
-		task_id_removed = 0;
-		task_id_updated = 0;
-		task_id_parent = 0;
-		task_id_name = 0;
-		task_id_time = 0;
 		notifier.attach(this);
 	}
 
-	virtual ~NotifyTester()
+	~NotifyTester()
 	{
-	}
-
-	virtual void on_task_updated(int64_t t_id)
-	{
-		task_id_updated = t_id;
-	}
-
-	virtual void on_task_added(int64_t t_id)
-	{
-		task_id_added = t_id;
-	}
-
-	virtual void on_task_removed(int64_t t_id)
-	{
-		task_id_removed = t_id;
-	}
-
-	virtual void on_parent_changed(int64_t t_id)
-	{
-		task_id_parent = t_id;
-	}
-
-	virtual void on_task_name_changed(int64_t t_id)
-	{
-		task_id_name = t_id;
-	}
-
-	virtual void on_task_time_changed(int64_t t_id)
-	{
-		task_id_time = t_id;
-	}
-
-	virtual void on_complete_update()
-	{
-
+		notifier.detach(this);
 	}
 
 	Notifier notifier;
-	int64_t task_id_updated;
-	int64_t task_id_added;
-	int64_t task_id_removed;
-	int64_t task_id_parent;
-	int64_t task_id_name;
-	int64_t task_id_time;
-
 };
+
 
 TEST( Notifier, TaskUpdated)
 {
