@@ -225,7 +225,6 @@ void Details::on_menu_file_popup_split()
 			Time_entry time_entry = optional_time_entry.value();
 			time_t start_time = time_entry.start();
 			time_t stop_time = time_entry.stop();
-			int64_t seconds_to_split = difftime(stop_time, start_time);
 			bool across_days = onDifferentDays(start_time, stop_time);
 
 			// coded considering time_entry could be currently running
