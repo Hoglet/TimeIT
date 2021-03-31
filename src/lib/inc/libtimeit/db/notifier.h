@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <list>
 #include <string>
-#include <libtimeit/Event_observer.h>
+#include <libtimeit/event_observer.h>
 #include <libtimeit/db/message_type.h>
 
 namespace libtimeit
@@ -27,21 +27,25 @@ struct Notification_message
 
 class Notifier
 {
+	friend class Event_observer;
+
 public:
 	Notifier();
 	virtual ~Notifier();
-	void attach(Event_observer*);
-	void detach(Event_observer*);
 	void send_notification(message_type type, int64_t taskId);
 	void enabled(bool);
 	void send(EventType type, const string Headline, const string message);
 	int size();
+protected:
+	void attach(Event_observer*);
+	void detach(Event_observer*);
 private:
 	void send_message(Notification_message);
 
-	list<Event_observer*> observers = {};
 	bool enabled_ = true;
 	bool missed_notification = false;
+
+	list<Event_observer*> observers = {};
 };
 
 }

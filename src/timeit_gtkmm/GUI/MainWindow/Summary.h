@@ -47,8 +47,8 @@ public:
 class Summary: public Gtk::TreeView, public Event_observer, public ISummary
 {
 public:
-	Summary(Database &database);
-	virtual ~Summary();
+	Summary(Database &database, Notifier& notifier);
+	~Summary() = default;
 	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();
 	time_t getStartTime()

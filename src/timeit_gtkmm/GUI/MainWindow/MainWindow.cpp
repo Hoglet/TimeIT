@@ -45,13 +45,14 @@ MainWindow::~MainWindow()
 
 MainWindow::MainWindow(
 		Database &database,
-		ITimeKeeper &timeKeeper)
+		ITimeKeeper &timeKeeper,
+		Notifier& notifier)
 		:
-		taskList(database, timeKeeper),
-		daySummary(database),
-		weekSummary(database),
-		monthSummary(database),
-		yearSummary(database),
+		taskList(database, timeKeeper, notifier),
+		daySummary(database, notifier),
+		weekSummary(database, notifier),
+		monthSummary(database, notifier),
+		yearSummary(database, notifier),
 		labelDay(
 				_("Day")),
 				labelWeek(_("Week")),

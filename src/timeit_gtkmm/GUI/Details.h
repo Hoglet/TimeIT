@@ -41,8 +41,8 @@ public:
 class Details: public Gtk::TreeView, public Event_observer
 {
 public:
-	Details(Database &database);
-	virtual ~Details();
+	Details(Database &database, Notifier& notifier);
+	~Details() = default;
 	void set(int64_t ID, time_t startTime, time_t stopTime);
 	void on_selectedTaskChanged(Summary&);
 	bool on_button_press_event(GdkEventButton *event);

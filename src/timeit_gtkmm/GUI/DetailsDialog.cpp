@@ -16,20 +16,21 @@ using namespace std;
 
 namespace GUI
 {
-std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, ITimeKeeper &timeKeeper)
+std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier)
 {
-	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper));
+	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper, notifier));
 	retVal->weak_this_ptr = weak_ptr<DetailsDialog>(retVal);
 	return retVal;
 }
 
 DetailsDialog::DetailsDialog(
 		Database   &database,
-		ITimeKeeper &timeKeeper)
+		ITimeKeeper &timeKeeper,
+		Notifier& notifier)
 		:
 		table1(14, 1),
 		taskName(""),
-		detailList(database),
+		detailList(database, notifier),
 		taskTotalTime(""),
 		table2(7, 4),
 		startTimeLabel(_("Start time")),
@@ -41,7 +42,8 @@ DetailsDialog::DetailsDialog(
 		OKButton(Gtk::StockID("gtk-apply")),
 		m_timeAccessor(database),
 		m_taskAccessor(database),
-		m_timeKeeper(timeKeeper)
+		m_timeKeeper(timeKeeper),
+		Event_observer(notifier)
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
@@ -107,7 +109,6 @@ DetailsDialog::DetailsDialog(
 			&DetailsDialog::on_change));
 	stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this,
 			&DetailsDialog::on_change));
-	m_taskAccessor.attach(this);
 
 	detailList.attach(this);
 
@@ -115,10 +116,6 @@ DetailsDialog::DetailsDialog(
 	checkForChanges();
 }
 
-DetailsDialog::~DetailsDialog()
-{
-	m_taskAccessor.detach(this);
-}
 
 void DetailsDialog::on_OKButton_clicked()
 {

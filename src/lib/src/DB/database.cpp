@@ -186,15 +186,6 @@ void Database::send_notification(message_type type, int64_t taskId)
 	m_notifier.send_notification(type, taskId);
 }
 
-void Database::attach(Event_observer *observer)
-{
-	m_notifier.attach(observer);
-}
-
-void Database::detach(Event_observer *observer)
-{
-	m_notifier.detach(observer);
-}
 
 Query_result Database::execute(const string& statement)
 {

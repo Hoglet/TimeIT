@@ -7,27 +7,14 @@ using namespace libtimeit;
 namespace test
 {
 
-class NotifyTester : public Notify_observer
-{
-public:
-	NotifyTester()
-	{
-		notifier.attach(this);
-	}
 
-	~NotifyTester()
-	{
-		notifier.detach(this);
-	}
-
-	Notifier notifier;
-};
 
 
 TEST( Notifier, TaskUpdated)
 {
-	NotifyTester test;
-	test.notifier.send_notification(TASK_UPDATED, 1);
+	Notifier notifier;
+	Notify_observer test(notifier);
+	notifier.send_notification(TASK_UPDATED, 1);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -36,8 +23,9 @@ TEST( Notifier, TaskUpdated)
 
 TEST(Notifier, TaskAdded)
 {
-	NotifyTester test;
-	test.notifier.send_notification(TASK_ADDED, 2);
+	Notifier notifier;
+	Notify_observer test(notifier);
+	notifier.send_notification(TASK_ADDED, 2);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -46,8 +34,9 @@ TEST(Notifier, TaskAdded)
 
 TEST(Notifier,TaskRemoved)
 {
-	NotifyTester test;
-	test.notifier.send_notification(TASK_REMOVED, 3);
+	Notifier notifier;
+	Notify_observer test(notifier);
+	notifier.send_notification(TASK_REMOVED, 3);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
@@ -55,8 +44,9 @@ TEST(Notifier,TaskRemoved)
 }
 TEST(Notifier,TaskParentChanged)
 {
-	NotifyTester test;
-	test.notifier.send_notification(TASK_PARENT_CHANGED, 4);
+	Notifier notifier;
+	Notify_observer test(notifier);
+	notifier.send_notification(TASK_PARENT_CHANGED, 4);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_removed);

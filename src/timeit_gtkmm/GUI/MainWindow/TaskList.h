@@ -34,7 +34,7 @@ using namespace libtimeit;
 class TaskList: public Gtk::TreeView, public Event_observer
 {
 public:
-	TaskList(Database &database, ITimeKeeper &timeKeeper);
+	TaskList(Database &database, ITimeKeeper &timeKeeper, Notifier &notifier);
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();

@@ -5,7 +5,7 @@
 #ifndef TIMEIT_NOTIFY_OBSERVER_H
 #define TIMEIT_NOTIFY_OBSERVER_H
 
-#include <libtimeit/Event_observer.h>
+#include <libtimeit/event_observer.h>
 
 namespace test
 {
@@ -14,7 +14,7 @@ using namespace libtimeit;
 class Notify_observer : public Event_observer
 {
 public:
-	Notify_observer()
+	Notify_observer(Notifier& notifier) : Event_observer(notifier)
 	{
 	}
 

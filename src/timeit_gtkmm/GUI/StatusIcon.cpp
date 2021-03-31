@@ -19,11 +19,13 @@ using namespace libtimeit;
 
 StatusIcon::StatusIcon(
 		ITimeKeeper &time_keeper,
-		Database &database)
+		Database &database,
+		Notifier& notifier)
 		:
 		m_timeKeeper(time_keeper),
 		m_taskaccessor(database),
-		m_timeaccessor(database)
+		m_timeaccessor(database),
+		Event_observer(notifier)
 {
 	const std::string &imagePath = libtimeit::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
@@ -46,14 +48,11 @@ StatusIcon::StatusIcon(
 	setTooltip();
 	m_statusIcon->signal_activate().connect(sigc::mem_fun(this, &StatusIcon::on_activate));
 	m_statusIcon->signal_popup_menu().connect(sigc::mem_fun(this, &StatusIcon::on_popup_menu));
-
-	m_taskaccessor.attach(this);
 }
 
 StatusIcon::~StatusIcon()
 {
 	m_timeKeeper.detach(this);
-	m_taskaccessor.detach(this);
 }
 
 void StatusIcon::populateContextMenu()

@@ -20,8 +20,8 @@ using namespace libtimeit;
 class DaySummary: public Summary
 {
 public:
-	DaySummary( Database& database) :
-		Summary( database)
+	DaySummary( Database& database, Notifier& notifier) :
+		Summary( database, notifier)
 	{
 		init();
 	}
@@ -41,8 +41,8 @@ private:
 class WeekSummary: public Summary
 {
 public:
-	WeekSummary( Database& database) :
-		Summary( database)
+	WeekSummary( Database& database, Notifier& notifier) :
+		Summary( database, notifier)
 	{
 		init();
 	}
@@ -62,8 +62,8 @@ private:
 class MonthSummary: public Summary
 {
 public:
-	MonthSummary( Database& database) :
-		Summary( database)
+	MonthSummary( Database& database, Notifier& notifier) :
+		Summary( database, notifier)
 	{
 		init();
 	}
@@ -83,8 +83,8 @@ private:
 class YearSummary: public Summary
 {
 public:
-	YearSummary( Database& database) :
-		Summary( database)
+	YearSummary( Database& database, Notifier& notifier) :
+		Summary( database, notifier)
 	{
 		init();
 	}

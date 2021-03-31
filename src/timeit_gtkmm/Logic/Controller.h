@@ -16,7 +16,7 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/misc/IpcServer.h>
-#include <libtimeit/Event_observer.h>
+#include <libtimeit/event_observer.h>
 
 namespace GUI
 {
@@ -34,8 +34,9 @@ public:
 	Controller(
 			IGUIFactory &guiFactory,
 			ITimeKeeper &timeKeeper,
-			Database &database,
-			IpcServer &);
+			Database    &database,
+			IpcServer   &ipc_server,
+			Notifier    &notifier);
 	virtual ~Controller();
 	void start();
 

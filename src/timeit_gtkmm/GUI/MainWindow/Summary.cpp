@@ -39,9 +39,10 @@ void SummaryObserver::detach(ISummary *subject)
 	}
 }
 
-Summary::Summary(Database &database) :
+Summary::Summary(Database &database, Notifier& notifier) :
 		timeAccessor(database),
-		taskAccessor(database)
+		taskAccessor(database),
+		Event_observer(notifier)
 {
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
@@ -51,7 +52,6 @@ Summary::Summary(Database &database) :
 
 	refTreeSelection = get_selection();
 	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
-	taskAccessor.attach(this);
 
 	Gtk::Menu::MenuList &menulist = Menu_Popup.items();
 
@@ -59,10 +59,6 @@ Summary::Summary(Database &database) :
 
 }
 
-Summary::~Summary()
-{
-	taskAccessor.detach(this);
-}
 
 bool Summary::on_button_press_event(GdkEventButton *event)
 {

@@ -24,6 +24,21 @@ Notifier::~Notifier()
 
 }
 
+void Notifier::attach(Event_observer* observer)
+{
+	if (observer)
+	{
+		observers.push_back(observer);
+	}
+}
+void Notifier::detach(Event_observer* observer)
+{
+	if (observer)
+	{
+		observers.remove(observer);
+	}
+}
+
 void Notifier::send(EventType type, const string headline, const string message)
 {
 	for (Event_observer *observer : observers)
@@ -107,22 +122,6 @@ void Notifier::send_notification(message_type type, int64_t taskId)
 	else
 	{
 		missed_notification = true;
-	}
-}
-
-void Notifier::attach(Event_observer *observer)
-{
-	if (observer)
-	{
-		observers.push_back(observer);
-	}
-}
-
-void Notifier::detach(Event_observer *observer)
-{
-	if (observer)
-	{
-		observers.remove(observer);
 	}
 }
 

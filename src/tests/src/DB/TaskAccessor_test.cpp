@@ -125,7 +125,7 @@ TEST (TaskAccessor, newTask)
 class TAObserver : public Event_observer
 {
 public:
-	TAObserver()
+	TAObserver(Notifier& notifier) : Event_observer(notifier)
 	{
 		updatedTaskID = 0;
 		updatedParentTaskID = 0;
@@ -177,16 +177,18 @@ public:
 	int64_t removedTaskID;
 	int64_t nameChangedTaskID;
 	int64_t timeChangedTaskID;
+
+
 };
 
 TEST (TaskAccessor, updateTask)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TAObserver observer;
+	TAObserver observer( notifier);
 	Task original_task("Test");
 	Task_accessor taskAccessor(tempdb);
-	taskAccessor.attach(&observer);
+
 
 	ASSERT_THROW(taskAccessor.update(original_task), db_exception) << "Should fail updating non existing task";
 

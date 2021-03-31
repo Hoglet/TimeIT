@@ -24,7 +24,7 @@ class StatusIcon: public TimekeeperObserver, public IStatusIcon, public Event_ob
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(ITimeKeeper&, Database&);
+	StatusIcon(ITimeKeeper&, Database&, Notifier& notifier);
 	virtual void show()
 	{
 	}

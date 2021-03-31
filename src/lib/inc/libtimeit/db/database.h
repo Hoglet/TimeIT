@@ -21,8 +21,6 @@ public:
 	void try_rollback();
 	void end_transaction();
 
-	void attach(Event_observer *observer);
-	void detach(Event_observer *observer);
 	void enable_notifications(bool);
 	void send_notification(message_type type, int64_t taskId);
 

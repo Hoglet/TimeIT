@@ -10,11 +10,13 @@ using namespace std;
 using namespace Gtk;
 using namespace Glib;
 TaskList::TaskList(
-		Database   &database,
-		ITimeKeeper &timeKeeper)
+		Database    &database,
+		ITimeKeeper &timeKeeper,
+		Notifier    &notifier)
 		:
 		taskAccessor(database),
-		m_timeKeeper(timeKeeper)
+		m_timeKeeper(timeKeeper),
+		Event_observer(notifier)
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
@@ -28,7 +30,6 @@ TaskList::TaskList(
 	Gtk::TreeView::Column *pColumn = get_column(1);
 	pColumn->set_min_width(60);
 	treeModel->set_sort_column(columns.col_name, Gtk::SORT_ASCENDING); // Initial sorting column
-	taskAccessor.attach(this);
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &TaskList::on_selection_changed));
 	populate();
 
@@ -55,7 +56,6 @@ TaskList::~TaskList()
 		ActionObserver *observer = *iter;
 		observer->on_action_task_selection_changed(selectedID);
 	}
-	taskAccessor.detach(this);
 }
 
 bool TaskList::on_button_press_event(GdkEventButton *event)

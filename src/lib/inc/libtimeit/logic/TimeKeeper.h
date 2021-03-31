@@ -57,7 +57,7 @@ class Timekeeper :
 		public Settings_accessor_observer
 {
 public:
-	Timekeeper(Database &database, Timer &timer);
+	Timekeeper(Database &database, Timer &timer, Notifier& notifier);
 	virtual ~Timekeeper();
 
 	void StartTask(int64_t id);

@@ -25,14 +25,16 @@ using namespace std;
 Controller::Controller(
 		IGUIFactory &op_guiFactory,
 		ITimeKeeper &op_timeKeeper,
-		Database   &database,
-		IpcServer   &ipc)
+		Database    &database,
+		IpcServer   &ipc,
+		Notifier    &notifier)
 		:
 		guiFactory(op_guiFactory),
 		timeKeeper(op_timeKeeper),
 		taskAccessor(database),
 		timeAccessor(database),
-		settingsAccessor(database)
+		settingsAccessor(database),
+		Event_observer( notifier )
 {
 	timeKeeper.attach(this);
 	ipc.attach(this);

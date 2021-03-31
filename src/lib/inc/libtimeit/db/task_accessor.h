@@ -3,7 +3,7 @@
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/Event_observer.h>
+#include <libtimeit/event_observer.h>
 #include <libtimeit/db/task.h>
 
 #include <libtimeit/db/notifier.h>
@@ -21,8 +21,6 @@ class Task_accessor
 public:
 	Task_accessor(Database& database);
 	~Task_accessor();
-	void attach(Event_observer*);
-	void detach(Event_observer*);
 
 	optional<Task> by_ID(int64_t taskID);
 	vector<Task>   by_parent_ID(int64_t parent = 0);

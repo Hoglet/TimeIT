@@ -42,7 +42,7 @@ class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, pub
 {
 public:
 	virtual ~MainWindow();
-	MainWindow(Database& database, ITimeKeeper &timeKeeper);
+	MainWindow(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier);
 
 
 	// IWidget interface

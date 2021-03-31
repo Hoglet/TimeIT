@@ -14,10 +14,15 @@ enum class EventType
 	INFO_MESSAGE
 };
 
+class Notifier;
+
 class Event_observer
 {
 public:
-	virtual      ~Event_observer() = default;
+	Event_observer(Notifier&);
+	virtual ~Event_observer();
+
+
 	virtual void on_message(EventType type, const string headline, const string message) const {};
 
 	virtual void on_parent_changed(int64_t)     {}; // Parent of task changed
@@ -29,6 +34,8 @@ public:
 	virtual void on_complete_update()           {}; // Database have many changes, re populate views
 
 	virtual void on_show_main_window()          {}; //IPC request to show main window
+private:
+	Notifier& publisher;
 };
 
 }

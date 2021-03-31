@@ -39,12 +39,14 @@ void Timekeeper::on_signal_1_second()
 
 Timekeeper::Timekeeper(
 		Database& database,
-		Timer& op_timer)
+		Timer& op_timer,
+		Notifier& notifier)
 		:
 		time_accessor( database ),
 		task_accessor(database ),
 		settings_accessor( database ),
-		timer( op_timer )
+		timer( op_timer ),
+		Event_observer(notifier)
 
 {
 	time_accessor.stop_all();
@@ -55,13 +57,11 @@ Timekeeper::Timekeeper(
 	enabled = true;
 	is_idle = false;
 	timer.attach(this);
-	task_accessor.attach(this);
 }
 
 Timekeeper::~Timekeeper()
 {
 	timer.detach(this);
-	task_accessor.detach(this);
 	map<int64_t, TaskTime>::iterator it;
 	it = active_tasks.begin();
 	while (it != active_tasks.end())

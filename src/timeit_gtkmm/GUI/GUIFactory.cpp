@@ -19,11 +19,14 @@ using namespace std;
 GUIFactory::GUIFactory(
 		ITimeKeeper &op_timeKeeper,
 		Database &op_database,
-		Timer& op_timer)
+		Timer& op_timer,
+		Notifier& publisher)
 		:
 		timeKeeper(op_timeKeeper),
 		database(op_database),
-		timer(op_timer)
+		timer(op_timer),
+		notifier(publisher)
+
 {
 
 }
@@ -46,7 +49,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case MAIN_WINDOW:
 		if (mainWindow == 0)
 		{
-			shared_ptr<MainWindow> window(new MainWindow(database, timeKeeper));
+			shared_ptr<MainWindow> window(new MainWindow(database, timeKeeper, notifier));
 			window->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_mainWindow_hide));
 			this->mainWindow = window;
 
@@ -84,7 +87,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case DETAILS_DIALOG:
 		if (detailsDialogInstance == 0)
 		{
-			shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database, timeKeeper);
+			shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database, timeKeeper, notifier);
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_detailsDialog_hide));
 			detailsDialogInstance = dialog;
 		}
@@ -145,7 +148,7 @@ IStatusIcon& GUIFactory::getStatusIcon()
 	static IStatusIcon *statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		statusIcon = (IStatusIcon*) (new StatusIcon(timeKeeper, database));
+		statusIcon = (IStatusIcon*) (new StatusIcon(timeKeeper, database, notifier));
 	}
 	return *statusIcon;
 }

@@ -62,8 +62,8 @@ TEST(TimeAccessor, UpdateTime)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	Notify_observer observer;
-	notifier.attach(&observer);
+	Notify_observer observer(notifier);
+
 	Task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	Time_accessor timeAccessor(tempdb);

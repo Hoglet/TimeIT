@@ -370,15 +370,6 @@ void Task_accessor::remove(int64_t taskID)
 	database.send_notification(TASK_REMOVED, taskID);
 }
 
-void Task_accessor::attach(Event_observer *observer)
-{
-	database.attach(observer);
-}
-void Task_accessor::detach(Event_observer *observer)
-{
-	database.detach(observer);
-}
-
 void Task_accessor::upgrade_to_DB5()
 {
 	time_t now = time(nullptr);

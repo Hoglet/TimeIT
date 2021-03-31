@@ -20,10 +20,11 @@ using namespace libtimeit;
 namespace GUI
 {
 
-Details::Details(Database &database):
+Details::Details(Database &database, Notifier& notifier):
 		m_timeAccessor(database),
 		m_taskAccessor(database),
-		m_settingsAccessor(database)
+		m_settingsAccessor(database),
+		Event_observer(notifier)
 
 {
 	m_calendar = nullptr;
@@ -37,7 +38,7 @@ Details::Details(Database &database):
 	append_column("Time", m_columns.m_col_time);
 	append_column("Evening", m_columns.m_col_evening);
 	append_column("Idle", m_columns.m_col_idle);
-	m_taskAccessor.attach(this);
+
 	set_headers_visible(false);
 	//Fill the popup menu:
 	{
@@ -55,10 +56,6 @@ Details::Details(Database &database):
 
 }
 
-Details::~Details()
-{
-	m_taskAccessor.detach(this);
-}
 
 int64_t Details::getSelectedID()
 {

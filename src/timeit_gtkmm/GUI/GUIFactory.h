@@ -22,7 +22,7 @@ using namespace std;
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(ITimeKeeper&, Database &database, Timer& timer);
+	GUIFactory(ITimeKeeper&, Database &database, Timer& timer, Notifier& notifier);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual IStatusIcon& getStatusIcon();
@@ -54,6 +54,7 @@ private:
 
 	Database& database;
 	Timer& timer;
+	Notifier& notifier;
 };
 }
 #endif /* GUIFACTORY_H_ */
