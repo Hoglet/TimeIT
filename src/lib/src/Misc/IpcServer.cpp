@@ -19,7 +19,7 @@ namespace libtimeit
 {
 using namespace std;
 
-IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer)
+IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer), TimerObserver(timer)
 {
 	socketName = prepareSocketDir() + name;
 
@@ -51,14 +51,12 @@ IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer)
 			listen(sock, 5);
 		}
 	}
-	timer.attach(this);
 }
 
 IpcServer::~IpcServer()
 {
 	close(sock);
 	unlink(socketName.c_str());
-	timer.detach(this);
 }
 
 void IpcServer::poll()

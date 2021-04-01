@@ -46,7 +46,9 @@ Timekeeper::Timekeeper(
 		task_accessor(database ),
 		settings_accessor( database ),
 		timer( op_timer ),
-		Event_observer(notifier)
+		Event_observer(notifier),
+		TimerObserver( op_timer ),
+		idle_detector(op_timer)
 
 {
 	time_accessor.stop_all();
@@ -56,12 +58,10 @@ Timekeeper::Timekeeper(
 	on_settings_changed("");
 	enabled = true;
 	is_idle = false;
-	timer.attach(this);
 }
 
 Timekeeper::~Timekeeper()
 {
-	timer.detach(this);
 	map<int64_t, TaskTime>::iterator it;
 	it = active_tasks.begin();
 	while (it != active_tasks.end())
@@ -69,6 +69,7 @@ Timekeeper::~Timekeeper()
 		StopTask(it->second.taskID);
 		it = active_tasks.begin();
 	}
+	//settings_accessor.detach(this);
 }
 
 void Timekeeper::on_settings_changed(string name)

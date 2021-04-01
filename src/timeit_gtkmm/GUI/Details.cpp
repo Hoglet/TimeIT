@@ -20,11 +20,15 @@ using namespace libtimeit;
 namespace GUI
 {
 
-Details::Details(Database &database, Notifier& notifier):
+Details::Details(
+		Database& database,
+		Notifier& notifier)
+		:
+		Event_observer(notifier),
 		m_timeAccessor(database),
 		m_taskAccessor(database),
-		m_settingsAccessor(database),
-		Event_observer(notifier)
+		m_settingsAccessor(database)
+
 
 {
 	m_calendar = nullptr;

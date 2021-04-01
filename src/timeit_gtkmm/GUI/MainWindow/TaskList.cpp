@@ -14,9 +14,10 @@ TaskList::TaskList(
 		ITimeKeeper &timeKeeper,
 		Notifier    &notifier)
 		:
+		Event_observer(notifier),
 		taskAccessor(database),
-		m_timeKeeper(timeKeeper),
-		Event_observer(notifier)
+		m_timeKeeper(timeKeeper)
+
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);

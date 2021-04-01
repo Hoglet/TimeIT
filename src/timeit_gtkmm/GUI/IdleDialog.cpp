@@ -19,7 +19,11 @@ namespace GUI
 using namespace::std;
 using namespace libtimeit;
 
-IdleDialog::IdleDialog(Timer& timer, Database& database) :
+IdleDialog::IdleDialog(
+		Timer& timer,
+		Database& database)
+		:
+		TimerObserver(timer),
 		m_timer(timer),
 		taskAccessor(database)
 {
@@ -40,18 +44,12 @@ IdleDialog::IdleDialog(Timer& timer, Database& database) :
 	// been detected for X minutes. What should we do?"
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
-	m_timer.attach(this);
 
 	signal_response().connect(sigc::mem_fun(this, &IdleDialog::responseHandler));
 
 	//set_type_hint(Gdk::WindowTypeHint::WINDOW_TYPE_HINT_DIALOG);
 	show_all_children();
 	set_keep_above(true);
-}
-
-IdleDialog::~IdleDialog()
-{
-	m_timer.detach(this);
 }
 
 void IdleDialog::attach(ActionObserver *observer)

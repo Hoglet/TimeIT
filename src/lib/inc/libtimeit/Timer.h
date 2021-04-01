@@ -17,35 +17,42 @@ class DummyTimerTest;
 namespace libtimeit
 {
 
+class Timer;
+
+using namespace std;
 
 class TimerObserver
 {
 public:
+	TimerObserver(Timer& publisher);
 	virtual ~TimerObserver();
 	//LCOV_EXCL_START
 	virtual void on_signal_1_second();
 	virtual void on_signal_10_seconds();
 	//LCOV_EXCL_STOP
+private:
+	Timer& timer;
 };
 
 class Timer
 {
 	friend class Test::TimerTest;
-
+	friend class TimerObserver;
 	friend class Test::DummyTimerTest;
 
 public:
 	Timer();
 	virtual ~Timer();
-	void attach(TimerObserver *observer);
-	void detach(TimerObserver *observer);
 
 	// Call this every second glibmm example:
 	// Glib::signal_timeout().connect_seconds(sigc::mem_fun(timer, &Timer::on_signal_1_second), 1);
 	bool on_signal_1_second();
 private:
+	void attach(TimerObserver *observer);
+	void detach(TimerObserver *observer);
+
 	void signalSender();
-	std::list<TimerObserver *> observers;
+	list<TimerObserver *> observers = {};
 };
 }
 #endif

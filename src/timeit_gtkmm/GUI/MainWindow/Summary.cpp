@@ -39,10 +39,13 @@ void SummaryObserver::detach(ISummary *subject)
 	}
 }
 
-Summary::Summary(Database &database, Notifier& notifier) :
+Summary::Summary(
+		Database &database,
+		Notifier& notifier)
+		:
+		Event_observer(notifier),
 		timeAccessor(database),
-		taskAccessor(database),
-		Event_observer(notifier)
+		taskAccessor(database)
 {
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);

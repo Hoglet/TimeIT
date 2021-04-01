@@ -29,12 +29,13 @@ Controller::Controller(
 		IpcServer   &ipc,
 		Notifier    &notifier)
 		:
+		Event_observer( notifier ),
 		guiFactory(op_guiFactory),
 		timeKeeper(op_timeKeeper),
 		taskAccessor(database),
 		timeAccessor(database),
-		settingsAccessor(database),
-		Event_observer( notifier )
+		settingsAccessor(database)
+
 {
 	timeKeeper.attach(this);
 	ipc.attach(this);

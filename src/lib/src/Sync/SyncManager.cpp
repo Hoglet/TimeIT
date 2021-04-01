@@ -27,18 +27,14 @@ SyncManager::SyncManager(
 		network(op_network),
 		taskAccessor(database),
 		timeAccessor(database),
-		settingsAccessor(database)
+		settingsAccessor(database),
+		TimerObserver( timer)
 
 {
 	int len = 1;
 	auto text = unique_ptr<char[]>(new char[len]);
-	timer_.attach(this);
 }
 
-SyncManager::~SyncManager()
-{
-	timer_.detach(this);
-}
 
 SyncState SyncManager::status()
 {

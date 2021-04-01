@@ -6,54 +6,48 @@ using namespace libtimeit;
 class TimerTest: public TimerObserver
 {
 public:
-	TimerTest()
+	explicit TimerTest(Timer& timer) : TimerObserver(timer)
 	{
 		oneSecond=0;
 		tenSeconds=0;
-		timer.attach(this);
 	}
 
-	void on_signal_1_second()
+	void on_signal_1_second() override
 	{
 		oneSecond++;
 	};
 
-	void on_signal_10_seconds()
+	void on_signal_10_seconds() override
 	{
 		tenSeconds++;
 	};
 
-	void tickTimer()
-	{
-		timer.on_signal_1_second();
-	}
 
 	int oneSecond;
 	int tenSeconds;
-private:
-	Timer timer;
+
 };
 
-
-TEST( Timer, test1SecondTicks)
+TEST( Timer, test1SecondTicks) /* NOLINT */
 {
-	TimerTest test;
+	Timer     timer;
+	TimerTest test(timer);
+
 	ASSERT_EQ(0,test.oneSecond);
-	test.tickTimer();
+	timer.on_signal_1_second();
 	ASSERT_EQ(1,test.oneSecond);
 }
 
-TEST( Timer, test10SecondsTicks)
+TEST( Timer, test10SecondsTicks) /* NOLINT */
 {
-	TimerTest test;
-	Timer timer;
-	timer.attach(&test);
+	Timer     timer;
+	TimerTest test(timer);
 	ASSERT_EQ(0,test.tenSeconds);
-	test.tickTimer();
+	timer.on_signal_1_second();
 	ASSERT_EQ(0,test.tenSeconds);
 	for(int i=0;i<8;i++)
 	{
-		test.tickTimer();
+		timer.on_signal_1_second();
 	}
 	ASSERT_EQ(1,test.tenSeconds);
 }

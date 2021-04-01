@@ -10,6 +10,7 @@
 #include <libtimeit/Timer.h>
 #include <time.h>
 #include <memory>
+#include <libtimeit/db/notifier.h>
 
 class IIdleDetector
 {
@@ -24,7 +25,7 @@ class X11_IdleDetector : public libtimeit::TimerObserver, public IIdleDetector
 {
 public:
 	static bool available();
-	X11_IdleDetector();
+	X11_IdleDetector(libtimeit::Timer& timer);
 	virtual ~X11_IdleDetector();
 	int minutesIdle();
 	time_t timeIdle();

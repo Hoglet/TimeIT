@@ -15,7 +15,7 @@ class AutoTracker : public libtimeit::TimerObserver
 {
 public:
 	AutoTracker(ITimeKeeper &timeKeeper,  Database &database, Timer &timer);
-	virtual ~AutoTracker();
+	virtual ~AutoTracker() = default;
 private:
 	void check4Changes();
 	void doTaskSwitching(int oldWorkspace, int newWorkspace);

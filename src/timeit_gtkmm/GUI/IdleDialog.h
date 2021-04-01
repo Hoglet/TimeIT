@@ -41,7 +41,7 @@ public:
 	IdleDialog(Timer& timer, Database& database);
 	virtual void setIdleStartTime(time_t idleStartTime);
 	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
-	virtual ~IdleDialog();
+	virtual ~IdleDialog() = default;
 	virtual void attach(ActionObserver*);
 	virtual void detach(ActionObserver*);
 	// IWidget interface

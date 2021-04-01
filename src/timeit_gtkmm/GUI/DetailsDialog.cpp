@@ -24,10 +24,11 @@ std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, ITimeKe
 }
 
 DetailsDialog::DetailsDialog(
-		Database   &database,
+		Database    &database,
 		ITimeKeeper &timeKeeper,
-		Notifier& notifier)
+		Notifier    &notifier)
 		:
+		Event_observer(notifier),
 		table1(14, 1),
 		taskName(""),
 		detailList(database, notifier),
@@ -42,8 +43,8 @@ DetailsDialog::DetailsDialog(
 		OKButton(Gtk::StockID("gtk-apply")),
 		m_timeAccessor(database),
 		m_taskAccessor(database),
-		m_timeKeeper(timeKeeper),
-		Event_observer(notifier)
+		m_timeKeeper(timeKeeper)
+
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);

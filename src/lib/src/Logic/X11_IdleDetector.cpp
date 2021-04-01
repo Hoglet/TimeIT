@@ -24,6 +24,7 @@ XScreenSaverInfo* XInfo = 0;
 }
 
 using namespace std;
+using namespace libtimeit;
 
 IIdleDetector::~IIdleDetector()
 {
@@ -46,7 +47,7 @@ bool X11_IdleDetector::available()
 
 }
 
-X11_IdleDetector::X11_IdleDetector()
+X11_IdleDetector::X11_IdleDetector(Timer& timer) : TimerObserver(timer)
 {
 	if(!available())
 	{

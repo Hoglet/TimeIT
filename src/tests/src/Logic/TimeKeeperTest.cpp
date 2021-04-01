@@ -10,26 +10,6 @@ using namespace test;
 namespace Test
 {
 
-class MockIdleDetector: public IIdleDetector
-{
-public:
-	virtual ~MockIdleDetector()
-	{
-	}
-	;
-	virtual int minutesIdle()
-	{
-		return m_minutesIdle;
-	}
-	virtual time_t timeIdle()
-	{
-		return m_timeIdle;
-	}
-
-	int m_minutesIdle;
-	time_t m_timeIdle;
-};
-
 class TKObserver: public TimekeeperObserver
 {
 public:
@@ -44,8 +24,8 @@ public:
 	{
 		runningChanged = true;
 	}
-	bool idleDetected;
-	bool runningChanged;
+	bool idleDetected = false;
+	bool runningChanged = false;
 };
 
 TEST( TimeKeeper, starting_stoping_and_toggling)
@@ -96,7 +76,7 @@ TEST( TimeKeeper, update )
 	Task_accessor task_accessor(db);
 	Time_accessor time_accessor(db);
 
-	time_t now = time(0);
+	time_t now = time(nullptr);
 	int64_t taskID = task_accessor.create(Task("Test", 0));
 	TKObserver observer;
 	timeKeeper.attach(&observer);

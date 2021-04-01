@@ -32,7 +32,7 @@ public:
 			INetwork  &network,
 			Notifier  &notifier,
 			Timer     &timer);
-	virtual ~SyncManager();
+	virtual ~SyncManager() = default;
 
 	SyncState status();
 	void on_signal_1_second();

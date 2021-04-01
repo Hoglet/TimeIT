@@ -22,10 +22,11 @@ StatusIcon::StatusIcon(
 		Database &database,
 		Notifier& notifier)
 		:
+		Event_observer(notifier),
 		m_timeKeeper(time_keeper),
 		m_taskaccessor(database),
-		m_timeaccessor(database),
-		Event_observer(notifier)
+		m_timeaccessor(database)
+
 {
 	const std::string &imagePath = libtimeit::getImagePath();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");

@@ -12,8 +12,15 @@ namespace libtimeit
 
 
 //LCOV_EXCL_START
+TimerObserver::TimerObserver(Timer& publisher) : timer( publisher )
+{
+	publisher.attach(this);
+}
+
+
 TimerObserver::~TimerObserver()
 {
+	timer.detach(this);
 }
 
 void TimerObserver::on_signal_1_second()

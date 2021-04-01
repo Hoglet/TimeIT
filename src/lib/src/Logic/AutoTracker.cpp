@@ -19,17 +19,14 @@ AutoTracker::AutoTracker(
 		timer(op_timer),
 		time_keeper(op_time_keeper),
 		autotrack_accessor(op_database),
-		task_accessor(op_database)
+		task_accessor(op_database),
+		TimerObserver(timer)
 {
 	oldWorkspace = -1;
 	on_signal_1_second(); //check if we should start anything;
-	timer.attach(this);
+
 }
 
-AutoTracker::~AutoTracker()
-{
-	timer.detach(this);
-}
 
 void AutoTracker::on_signal_1_second()
 {
