@@ -93,6 +93,12 @@ void Notifier::send_message(Notification_message message)
 				observer->on_complete_update();
 			}
 			break;
+		case SETTINGS_CHANGED:
+			for (Event_observer *observer : observers)
+			{
+				observer->on_settings_changed( message.name );
+			}
+			break;
 		default:
 			throw ("Unknown message type");
 	}
@@ -111,9 +117,10 @@ void Notifier::enabled(bool enabled)
 	}
 }
 
-void Notifier::send_notification(message_type type, int64_t taskId)
+
+void Notifier::send_notification(message_type type, int64_t taskId, string name)
 {
-	Notification_message message{type, taskId};
+	Notification_message message{type, taskId, name};
 
 	if (enabled_)
 	{

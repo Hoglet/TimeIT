@@ -53,8 +53,7 @@ public:
 class Timekeeper :
 		public TimerObserver,
 		public ITimeKeeper,
-		public Event_observer,
-		public Settings_accessor_observer
+		public Event_observer
 {
 public:
 	Timekeeper(Database &database, Timer &timer, Notifier& notifier);

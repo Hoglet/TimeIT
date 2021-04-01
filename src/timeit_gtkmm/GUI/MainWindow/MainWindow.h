@@ -38,7 +38,7 @@ namespace GUI
 using namespace libtimeit;
 using namespace std;
 
-class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, public IMainWindow, public Settings_accessor_observer
+class MainWindow: public Gtk::Window, public ActionObserver, public IWidget, public IMainWindow
 {
 public:
 	virtual ~MainWindow();

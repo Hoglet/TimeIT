@@ -28,10 +28,10 @@ TEST(Settings_accessor, BoolAccessor)
 	ASSERT_EQ(false, settingsAccessor.get_bool("Tjohopp", true));
 }
 
-class Observer : public Settings_accessor_observer
+class Observer : public Event_observer
 {
 public:
-
+	Observer(Notifier& notifier) : Event_observer(notifier) {};
 	void on_settings_changed(string name)
 	{
 		changed_setting = name;
@@ -44,14 +44,11 @@ TEST(Settings_accessor, notification)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	Observer observer;
+	Observer observer(notifier);
 	ASSERT_EQ("", observer.changed_setting);
-
 	Settings_accessor settingsAccessor(tempdb);
-	settingsAccessor.attach(&observer);
 	settingsAccessor.set_bool("Tjohopp", false);
 	ASSERT_EQ("Tjohopp", observer.changed_setting);
-	settingsAccessor.detach(&observer);
 
 }
 

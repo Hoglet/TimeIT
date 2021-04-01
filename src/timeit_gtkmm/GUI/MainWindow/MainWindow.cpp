@@ -40,7 +40,6 @@ namespace GUI
 MainWindow::~MainWindow()
 {
 	detach(this);
-	settingsAccessor.detach(this);
 }
 
 MainWindow::MainWindow(
@@ -62,7 +61,6 @@ MainWindow::MainWindow(
 				taskAccessor(database),
 				settingsAccessor(database)
 {
-	settingsAccessor.attach(this);
 	createLayout();
 	relateWidgets();
 	attach(this);

@@ -54,7 +54,6 @@ Timekeeper::Timekeeper(
 	time_accessor.stop_all();
 
 	settings_accessor;
-	settings_accessor.attach(this);
 	on_settings_changed("");
 	enabled = true;
 	is_idle = false;

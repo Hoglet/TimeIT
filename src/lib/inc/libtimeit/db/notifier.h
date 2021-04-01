@@ -23,6 +23,7 @@ struct Notification_message
 {
 	message_type type;
 	int64_t      task_ID;
+	string       name;
 };
 
 class Notifier
@@ -32,7 +33,7 @@ class Notifier
 public:
 	Notifier();
 	virtual ~Notifier();
-	void send_notification(message_type type, int64_t taskId);
+	void send_notification(message_type type, int64_t taskId, string name = "");
 	void enabled(bool);
 	void send(EventType type, const string Headline, const string message);
 	int size();

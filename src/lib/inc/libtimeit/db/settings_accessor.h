@@ -16,13 +16,6 @@ namespace libtimeit
 
 using namespace std;
 
-class Settings_accessor_observer
-{
-public:
-	virtual ~Settings_accessor_observer() = default;
-	virtual void on_settings_changed( string name) = 0;
-};
-
 class Settings_accessor
 {
 public:
@@ -39,14 +32,11 @@ public:
 	bool   set_string(string name, string value);
 
 
-	virtual void attach(Settings_accessor_observer* observer);
-	virtual void detach(Settings_accessor_observer* observer);
 private:
 	Settings_accessor();
 	void  setting_changed(string name);
 
 	Database& database;
-	list<Settings_accessor_observer*> observers;
 };
 }
 

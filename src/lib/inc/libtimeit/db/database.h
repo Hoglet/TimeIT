@@ -14,7 +14,7 @@ class CSQL;
 class Database
 {
 public:
-	Database(const std::string& dbname, Notifier& notifier);
+	Database(const std::string& dbname, Notifier& publisher);
 	virtual ~Database();
 
 	void begin_transaction();
@@ -22,14 +22,14 @@ public:
 	void end_transaction();
 
 	void enable_notifications(bool);
-	void send_notification(message_type type, int64_t taskId);
+	void send_notification(message_type type, int64_t taskId, string name = "");
 
 	Query_result execute(const string& statement);
 	Statement    prepare(string statement);
 	int64_t      ID_of_last_insert();
 protected:
-	Notifier& m_notifier;
-	CSQL db;
+	Notifier& notifier;
+	CSQL      db;
 
 	void create_tables();
 	int  current_DB_version();

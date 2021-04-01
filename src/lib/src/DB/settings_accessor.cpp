@@ -23,22 +23,6 @@ Settings_accessor::~Settings_accessor()
 {
 }
 
-void Settings_accessor::attach(Settings_accessor_observer* observer)
-{
-	if (observer)
-	{
-		observers.push_back(observer);
-	}
-}
-
-void Settings_accessor::detach(Settings_accessor_observer* observer)
-{
-	if (observer)
-	{
-		observers.remove(observer);
-	}
-}
-
 int Settings_accessor::get_int(string name, int default_value)
 {
 	stringstream statement;
@@ -199,9 +183,6 @@ bool Settings_accessor::set_string(string name, string value)
 
 void Settings_accessor::setting_changed(string name)
 {
-	for (Settings_accessor_observer* observer : observers)
-	{
-		observer->on_settings_changed(name);
-	}
+	database.send_notification(SETTINGS_CHANGED, 0, name);
 }
 }

@@ -3,7 +3,6 @@
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/event_observer.h>
 #include <libtimeit/db/task.h>
 
 #include <libtimeit/db/notifier.h>

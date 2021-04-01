@@ -124,9 +124,9 @@ void Database::createViews()
 
 Database::Database(
 		const std::string& dbname,
-		Notifier&          notifier)
+		Notifier&          publisher)
 		:
-		m_notifier(notifier),
+		notifier(publisher),
 		db(dbname)
 {
 	try
@@ -178,12 +178,13 @@ void Database::end_transaction()
 }
 void Database::enable_notifications(bool state)
 {
-	m_notifier.enabled(state);
+	notifier.enabled(state);
 }
 
-void Database::send_notification(message_type type, int64_t taskId)
+
+void Database::send_notification(message_type type, int64_t taskId, string name)
 {
-	m_notifier.send_notification(type, taskId);
+	notifier.send_notification(type, taskId, name);
 }
 
 
