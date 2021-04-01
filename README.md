@@ -4,7 +4,7 @@
 
 # TimeIT
 TimeIT is a time tracker that works quietly almost without any interaction and still measures the time you are spending on multiple projects.  
-![Screenshot](doc/html/C/TimeIT-MainWindow.png)
+![Screenshot](src/doc/html/C/TimeIT-MainWindow.png)
 
 The concept of this program is that tasks
 and projects are assigned to workspaces and while you are in those workspaces your projects are timed.
