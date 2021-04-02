@@ -23,7 +23,8 @@ void TimeItAboutDialog::on_link_clicked(AboutDialog &about_dialog, const Glib::u
 
 TimeItAboutDialog::TimeItAboutDialog()
 {
-	//set_transient_for(*this);
+	set_skip_pager_hint(true);
+	set_skip_taskbar_hint(true);
 
 	set_name("TimeIT");
 	set_version(VERSION);

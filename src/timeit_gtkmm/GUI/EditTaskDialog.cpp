@@ -16,6 +16,9 @@ EditTaskDialog::EditTaskDialog(Database &database) :
 		autoTrackAccessor(database),
 		taskAccessor(database)
 {
+	set_skip_pager_hint(true);
+	set_skip_taskbar_hint(true);
+
 	parentID = 0;
 	taskID = 0;
 	numRows = workspace.get_numberOfRows();

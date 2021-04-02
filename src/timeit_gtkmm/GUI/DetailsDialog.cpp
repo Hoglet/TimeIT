@@ -46,6 +46,9 @@ DetailsDialog::DetailsDialog(
 		m_timeKeeper(timeKeeper)
 
 {
+	set_skip_pager_hint(true);
+	set_skip_taskbar_hint(true);
+
 	// consider not loading and having these icons in memory multiple times accross multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
 	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running-idle.svg"), 24, 24, true);
@@ -59,6 +62,7 @@ DetailsDialog::DetailsDialog(
 	startTimeMinute.set_increments(1, 1);
 	stopTimeHour.set_increments(1, 1);
 	stopTimeMinute.set_increments(1, 1);
+
 
 	scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	scrolledWindow.set_size_request(480, 600);
