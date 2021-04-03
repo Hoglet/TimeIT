@@ -34,6 +34,22 @@ public:
 	virtual void on_selected_changed() = 0;
 	virtual void on_edit_details(int64_t) = 0;
 };
+
+
+struct Row_data
+{
+	int64_t time_ID;
+	time_t  prev_start;
+	time_t  start;
+	time_t  stop;
+	time_t  next_start;
+	bool    first_in_day;
+	bool    last_in_day;
+	bool    running ;
+	int     cumulative_time;
+};
+
+
 /*
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
@@ -59,7 +75,7 @@ public:
 	virtual void on_task_removed(int64_t);
 	virtual void on_complete_update();
 	virtual void on_task_name_changed(int64_t);
-	virtual void on_task_time_changed(int64_t);
+	virtual void on_time_entry_changed(int64_t);
 	//
 	int64_t getSelectedID();
 	std::vector<int64_t> getSelectedAndNextID();
@@ -68,12 +84,13 @@ public:
 	void detach(DetailsObserver*);
 private:
 	void on_selection_changed();
-	void on_dateChanged();
-	Gtk::TreeModel::iterator findRow(int id);
-	//void taskChanged(Task&);
-	void taskUpdated(int64_t taskID);
-	void populate();
-	void empty();
+	void update_row(Gtk::TreeModel::Row& row, Row_data );
+
+	optional<Gtk::TreeModel::Row> findRow(int id);
+
+	list<Row_data> create_row_data(time_t start, time_t stop);
+	void           populate(list<Row_data> data_rows);
+	void           update(list<Row_data> data_rows);
 
 	Glib::RefPtr<Gtk::ListStore> m_treeModel;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
@@ -83,30 +100,32 @@ private:
 		{
 
 			add(m_col_id);
+			add(m_col_date);
 			add(m_col_time);
+			add(m_col_time_amount);
+			add(m_col_day_total);
 			add(m_col_idle);
 			add(m_col_morning);
-			add(m_col_evening);
 		}
 		;
 		Gtk::TreeModelColumn<int> m_col_id;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_date;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_time_amount;
+		Gtk::TreeModelColumn<Glib::ustring> m_col_day_total;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_idle;
 		Gtk::TreeModelColumn<Glib::ustring> m_col_morning;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_evening;
 	};
 	ModelColumns m_columns;
 	int m_morningColumnN;
-	Gtk::Calendar *m_calendar;
 	int64_t m_taskID;
-//	time_t m_activeDay;
+
 	time_t m_startTime;
 	time_t m_stopTime;
 	Gtk::Menu m_Menu_Popup;
 	Glib::RefPtr<Gtk::MenuItem> m_split_menu_item;
 	std::list<DetailsObserver*> observers;
 	Time_accessor     m_timeAccessor;
-	Task_accessor     m_taskAccessor;
 	Settings_accessor m_settingsAccessor;
 };
 }

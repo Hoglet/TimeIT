@@ -44,14 +44,14 @@ TEST( Utils, convertTimespanToString )
 {
 	time_t start = libtimeit::getTime(2013, 0, 4, 11, 0, 0);
 	time_t stop = libtimeit::getTime(2013, 0, 4, 12, 0, 0);
-	std::string result = libtimeit::createDurationString(start, stop);
-	std::string expected = "2013-01-04\u200311:00 → 12:00\u2003= \u20071 h 00 m\u2003";
+	std::string result = libtimeit::create_time_span_string(start, stop);
+	std::string expected = "\u200311:00 → 12:00";
 	ASSERT_EQ( expected, result ) << "Converting a time span of one hour into a txt string";
 
 	start = libtimeit::getTime(2012, 0, 4, 11, 0, 0);
 	stop = libtimeit::getTime(2013, 0, 4, 12, 0, 0);
-	result = libtimeit::createDurationString(start, stop);
-	expected = "2012-01-04 11:00 → 2013-01-04 12:00 = 8785 h 00 m";
+	result = libtimeit::create_time_span_string(start, stop);
+	expected = " 11:00 → 2013-01-04 12:00";
 	ASSERT_EQ( expected, result ) << "Converting a time span of one year into a txt string";
 }
 

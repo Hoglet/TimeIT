@@ -37,6 +37,7 @@ void Time_accessor::update(int64_t timeID, time_t startTime, time_t stopTime)
 		statement << " WHERE id=" << timeID;
 		database.execute(statement.str());
 		database.send_notification(TASK_TIME_CHANGED, te->task_ID());
+		database.send_notification(TIME_ENTRY_CHANGED, te->ID());
 	}
 }
 
@@ -323,6 +324,8 @@ bool Time_accessor::update(Time_entry item )
 		statement_updateTime.execute();
 
 		database.send_notification(TASK_TIME_CHANGED, item.task_ID());
+		database.send_notification(TIME_ENTRY_CHANGED, item.ID());
+
 		return true;
 	}
 	return false;

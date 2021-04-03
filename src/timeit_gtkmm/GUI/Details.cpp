@@ -26,24 +26,25 @@ Details::Details(
 		:
 		Event_observer(notifier),
 		m_timeAccessor(database),
-		m_taskAccessor(database),
 		m_settingsAccessor(database)
 
 
 {
-	m_calendar = nullptr;
 	m_startTime = 0;
 	m_stopTime = 0;
 	m_taskID = 0;
 	m_treeModel = ListStore::create(m_columns);
 	set_model(m_treeModel);
-	m_morningColumnN = append_column("Morning", m_columns.m_col_morning) - 1;
-	get_column(m_morningColumnN)->set_visible(false);
-	append_column("Time", m_columns.m_col_time);
-	append_column("Evening", m_columns.m_col_evening);
-	append_column("Idle", m_columns.m_col_idle);
 
-	set_headers_visible(false);
+	m_morningColumnN = append_column(_(" Day"), m_columns.m_col_morning) - 1;
+	get_column(m_morningColumnN)->set_visible(false);
+	append_column(_(" Date"), m_columns.m_col_date);
+	append_column(_(" Time span"), m_columns.m_col_time);
+	append_column(_(" Duration"), m_columns.m_col_time_amount);
+	append_column("  ∑  ",m_columns.m_col_day_total);
+	append_column(_(" Idle time"), m_columns.m_col_idle);
+
+	set_headers_visible(true);
 	//Fill the popup menu:
 	{
 		Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
@@ -75,9 +76,9 @@ int64_t Details::getSelectedID()
 	return retVal;
 }
 
-std::vector<int64_t> Details::getSelectedAndNextID()
+vector<int64_t> Details::getSelectedAndNextID()
 {
-	std::vector<int64_t> retVal(2, 0);
+	vector<int64_t> retVal(2, 0);
 	Glib::RefPtr<TreeSelection> refTreeSelection = get_selection();
 	TreeModel::iterator iter;
 	iter = refTreeSelection->get_selected();
@@ -137,8 +138,8 @@ void Details::on_menu_file_popup_remove()
 					// if running then keep running, starting over with zero length
 					m_timeAccessor.update(time_entry.ID(), time_entry.stop(), time_entry.stop());
 				}
-				empty();
-				populate();
+				auto row_data = create_row_data(m_startTime, m_stopTime);
+				populate( row_data );
 				//DetailsDialog::instance().show();
 				break;
 			}
@@ -155,7 +156,7 @@ void Details::on_menu_file_popup_remove()
 
 void Details::on_menu_file_popup_merge()
 {
-	std::vector<int64_t> selectedIDs = getSelectedAndNextID();
+	vector<int64_t> selectedIDs = getSelectedAndNextID();
 	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
 	{
 		optional<Time_entry> optional_time_entry_0 = m_timeAccessor.by_ID(selectedIDs[0]);
@@ -192,8 +193,8 @@ void Details::on_menu_file_popup_merge()
 				time_t new_start = time_entry_0.start();
 				m_timeAccessor.remove(time_entry_0.ID());
 				m_timeAccessor.update(time_entry_1.ID(), new_start, time_entry_1.stop());
-				empty();
-				populate();
+				auto row_data = create_row_data(m_startTime, m_stopTime);
+				populate( row_data );
 				break;
 			}
 			case (Gtk::RESPONSE_CANCEL):
@@ -254,8 +255,8 @@ void Details::on_menu_file_popup_split()
 				}
 				m_timeAccessor.update(time_id, split_start_time, stop_time);
 				m_timeAccessor.create(task_id, start_time, split_stop_time);
-				empty();
-				populate();
+				auto row_data = create_row_data(m_startTime, m_stopTime);
+				populate( row_data );
 			}
 			else
 			{
@@ -297,7 +298,7 @@ bool Details::on_button_press_event(GdkEventButton *event)
 	return return_value;
 }
 
-Gtk::TreeModel::iterator Details::findRow(int id)
+optional<Gtk::TreeModel::Row> Details::findRow(int id)
 {
 	TreeModel::Children children = m_treeModel->children();
 	TreeIter iter;
@@ -305,36 +306,55 @@ Gtk::TreeModel::iterator Details::findRow(int id)
 	{
 		if (((*iter)[m_columns.m_col_id] == id))
 		{
-			break;
+			return *iter;
 		}
 	}
-	return iter;
+	return {};
 }
 void Details::on_task_updated(int64_t)
 {
-	populate();
+	auto row_data = create_row_data(m_startTime, m_stopTime);
+	populate( row_data );
 }
 
 void Details::on_task_name_changed(int64_t)
 {
-	populate();
+	auto row_data = create_row_data(m_startTime, m_stopTime);
+	populate( row_data );
 }
 
-void Details::on_task_time_changed(int64_t)
+void Details::on_time_entry_changed(int64_t ID)
 {
-	populate();
+	auto row = findRow(ID);
+	if ( row.has_value() )
+	{
+		auto time_entry = m_timeAccessor.by_ID(ID);
+		if(time_entry.has_value())
+		{
+			auto day = time_entry->start();
+			auto start_time = getBeginingOfDay(day);
+			auto stop_time = getEndOfDay(day);
+			auto row_data = create_row_data( start_time, stop_time);
+			update(row_data);
+		}
+	}
+	else
+	{
+		auto row_data = create_row_data(m_startTime, m_stopTime);
+		populate( row_data );
+	}
 }
 
 void Details::on_task_removed(int64_t)
 {
-	empty();
-	populate();
+	auto row_data = create_row_data(m_startTime, m_stopTime);
+	populate( row_data );
 }
 
 void Details::on_complete_update()
 {
-	empty();
-	populate();
+	auto row_data = create_row_data(m_startTime, m_stopTime);
+	populate( row_data );
 }
 
 void Details::set(int64_t ID, time_t startTime, time_t stopTime)
@@ -345,86 +365,130 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 		m_taskID = ID;
 		m_startTime = startTime;
 		m_stopTime = stopTime;
-		empty();
 		get_column(m_morningColumnN)->set_visible(acrossDays);
-		populate();
+
+		auto row_data = create_row_data(m_startTime, m_stopTime);
+		populate( row_data );
 	}
 	else
 	{
 		m_taskID = 0;
 		m_startTime = 0;
 		m_stopTime = 0;
-		empty();
+		m_treeModel->clear();
 	}
-}
-void Details::empty()
-{
-	m_treeModel->clear();
 }
 
-void Details::populate()
+
+
+
+
+void Details::update_row(TreeModel::Row& row, Row_data row_data )
 {
-	std::vector<Time_entry> time_list = m_timeAccessor.time_list(m_taskID, m_startTime, m_stopTime);
-	std::vector<Time_entry>::iterator iter = time_list.begin();
-	time_t prevStartTime = 0;
-	bool first = true;
-	int64_t secondsInDay;
-	time_t now = time(nullptr);
-	bool isToday = !onDifferentDays(m_startTime, now);
-	bool isPast = difftime(now, m_stopTime) > 0;
-	if (!isToday && !get_column(m_morningColumnN)->get_visible())
+	row[m_columns.m_col_id]          = row_data.time_ID;
+	row[m_columns.m_col_morning]     = row_data.first_in_day ? dayOfWeekAbbreviation(row_data.start) : "";
+	row[m_columns.m_col_date]        = row_data.first_in_day ? createDateString(row_data.start) : "";
+	row[m_columns.m_col_time]        = create_time_span_string(row_data.start, row_data.stop);
+	row[m_columns.m_col_time_amount] = create_duration_string(row_data.start, row_data.stop);
+	if(row_data.running)
 	{
-		get_column(m_morningColumnN)->set_visible(true);
+		row[m_columns.m_col_idle] = string("\u2003⌚");
 	}
+	else if( row_data.next_start >= row_data.stop)
+	{
+		row[m_columns.m_col_idle] = string("\u2003") + createIdlingString(row_data.stop, row_data.next_start);
+	}
+	else
+	{
+		row[m_columns.m_col_idle] = string("\u2003") + "⇣";
+	}
+	if(row_data.last_in_day)
+	{
+		auto seconds_today = row_data.cumulative_time;
+		row[m_columns.m_col_day_total] = "\u2003" + string(onDifferentDays(row_data.start, row_data.stop) ? "≠" : "≈")
+										 + seconds2hhmm(seconds_today) + " ";
+	}
+}
+
+
+list<Row_data> Details::create_row_data(time_t start, time_t stop)
+{
+	Time_list time_list = m_timeAccessor.time_list(m_taskID, start, stop);
+	time_t prev_start   = 0;
+	auto iter = time_list.begin();
+	list<Row_data> data_rows = {};
+	int cumulative_time_for_day = 0;
 	for (; iter != time_list.end(); )
 	{
-		Time_entry te = *iter;
-		TreeModel::Row row;
-		TreeModel::iterator TMIter;
-		Gtk::TreeIter treeIter = findRow(te.ID());
-		time_t startTime = te.start();
-		time_t stopTime = te.stop();
-		bool firstOnDay = onDifferentDays(prevStartTime, startTime);
-		bool lastOnDay;
-		if (treeIter == m_treeModel->children().end())
+		auto time_entry = *iter;
+		Row_data row_data;
+
+		row_data.time_ID      = time_entry.ID();
+		row_data.prev_start   = prev_start;
+		row_data.start        = time_entry.start();
+		prev_start            = row_data.start;
+		row_data.stop         = time_entry.stop();
+		row_data.running      = time_entry.running();
+
+		cumulative_time_for_day += row_data.stop - row_data.start;
+		row_data.cumulative_time =  cumulative_time_for_day;
+
+		++iter;
+		if( iter != time_list.end() )
 		{
-			treeIter = m_treeModel->append();
-		}
-		row = *treeIter;
-		row[m_columns.m_col_id] = te.ID();
-		row[m_columns.m_col_morning] = firstOnDay ? dayOfWeekAbbreviation(startTime) : "";
-		row[m_columns.m_col_time] = createDurationString(startTime, stopTime);
-		if (++iter != time_list.end()) // here iterate to next
-		{
-			Time_entry nextTe = *iter;
-			time_t nextStartTime = nextTe.start();
-			lastOnDay = onDifferentDays(startTime, nextStartTime);
-			row[m_columns.m_col_idle] = "\u2003" + createIdlingString(stopTime, nextStartTime);
+			auto next_time_entry = *iter;
+			row_data.next_start = next_time_entry.start();
+			row_data.first_in_day = onDifferentDays(row_data.prev_start, row_data.start);
+			row_data.last_in_day = onDifferentDays(row_data.start, row_data.next_start);
+			if(row_data.last_in_day)
+			{
+				cumulative_time_for_day = 0;
+			}
 		}
 		else
 		{
-			// last
-			lastOnDay = true;
-			row[m_columns.m_col_idle] = string("\u2003") + (te.running() ? "⌚" : (isPast ? "⇣" : ""));
+			row_data.last_in_day = true;
+			row_data.next_start = 0;
 		}
-		secondsInDay = (firstOnDay ? 0 : secondsInDay) +
-			// within limits only instead of simply difftime(stopTime, startTime)
-			difftime(
-				difftime(m_stopTime, stopTime) > 0 ? stopTime : m_stopTime,
-				difftime(startTime, m_startTime) > 0 ? startTime : m_startTime);
-		if (lastOnDay) {
-			row[m_columns.m_col_evening] =
-				(first && onDifferentDays(startTime, m_startTime) ? "≠" : "≈") + seconds2hhmm(secondsInDay);
-		}
-		else
-		{
-			row[m_columns.m_col_evening] = "";
-		}
-		prevStartTime = startTime;
-		first = false;
+		data_rows.push_back(row_data);
 	}
-	columns_autosize();
+	return data_rows;
 }
+
+void Details::populate(list<Row_data> data_rows)
+{
+	m_treeModel->clear();
+
+	for (auto row_data: data_rows )
+	{
+		auto treeIter = m_treeModel->append();
+		TreeModel::Row row = *treeIter;
+
+		update_row(row, row_data );
+
+	}
+}
+
+void Details::update(list<Row_data> data_rows)
+{
+
+	for (auto row_data: data_rows )
+	{
+		//auto treeIter = m_treeModel->append();
+		auto row = findRow(row_data.time_ID);
+		if ( row.has_value() )
+		{
+			update_row(*row, row_data);
+		}
+		else
+		{
+			on_complete_update();
+		}
+
+	}
+}
+
+
 
 void Details::on_menu_file_popup_edit()
 {

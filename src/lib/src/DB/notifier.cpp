@@ -55,37 +55,37 @@ void Notifier::send_message(Notification_message message)
 		case TASK_UPDATED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_task_updated(message.task_ID);
+				observer->on_task_updated(message.ID);
 			}
 			break;
 		case  TASK_NAME_CHANGED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_task_name_changed(message.task_ID);
+				observer->on_task_name_changed(message.ID);
 			}
 			break;
 		case TASK_TIME_CHANGED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_task_time_changed(message.task_ID);
+				observer->on_task_time_changed(message.ID);
 			}
 			break;
 		case TASK_ADDED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_task_added(message.task_ID);
+				observer->on_task_added(message.ID);
 			}
 			break;
 		case TASK_REMOVED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_task_removed(message.task_ID);
+				observer->on_task_removed(message.ID);
 			}
 			break;
 		case TASK_PARENT_CHANGED:
 			for (Event_observer *observer : observers)
 			{
-				observer->on_parent_changed(message.task_ID);
+				observer->on_parent_changed(message.ID);
 			}
 		case COMPLETE_UPDATE:
 			for (Event_observer *observer : observers)
@@ -97,6 +97,12 @@ void Notifier::send_message(Notification_message message)
 			for (Event_observer *observer : observers)
 			{
 				observer->on_settings_changed( message.name );
+			}
+			break;
+		case TIME_ENTRY_CHANGED:
+			for (Event_observer *observer : observers)
+			{
+				observer->on_time_entry_changed( message.ID );
 			}
 			break;
 		default:
@@ -118,9 +124,9 @@ void Notifier::enabled(bool enabled)
 }
 
 
-void Notifier::send_notification(message_type type, int64_t taskId, string name)
+void Notifier::send_notification(message_type type, int64_t ID, string name)
 {
-	Notification_message message{type, taskId, name};
+	Notification_message message{type, ID, name};
 
 	if (enabled_)
 	{

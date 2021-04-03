@@ -198,7 +198,7 @@ bool onDifferentDays(const time_t &one, const time_t &other)
 	return oneTime.tm_year != otherTime.tm_year || oneTime.tm_mon != otherTime.tm_mon || oneTime.tm_mday != otherTime.tm_mday;
 }
 
-std::string dayOfWeekAbbreviation(const time_t &rawtime)
+string dayOfWeekAbbreviation(const time_t &rawtime)
 {
 	struct tm *timeInfo = localtime(&rawtime);
 	std::array<char,15> abbreviation;
@@ -240,14 +240,25 @@ std::string smallNumbers(std::string s)
 	}
 	return retVal.str();
 }
+string createDateString(time_t timestamp)
+{
+	struct tm day = *localtime(&timestamp);
+	stringstream date_string;
+	date_string << (day.tm_year + 1900)
+		<< "-"
+		<< setfill('0') << setw(2) << day.tm_mon + 1
+		<< "-"
+		<< setfill('0') << setw(2) << day.tm_mday;
+	return date_string.str();
+}
 
-std::string createDurationString(const time_t &from, const time_t &to)
+string create_time_span_string(const time_t &from, const time_t &to)
 {
 	stringstream retVal;
 	struct tm fromTime = *localtime(&from);
 	struct tm toTime = *localtime(&to);
 	bool acrossDays = fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday;
-	retVal << (fromTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << fromTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << fromTime.tm_mday << (acrossDays ? " " : "\u2003")
+	retVal << (acrossDays ? " " : "\u2003")
 			<< setfill('0') << setw(2) << fromTime.tm_hour << ":" << setfill('0') << setw(2) << fromTime.tm_min;
 	retVal << " → ";
 	if (acrossDays)
@@ -255,6 +266,15 @@ std::string createDurationString(const time_t &from, const time_t &to)
 		retVal << (toTime.tm_year + 1900) << "-" << setfill('0') << setw(2) << toTime.tm_mon + 1 << "-" << setfill('0') << setw(2) << toTime.tm_mday << " ";
 	}
 	retVal << setfill('0') << setw(2) << toTime.tm_hour << ":" << setfill('0') << setw(2) << toTime.tm_min;
+	return retVal.str();
+}
+
+string create_duration_string(const time_t &from, const time_t &to)
+{
+	stringstream retVal;
+	struct tm fromTime = *localtime(&from);
+	struct tm toTime = *localtime(&to);
+	bool acrossDays = fromTime.tm_year != toTime.tm_year || fromTime.tm_mon != toTime.tm_mon || fromTime.tm_mday != toTime.tm_mday;
 	retVal << (acrossDays ? " " : "\u2003") << "= " << seconds2hhmm(difftime(to, from)) << (acrossDays ? "" : "\u2003");
 	return retVal.str();
 }

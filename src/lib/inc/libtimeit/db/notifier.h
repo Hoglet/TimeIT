@@ -22,7 +22,7 @@ using namespace std;
 struct Notification_message
 {
 	message_type type;
-	int64_t      task_ID;
+	int64_t      ID;
 	string       name;
 };
 
@@ -33,9 +33,9 @@ class Notifier
 public:
 	Notifier();
 	virtual ~Notifier();
-	void send_notification(message_type type, int64_t taskId, string name = "");
+	void send_notification(message_type type, int64_t item_id, string name = "");
 	void enabled(bool);
-	void send(EventType type, const string Headline, const string message);
+	void send(EventType type, const string headline, const string message);
 	int size();
 protected:
 	void attach(Event_observer*);

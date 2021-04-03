@@ -28,7 +28,9 @@ int getDaysInMonth(const time_t &rawtime);
 bool onDifferentDays(const time_t &one, const time_t &other);
 std::string dayOfWeekAbbreviation(const time_t &rawtime);
 std::string seconds2hhmm(int64_t s);
-std::string createDurationString(const time_t &from, const time_t &to);
+std::string createDateString(time_t timestamp);
+std::string create_time_span_string(const time_t &from, const time_t &to);
+std::string create_duration_string(const time_t &from, const time_t &to);
 std::string createIdlingString(const time_t &to, const time_t &next);
 uint64_t millisecondsSinceEpoch();
 
