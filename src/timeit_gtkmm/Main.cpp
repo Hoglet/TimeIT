@@ -17,7 +17,7 @@
 #include <GUIFactory.h>
 #include <Controller.h>
 #include <MessageCenter.h>
-
+#include <GTK_timer.h>
 
 #include <libtimeit.h>
 #include <libtimeit/logic/AutoTracker.h>
@@ -120,9 +120,8 @@ int Main::run(int argc, char *argv[])
 			//Initiate all logic
 			Utils::MessageCenter messageCenter();
 
-			Timer timer;
-			sigc::connection connection = Glib::signal_timeout().connect_seconds(
-					sigc::mem_fun(&timer, &Timer::on_signal_1_second), 1);
+			GTK_timer timer;
+
 
 			Timekeeper time_keeper(database, timer, notifier);
 			GUIFactory guiFactory(time_keeper, database, timer, notifier);
@@ -136,7 +135,7 @@ int Main::run(int argc, char *argv[])
 
 			//Then start message loop
 			application.run();
-			connection.disconnect();
+
 		}
 		else
 		{
