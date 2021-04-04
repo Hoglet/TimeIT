@@ -123,12 +123,13 @@ int Main::run(int argc, char *argv[])
 			GTK_timer timer;
 
 
-			Timekeeper time_keeper(database, timer, notifier);
-			GUIFactory guiFactory(time_keeper, database, timer, notifier);
-			AutoTracker autotracker(time_keeper, database, timer);
 			Network network;
 			SyncManager syncManager(database, network, notifier, timer);
 			IpcServer ipcServer(socketName, timer);
+
+			Timekeeper time_keeper(database, timer, notifier);
+			AutoTracker autotracker(time_keeper, database, timer);
+			GUIFactory guiFactory(time_keeper, database, timer, notifier);
 			Controller controller(guiFactory, time_keeper, database, ipcServer, notifier);
 
 			controller.start();

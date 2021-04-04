@@ -39,6 +39,7 @@ namespace GUI
 
 MainWindow::~MainWindow()
 {
+	//connection.disconnect();
 	detach(this);
 }
 
@@ -66,6 +67,17 @@ MainWindow::MainWindow(
 	attach(this);
 	show_all_children();
 	on_runningTasksChanged();
+
+	auto width = settingsAccessor.get_int("main_window_width", 550);
+	auto height = settingsAccessor.get_int("main_window_height", 550);
+	set_default_size( width, height);
+	signal_hide().connect(sigc::mem_fun(this, &MainWindow::save_size));
+}
+
+void MainWindow::save_size()
+{
+	settingsAccessor.set_int("main_window_width", get_width());
+	settingsAccessor.set_int("main_window_height", get_height());
 }
 
 ICalendar& MainWindow::getCalendar()
@@ -138,6 +150,7 @@ void MainWindow::relateWidgets()
 void MainWindow::createLayout()
 {
 	//First setting parameters on widgets
+
 	TaskListContainer.set_size_request(270, 230);
 	TaskListContainer.set_flags(Gtk::CAN_FOCUS);
 	TaskListContainer.set_shadow_type(Gtk::SHADOW_NONE);

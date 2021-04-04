@@ -40,7 +40,7 @@ class DetailsDialog:
 {
 public:
 	static std::shared_ptr<DetailsDialog> create(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier);
-	virtual ~DetailsDialog() = default;
+	virtual ~DetailsDialog() ;
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
@@ -106,9 +106,10 @@ private:
 	int64_t m_taskID;
 	int64_t m_timeEntryID;
 	std::weak_ptr<DetailsDialog> weak_this_ptr;
-	Time_accessor         m_timeAccessor;
+	Time_accessor          m_timeAccessor;
 	Extended_task_accessor m_taskAccessor;
-	ITimeKeeper&         m_timeKeeper;
+	Settings_accessor      settings_accessor;
+	ITimeKeeper&           m_timeKeeper;
 };
 }
 

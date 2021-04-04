@@ -79,7 +79,6 @@ public:
 	virtual ICalendar& getCalendar();
 
 	virtual void on_show();
-
 	void on_runningTasksChanged();
 
 private:
@@ -109,6 +108,7 @@ private:
 
 	void defaultLayout();
 	void classicLayout();
+	void save_size();
 
 	void removeChildren(Container& container);
 	void emptyContainers();

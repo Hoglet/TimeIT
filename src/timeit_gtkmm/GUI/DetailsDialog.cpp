@@ -43,8 +43,8 @@ DetailsDialog::DetailsDialog(
 		OKButton(Gtk::StockID("gtk-apply")),
 		m_timeAccessor(database),
 		m_taskAccessor(database),
+		settings_accessor( database ),
 		m_timeKeeper(timeKeeper)
-
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
@@ -63,9 +63,14 @@ DetailsDialog::DetailsDialog(
 	stopTimeHour.set_increments(1, 1);
 	stopTimeMinute.set_increments(1, 1);
 
+	auto width = settings_accessor.get_int("details_dialog_width", 550);
+	auto height = settings_accessor.get_int("details_dialog_height", 700);
+	set_default_size( width, height);
+
 
 	scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	scrolledWindow.set_size_request(480, 600);
+
+	scrolledWindow.set_size_request(400, 600);
 
 	startTime = 0;
 	oldStartTime = 1;
@@ -121,6 +126,11 @@ DetailsDialog::DetailsDialog(
 	checkForChanges();
 }
 
+DetailsDialog::~DetailsDialog()
+{
+	settings_accessor.set_int("details_dialog_width", this->get_width());
+	settings_accessor.set_int("details_dialog_height", this->get_height());
+}
 
 void DetailsDialog::on_OKButton_clicked()
 {

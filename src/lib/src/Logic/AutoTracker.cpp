@@ -20,7 +20,7 @@ AutoTracker::AutoTracker(
 		time_keeper(op_time_keeper),
 		autotrack_accessor(op_database),
 		task_accessor(op_database),
-		TimerObserver(timer)
+		TimerObserver(op_timer)
 {
 	oldWorkspace = -1;
 	on_signal_1_second(); //check if we should start anything;
