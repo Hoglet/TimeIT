@@ -1,20 +1,24 @@
 
 
-**NOTE:** I have chosen to start a major refactoring effort and master is volatile at the moment. Bug fixes, if any, will be done on branches.
 
 # TimeIT
-TimeIT is a time tracker that works quietly almost without any interaction and still measures the time you are spending on multiple projects.  
+TimeIT is a time tracker that works quietly with minimal/none interaction while 
+registering the time you are spending on multiple projects.  
 ![Screenshot](src/doc/html/C/TimeIT-MainWindow.png)
 
-The concept of this program is that tasks
-and projects are assigned to workspaces and while you are in those workspaces your projects are timed.
-
-It features workspace tracking, idle detection, editing of
-time records and has summary views grouped by day, week, month,
-and year.
-
-For people with multiple computers it will be a nice surprise that it is possible
-to run instances on all computers and have the recorded time distributed to them. See [TimeIT-server](https://github.com/Hoglet/TimeIT-Server)
+It features:
+* Manual time tracking.
+* Automatic time tracking (through workspace tracking).  
+* Idle detection.
+* Synchronization with server See: [TimeIT-server](https://github.com/Hoglet/TimeIT-Server)
+  * Run on several computers and see the times distributed and visible on all.
+* Summary views grouped by day, week, month, and year.
+* Show details of a task by day/week/month/year. 
+  * When did you work?
+  * When did you have a break and for how long?
+* Editing of records.
+* Runs in background. 
+* Status Icon in the system tray. 
 
 Source is available on [github](https://github.com/Hoglet/TimeIT)
 
@@ -22,14 +26,27 @@ Project homepage is on [github pages](https://hoglet.github.io/TimeIT/)
 
 ## Build
 
-### Making debian and redhat packages:
+### Making a debian package:
+        $ debian/rules build  
+        $ fakeroot debian/rules binary
+install with gdebi ( or dpkg ).
+
+### Making a redhat package:
+        $ mkdir Release
         $ cd Release  
         $ cmake ..  
         $ make package
+Install:
 
-### Making a debian package the debian way:
-        $ debian/rules build  
-        $ fakeroot debian/rules binary
+        $ rpm -i timeit-<version>.rpm
+### Generic
+        $ mkdir Release
+        $ cd Release
+        $ cmake ..
+        $ make
+Install:
+
+        $ make install
 
 ## Working environments
 

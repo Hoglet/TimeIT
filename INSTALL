@@ -30,7 +30,7 @@ Run shell commands `cd Release; cmake ..; make package` and install
 the produced installation package:
 rpm -i timeit-<version>.rpm
 
-Arch Linux derived encironments:
+Arch Linux derived environments:
 install the package directly from the AUR for example using:
 yaourt -S timeit-git
 
