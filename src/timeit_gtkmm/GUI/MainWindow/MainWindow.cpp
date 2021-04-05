@@ -39,7 +39,7 @@ namespace GUI
 
 MainWindow::~MainWindow()
 {
-	//connection.disconnect();
+	emptyContainers();
 	detach(this);
 }
 
