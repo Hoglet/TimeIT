@@ -8,7 +8,8 @@ registering the time you are spending on multiple projects.
 
 It features:
 * Manual time tracking.
-* Automatic time tracking (through workspace tracking).  
+* Automatic time tracking (through workspace tracking). 
+* Multiple timers running at the same time. Example "I am at work" and "I work with X"   
 * Idle detection.
 * Synchronization with server See: [TimeIT-server](https://github.com/Hoglet/TimeIT-Server)
   * Run on several computers and see the times distributed and visible on all.
