@@ -137,7 +137,7 @@ void AddTime::on_response(int response_id)
 
 		time_t startTime = libtimeit::getTime(y, m, d, startH, startM);
 		time_t stopTime = libtimeit::getTime(y, m, d, stopH, stopM);
-		m_timeAccessor.create(taskID, startTime, stopTime);
+		m_timeAccessor.create( Time_entry(taskID, startTime, stopTime) );
 	}
 }
 

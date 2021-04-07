@@ -1,11 +1,13 @@
 #include "libtimeit/sync/Network.h"
 #include "libtimeit/sync/HTTPRequest.h"
 #include <stdexcept>
-#include <string.h>
 #include <curl/curl.h>
 #include <future>
 
 //LCOV_EXCL_START
+namespace libtimeit
+{
+
 
 using namespace std;
 INetwork::~INetwork()
@@ -24,27 +26,29 @@ Network::~Network()
 }
 
 
-
-
-std::shared_ptr<asyncHTTPResponse> Network::request(const std::string& url, std::string data, std::string username, std::string password,
-													bool ignoreCertificateErrors)
+shared_ptr<asyncHTTPResponse> Network::request(
+		string url,
+		string data,
+		string username,
+		string password,
+		bool ignoreCertificateErrors)
 {
 
 
-	shared_ptr<asyncHTTPResponse> result=make_shared<asyncHTTPResponse>();
+	shared_ptr<asyncHTTPResponse> result = make_shared<asyncHTTPResponse>();
 
 
-	result->futureResponse =	async(
-					launch::async,
-					[ url, data, username, password,ignoreCertificateErrors]()
-					{
-						HTTPRequest request;
-						request.ignoreCertErrors(ignoreCertificateErrors);
-						return request.PUT(url, data, username, password);
-					}
-					).share();
+	result->futureResponse = async(
+			launch::async,
+			[url, data, username, password, ignoreCertificateErrors]() {
+				HTTPRequest request;
+				request.ignoreCertErrors(ignoreCertificateErrors);
+				return request.PUT(url, data, username, password);
+			}
+	).share();
 
 	return result;
 }
 
+}
 //LCOV_EXCL_STOP

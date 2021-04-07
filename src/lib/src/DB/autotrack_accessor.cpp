@@ -18,6 +18,16 @@ Autotrack_accessor::Autotrack_accessor(Database& op_database) : database(op_data
 }
 
 
+void  Autotrack_accessor::create_table()
+{
+
+}
+
+void  Autotrack_accessor::upgrade()
+{
+
+}
+
 Task_ID_list Autotrack_accessor::task_IDs(int workspace)
 {
 	Task_ID_list return_value;

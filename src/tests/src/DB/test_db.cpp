@@ -18,6 +18,7 @@ namespace test
 
 void createVersion4db(const char *dbname)
 {
+	unlink(dbname);
 	shared_ptr<CSQL> db = shared_ptr<CSQL>(new CSQL(dbname));
 
 	//Create necessary tables

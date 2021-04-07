@@ -3,6 +3,8 @@
 
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/autotrack_accessor.h>
+#include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/CSQL.h>
 #include <libtimeit/db/database.h>
 
@@ -10,14 +12,19 @@ namespace libtimeit
 {
 using namespace std;
 
-void Database::create_tables()
+const int expectedDBVersion = 5;
+
+void Database::create_tables( list<Accessor*>& accessors)
 {
 	db.execute("PRAGMA foreign_keys = ON");
+
+	for ( auto accessor : accessors )
+	{
+		accessor->create_table();
+	}
+
 	//Create necessary tables
-	Time_accessor time_accessor(*this);
-	Task_accessor task_accessor(*this);
-	time_accessor.create_table();
-	task_accessor.create_table();
+
 	db.execute(R"Query(
 		CREATE TABLE IF NOT EXISTS
 			autotrack
@@ -53,7 +60,7 @@ void Database::create_tables()
 
 int Database::current_DB_version()
 {
-	int DBVersion = 0;
+	int DBVersion;
 	string statement = R"Query(
 		SELECT
 			value
@@ -63,45 +70,46 @@ int Database::current_DB_version()
 			id == "dbversion"
 		)Query";
 
-	//Do upgrade if necessary
 	Query_result rows = db.execute(statement);
-	if (rows.size() > 0)
+	if ( rows.empty() )
+	{
+		DBVersion = expectedDBVersion;
+		statement = R"Query(
+			INSERT INTO
+				parameters (id, value)
+			VALUES ( "dbversion"," )Query";
+		statement += expectedDBVersion ;
+		statement += R"end(");)end";
+		db.execute(statement);
+	}
+	else
 	{
 		vector<Data_cell> row = rows.at(0);
-		DBVersion = row[0].integer();
+		DBVersion = (int)row[0].integer();
 	}
 	return DBVersion;
 }
 
-void Database::upgrade_if_needed(int DBVersion, const int expectedDBVersion)
+void Database::upgrade( list<Accessor*>& accessors)
 {
+	int DBVersion = current_DB_version();
 	if (DBVersion != expectedDBVersion)
 	{
+		for ( auto accessor : accessors)
+		{
+			accessor->upgrade();
+		}
 		stringstream statement;
-		if (DBVersion == 0)
+
+		//Upgrade existing
+		//LCOV_EXCL_START
+		if (DBVersion < 4)
 		{
-			//Empty database. Populate with data
-			statement.str("INSERT INTO parameters (id, value) VALUES ( \"dbversion\", 1 )");
-			db.execute(statement.str());
+			db.execute("DROP VIEW v_timesSummary;");
+			db.execute("DROP VIEW v_tasks;");
 		}
-		else
-		{
-			//Upgrade existing
-			//LCOV_EXCL_START
-			if (DBVersion < 4)
-			{
-				db.execute("DROP VIEW v_timesSummary;");
-				db.execute("DROP VIEW v_tasks;");
-			}
-			//LCOV_EXCL_STOP
-			if (DBVersion < 5)
-			{
-				Task_accessor task_accessor(*this);
-				Time_accessor time_accessor(*this);
-				task_accessor.upgrade_to_DB5();
-				time_accessor.upgrade_to_DB5();
-			}
-		}
+		//LCOV_EXCL_STOP
+
 		statement.str("");
 		statement << "UPDATE parameters SET value = ";
 		statement << expectedDBVersion;
@@ -110,7 +118,7 @@ void Database::upgrade_if_needed(int DBVersion, const int expectedDBVersion)
 	}
 }
 
-void Database::createViews()
+void Database::create_views( list<Accessor*>& accessors )
 {
 	//Create views
 	db.execute("DROP VIEW IF EXISTS v_running");
@@ -118,8 +126,10 @@ void Database::createViews()
 	db.execute("DROP VIEW IF EXISTS v_tasks");
 	db.execute(
 			"CREATE VIEW v_tasks AS SELECT tasks.*, IFNULL(v_running.running,0) as running FROM tasks    LEFT JOIN v_running    ON tasks.id=v_running.taskId");
-	Time_accessor time_accessor(*this);
-	time_accessor.create_views();
+	for ( auto accessor : accessors)
+	{
+		accessor->create_views();
+	}
 }
 
 Database::Database(
@@ -134,19 +144,26 @@ Database::Database(
 		db.execute("PRAGMA foreign_keys = OFF");
 		begin_transaction();
 
-		create_tables();
+		Task_accessor      tasks( *this );
+		Time_accessor      times( *this );
+		Autotrack_accessor auto_track( *this );
+		Settings_accessor  settings( *this );
+		list<Accessor*> accessors =
+				{
+						&tasks,
+						&times,
+						&auto_track,
+						&settings,
+				};
 
-		const int expectedDBVersion = 5;
-
-		int DBVersion = current_DB_version();
-		upgrade_if_needed(DBVersion, expectedDBVersion);
-		createViews();
+		create_tables(accessors);
+		upgrade(accessors);
+		create_views( accessors);
 
 		end_transaction();
 		db.execute("PRAGMA foreign_keys = ON");
 
-		Time_accessor time_accessor(*this);
-		time_accessor.remove_short_time_spans();
+		times.remove_short_time_spans();
 	//LCOV_EXCL_START
 	} catch (db_exception& e)
 	{

@@ -27,7 +27,7 @@ private:
 	Timer              &timer;
 	Autotrack_accessor  autotrack_accessor;
 	Task_accessor       task_accessor;
-	Workspace          workspace;
+	Workspace           workspace;
 };
 
 }

@@ -400,6 +400,16 @@ void Task_accessor::upgrade_to_DB5()
 
 }
 
+void Task_accessor::upgrade()
+{
+	if ( database.current_DB_version() <5 )
+	{
+		upgrade_to_DB5();
+	}
+}
+
+
+
 void Task_accessor::setTaskExpanded(int64_t taskID, bool expanded)
 {
 	stringstream statement;

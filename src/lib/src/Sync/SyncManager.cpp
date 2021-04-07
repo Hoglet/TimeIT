@@ -22,7 +22,6 @@ SyncManager::SyncManager(
 		Notifier& notifier,
 		Timer&    timer
 		):
-		timer_(timer),
 		notifier_(notifier),
 		network(op_network),
 		taskAccessor(database),
@@ -221,7 +220,17 @@ void SyncManager::syncTimesToDatabase()
 			}
 		}
 
-		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, running, changed);
+		Time_entry_state state = STOPPED;
+		if ( running )
+		{
+			state = RUNNING;
+		}
+		if ( deleted )
+		{
+			state = DELETED;
+		}
+
+		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, state, changed);
 		if (id > 0)
 		{
 			timeAccessor.update(te);

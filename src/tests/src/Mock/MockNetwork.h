@@ -7,6 +7,7 @@
 
 namespace test
 {
+using namespace libtimeit;
 
 class MockNetwork: public INetwork
 {
@@ -14,16 +15,16 @@ public:
 	MockNetwork();
 	virtual ~MockNetwork();
 
-	virtual std::shared_ptr<asyncHTTPResponse> request(
-			const std::string& url,
-			std::string        data,
-			std::string        username,
-			std::string        password,
-			bool               verifyPassword);
+	virtual shared_ptr<asyncHTTPResponse> request(
+			string url,
+			string data,
+			string username,
+			string password,
+			bool   verifyPassword);
 
-	void setResponse(std::string& uri, std::string& response);
+	void setResponse( string uri, string response);
 private:
-	std::map<std::string, std::string> responses;
+	map<string, string> responses;
 };
 
 } /* namespace Test */

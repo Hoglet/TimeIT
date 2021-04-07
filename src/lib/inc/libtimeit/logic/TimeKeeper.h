@@ -134,7 +134,7 @@ private:
 
 	Time_accessor      time_accessor;
 	Task_accessor      task_accessor;
-	Timer            &timer;
+	Timer             &timer;
 	Settings_accessor  settings_accessor;
 
 	X11_IdleDetector idle_detector;

@@ -19,8 +19,8 @@ TEST(ExtendedTaskAccessor, by_ID)
 	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
 	Time_accessor timeAccessor(tempdb);
-	timeAccessor.create(taskId, 0, 1000);
-	timeAccessor.create(taskId2, 0, 1000);
+	timeAccessor.create( Time_entry( taskId, 0, 1000) );
+	timeAccessor.create( Time_entry( taskId2, 0, 1000 ) );
 
 	auto task = taskAccessor.by_ID(taskId);
 	ASSERT_EQ("Test", task->name());
@@ -48,7 +48,7 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 	ASSERT_EQ(2, tasks.size());
 
 	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
-	timeAccessor.create(taskId2, 0, 1000);
+	timeAccessor.create( Time_entry( taskId2, 0, 1000 ) );
 
 	tasks = taskAccessor.by_parent_ID();
 	Extended_task &task = tasks.at(0);
@@ -66,7 +66,7 @@ TEST(ExtendedTaskAccessor, getRunningTasks)
 	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
 	Time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create(taskId2, 0, 1000);
+	int64_t timeId = timeAccessor.create( Time_entry( taskId2, 0, 1000 ) );
 	timeAccessor.setRunning(timeId, true);
 
 	auto tasks = taskAccessor.getRunningTasks();
@@ -88,7 +88,7 @@ TEST(ExtendedTaskAccessor, testTotalTime)
 	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
 
 	Time_accessor timeAccessor(tempdb);
-	timeAccessor.create(taskId2, 0, 1000);
+	timeAccessor.create( Time_entry( taskId2, 0, 1000 ));
 
 	auto task = taskAccessor.by_ID(taskId);
 	ASSERT_EQ(1000, task->total_time());
@@ -115,7 +115,7 @@ TEST(ExtendedTaskAccessor, testTimeReporting)
 	Extended_task_accessor taskAccessor(tempdb);
 	const int64_t parentId = taskAccessor.create(Task("test", 0));
 	const int64_t taskId = taskAccessor.create(Task("test", parentId));
-	timeAccessor.create(taskId, 4000, 5000);
+	timeAccessor.create( Time_entry( taskId, 4000, 5000 ) );
 
 	auto tasks = taskAccessor.by_parent_ID(parentId);
 	Extended_task task = tasks.at(0);

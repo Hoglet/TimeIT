@@ -9,36 +9,43 @@
 #include "HTTPRequest.h"
 
 //LCOV_EXCL_START
-
-
+namespace libtimeit
+{
+using namespace std;
 
 struct asyncHTTPResponse
 {
-	std::shared_future<HTTPResponse> futureResponse;
+	shared_future<HTTPResponse> futureResponse;
 };
 
 class INetwork
 {
 public:
 	virtual ~INetwork();
-	virtual std::shared_ptr<asyncHTTPResponse> request(const std::string& url, std::string data, std::string username, std::string password, bool ignoreCertificateErrors) = 0;
+	virtual shared_ptr<asyncHTTPResponse>
+	request(
+			string url,
+			string data,
+			string username,
+			string password,
+			bool   ignoreCertificateErrors) = 0;
 };
 
 
-class Network: public INetwork
+class Network : public INetwork
 {
 public:
 	Network();
 	virtual ~Network();
 	virtual std::shared_ptr<asyncHTTPResponse> request(
-			const std::string& url,
-			std::string data,
-			std::string username,
-			std::string password,
+			string url,
+			string data,
+			string username,
+			string password,
 			bool ignoreCertificateErrors);
 private:
 };
 //LCOV_EXCL_STOP
 
-
+}
 #endif

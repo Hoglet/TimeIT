@@ -8,6 +8,9 @@
 #ifndef APPLICATIONLOCK_H_
 #define APPLICATIONLOCK_H_
 #include <fstream>
+namespace libtimeit
+{
+using namespace std;
 
 class ApplicationLock
 {
@@ -17,11 +20,11 @@ public:
 	 *  be locked (in this case the database). ApplicationLock will add a
 	 *  .lock to lockBase and lock the resulting file.
 	 */
-	ApplicationLock(const std::string& lockBase);
+	ApplicationLock(string lockBase);
 	bool lockAquired();
 private:
-	int fdlock;
+	int  fdlock;
 	bool locked;
 };
-
+}
 #endif /* APPLICATIONLOCK_H_ */

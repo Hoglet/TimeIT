@@ -21,7 +21,7 @@ bool rangeTestG4(const char &c)
 	return false;
 }
 
-bool isValid(const std::string &uuid)
+bool isValid(const string &uuid)
 {
 
 	if (36 != uuid.length())
@@ -121,19 +121,19 @@ int randomBetween8and11()
 UUID::UUID()
 {
 	stringstream uuidSStream;
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
 	uuidSStream << "-";
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
 	uuidSStream << "-4";
-	uuidSStream << std::hex << setfill('0') << setw(3) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(3) << random4hex();
 	uuidSStream << "-";
-	uuidSStream << std::hex << randomBetween8and11();
-	uuidSStream << std::hex << setfill('0') << setw(3) << random4hex();
+	uuidSStream << hex << randomBetween8and11();
+	uuidSStream << hex << setfill('0') << setw(3) << random4hex();
 	uuidSStream << "-";
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << std::hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
+	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
 
 	uuid = uuidSStream.str();
 }
@@ -153,7 +153,7 @@ const char *UUID::c_str() const
 	return uuid.c_str();
 }
 
-UUID::UUID(std::string op_uuid)
+UUID::UUID(string op_uuid)
 {
 	uuid = op_uuid;
 }

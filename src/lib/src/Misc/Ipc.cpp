@@ -7,10 +7,7 @@
 
 #include "libtimeit/misc/Ipc.h"
 #include <sys/un.h>
-#include <stdio.h>
-#include <unistd.h>
 #include <iostream>
-#include <fcntl.h>
 #include <sys/stat.h>
 
 namespace libtimeit

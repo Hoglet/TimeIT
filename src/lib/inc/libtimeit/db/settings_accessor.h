@@ -8,6 +8,7 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
+#include <libtimeit/db/accessor.h>
 #include <libtimeit/db/database.h>
 #include "CSQL.h"
 
@@ -16,8 +17,9 @@ namespace libtimeit
 
 using namespace std;
 
-class Settings_accessor
+class Settings_accessor : public Accessor
 {
+	friend class Database;
 public:
 	Settings_accessor(Database& database);
 	virtual ~Settings_accessor();
@@ -30,7 +32,10 @@ public:
 
 	string get_string(string name, string default_value);
 	bool   set_string(string name, string value);
-
+protected:
+	void      create_table()   override;
+	void      create_views()   override {};
+	void      upgrade()        override;
 
 private:
 	Settings_accessor();

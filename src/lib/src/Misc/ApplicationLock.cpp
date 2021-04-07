@@ -9,11 +9,14 @@
 #include <string>
 #include <unistd.h>
 #include <fcntl.h>
+namespace libtimeit
+{
 
-ApplicationLock::ApplicationLock(const std::string& lockBase)
+
+ApplicationLock::ApplicationLock(string lockBase)
 {
 	locked = false;
-	std::string fileName = lockBase + ".lock";
+	string fileName = lockBase + ".lock";
 	//
 	struct flock fl;
 
@@ -22,7 +25,7 @@ ApplicationLock::ApplicationLock(const std::string& lockBase)
 	fl.l_start = 0;
 	fl.l_len = 1;
 
-	if ((fdlock = open(fileName.c_str(), O_WRONLY|O_CREAT, 0666)) != -1)
+	if ((fdlock = open(fileName.c_str(), O_WRONLY | O_CREAT, 0666)) != -1)
 	{
 		if (fcntl(fdlock, F_SETLK, &fl) != -1)
 		{
@@ -30,6 +33,7 @@ ApplicationLock::ApplicationLock(const std::string& lockBase)
 		}
 	}
 }
+
 bool ApplicationLock::lockAquired()
 {
 	return locked;
@@ -38,8 +42,10 @@ bool ApplicationLock::lockAquired()
 
 ApplicationLock::~ApplicationLock()
 {
-	if(fdlock != -1)
+	if (fdlock != -1)
 	{
 		close(fdlock);
 	}
+}
+
 }

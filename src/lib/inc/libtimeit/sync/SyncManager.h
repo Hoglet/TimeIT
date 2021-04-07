@@ -60,8 +60,6 @@ private:
 	SyncState                           following_state{SyncState::IDLE};
 	shared_ptr <asyncHTTPResponse> outstandingRequest;
 
-
-	Timer&     timer_;
 	Notifier&  notifier_;
 	time_t     nextSync{0};
 	time_t     nextFullSync{0};

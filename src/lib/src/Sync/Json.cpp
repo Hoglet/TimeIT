@@ -249,7 +249,7 @@ Time_list toTimes(const string &input)
 		auto taskID= toUuid(taskIDString);
 		if(uuid && taskID)
 		{
-			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, false, changed);
+			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, STOPPED, changed);
 			retVal.push_back(item);
 		}
 	}

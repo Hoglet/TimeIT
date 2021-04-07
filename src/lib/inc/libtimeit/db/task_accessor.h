@@ -1,6 +1,7 @@
 #ifndef TASK_ACCESSOR_H_
 #define TASK_ACCESSOR_H_
 
+#include <libtimeit/db/accessor.h>
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/task.h>
@@ -12,7 +13,7 @@
 namespace libtimeit
 {
 
-class Task_accessor
+class Task_accessor: public Accessor
 {
 	friend class Database;
 	friend class SyncManager;
@@ -36,7 +37,9 @@ public:
 	void     setTaskExpanded(int64_t taskID, bool expanded);
 
 protected:
-	void      create_table();
+	void      create_table()   override;
+	void      create_views()   override {};
+	void      upgrade()        override;
 	void      upgrade_to_DB5();
 
 	Database& database;

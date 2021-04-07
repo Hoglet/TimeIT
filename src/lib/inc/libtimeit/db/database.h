@@ -5,16 +5,18 @@
 #include <memory>
 #include <libtimeit/db/CSQL.h>
 #include <libtimeit/db/query_result.h>
+#include <libtimeit/db/accessor.h>
 
 
 namespace libtimeit
 {
 class CSQL;
+using namespace std;
 
 class Database
 {
 public:
-	Database(const std::string& dbname, Notifier& publisher);
+	Database(const string& dbname, Notifier& publisher);
 	virtual ~Database();
 
 	void begin_transaction();
@@ -27,14 +29,14 @@ public:
 	Query_result execute(const string& statement);
 	Statement    prepare(string statement);
 	int64_t      ID_of_last_insert();
+	int          current_DB_version();
 protected:
 	Notifier& notifier;
 	CSQL      db;
 
-	void create_tables();
-	int  current_DB_version();
-	void upgrade_if_needed(int DB_version, const int expected_DB_version);
-	void createViews();
+	void create_tables( list<Accessor*>& accessors );
+	void upgrade( list<Accessor*>&  accessors);
+	void create_views( list<Accessor*>& accessors );
 private:
 	Database();
 	Database(const Database&);

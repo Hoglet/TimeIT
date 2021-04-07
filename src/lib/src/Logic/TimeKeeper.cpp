@@ -110,7 +110,7 @@ void Timekeeper::StartTask(int64_t id)
 		TaskTime task;
 		task.startTime = libtimeit::now();
 		task.stopTime = libtimeit::now();
-		task.dbHandle = time_accessor.create(id, task.startTime, task.stopTime);
+		task.dbHandle = time_accessor.create( Time_entry( id, task.startTime, task.stopTime ) );
 		task.taskID = id;
 		active_tasks[id] = task;
 		time_accessor.setRunning(task.dbHandle, true);
@@ -140,7 +140,17 @@ void Timekeeper::StopTask(int64_t id)
 	{
 		TaskTime task = it->second;
 		active_tasks.erase(it);
-		time_accessor.setRunning(task.dbHandle, false);
+		auto result = time_accessor.by_ID(task.dbHandle);
+		if(result.has_value())
+		{
+			auto original_entry = *result;
+			time_accessor.update( original_entry.with( Time_entry_state::STOPPED ));
+			time_accessor.setRunning(task.dbHandle, false);
+			if (task.stopTime - task.startTime < 60)
+			{
+				time_accessor.remove(task.dbHandle);
+			}
+		}
 		notifyRunningChanged();
 	}
 }

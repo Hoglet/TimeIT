@@ -15,7 +15,7 @@ using namespace std;
 namespace libtimeit
 {
 
-Settings_accessor::Settings_accessor(Database& op_database): database(op_database)
+Settings_accessor::Settings_accessor(Database &op_database) : database(op_database)
 {
 }
 
@@ -185,4 +185,15 @@ void Settings_accessor::setting_changed(string name)
 {
 	database.send_notification(SETTINGS_CHANGED, 0, name);
 }
+
+void Settings_accessor::create_table()
+{
+
+}
+
+void Settings_accessor::upgrade()
+{
+
+}
+
 }

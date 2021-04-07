@@ -5,11 +5,12 @@
 
 namespace Test
 {
+using namespace libtimeit;
 
 TEST( ApplicationLock, test)
 {
-	std::string filename="/tmp/locktest";
-	std::ofstream out(filename);
+	string filename="/tmp/locktest";
+	ofstream out(filename);
 	out<<"Lock me!";
 	out.close();
 	ApplicationLock lock(filename);

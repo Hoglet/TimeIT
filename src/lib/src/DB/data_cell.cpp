@@ -1,5 +1,4 @@
 #include <libtimeit/db/data_cell.h>
-#include <sstream>
 #include <iostream>
 
 namespace libtimeit

@@ -3,7 +3,6 @@
 #include <string>
 #include <string.h>
 #include <libtimeit/db/CSQL.h>
-#include <cstring>
 
 using namespace std;
 namespace libtimeit
@@ -16,10 +15,7 @@ CSQL::CSQL(string dbname)
 
 CSQL::~CSQL()
 {
-	if (db)
-	{
-		sqlite3_close(db);
-	}
+	sqlite3_close(db);
 }
 
 void CSQL::init(string dbname)

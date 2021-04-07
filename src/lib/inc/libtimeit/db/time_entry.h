@@ -10,19 +10,32 @@ namespace libtimeit
 {
 using namespace std;
 
+enum Time_entry_state
+{
+	STOPPED,
+	RUNNING,
+	PAUSED,
+	DELETED
+};
+
 class Time_entry
 {
 public:
 	Time_entry(
-			Time_ID         id,
-			UUID            uuid,
-			Task_ID         task_ID,
-			optional<UUID>  task_UUID,
-			time_t          start,
-			time_t          stop,
-			bool            deleted,
-			bool            running,
-			time_t          changed);
+			Task_ID task_ID,
+			time_t start,
+			time_t stop
+			);
+	Time_entry(
+			Time_ID          id,
+			UUID             uuid,
+			Task_ID          task_ID,
+			optional<UUID>   task_UUID,
+			time_t           start,
+			time_t           stop,
+			bool             deleted,
+			Time_entry_state state,
+			time_t           changed);
 
 	time_t               start()    const;
 	time_t               stop()     const;
@@ -37,6 +50,7 @@ public:
 	Time_entry with_start(time_t) const;
 	Time_entry with_stop(time_t) const;
 	Time_entry with_deleted(bool state) const;
+	Time_entry with( Time_entry_state ) const;
 
 	friend bool operator==(const Time_entry &op1, const Time_entry &op2);
 	friend bool operator!=(const Time_entry &op1, const Time_entry &op2);
@@ -48,7 +62,7 @@ private:
 	time_t               start_;
 	time_t               stop_;
 	bool                 deleted_;
-	bool                 running_;
+	Time_entry_state     state_;
 	time_t               changed_;
 	optional<class UUID> task_UUID_;
 

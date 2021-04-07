@@ -14,8 +14,8 @@ Extended_task getTask(time_t start = 0, time_t stop = 0)
 	Time_accessor timeAccessor(tempdb);
 	auto taskID = taskAccessor.create(Task("task", 0));
 	auto subTaskID = taskAccessor.create(Task("subtask", taskID));
-	timeAccessor.create(taskID, 100, 200);
-	timeAccessor.create(subTaskID, 150, 200);
+	timeAccessor.create( Time_entry( taskID, 100, 200 ) );
+	timeAccessor.create( Time_entry( subTaskID, 150, 200 ) );
 	return *taskAccessor.by_ID(taskID, start, stop);
 }
 

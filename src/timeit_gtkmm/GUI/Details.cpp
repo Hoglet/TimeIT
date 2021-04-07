@@ -141,7 +141,7 @@ void Details::on_menu_file_popup_remove()
 				else
 				{
 					// if running then keep running, starting over with zero length
-					m_timeAccessor.update(time_entry.ID(), time_entry.stop(), time_entry.stop());
+					m_timeAccessor.update(time_entry);
 				}
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
@@ -202,7 +202,7 @@ void Details::on_menu_file_popup_merge()
 				// coded considering time_entry_1 could be currently running
 				time_t new_start = time_entry_0.start();
 				m_timeAccessor.remove(time_entry_0.ID());
-				m_timeAccessor.update(time_entry_1.ID(), new_start, time_entry_1.stop());
+				m_timeAccessor.update( time_entry_1.with_start(new_start) );
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
 				break;
@@ -243,7 +243,6 @@ void Details::on_menu_file_popup_split()
 
 			if (offer_to_split(time_entry))
 			{
-				int64_t time_id = time_entry.ID();
 				int64_t task_id = time_entry.task_ID();
 				time_t split_stop_time;
 				time_t split_start_time;
@@ -263,8 +262,8 @@ void Details::on_menu_file_popup_split()
 					split_stop_time = (start_time + (stop_time - start_time) / 2 - 1);
 					split_start_time = split_stop_time + 2;
 				}
-				m_timeAccessor.update(time_id, split_start_time, stop_time);
-				m_timeAccessor.create(task_id, start_time, split_stop_time);
+				m_timeAccessor.update( time_entry.with_start(split_start_time).with_stop(stop_time) );
+				m_timeAccessor.create( Time_entry(task_id, start_time, split_stop_time) );
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
 			}
