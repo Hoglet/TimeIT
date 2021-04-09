@@ -123,6 +123,7 @@ private:
 	time_t m_startTime;
 	time_t m_stopTime;
 	Gtk::Menu m_Menu_Popup;
+	Glib::RefPtr<Gtk::MenuItem> m_merge_menu_item;
 	Glib::RefPtr<Gtk::MenuItem> m_split_menu_item;
 	std::list<DetailsObserver*> observers;
 	Time_accessor     m_timeAccessor;
