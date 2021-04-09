@@ -50,10 +50,15 @@ Details::Details(
 		Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &Details::on_menu_file_popup_merge)));
+
+		Gtk::Menu_Helpers::MenuElem merge_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &Details::on_menu_file_popup_merge));
+		m_merge_menu_item = merge_menu_elem.get_child();
+		menulist.push_back(merge_menu_elem);
+
 		Gtk::Menu_Helpers::MenuElem split_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Split"), sigc::mem_fun(*this, &Details::on_menu_file_popup_split));
 		m_split_menu_item = split_menu_elem.get_child();
 		menulist.push_back(split_menu_elem);
+
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	m_Menu_Popup.accelerate(*this);
@@ -154,6 +159,11 @@ void Details::on_menu_file_popup_remove()
 	}
 }
 
+bool offer_to_merge(optional<Time_entry> &optional_time_entry, optional<Time_entry> &optional_next_time_entry)
+{
+	return optional_time_entry.has_value() && optional_next_time_entry.has_value();
+}
+
 void Details::on_menu_file_popup_merge()
 {
 	vector<int64_t> selectedIDs = getSelectedAndNextID();
@@ -161,7 +171,7 @@ void Details::on_menu_file_popup_merge()
 	{
 		optional<Time_entry> optional_time_entry_0 = m_timeAccessor.by_ID(selectedIDs[0]);
 		optional<Time_entry> optional_time_entry_1 = m_timeAccessor.by_ID(selectedIDs[1]);
-		if (optional_time_entry_0 && optional_time_entry_1)
+		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
 			Time_entry time_entry_0 = optional_time_entry_0.value();
 			Time_entry time_entry_1 = optional_time_entry_1.value();
@@ -275,12 +285,24 @@ bool Details::on_button_press_event(GdkEventButton *event)
 	//Then do our custom stuff:
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		int64_t selected_id = getSelectedID();
+		vector<int64_t> selected_ids = getSelectedAndNextID();
+		int64_t selected_id = selected_ids[0];
+		int64_t next_id = selected_ids[1];
 		if (selected_id > 0)
 		{
 			optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selected_id);
+			optional<Time_entry> optional_next_time_entry = m_timeAccessor.by_ID(next_id);
 			if (optional_time_entry)
 			{
+				if (offer_to_merge(optional_time_entry, optional_next_time_entry))
+				{
+					m_merge_menu_item->set_sensitive(true);
+				}
+				else
+				{
+					m_merge_menu_item->set_sensitive(false);
+				}
+
 				if (offer_to_split(optional_time_entry.value()))
 				{
 					m_split_menu_item->set_sensitive(true);
