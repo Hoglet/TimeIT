@@ -30,6 +30,15 @@ Indent with tabs.
 * No null.
 * No **unscoped** "using namespace" in header files
 
+## Conventions
+* Indent with tabs.
+* snake_case.
+* lover case filenames.
+* No prefix or postfix on variables and fields if possible. 
+  * If fields and method names collide we concatenate "_" on the field.
+  * If parameter and field name collides concatenate "_" on parameter.
+  
+
 
 ## Code example
 <pre>
