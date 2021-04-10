@@ -468,6 +468,7 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		}
 		else
 		{
+			row_data.first_in_day = onDifferentDays( row_data.prev_start, row_data.start);
 			row_data.last_in_day = true;
 			row_data.next_start = 0;
 		}
