@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 
 using namespace libtimeit;
 

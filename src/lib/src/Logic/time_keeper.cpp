@@ -1,8 +1,8 @@
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <iostream>
 #include <libtimeit/db/default_values.h>
-#include "libtimeit/logic/TimeKeeper.h"
-#include <libtimeit/Utils.h>
+#include "libtimeit/logic/time_keeper.h"
+#include <libtimeit/utils.h>
 
 using namespace std;
 using namespace libtimeit;

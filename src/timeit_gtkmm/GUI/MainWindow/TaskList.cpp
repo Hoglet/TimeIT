@@ -1,7 +1,7 @@
 #include "TaskList.h"
 #include <string>
 #include <glibmm/i18n.h>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 
 namespace GUI
 {

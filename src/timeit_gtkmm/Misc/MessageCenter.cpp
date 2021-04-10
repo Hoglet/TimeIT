@@ -1,5 +1,5 @@
 #include "MessageCenter.h"
-#include "libtimeit/Utils.h"
+#include "libtimeit/utils.h"
 #include "libnotify/notify.h"
 
 namespace Utils

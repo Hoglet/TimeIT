@@ -20,14 +20,14 @@
 #include <GTK_timer.h>
 
 #include <libtimeit.h>
-#include <libtimeit/logic/AutoTracker.h>
-#include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/logic/TimeKeeper.h>
-#include <libtimeit/misc/ApplicationLock.h>
-#include <libtimeit/misc/IpcServer.h>
-#include <libtimeit/misc/IpcClient.h>
-#include <libtimeit/OSAbstraction.h>
-#include <libtimeit/sync/SyncManager.h>
+#include <libtimeit/logic/auto_tracker.h>
+#include <libtimeit/logic/time_keeper.h>
+#include <libtimeit/logic/time_keeper.h>
+#include <libtimeit/misc/application_lock.h>
+#include <libtimeit/misc/ipc_server.h>
+#include <libtimeit/misc/ipc_client.h>
+#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/sync/sync_manager.h>
 
 namespace GUI
 {

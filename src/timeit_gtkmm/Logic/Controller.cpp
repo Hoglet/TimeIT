@@ -8,9 +8,9 @@
 #include <EditTaskDialog.h>
 #include "Controller.h"
 #include <DetailsDialog.h>
-#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/OS_abstraction.h>
 #include <iostream>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
 #include <GUIFactory.h>
 #include <libnotify/notify.h>

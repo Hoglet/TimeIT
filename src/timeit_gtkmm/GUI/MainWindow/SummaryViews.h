@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 #include "Summary.h"
-#include "libtimeit/Utils.h"
+#include "libtimeit/utils.h"
 
 namespace GUI
 {

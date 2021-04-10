@@ -14,7 +14,7 @@
 #include "MainWindow/Summary.h"
 #include <libtimeit/db/database.h>
 #include <IWidget.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
 
 namespace GUI

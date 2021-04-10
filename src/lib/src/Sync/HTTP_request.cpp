@@ -2,7 +2,7 @@
 // Created by hoglet on 14/11/2020.
 //
 
-#include "libtimeit/sync/HTTPRequest.h"
+#include "libtimeit/sync/HTTP_request.h"
 #include <cstring>
 #include <stdexcept>
 

@@ -10,12 +10,12 @@
 #include <ActionObserver.h>
 #include <IGUIFactory.h>
 #include <IdleDialog.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
 #include <MainWindow/Summary.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/misc/IpcServer.h>
+#include <libtimeit/misc/ipc_server.h>
 #include <libtimeit/event_observer.h>
 
 namespace GUI

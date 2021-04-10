@@ -1,10 +1,10 @@
 //
 // Created by hoglet on 14/11/2020.
 //
-#ifndef TIMEIT_HTTPREQUEST_H
-#define TIMEIT_HTTPREQUEST_H
+#ifndef TIMEIT_HTTP_REQUEST_H
+#define TIMEIT_HTTP_REQUEST_H
 
-#include <libtimeit/sync/HTTPResponse.h>
+#include <libtimeit/sync/HTTP_response.h>
 #include <curl/curl.h>
 #include <string>
 
@@ -36,4 +36,4 @@ private:
 };
 
 
-#endif //TIMEIT_HTTPREQUEST_H
+#endif //TIMEIT_HTTP_REQUEST_H

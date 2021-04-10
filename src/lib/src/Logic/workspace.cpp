@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/logic/Workspace.h"
+#include "libtimeit/logic/workspace.h"
 #include <iostream>
 #include <string.h>
 #include <string>

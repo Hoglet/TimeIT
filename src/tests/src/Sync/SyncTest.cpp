@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include "libtimeit/sync/Network.h"
-#include "libtimeit/sync/Json.h"
+#include "libtimeit/sync/network.h"
+#include "libtimeit/sync/json.h"
 #include "../Mock/MockNetwork.h"
-#include "libtimeit/Timer.h"
-#include "libtimeit/sync/SyncManager.h"
+#include "libtimeit/timer.h"
+#include "libtimeit/sync/sync_manager.h"
 #include "../DB/TempDB.h"
 
 namespace test

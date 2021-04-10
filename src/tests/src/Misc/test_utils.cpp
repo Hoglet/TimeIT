@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <ctime>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 
 
 TEST( Utils, testGetDaysInMonth )

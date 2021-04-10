@@ -5,14 +5,14 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/logic/X11_IdleDetector.h"
+#include "libtimeit/logic/X11_idle_detector.h"
 #include <iostream>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/scrnsaver.h>
 #include <memory>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 #include <exception>
 
 

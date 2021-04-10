@@ -1,8 +1,8 @@
 //
 // Created by hoglet on 16/11/2020.
 //
-#ifndef TIMEIT_HTTPRESPONSE_H
-#define TIMEIT_HTTPRESPONSE_H
+#ifndef TIMEIT_HTTP_RESPONSE_H
+#define TIMEIT_HTTP_RESPONSE_H
 
 #include <string>
 
@@ -35,4 +35,4 @@ private:
 };
 
 
-#endif //TIMEIT_HTTPRESPONSE_H
+#endif //TIMEIT_HTTP_RESPONSE_H

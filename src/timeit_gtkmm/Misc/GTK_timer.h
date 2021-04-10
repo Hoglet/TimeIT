@@ -4,7 +4,7 @@
 
 #ifndef TIMEIT_GTK_TIMER_H
 #define TIMEIT_GTK_TIMER_H
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 
 namespace GUI
 {

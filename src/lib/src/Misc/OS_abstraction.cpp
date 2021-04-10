@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/OSAbstraction.h"
+#include "libtimeit/OS_abstraction.h"
 #include <string>
 #include <sstream>
 #include <sys/stat.h>

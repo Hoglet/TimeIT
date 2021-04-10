@@ -1,5 +1,5 @@
-#include "libtimeit/sync/Network.h"
-#include "libtimeit/sync/HTTPRequest.h"
+#include "libtimeit/sync/network.h"
+#include "libtimeit/sync/HTTP_request.h"
 #include <stdexcept>
 #include <curl/curl.h>
 #include <future>

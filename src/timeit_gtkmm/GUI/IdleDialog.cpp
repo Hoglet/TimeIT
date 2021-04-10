@@ -10,8 +10,8 @@
 #include <string>
 #include <sstream>
 #include <glibmm/i18n.h>
-#include "libtimeit/Timer.h"
-#include <libtimeit/Utils.h>
+#include "libtimeit/timer.h"
+#include <libtimeit/utils.h>
 
 namespace GUI
 {

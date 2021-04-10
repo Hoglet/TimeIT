@@ -5,8 +5,8 @@
 #include <string>
 #include <memory>
 #include <future>
-#include "HTTPResponse.h"
-#include "HTTPRequest.h"
+#include "HTTP_response.h"
+#include "HTTP_request.h"
 
 //LCOV_EXCL_START
 namespace libtimeit

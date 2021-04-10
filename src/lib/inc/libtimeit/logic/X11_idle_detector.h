@@ -7,7 +7,7 @@
 
 #ifndef IDLEDETECTOR_H_
 #define IDLEDETECTOR_H_
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <time.h>
 #include <memory>
 #include <libtimeit/db/notifier.h>

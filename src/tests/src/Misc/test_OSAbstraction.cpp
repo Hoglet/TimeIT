@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/OS_abstraction.h>
 #include <iostream>
 #include <fstream>
 

@@ -9,7 +9,7 @@
 #include <libtimeit/db/autotrack_accessor.h>
 #include <ParentChooser.h>
 #include <IWidget.h>
-#include <libtimeit/logic/Workspace.h>
+#include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/database.h>
 
 namespace GUI

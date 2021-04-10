@@ -9,7 +9,7 @@
 #define IDLEDIALOG_H_
 
 #include <gtkmm.h>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <IWidget.h>
 #include <memory>
 #include <libtimeit/db/task_accessor.h>

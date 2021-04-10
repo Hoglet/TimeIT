@@ -6,7 +6,7 @@
  */
 
 #include "libtimeit/db/notifier.h"
-#include "libtimeit/Utils.h"
+#include "libtimeit/utils.h"
 #include <iostream>
 
 namespace libtimeit

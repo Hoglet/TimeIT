@@ -4,10 +4,10 @@
 #include <list>
 #include <map>
 #include <libtimeit/db/task.h>
-#include <libtimeit/Timer.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/timer.h>
+#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/logic/X11_IdleDetector.h>
+#include <libtimeit/logic/X11_idle_detector.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/time_accessor.h>

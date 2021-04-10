@@ -1,7 +1,7 @@
 //
 // Created by hoglet on 16/11/2020.
 //
-#include <libtimeit/sync/HTTPResponse.h>
+#include <libtimeit/sync/HTTP_response.h>
 
 using namespace std;
 

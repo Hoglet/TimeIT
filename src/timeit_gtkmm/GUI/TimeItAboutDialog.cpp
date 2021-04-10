@@ -6,9 +6,9 @@
  */
 
 #include "TimeItAboutDialog.h"
-#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/OS_abstraction.h>
 #include <glibmm/i18n.h>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 #include <libtimeit/version.h>
 namespace GUI
 {

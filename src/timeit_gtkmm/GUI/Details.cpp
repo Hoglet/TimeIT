@@ -7,7 +7,7 @@
 
 #include "Details.h"
 #include <vector>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 #include <glibmm/i18n.h>
 #include <optional>
 #include <vector>

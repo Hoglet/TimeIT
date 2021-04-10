@@ -9,9 +9,9 @@
 #define GUIFACTORY_H_
 
 #include <libtimeit/db/database.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/logic/time_keeper.h>
 #include <IGUIFactory.h>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <gtkmm.h>
 
 namespace GUI

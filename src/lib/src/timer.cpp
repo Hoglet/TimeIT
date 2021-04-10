@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/Timer.h"
+#include "libtimeit/timer.h"
 
 namespace libtimeit
 {

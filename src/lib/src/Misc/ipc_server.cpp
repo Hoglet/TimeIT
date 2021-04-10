@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/misc/IpcServer.h"
+#include "libtimeit/misc/ipc_server.h"
 
 #include <sys/socket.h>
 #include <sys/un.h>

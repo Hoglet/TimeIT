@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <libtimeit/Timer.h>
-#include "libtimeit/logic/AutoTracker.h"
+#include <libtimeit/timer.h>
+#include "libtimeit/logic/auto_tracker.h"
 
 
-#include "libtimeit/logic/TimeKeeper.h"
+#include "libtimeit/logic/time_keeper.h"
 
 namespace Test
 {

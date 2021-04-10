@@ -7,7 +7,7 @@
 
 #include "StatusIcon.h"
 #include "MainWindow/MainWindow.h"
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 #include <iostream>
 #include <glibmm/i18n.h>
 #include <iomanip>

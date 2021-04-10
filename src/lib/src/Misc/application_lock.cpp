@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/misc/ApplicationLock.h"
+#include "libtimeit/misc/application_lock.h"
 #include <string>
 #include <unistd.h>
 #include <fcntl.h>

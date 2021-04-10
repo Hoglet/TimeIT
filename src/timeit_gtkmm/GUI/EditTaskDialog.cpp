@@ -2,9 +2,9 @@
 #include "ParentChooser.h"
 #include <sstream>
 #include <iostream>
-#include <libtimeit/logic/Workspace.h>
+#include <libtimeit/logic/workspace.h>
 #include <glibmm/i18n.h>
-#include <libtimeit/Utils.h>
+#include <libtimeit/utils.h>
 namespace GUI
 {
 using namespace libtimeit;

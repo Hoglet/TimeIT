@@ -9,7 +9,7 @@
 #define MAIN_H_
 
 #include <libtimeit/db/database.h>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <IGUIFactory.h>
 
 namespace GUI

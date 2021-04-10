@@ -1,7 +1,7 @@
 #ifndef MOCKNETWORK_H_
 #define MOCKNETWORK_H_
 
-#include "libtimeit/sync/Network.h"
+#include "libtimeit/sync/network.h"
 
 #include <map>
 

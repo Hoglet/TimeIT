@@ -10,10 +10,10 @@
 
 #include <string>
 #include <memory>
-#include <libtimeit/Timer.h>
+#include <libtimeit/timer.h>
 #include <libtimeit/event_observer.h>
 #include <iostream>
-#include "Ipc.h"
+#include "ipc.h"
 
 namespace libtimeit
 {

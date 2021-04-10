@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/misc/Ipc.h"
+#include "libtimeit/misc/ipc.h"
 #include <sys/un.h>
 #include <iostream>
 #include <sys/stat.h>

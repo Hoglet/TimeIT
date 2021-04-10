@@ -22,8 +22,8 @@
 #include <gtkmm.h>
 #include "EditTaskDialog.h"
 #include <iostream>
-#include <libtimeit/Utils.h>
-#include <libtimeit/OSAbstraction.h>
+#include <libtimeit/utils.h>
+#include <libtimeit/OS_abstraction.h>
 #include <vector>
 #include <glibmm/i18n.h>
 #include "Summary.h"

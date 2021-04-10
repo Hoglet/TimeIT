@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 
-#include "libtimeit/logic/TimeKeeper.h"
+#include "libtimeit/logic/time_keeper.h"
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include "ActionObserver.h"

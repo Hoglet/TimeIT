@@ -5,11 +5,11 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/Utils.h"
+#include "libtimeit/utils.h"
 #include <sys/types.h>
 #include <unistd.h>
 #include <sstream>
-#include "libtimeit/OSAbstraction.h"
+#include "libtimeit/OS_abstraction.h"
 #include "time.h"
 #include <iomanip>
 #include <langinfo.h>

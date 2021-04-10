@@ -6,10 +6,10 @@
  */
 
 #include "DetailsDialog.h"
-#include "libtimeit/Utils.h"
+#include "libtimeit/utils.h"
 #include <ctime>
 #include <glibmm/i18n.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/logic/time_keeper.h>
 
 using namespace libtimeit;
 using namespace std;

@@ -3,9 +3,9 @@
 
 #include <memory>
 #include <libtimeit/db/database.h>
-#include <libtimeit/Timer.h>
-#include <libtimeit/sync/Network.h>
-#include <libtimeit/sync/Json.h>
+#include <libtimeit/timer.h>
+#include <libtimeit/sync/network.h>
+#include <libtimeit/sync/json.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/task_accessor.h>
 

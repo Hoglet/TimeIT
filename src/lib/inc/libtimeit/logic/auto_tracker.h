@@ -1,11 +1,11 @@
 #ifndef AUTOTRACKER_H_
 #define AUTOTRACKER_H_
 #include <iostream>
-#include <libtimeit/Timer.h>
-#include <libtimeit/logic/TimeKeeper.h>
+#include <libtimeit/timer.h>
+#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/autotrack_accessor.h>
-#include <libtimeit/logic/Workspace.h>
+#include <libtimeit/logic/workspace.h>
 
 namespace libtimeit
 {
@@ -14,7 +14,7 @@ using namespace std;
 class AutoTracker : public libtimeit::TimerObserver
 {
 public:
-	AutoTracker(ITimeKeeper &timeKeeper,  Database &database, Timer &timer);
+	AutoTracker(ITimeKeeper &timeKeeper, Database &database, Timer &timer);
 	virtual ~AutoTracker() = default;
 private:
 	void check4Changes();
