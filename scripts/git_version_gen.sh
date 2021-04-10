@@ -14,16 +14,17 @@ LF='
 
 cd $DIR
 
-if test -d .git -o -f .git &&
-	VN=$(git describe --match "[0-9]*\.[0-9]*" HEAD 2>/dev/null) &&
-	case "$VN" in
+
+if [ -d .git ] ||  [ -d ../.git ]
+then
+ 	VN=$(git describe --match "[0-9]*\.[0-9]*" HEAD 2>/dev/null)
+ 	case "$VN" in
 	*$LF*) (exit 1) ;;
 	[0-9]*)
 		git update-index -q --refresh
 		test -z "$(git diff-index --name-only HEAD --)" ||
 		VN="$VN-dirty" ;;
 	esac
-then
 	VN="$VN"
 else
 	#Git failed to find version number. Falling back to Debian changelog.
@@ -36,7 +37,6 @@ then
 else
 	VC=unset
 fi
-echo $2
 test "$VN" = "$VC" || {
 	echo "$VN" > $GVF
 	echo "writing $2"

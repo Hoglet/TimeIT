@@ -14,10 +14,6 @@ if(NOT CONFIGURED)
 	set(CONFIGURED TRUE CACHE BOOL "Is configured" FORCE)
 endif()
 
-message ( **************** )
-message ( "COMMAND  ${CMAKE_CURRENT_LIST_DIR}/../scripts/git_version_gen.sh ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/lib/inc/libtimeit/version.h ")
-message ( **************** )
-
 add_custom_target(version ALL
                   COMMAND  ${CMAKE_CURRENT_LIST_DIR}/../scripts/git_version_gen.sh ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/lib/inc/libtimeit/version.h
                   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
