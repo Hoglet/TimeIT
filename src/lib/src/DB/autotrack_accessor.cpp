@@ -13,22 +13,22 @@ namespace libtimeit
 {
 using namespace std;
 
-Autotrack_accessor::Autotrack_accessor(Database& op_database) : database(op_database), task_accessor(op_database)
+Auto_track_accessor::Auto_track_accessor(Database& op_database) : database(op_database), task_accessor(op_database)
 {
 }
 
 
-void  Autotrack_accessor::create_table()
+void  Auto_track_accessor::create_table()
 {
 
 }
 
-void  Autotrack_accessor::upgrade()
+void  Auto_track_accessor::upgrade()
 {
 
 }
 
-Task_ID_list Autotrack_accessor::task_IDs(int workspace)
+Task_ID_list Auto_track_accessor::task_IDs(int workspace)
 {
 	Task_ID_list return_value;
 	stringstream  statement;
@@ -39,7 +39,7 @@ Task_ID_list Autotrack_accessor::task_IDs(int workspace)
 	{
 		int64_t id = row[0].integer();
 		auto task = task_accessor.by_ID(id);
-		if(task.has_value() && task->deleted() == false)
+		if(task.has_value() && task->deleted == false)
 		{
 			return_value.push_back(id);
 		}
@@ -47,7 +47,7 @@ Task_ID_list Autotrack_accessor::task_IDs(int workspace)
 	return return_value;
 }
 
-vector<int> Autotrack_accessor::workspaces(int64_t taskID)
+vector<int> Auto_track_accessor::workspaces(int64_t taskID)
 {
 	vector<int> retVal;
 	stringstream     statement;
@@ -55,13 +55,13 @@ vector<int> Autotrack_accessor::workspaces(int64_t taskID)
 	Query_result rows = database.execute(statement.str());
 	for (auto row : rows)
 	{
-		int workspace = row[0].integer();
+		int workspace = (int)row[0].integer();
 		retVal.push_back(workspace);
 	}
 	return retVal;
 }
 
-void Autotrack_accessor::set_workspaces(int64_t task_ID, vector<int> workspaces)
+void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<int> workspaces)
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << task_ID;

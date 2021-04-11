@@ -10,6 +10,11 @@
 #include <string>
 #include "libtimeit/X11.h"
 
+namespace libtimeit
+{
+
+using namespace std;
+
 class Workspace
 {
 public:
@@ -17,24 +22,25 @@ public:
 	virtual ~Workspace();
 
 	int get_active();
-	std::string get_name(int workspaceNR);
+	string get_name(int workspaceNR);
 	int get_numberOfColumns();
 	int get_numberOfRows();
 	int get_numberOfWorkspaces();
 
 private:
-	bool supportsLayout = true;
-	bool isVirtual;
-	void findLayout();
-	int numWorkspaces;
-	int rows;
-	int columns;
-	int desktopWidth;
-	int desktopHeight;
-	int viewportWidth;
-	int viewportHeight;
-	X11 x11;
+	void find_layout();
+
+	bool supports_layout = true;
+	bool is_virtual;
+	int  number_of_workspaces;
+	int  rows;
+	int  columns;
+	int  desktop_width;
+	int  desktop_height;
+	int  viewport_width;
+	int  viewport_height;
+	X11  x11;
 
 };
-
+}
 #endif /* WORKSPACE_H_ */

@@ -146,7 +146,7 @@ Database::Database(
 
 		Task_accessor      tasks( *this );
 		Time_accessor      times( *this );
-		Autotrack_accessor auto_track( *this );
+		Auto_track_accessor auto_track(*this );
 		Settings_accessor  settings( *this );
 		list<Accessor*> accessors =
 				{

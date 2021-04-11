@@ -9,11 +9,6 @@
 
 #include <list>
 
-namespace Test
-{
-class TimerTest;
-class DummyTimerTest;
-}
 namespace libtimeit
 {
 
@@ -21,11 +16,11 @@ class Timer;
 
 using namespace std;
 
-class TimerObserver
+class Timer_observer
 {
 public:
-	TimerObserver(Timer& publisher);
-	virtual ~TimerObserver();
+	Timer_observer(Timer& publisher);
+	virtual ~Timer_observer();
 	//LCOV_EXCL_START
 	virtual void on_signal_1_second();
 	virtual void on_signal_10_seconds();
@@ -36,9 +31,7 @@ private:
 
 class Timer
 {
-	friend class Test::TimerTest;
-	friend class TimerObserver;
-	friend class Test::DummyTimerTest;
+	friend class Timer_observer;
 
 public:
 	Timer();
@@ -48,11 +41,11 @@ public:
 	// Glib::signal_timeout().connect_seconds(sigc::mem_fun(timer, &Timer::on_signal_1_second), 1);
 	bool on_signal_1_second();
 private:
-	void attach(TimerObserver *observer);
-	void detach(TimerObserver *observer);
+	void attach(Timer_observer *observer);
+	void detach(Timer_observer *observer);
 
 	void signalSender();
-	list<TimerObserver *> observers = {};
+	list<Timer_observer *> observers = {};
 };
 }
 #endif

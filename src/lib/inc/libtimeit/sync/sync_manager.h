@@ -13,7 +13,7 @@ namespace libtimeit
 {
 using namespace std;
 
-enum class SyncState
+enum class Sync_state
 {
 	IDLE,
 	TASK_REQUEST,
@@ -24,47 +24,45 @@ enum class SyncState
 	FAIL
 };
 
-class SyncManager : public TimerObserver
+class Sync_manager : public Timer_observer
 {
 public:
-	SyncManager(
-			Database &database,
-			INetwork  &network,
-			Notifier  &notifier,
-			Timer     &timer);
-	virtual ~SyncManager() = default;
+	Sync_manager(
+			Database& database,
+			INetwork& network,
+			Notifier& notifier,
+			Timer&    timer);
+	virtual ~Sync_manager() = default;
 
-	SyncState status();
+	Sync_state status();
 	void on_signal_1_second();
 
 	void reset();
 private:
-	SyncManager();
+	bool    is_active();
+	time_t  get_next_sync(time_t referencePoint);
+	bool    request_is_done();
+	void    sync_times_to_database();
+	void    sync_tasks_to_database();
+	void    manage_network_problems();
 
-	bool    isActive();
-	time_t  getNextSync(time_t referencePoint);
-	bool    requestDone();
-	void    syncTimesToDatabase();
-	void    syncTasksToDatabase();
-	void    manageNetworkProblems();
+	shared_ptr<asyncHTTPResponse> request_tasks(time_t sincePointInTime);
+	shared_ptr<asyncHTTPResponse> request_times(time_t sincePointInTime);
 
-	shared_ptr<asyncHTTPResponse> requestTasks(time_t sincePointInTime);
-	shared_ptr<asyncHTTPResponse> requestTimes(time_t sincePointInTime);
+	Task_accessor     task_accessor;
+	Time_accessor     time_accessor;
+	Settings_accessor settings_accessor;
+	INetwork&         network;
 
-	Task_accessor     taskAccessor;
-	Time_accessor     timeAccessor;
-	Settings_accessor settingsAccessor;
-	INetwork&        network;
-
-	SyncState                           state          {SyncState::IDLE};
-	SyncState                           following_state{SyncState::IDLE};
+	Sync_state                     state          {Sync_state::IDLE};
+	Sync_state                     following_state{Sync_state::IDLE};
 	shared_ptr <asyncHTTPResponse> outstandingRequest;
 
 	Notifier&  notifier_;
-	time_t     nextSync{0};
-	time_t     nextFullSync{0};
-	time_t     lastSync{0};
-	time_t     currentSync{0};
+	time_t     next_sync{0};
+	time_t     next_full_sync{0};
+	time_t     last_sync{0};
+	time_t     current_sync{0};
 };
 }
 #endif /* SYNCMANAGER_H_ */

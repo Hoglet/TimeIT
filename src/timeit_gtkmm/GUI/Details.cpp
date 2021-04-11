@@ -114,7 +114,7 @@ void Details::on_menu_file_popup_remove()
 			Time_entry time_entry = optional_time_entry.value();
 			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
-			int64_t minutesToLose = difftime(time_entry.stop(), time_entry.start()) / 60;
+			int64_t minutesToLose = difftime(time_entry.stop, time_entry.start) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
 				minutesToLose > idleGt || minutesToLose > idleGz || minutesToLose < 0 ?
@@ -178,7 +178,7 @@ void Details::on_menu_file_popup_merge()
 			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
 			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
 
-			int64_t minutesToGain = difftime(time_entry_1.start(), time_entry_0.stop()) / 60;
+			int64_t minutesToGain = difftime(time_entry_1.start, time_entry_0.stop) / 60;
 
 			std::string minutesString = string_printf(
 				minutesToGain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutesToGain);
@@ -200,8 +200,8 @@ void Details::on_menu_file_popup_merge()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry_1 could be currently running
-				time_t new_start = time_entry_0.start();
-				m_timeAccessor.remove(time_entry_0.ID());
+				time_t new_start = time_entry_0.start;
+				m_timeAccessor.remove(time_entry_0.ID);
 				m_timeAccessor.update( time_entry_1.with_start(new_start) );
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
@@ -218,10 +218,10 @@ void Details::on_menu_file_popup_merge()
 
 bool offer_to_split(Time_entry &time_entry)
 {
-	time_t start_time = time_entry.start();
-	time_t stop_time = time_entry.stop();
+	time_t start_time = time_entry.start;
+	time_t stop_time = time_entry.stop;
 	int64_t seconds_to_split = difftime(stop_time, start_time);
-	bool across_days = onDifferentDays(start_time, stop_time);
+	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
 	return across_days || seconds_to_split > 120;
 }
@@ -235,15 +235,15 @@ void Details::on_menu_file_popup_split()
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
-			time_t start_time = time_entry.start();
-			time_t stop_time = time_entry.stop();
-			bool across_days = onDifferentDays(start_time, stop_time);
+			time_t start_time = time_entry.start;
+			time_t stop_time = time_entry.stop;
+			bool across_days = is_on_different_days(start_time, stop_time);
 
 			// coded considering time_entry could be currently running
 
 			if (offer_to_split(time_entry))
 			{
-				int64_t task_id = time_entry.task_ID();
+				int64_t task_id = time_entry.task_ID;
 				time_t split_stop_time;
 				time_t split_start_time;
 				if (across_days)
@@ -352,9 +352,9 @@ void Details::on_time_entry_changed(int64_t ID)
 		auto time_entry = m_timeAccessor.by_ID(ID);
 		if(time_entry.has_value())
 		{
-			auto day = time_entry->start();
-			auto start_time = getBeginingOfDay(day);
-			auto stop_time = getEndOfDay(day);
+			auto day = time_entry->start;
+			auto start_time = beginning_of_day(day);
+			auto stop_time = end_of_day(day);
 			auto row_data = create_row_data( start_time, stop_time);
 			update(row_data);
 		}
@@ -380,7 +380,7 @@ void Details::on_complete_update()
 
 void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 {
-	bool acrossDays = onDifferentDays(startTime, stopTime);
+	bool acrossDays = is_on_different_days(startTime, stopTime);
 	if (ID > 0)
 	{
 		m_taskID = ID;
@@ -407,17 +407,17 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 void Details::update_row(TreeModel::Row& row, Row_data row_data )
 {
 	row[m_columns.m_col_id]          = row_data.time_ID;
-	row[m_columns.m_col_morning]     = row_data.first_in_day ? dayOfWeekAbbreviation(row_data.start) : "";
-	row[m_columns.m_col_date]        = row_data.first_in_day ? createDateString(row_data.start) : "";
-	row[m_columns.m_col_time]        = create_time_span_string(row_data.start, row_data.stop);
-	row[m_columns.m_col_time_amount] = create_duration_string(row_data.start, row_data.stop);
+	row[m_columns.m_col_morning]     = row_data.first_in_day ? day_of_week_abbreviation(row_data.start) : "";
+	row[m_columns.m_col_date]        = row_data.first_in_day ? date_string(row_data.start) : "";
+	row[m_columns.m_col_time]        = time_span_string(row_data.start, row_data.stop);
+	row[m_columns.m_col_time_amount] = duration_string(row_data.start, row_data.stop);
 	if(row_data.running)
 	{
 		row[m_columns.m_col_idle] = string("\u2003⌚");
 	}
 	else if( row_data.next_start >= row_data.stop)
 	{
-		row[m_columns.m_col_idle] = string("\u2003") + createIdlingString(row_data.stop, row_data.next_start);
+		row[m_columns.m_col_idle] = string("\u2003") + idling_string(row_data.stop, row_data.next_start);
 	}
 	else
 	{
@@ -426,8 +426,8 @@ void Details::update_row(TreeModel::Row& row, Row_data row_data )
 	if(row_data.last_in_day)
 	{
 		auto seconds_today = row_data.cumulative_time;
-		row[m_columns.m_col_day_total] = "\u2003" + string(onDifferentDays(row_data.start, row_data.stop) ? "≠" : "≈")
-										 + seconds2hhmm(seconds_today) + " ";
+		row[m_columns.m_col_day_total] = "\u2003" + string(is_on_different_days(row_data.start, row_data.stop) ? "≠" : "≈")
+										 + seconds_2_hhmm(seconds_today) + " ";
 	}
 }
 
@@ -444,11 +444,11 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		auto time_entry = *iter;
 		Row_data row_data;
 
-		row_data.time_ID      = time_entry.ID();
+		row_data.time_ID      = time_entry.ID;
 		row_data.prev_start   = prev_start;
-		row_data.start        = time_entry.start();
+		row_data.start        = time_entry.start;
 		prev_start            = row_data.start;
-		row_data.stop         = time_entry.stop();
+		row_data.stop         = time_entry.stop;
 		row_data.running      = time_entry.running();
 
 		cumulative_time_for_day += row_data.stop - row_data.start;
@@ -458,9 +458,9 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		if( iter != time_list.end() )
 		{
 			auto next_time_entry = *iter;
-			row_data.next_start = next_time_entry.start();
-			row_data.first_in_day = onDifferentDays(row_data.prev_start, row_data.start);
-			row_data.last_in_day = onDifferentDays(row_data.start, row_data.next_start);
+			row_data.next_start = next_time_entry.start;
+			row_data.first_in_day = is_on_different_days(row_data.prev_start, row_data.start);
+			row_data.last_in_day = is_on_different_days(row_data.start, row_data.next_start);
 			if(row_data.last_in_day)
 			{
 				cumulative_time_for_day = 0;
@@ -468,7 +468,7 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		}
 		else
 		{
-			row_data.first_in_day = onDifferentDays( row_data.prev_start, row_data.start);
+			row_data.first_in_day = is_on_different_days(row_data.prev_start, row_data.start);
 			row_data.last_in_day = true;
 			row_data.next_start = 0;
 		}

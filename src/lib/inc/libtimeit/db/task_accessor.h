@@ -16,11 +16,11 @@ namespace libtimeit
 class Task_accessor: public Accessor
 {
 	friend class Database;
-	friend class SyncManager;
+	friend class Sync_manager;
 
 public:
 	Task_accessor(Database& database);
-	~Task_accessor();
+	~Task_accessor() = default;
 
 	optional<Task> by_ID(int64_t taskID);
 	vector<Task>   by_parent_ID(int64_t parent = 0);

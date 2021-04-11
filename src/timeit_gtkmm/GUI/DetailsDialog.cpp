@@ -16,7 +16,7 @@ using namespace std;
 
 namespace GUI
 {
-std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier)
+std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier)
 {
 	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper, notifier));
 	retVal->weak_this_ptr = weak_ptr<DetailsDialog>(retVal);
@@ -25,7 +25,7 @@ std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, ITimeKe
 
 DetailsDialog::DetailsDialog(
 		Database    &database,
-		ITimeKeeper &timeKeeper,
+		Time_keeper &timeKeeper,
 		Notifier    &notifier)
 		:
 		Event_observer(notifier),
@@ -50,9 +50,9 @@ DetailsDialog::DetailsDialog(
 	set_skip_taskbar_hint(true);
 
 	// consider not loading and having these icons in memory multiple times accross multiple classes
-	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
-	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running-idle.svg"), 24, 24, true);
-	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "blank.svg"), 24, 24, true);
+	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running.svg"), 24, 24, true);
+	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
+	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
 
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
@@ -229,7 +229,7 @@ void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 	auto te = m_timeAccessor.by_ID(timeEntryID);
 	if (te)
 	{
-		oldStartTime = te->start();
+		oldStartTime = te->start;
 		startTimeHour.set_sensitive(true);
 		startTimeMinute.set_sensitive(true);
 		if (te->running())
@@ -241,7 +241,7 @@ void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 		{
 			stopTimeHour.set_sensitive(true);
 			stopTimeMinute.set_sensitive(true);
-			oldStopTime = te->stop();
+			oldStopTime = te->stop;
 		}
 		m_timeEntryID = timeEntryID;
 		setValues();
@@ -292,7 +292,7 @@ void DetailsDialog::on_runningTasksChanged()
 	}
 	if (runningThisTaskID)
 	{
-		if (!m_timeKeeper.isIdle())
+		if (!m_timeKeeper.is_idle())
 		{
 			runningImage.set(runningIcon);
 		}
@@ -314,7 +314,7 @@ void DetailsDialog::on_task_name_updated(int64_t task_id)
 		auto task = m_taskAccessor.by_ID(m_taskID);
 		if (task.has_value())
 		{
-			taskName.set_text(task->name());
+			taskName.set_text(task->name);
 		}
 		else
 		{
@@ -338,7 +338,7 @@ void DetailsDialog::on_task_total_time_updated(int64_t task_id)
 			if (task.has_value())
 			{
 				time_t total_time = m_timeAccessor.total_cumulative_time(m_taskID, rangeStart, rangeStop);
-				taskTotalTime.set_text("∑ = " + libtimeit::seconds2hhmm(total_time));
+				taskTotalTime.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else
 			{

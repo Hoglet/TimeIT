@@ -6,33 +6,28 @@
 
 #include <string>
 
-class HTTPRequest;
-
-
-class HTTPResponse
+namespace libtimeit
 {
-	friend class HTTPRequest;
-public:
-	std::string url();
-	std::string response();
-	bool        statusOK();
-	int         httpCode();
-	std::string errorMessage();
-	HTTPResponse(
-			std::string url,
-			std::string response,
-			bool statusOK,
-			int httpCode,
-			std::string errorMessage
+using namespace std;
+
+class HTTP_request;
+
+struct HTTP_response
+{
+	const string url;
+	const string response;
+	const bool   status_OK;
+	const int    http_code;
+	const string error_message;
+
+	HTTP_response(
+			string url,
+			string response,
+			bool   status_OK,
+			int    http_code_,
+			string error_message_
 	);
-private:
-	HTTPResponse();
-	std::string url_;
-	std::string response_;
-	bool        statusOK_;
-	int         httpCode_;
-	std::string errorMessage_;
 };
 
-
+}
 #endif //TIMEIT_HTTP_RESPONSE_H

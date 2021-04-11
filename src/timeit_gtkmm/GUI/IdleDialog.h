@@ -35,7 +35,7 @@ enum IdleDialogResponse{
 	RESPONSE_CONTINUE=3
 } ;
 
-class IdleDialog : public Gtk::Dialog, public TimerObserver, public IIdleDialog, public IWidget
+class IdleDialog : public Gtk::Dialog, public Timer_observer, public IIdleDialog, public IWidget
 {
 public:
 	IdleDialog(Timer& timer, Database& database);

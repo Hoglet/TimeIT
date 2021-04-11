@@ -15,28 +15,20 @@
 #include <libtimeit/utils.h>
 #include <exception>
 
-
-namespace
+namespace libtimeit
 {
 const int secsPerMinute = 60;
 Display* display = 0;
 XScreenSaverInfo* XInfo = 0;
-}
 
 using namespace std;
-using namespace libtimeit;
 
-IIdleDetector::~IIdleDetector()
-{
-
-}
-
-bool X11_IdleDetector::available()
+bool X11_idle_detector::available()
 {
 	int event_base, error_base;
 	auto dsp = XOpenDisplay(0);
 
-	if ( XScreenSaverQueryExtension(dsp, &event_base, &error_base))
+	if (XScreenSaverQueryExtension(dsp, &event_base, &error_base))
 	{
 		return true;
 	}
@@ -47,91 +39,93 @@ bool X11_IdleDetector::available()
 
 }
 
-X11_IdleDetector::X11_IdleDetector(Timer& timer) : TimerObserver(timer)
+X11_idle_detector::X11_idle_detector(Timer &timer) : Timer_observer(timer)
 {
-	if(!available())
+	if (!available())
 	{
 		cerr << "Unable to detect if user is idle. XScreenSaverQueryExtension not available\n";
 		throw runtime_error("X11 exception");
 	}
 	display = XOpenDisplay(0);
 	XInfo = XScreenSaverAllocInfo();
-	idleSeconds = 0;
-	lastPoll = libtimeit::now();
-	idleTimeout = 2000;
-	lastActivity = lastPoll;
-	isIdle = false;
+	idle_seconds = 0;
+	last_poll = libtimeit::now();
+	idle_timeout_ = 2000;
+	last_activity = last_poll;
+	is_idle = false;
 }
 
-X11_IdleDetector::~X11_IdleDetector()
+X11_idle_detector::~X11_idle_detector()
 {
 	if (XInfo)
 	{
 		XFree(XInfo);
 	}
-	if(display)
+	if (display)
 	{
 		XCloseDisplay(display);
 	}
 }
-void X11_IdleDetector::setIdleTimeout(int minutes)
+
+void X11_idle_detector::idle_timeout(int minutes)
 {
-	idleTimeout = minutes * 60;
+	idle_timeout_ = minutes * 60;
 }
 
-void X11_IdleDetector::reset()
+void X11_idle_detector::reset()
 {
-	isIdle = false;
-	lastPoll = libtimeit::now();
+	is_idle = false;
+	last_poll = libtimeit::now();
 }
 
-void X11_IdleDetector::pollStatus()
+void X11_idle_detector::poll_status()
 {
 	time_t now = libtimeit::now();
-	auto pollTime = now - lastPoll;
-	lastPoll = now;
+	auto pollTime = now - last_poll;
+	last_poll = now;
 
 	// Check if we have been suspended
-	if ( pollTime > idleTimeout)
+	if (pollTime > idle_timeout_)
 	{
 		//We have been suspended
-		idleSeconds = now-lastActivity;
-		isIdle = true;
+		idle_seconds = now - last_activity;
+		is_idle = true;
 		return;
 	}
 
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), XInfo);
-	idleSeconds = (XInfo->idle / 1000);
+	idle_seconds = (XInfo->idle / 1000);
 
-	if (idleSeconds < 20)
+	if (idle_seconds < 20)
 	{
-		lastActivity = now;
+		last_activity = now;
 	}
-	if  (idleSeconds > idleTimeout)
+	if (idle_seconds > idle_timeout_)
 	{
-		isIdle = true;
+		is_idle = true;
 	}
 	else
 	{
-		isIdle = false;
+		is_idle = false;
 	}
 
 }
 
-bool X11_IdleDetector::idle()
+bool X11_idle_detector::idle()
 {
-	pollStatus();
-	return isIdle;
+	poll_status();
+	return is_idle;
 }
 
-int X11_IdleDetector::minutesIdle()
+int X11_idle_detector::minutes_idle()
 {
-	return timeIdle() / secsPerMinute;
+	return time_idle() / secsPerMinute;
 }
 
-time_t X11_IdleDetector::timeIdle()
+time_t X11_idle_detector::time_idle()
 {
-	pollStatus();
-	return idleSeconds;
+	poll_status();
+	return idle_seconds;
 }
 
+}

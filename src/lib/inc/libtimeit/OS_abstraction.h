@@ -5,17 +5,19 @@
  *      Author: hoglet
  */
 
-#ifndef OSABSTRACTION_H_
-#define OSABSTRACTION_H_
+#ifndef OS_ABSTRACTION_H_
+#define OS_ABSTRACTION_H_
 
 #include <string>
 
-namespace OSAbstraction
+namespace libtimeit
 {
-	void mkDir(std::string path);
-	bool fileExists(std::string filename);
-	void unlink(std::string filename);
-	void showURL(std::string url);
+using namespace std;
+
+void make_directory(string path);
+bool file_exists(string filename);
+void unlink(string filename);
+void show_URL(string url);
 };
 
-#endif /* OSABSTRACTION_H_ */
+#endif /* OS_ABSTRACTION_H_ */

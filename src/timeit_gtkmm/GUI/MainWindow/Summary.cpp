@@ -163,7 +163,7 @@ void Summary::on_task_updated(int64_t taskID)
 			TreeModel::Row row = *iter;
 			time_t totalTime = timeAccessor.total_cumulative_time(taskID, startTime, stopTime);
 			assignValuesToRow(row, *task, totalTime);
-			int64_t parentID = task->parent_ID();
+			int64_t parentID = task->parent_ID;
 			if (parentID > 0)
 			{
 				on_task_updated(parentID);
@@ -219,7 +219,7 @@ void Summary::on_dateChanged()
 	guint month;
 	guint day;
 	calendar->get_date(year, month, day);
-	activeDay = libtimeit::getTime(year, month, day);
+	activeDay = libtimeit::to_time(year, month, day);
 	time_t old_startTime = startTime;
 	time_t old_stopTime = stopTime;
 	calculateTimeSpan();
@@ -272,7 +272,7 @@ TreeModel::Row Summary::add(int64_t id)
 {
 	auto task = taskAccessor.by_ID(id);
 	TreeModel::Row row;
-	int64_t parentID = task->parent_ID();
+	int64_t parentID = task->parent_ID;
 	if (parentID)
 	{
 		Gtk::TreeIter iter = findRow(parentID);
@@ -319,9 +319,9 @@ void Summary::populate(Gtk::TreeModel::Row *parent, int parentID)
 
 void Summary::assignValuesToRow(TreeModel::Row &row, Task& task, time_t totalTime)
 {
-	row[columns.col_id] = task.ID();
-	row[columns.col_name] = task.name();
-	row[columns.col_time] = libtimeit::seconds2hhmm(totalTime);
+	row[columns.col_id] = task.ID;
+	row[columns.col_name] = task.name;
+	row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);
 }
 
 Gtk::TreeModel::iterator Summary::findRow(int id)

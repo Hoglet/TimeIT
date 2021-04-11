@@ -23,7 +23,7 @@ class ParentChooser: public Gtk::ComboBox
 {
 public:
 	ParentChooser(Database& database);
-	virtual ~ParentChooser();
+	virtual ~ParentChooser() = default;
 
 	void setID(int ID);
 	void setParentID(int parentID);

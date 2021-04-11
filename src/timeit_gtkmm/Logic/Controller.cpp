@@ -24,7 +24,7 @@ using namespace std;
 
 Controller::Controller(
 		IGUIFactory &op_guiFactory,
-		ITimeKeeper &op_timeKeeper,
+		Time_keeper &op_timeKeeper,
 		Database    &database,
 		IpcServer   &ipc,
 		Notifier    &notifier)
@@ -99,15 +99,15 @@ void Controller::on_action_about()
 //LCOV_EXCL_START
 void Controller::on_action_report_bug()
 {
-	OSAbstraction::showURL("https://github.com/Hoglet/TimeIT/issues/new");
+	show_URL("https://github.com/Hoglet/TimeIT/issues/new");
 }
 
 void Controller::on_action_help()
 {
 	std::stringstream translatedHelp { };
 	std::stringstream helpToUse { };
-	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << get639LanguageString() << "/index.html";
-	if (OSAbstraction::fileExists(std::string(translatedHelp.str())))
+	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << ISO_639_language_string() << "/index.html";
+	if (file_exists(std::string(translatedHelp.str())))
 	{
 		helpToUse << "file://" << translatedHelp.str();
 	}
@@ -115,22 +115,22 @@ void Controller::on_action_help()
 	{
 		std::stringstream defaultHelp;
 		defaultHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/C/index.html";
-		if (OSAbstraction::fileExists(std::string(defaultHelp.str())))
+		if (file_exists(std::string(defaultHelp.str())))
 		{
 			helpToUse << "file://" << defaultHelp.str();
 		}
 	}
-	OSAbstraction::showURL(helpToUse.str().c_str());
+	show_URL(helpToUse.str().c_str());
 }
 //LCOV_EXCL_STOP
 void Controller::on_action_start_task()
 {
-	timeKeeper.StartTask(selectedTaskID);
+	timeKeeper.start(selectedTaskID);
 }
 
 void Controller::on_action_stop_task()
 {
-	timeKeeper.StopTask(selectedTaskID);
+	timeKeeper.stop(selectedTaskID);
 }
 
 void Controller::on_action_edit_task()
@@ -159,7 +159,7 @@ void Controller::on_action_remove_task()
 	//ENHANCEMENT Move code from main window (or?)
 }
 
-void Controller::on_activityResumed()
+void Controller::on_activity_resumed()
 {
 	if( ! timeKeeper.hasRunningTasks())
 	{
@@ -183,11 +183,11 @@ void Controller::on_activityResumed()
 	on_idleChanged();
 }
 
-void Controller::on_idleDetected()
+void Controller::on_idle_detected()
 {
 	timeKeeper.enable(false);
 	time_t now = time(0);
-	idleStartTime = now - timeKeeper.timeIdle();
+	idleStartTime = now - timeKeeper.time_idle();
 	on_idleChanged();
 }
 
@@ -201,7 +201,7 @@ void Controller::on_idleChanged()
 
 void Controller::on_action_revertAndContinue()
 {
-	timeKeeper.stopAllAndContinue();
+	timeKeeper.stop_all_and_continue();
 	timeKeeper.enable(true);
 	if (idleDialog != 0)
 	{
@@ -212,7 +212,7 @@ void Controller::on_action_revertAndContinue()
 }
 void Controller::on_action_revertAndStop()
 {
-	timeKeeper.stopAll();
+	timeKeeper.stop_all();
 	timeKeeper.enable(true);
 	if (idleDialog != 0)
 	{
@@ -231,7 +231,7 @@ void Controller::on_action_continue()
 }
 void Controller::on_action_stopTimers()
 {
-	timeKeeper.stopAll();
+	timeKeeper.stop_all();
 }
 
 void Controller::on_action_task_selection_changed(int selectedTaskID)
@@ -264,7 +264,7 @@ void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t
 }
 
 //LCOV_EXCL_START
-void Controller::on_runningChanged()
+void Controller::on_running_changed()
 {
 	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory.getWidget(MAIN_WINDOW));
 	mainWindow->on_runningTasksChanged();

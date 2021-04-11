@@ -6,19 +6,18 @@
  */
 
 #include "StatusIcon.h"
-#include "MainWindow/MainWindow.h"
 #include <libtimeit/utils.h>
 #include <iostream>
 #include <glibmm/i18n.h>
 #include <iomanip>
-#include <sstream>
+
 namespace GUI
 {
 using namespace std;
 using namespace libtimeit;
 
 StatusIcon::StatusIcon(
-		ITimeKeeper &time_keeper,
+		Time_keeper &time_keeper,
 		Database &database,
 		Notifier& notifier)
 		:
@@ -28,7 +27,7 @@ StatusIcon::StatusIcon(
 		m_timeaccessor(database)
 
 {
-	const std::string &imagePath = libtimeit::getImagePath();
+	const std::string &imagePath = libtimeit::image_path();
 	std::string defaultIconPath = Glib::build_filename(imagePath, "icon.svg");
 	std::string runningIconPath = Glib::build_filename(imagePath, "running.svg");
 	std::string blankIconPath = Glib::build_filename(imagePath, "blank.png");
@@ -120,10 +119,10 @@ std::string StatusIcon::completeTaskPath(int64_t id)
 	auto task = m_taskaccessor.by_ID(id);
 	if (task.has_value())
 	{
-		taskName = task->name();
-		if (task->parent_ID() > 0)
+		taskName = task->name;
+		if (task->parent_ID > 0)
 		{
-			taskName = completeTaskPath(task->parent_ID()) + " / " + taskName;
+			taskName = completeTaskPath(task->parent_ID) + " / " + taskName;
 		}
 	}
 	return taskName;
@@ -156,7 +155,7 @@ void StatusIcon::on_menu_toggle_task5()
 
 void StatusIcon::toggleTask(int64_t id)
 {
-	m_timeKeeper.ToggleTask(id);
+	m_timeKeeper.toggle(id);
 }
 
 void StatusIcon::on_activate()
@@ -249,7 +248,7 @@ void StatusIcon::on_complete_update()
 	populateContextMenu();
 }
 
-void StatusIcon::on_runningChanged()
+void StatusIcon::on_running_changed()
 {
 	setIcon();
 	setTooltip();
@@ -262,13 +261,13 @@ void StatusIcon::setTooltip()
 	if (taskIDs.size() > 0)
 	{
 		//Figure out start and end of today
-		time_t startTime = libtimeit::getBeginingOfDay(time(0));
-		time_t stopTime = libtimeit::getEndOfDay(time(0));
+		time_t startTime = libtimeit::beginning_of_day(time(0));
+		time_t stopTime = libtimeit::end_of_day(time(0));
 		for (int64_t id : taskIDs)
 		{
 			auto task = m_taskaccessor.by_ID(id);
-			message << setw(15) << setiosflags(ios::left) << task->name();
-			message << " " << libtimeit::seconds2hhmm(m_timeaccessor.duration_time(id, startTime, stopTime));
+			message << setw(15) << setiosflags(ios::left) << task->name;
+			message << " " << libtimeit::seconds_2_hhmm(m_timeaccessor.duration_time(id, startTime, stopTime));
 		}
 	}
 	else

@@ -4,157 +4,145 @@
 namespace libtimeit
 {
 Time_entry::Time_entry(
-		Time_ID               id,
-		class UUID            uuid,
-		int64_t               task_ID,
-		optional<class UUID>  taskUUID,
-		time_t                start,
-		time_t                stop,
-		bool                  deleted,
-		Time_entry_state      state,
-		time_t                changed)
+		Time_ID               id_,
+		class UUID            uuid_,
+		int64_t               task_ID_,
+		optional<class UUID>  taskUUID_,
+		time_t                start_,
+		time_t                stop_,
+		bool                  deleted_,
+		Time_entry_state      state_,
+		time_t                changed_)
 		:
-		id_(id),
-		uuid_(uuid),
-		task_ID_(task_ID),
-		task_UUID_(taskUUID),
-		start_(start),
-		stop_(stop),
-		deleted_(deleted),
-		state_(state),
-		changed_(changed)
+		ID(id_),
+		uuid(uuid_),
+		task_ID(task_ID_),
+		task_uuid(taskUUID_),
+		start(start_),
+		stop(stop_),
+		deleted(deleted_),
+		state(state_),
+		changed(changed_)
 {
 }
 
 
 
 Time_entry::Time_entry(
-				Task_ID task_ID,
-				time_t  start,
-				time_t  stop)
+				Task_ID task_ID_,
+				time_t  start_,
+				time_t  stop_)
 			:
-			id_(0),
-			uuid_( UUID() ),
-			task_ID_( task_ID ),
-			task_UUID_( {} ),
-			start_(	start ),
-			stop_( stop ),
-			deleted_( false ),
-			state_( STOPPED ),
-			changed_( time(nullptr) )
+		ID(0),
+		uuid(UUID() ),
+		task_ID(task_ID_ ),
+		task_uuid({} ),
+		start(start_ ),
+		stop(stop_ ),
+		deleted(false ),
+		state(STOPPED ),
+		changed(time(nullptr) )
 {
 }
 
 
-int64_t Time_entry::ID() const
-{
-	return id_;
-}
-time_t Time_entry::start() const
-{
-	return start_;
-}
 
-Time_entry Time_entry::with_start(time_t start) const
+Time_entry Time_entry::with_start(time_t start_) const
 {
-	if (start_ == start)
+	if (start == start_)
 	{
 		return *this;
 	}
 	else
 	{
-		Time_entry returnValue(*this);
-		returnValue.start_   = start;
-		returnValue.changed_ = time(nullptr);
-		return returnValue;
+		return Time_entry(
+				ID,
+				uuid,
+				task_ID,
+				task_uuid,
+				start_,
+				stop,
+				deleted,
+				state,
+				time(nullptr));
 	}
 }
 
-time_t Time_entry::stop() const
+Time_entry Time_entry::with_stop(time_t stop_) const
 {
-	return stop_;
-}
-
-Time_entry Time_entry::with_stop(time_t stop) const
-{
-	if(stop_ == stop)
+	if(stop == stop_)
 	{
 		return *this;
 	}
 	else
 	{
-		auto returnValue(*this);
-		returnValue.stop_ = stop;
-		returnValue.changed_ = time(nullptr);
-		return returnValue;
+		return Time_entry(
+				ID,
+				uuid,
+				task_ID,
+				task_uuid,
+				start,
+				stop_,
+				deleted,
+				state,
+				time(nullptr));
 	}
 }
-
-int64_t Time_entry::task_ID() const
-{
-	return task_ID_;
-}
-class UUID Time_entry::get_UUID() const
-{
-	return uuid_;
-}
-
-optional<class UUID> Time_entry::task_UUID() const
-{
-	return task_UUID_;
-}
-
 
 
 bool Time_entry::running() const
 {
-	return state_ == RUNNING;
+	return state == RUNNING;
 }
 
-time_t Time_entry::changed() const
-{
-	return changed_;
-}
 
-bool Time_entry::deleted() const
+Time_entry Time_entry::with_deleted(bool state_) const
 {
-	return deleted_;
-}
-Time_entry Time_entry::with_deleted(bool state) const
-{
-	if (deleted_ == state)
+	if (deleted == state_)
 	{
 		return *this;
 	}
 	else
 	{
-		auto returnValue(*this);
-		returnValue.deleted_ = state;
-		returnValue.changed_ = time(nullptr);
-		return returnValue;
+		return Time_entry(
+				ID,
+				uuid,
+				task_ID,
+				task_uuid,
+				start,
+				stop,
+				state_,
+				state,
+				time(nullptr));
 	}
 }
 
 Time_entry Time_entry::with( Time_entry_state new_state) const
 {
-	if ( state_ == new_state)
+	if (state == new_state)
 	{
 		return *this;
 	}
 	else
 	{
-		auto new_entry(*this);
-		new_entry.state_   = new_state;
-		new_entry.changed_ = time(nullptr);
-		return new_entry;
+		return Time_entry(
+				ID,
+				uuid,
+				task_ID,
+				task_uuid,
+				start,
+				stop,
+				deleted,
+				new_state,
+				time(nullptr));
 	}
 }
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
-	return (op1.id_ == op2.id_ && op1.changed_ == op2.changed_ && op1.deleted_ == op2.deleted_ && op1.state_ == op2.state_
-			&& op1.start_ == op2.start_ && op1.stop_ == op2.stop_ && op1.task_ID_ == op2.task_ID_ && op1.uuid_ == op2.uuid_
-			&& op1.task_UUID_ == op2.task_UUID_);
+	return (op1.ID == op2.ID && op1.changed == op2.changed && op1.deleted == op2.deleted && op1.state == op2.state
+			&& op1.start == op2.start && op1.stop == op2.stop && op1.task_ID == op2.task_ID && op1.uuid == op2.uuid
+			&& op1.task_uuid == op2.task_uuid);
 }
 
 bool operator!=(const Time_entry &op1, const Time_entry &op2)

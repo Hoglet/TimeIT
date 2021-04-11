@@ -12,35 +12,45 @@
 
 namespace libtimeit
 {
-std::string getImagePath();
-std::string get639LanguageString();
+using namespace std;
+
+string image_path();
+string ISO_639_language_string();
 time_t now();
-time_t getTime(int year, int month, int day, int hour = 0, int min = 0, int sec = 0);
-time_t getBeginingOfDay(const time_t&);
-time_t getEndOfDay(const time_t&);
-time_t getBeginingOfWeek(const time_t&);
-time_t getEndOfWeek(const time_t&);
-time_t getBeginingOfMonth(const time_t&);
-time_t getEndOfMonth(const time_t&);
-time_t getBeginingOfYear(const time_t&);
-time_t getEndOfYear(const time_t&);
-int getDaysInMonth(const time_t &rawtime);
-bool onDifferentDays(const time_t &one, const time_t &other);
-std::string dayOfWeekAbbreviation(const time_t &rawtime);
-std::string seconds2hhmm(int64_t s);
-std::string createDateString(time_t timestamp);
-std::string create_time_span_string(const time_t &from, const time_t &to);
-std::string create_duration_string(const time_t &from, const time_t &to);
-std::string createIdlingString(const time_t &to, const time_t &next);
-uint64_t millisecondsSinceEpoch();
+time_t to_time(int year, int month, int day, int hour = 0, int min = 0, int sec = 0);
+
+time_t beginning_of_day( time_t raw_time);
+time_t end_of_day( time_t raw_time);
+
+time_t beginning_of_week( time_t raw_time);
+time_t end_of_week( time_t  raw_time);
+
+time_t beginning_of_month( time_t raw_time);
+time_t end_of_month( time_t raw_time);
+
+time_t beginning_of_year( time_t raw_time);
+time_t end_of_year( time_t raw_time);
+
+int    days_in_month( time_t raw_time);
+bool   is_on_different_days(time_t one, const time_t other);
+
+string day_of_week_abbreviation( time_t raw_time);
+
+string seconds_2_hhmm(int64_t s);
+string date_string(time_t timestamp);
+string time_span_string(time_t from, time_t to);
+string duration_string(time_t from, time_t to);
+string idling_string(time_t to, time_t next);
+
+uint64_t milliseconds_since_epoch();
 
 template<typename ... Args>
-std::string string_printf(const std::string &fmt, Args ... vs)
+string string_printf(const string &fmt, Args ... vs)
 {
-	size_t size = std::snprintf(nullptr, 0, fmt.c_str(), vs...) + 1;
+	size_t size = snprintf(nullptr, 0, fmt.c_str(), vs...) + 1;
 	char temp_buffer[size];
-	std::snprintf(temp_buffer, size, fmt.c_str(), vs...);
-	return std::string(temp_buffer);
+	snprintf(temp_buffer, size, fmt.c_str(), vs...);
+	return string(temp_buffer);
 }
 }
 ;

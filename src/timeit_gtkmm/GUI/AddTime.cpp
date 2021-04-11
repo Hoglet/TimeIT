@@ -39,7 +39,7 @@ AddTime::AddTime(
 	auto task = m_taskAccessor.by_ID(taskID);
 	if (task.has_value())
 	{
-		taskName.set_text(task->name());
+		taskName.set_text(task->name);
 	}
 	startTimeHour.set_range(0, 23);
 	startTimeMinute.set_range(0, 59);
@@ -135,8 +135,8 @@ void AddTime::on_response(int response_id)
 		int stopH = stopTimeHour.get_value_as_int();
 		int stopM = stopTimeMinute.get_value_as_int();
 
-		time_t startTime = libtimeit::getTime(y, m, d, startH, startM);
-		time_t stopTime = libtimeit::getTime(y, m, d, stopH, stopM);
+		time_t startTime = libtimeit::to_time(y, m, d, startH, startM);
+		time_t stopTime = libtimeit::to_time(y, m, d, stopH, stopM);
 		m_timeAccessor.create( Time_entry(taskID, startTime, stopTime) );
 	}
 }
@@ -176,8 +176,8 @@ void AddTime::on_month_changed()
 	guint m = month.get_value_as_int() - 1;
 
 	//Avoiding problems with dayligt saving time by checking second day of month
-	time_t activeDay = libtimeit::getTime(y, m, 2);
-	int maxDay = libtimeit::getDaysInMonth(activeDay);
+	time_t activeDay = libtimeit::to_time(y, m, 2);
+	int maxDay = libtimeit::days_in_month(activeDay);
 	day.set_range(1, maxDay);
 }
 

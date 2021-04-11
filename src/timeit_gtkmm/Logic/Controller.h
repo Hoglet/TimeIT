@@ -26,14 +26,14 @@ using namespace libtimeit;
 
 class Controller :
 		public ActionObserver,
-		public TimekeeperObserver,
+		public Time_keeper_observer,
 		public SummaryObserver,
 		public Event_observer
 {
 public:
 	Controller(
 			IGUIFactory &guiFactory,
-			ITimeKeeper &timeKeeper,
+			Time_keeper &timeKeeper,
 			Database    &database,
 			IpcServer   &ipc_server,
 			Notifier    &notifier);
@@ -59,10 +59,10 @@ public:
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime);
 
 	//
-	virtual void on_idleDetected();
-	virtual void on_activityResumed();
+	virtual void on_idle_detected();
+	virtual void on_activity_resumed();
 	virtual void on_idleChanged();
-	virtual void on_runningChanged();
+	virtual void on_running_changed();
 	virtual void on_action_toggleMainWindow();
 	virtual void on_show_main_window();
 	virtual void on_action_revertAndContinue();
@@ -72,7 +72,7 @@ public:
 
 private:
 	IGUIFactory &guiFactory;
-	ITimeKeeper &timeKeeper;
+	Time_keeper &timeKeeper;
 	shared_ptr<IdleDialog> idleDialog;
 	Extended_task_accessor taskAccessor;
 	Time_accessor         timeAccessor;

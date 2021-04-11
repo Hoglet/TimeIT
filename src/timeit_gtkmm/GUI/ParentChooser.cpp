@@ -110,18 +110,15 @@ void ParentChooser::populate(std::string &baseString, int parentID)
 		{
 			name = baseString;
 		}
-		name += task.name();
-		row[Columns.col_id] = task.ID();
+		name += task.name;
+		row[Columns.col_id] = task.ID;
 		row[Columns.col_name] = name;
 
 		string newBaseString = baseString + "    ";
-		populate(newBaseString, task.ID());
+		populate(newBaseString, task.ID);
 	}
 }
 
-ParentChooser::~ParentChooser()
-{
-}
 
 void ParentChooser::on_combo_changed()
 {
@@ -134,8 +131,6 @@ void ParentChooser::on_combo_changed()
 			//Get the data for the selected row, using our knowledge of the tree
 			//model:
 			parentID = row[Columns.col_id];
-//			Glib::ustring name = row[Columns.col_name];
-//			std::cout << " ID=" << id << ", name=" << name << std::endl;
 		}
 	}
 	else

@@ -34,7 +34,7 @@ using namespace libtimeit;
 class TaskList: public Gtk::TreeView, public Event_observer
 {
 public:
-	TaskList(Database &database, ITimeKeeper &timeKeeper, Notifier &notifier);
+	TaskList(Database &database, Time_keeper &time_keeper, Notifier &notifier);
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
@@ -90,7 +90,7 @@ private:
 	void doUpdate();
 	std::list<ActionObserver*> observers;
 	Extended_task_accessor taskAccessor;
-	ITimeKeeper& m_timeKeeper;
+	Time_keeper& m_timeKeeper;
 };
 }
 #endif // _TASK_LIST_HPP_

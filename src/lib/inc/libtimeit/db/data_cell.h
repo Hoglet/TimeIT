@@ -8,7 +8,7 @@ namespace libtimeit
 {
 using namespace std;
 
-class Data_cell
+struct Data_cell
 {
 public:
 	Data_cell();

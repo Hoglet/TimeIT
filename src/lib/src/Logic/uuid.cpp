@@ -21,7 +21,7 @@ bool rangeTestG4(const char &c)
 	return false;
 }
 
-bool isValid(const string &uuid)
+bool is_valid_uuid(const string &uuid)
 {
 
 	if (36 != uuid.length())
@@ -99,9 +99,9 @@ bool isValid(const string &uuid)
 }
 
 
-optional<UUID> toUuid(string uuid)
+optional<UUID> to_uuid(string uuid)
 {
-	if (isValid(uuid))
+	if (is_valid_uuid(uuid))
 	{
 		return UUID(uuid);
 	}
@@ -153,9 +153,9 @@ const char *UUID::c_str() const
 	return uuid.c_str();
 }
 
-UUID::UUID(string op_uuid)
+UUID::UUID(string basic_string)
 {
-	uuid = op_uuid;
+	uuid = basic_string;
 }
 
 }

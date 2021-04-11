@@ -1,5 +1,5 @@
-#ifndef TIMEKEEPER_H_
-#define TIMEKEEPER_H_
+#ifndef TIME_KEEPER_H_
+#define TIME_KEEPER_H_
 
 #include <list>
 #include <map>
@@ -16,80 +16,59 @@ namespace libtimeit
 {
 using namespace std;
 
-class TimekeeperObserver
+class Time_keeper_observer
 {
 public:
-	virtual ~TimekeeperObserver();
-	virtual void on_idleDetected() = 0;
-	virtual void on_activityResumed() = 0;
-	virtual void on_runningChanged() = 0;
+	virtual ~Time_keeper_observer() = default;
+	virtual void on_idle_detected() = 0;
+	virtual void on_activity_resumed() = 0;
+	virtual void on_running_changed() = 0;
 };
 
-class ITimeKeeper
-{
-public:
-	virtual ~ITimeKeeper();
-	virtual void StartTask(int64_t id) = 0;
-	virtual void StopTask(int64_t id) = 0;
-	virtual void ToggleTask(int64_t id) = 0;
-
-	virtual bool isActiveTask(int64_t taskID) = 0;
-	virtual bool hasRunningTasks() = 0;
-	virtual bool isIdle() = 0;
-	virtual time_t timeIdle() = 0;
-
-	//Enable (or disable) automatic time keeping.
-	virtual void enable(bool) = 0;
-	//Stop all tasks without saving new time records
-	virtual void stopAll() = 0;
-	//Stop all tasks, without saving new time records, and then start them again
-	virtual void stopAllAndContinue() = 0;
-
-	//
-	virtual void attach(TimekeeperObserver *) = 0;
-	virtual void detach(TimekeeperObserver *) = 0;
-};
-
-class Timekeeper :
-		public TimerObserver,
-		public ITimeKeeper,
+class Time_keeper :
+		public Timer_observer,
 		public Event_observer
 {
 public:
-	Timekeeper(Database &database, Timer &timer, Notifier& notifier);
-	virtual ~Timekeeper();
+	Time_keeper(
+			Database& database,
+			Timer&    timer,
+			Notifier& notifier
+			);
 
-	void StartTask(int64_t id);
-	void StopTask(int64_t id);
-	void ToggleTask(int64_t id);
+	virtual ~Time_keeper();
 
-	bool isActiveTask(int64_t taskID);
+	void start(Task_ID id);
+	void stop(Task_ID id);
+	void toggle(Task_ID id);
+
+	bool is_active_task(int64_t taskID);
 	bool hasRunningTasks();
 
 	//Enable (or disable) automatic time keeping.
 	void enable(bool);
 
 	//Stop all tasks without saving new time records
-	void stopAll();
+	void stop_all();
 
 	//Stop all tasks, without saving new time records, and then start them again
-	void stopAllAndContinue();
+	void stop_all_and_continue();
 
 	//
-	void attach(TimekeeperObserver *);
-	void detach(TimekeeperObserver *);
+	void attach(Time_keeper_observer *);
+	void detach(Time_keeper_observer *);
 
 	//
-	virtual bool isIdle();
-	virtual time_t timeIdle();
-	virtual int minutesIdle();
+	virtual bool   is_idle();
+	virtual time_t time_idle();
+	virtual int    minutes_idle();
 
 	//TimerProxyObserver interface
 	void on_signal_1_second();
 	void on_signal_10_seconds();
 
 private:
-	void UpdateTask(int64_t id, time_t now);
+	void update_task(int64_t id, time_t now);
 
 	virtual void on_task_added(int64_t)
 	{
@@ -110,34 +89,34 @@ private:
 	virtual void on_settings_changed(string);
 	virtual void on_complete_update();
 
-	void UpdateTask(int64_t id);
+	void update_task(int64_t id);
 
 	bool enabled;
-	bool is_idle;
+	bool is_idle_;
 
-	struct TaskTime
+	struct Task_time
 	{
-		int64_t taskID;
-		int64_t dbHandle;
-		time_t startTime;
-		time_t stopTime; //Latest confirmed point in time
+		Task_ID task_ID;
+		Time_ID time_ID;
+		time_t  start;
+		time_t  stop; //Latest confirmed point in time
 	};
-	map<int64_t, TaskTime> active_tasks;
+	map<int64_t, Task_time> active_tasks;
 
 	int idle_Gz;
 	int idle_Gt;
 
-	void notifyRunningChanged();
-	void notifyIdleDetected();
-	void notifyActivityResumed();
-	list<TimekeeperObserver *> observers;
+	void notify_running_changed();
+	void notify_idle_detected();
+	void notify_activity_resumed();
+
+	Timer&                       timer;
+	list<Time_keeper_observer *> observers;
 
 	Time_accessor      time_accessor;
-	Task_accessor      task_accessor;
-	Timer             &timer;
 	Settings_accessor  settings_accessor;
 
-	X11_IdleDetector idle_detector;
+	X11_idle_detector idle_detector;
 };
 }
-#endif /*TIMEKEEPER_H_*/
+#endif /*TIME_KEEPER_H_*/

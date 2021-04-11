@@ -17,7 +17,7 @@ using namespace std;
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
 GUIFactory::GUIFactory(
-		ITimeKeeper &op_timeKeeper,
+		Time_keeper &op_timeKeeper,
 		Database &op_database,
 		Timer& op_timer,
 		Notifier& publisher)

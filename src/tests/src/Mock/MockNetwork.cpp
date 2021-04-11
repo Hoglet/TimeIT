@@ -52,7 +52,7 @@ shared_ptr<asyncHTTPResponse> MockNetwork::request(string url, string data, stri
 	shared_ptr<asyncHTTPResponse> result=make_shared<asyncHTTPResponse>();
 
 	auto f = [ url, response, statusOK, httpCode, errorMessage]() {
-		HTTPResponse result(url, response, statusOK, httpCode, errorMessage);
+		HTTP_response result(url, response, statusOK, httpCode, errorMessage);
 		return result;
 	};
 

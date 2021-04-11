@@ -12,33 +12,30 @@
 #include <memory>
 #include <libtimeit/db/notifier.h>
 
-class IIdleDetector
+namespace libtimeit
 {
-public:
-	virtual ~IIdleDetector();
-	virtual int minutesIdle() = 0;
-	virtual time_t timeIdle() = 0;
-};
 
 
-class X11_IdleDetector : public libtimeit::TimerObserver, public IIdleDetector
+class X11_idle_detector : public Timer_observer
 {
 public:
 	static bool available();
-	X11_IdleDetector(libtimeit::Timer& timer);
-	virtual ~X11_IdleDetector();
-	int minutesIdle();
-	time_t timeIdle();
-	void setIdleTimeout(int minutes);
+	X11_idle_detector(Timer &timer);
+	virtual ~X11_idle_detector();
+	int    minutes_idle();
+	time_t time_idle();
+	void idle_timeout(int minutes);
 	void reset();
 	bool idle();
 private:
-	void pollStatus();
-	time_t idleSeconds;
-	time_t lastPoll = 0;
-	long idleTimeout;
-	bool isIdle;
-	time_t lastActivity;
+	void   poll_status();
+
+	time_t idle_seconds;
+	time_t last_poll = 0;
+	long   idle_timeout_;
+	bool   is_idle;
+	time_t last_activity;
 };
 
+}
 #endif /* IDLEDETECTOR_H_ */

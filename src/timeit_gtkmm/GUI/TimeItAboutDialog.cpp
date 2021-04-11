@@ -12,13 +12,14 @@
 #include <libtimeit/version.h>
 namespace GUI
 {
+using namespace libtimeit;
 
 TimeItAboutDialog::~TimeItAboutDialog()
 {
 }
 void TimeItAboutDialog::on_link_clicked(AboutDialog &about_dialog, const Glib::ustring &link)
 {
-	OSAbstraction::showURL(link);
+	show_URL(link);
 }
 
 TimeItAboutDialog::TimeItAboutDialog()
@@ -35,7 +36,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	//This is the licence txt
 	set_license(_("This program is licenced under GNU General Public Licence (GPL) version 2."));
 
-	std::string iconPath = Glib::build_filename( libtimeit::getImagePath(), "icon.svg" );
+	std::string iconPath = Glib::build_filename(libtimeit::image_path(), "icon.svg" );
 	set_logo(Gdk::Pixbuf::create_from_file(iconPath, 200, 200));
 
 	set_url_hook(sigc::mem_fun(this, &TimeItAboutDialog::on_link_clicked));

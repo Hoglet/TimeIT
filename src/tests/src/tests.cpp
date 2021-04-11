@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <libtimeit.h>
 
+
 int main(int argc, char **argv)
 {
 	libtimeit::init();

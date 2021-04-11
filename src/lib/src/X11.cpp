@@ -11,6 +11,10 @@
 #include <X11/Xatom.h>
 #include <X11/cursorfont.h>
 
+namespace libtimeit
+{
+
+
 //LCOV_EXCL_START
 X11::X11()
 {
@@ -24,43 +28,44 @@ X11::~X11()
 	XCloseDisplay(display);
 }
 
-int X11::getViewportWidth()
+int X11::viewport_width()
 {
-	Screen* screen = DefaultScreenOfDisplay(display);
+	Screen *screen = DefaultScreenOfDisplay(display);
 	return screen->width;
 }
 
-int X11::getViewportHeight()
+int X11::viewport_height()
 {
-	Screen* screen = DefaultScreenOfDisplay(display);
+	Screen *screen = DefaultScreenOfDisplay(display);
 	return screen->height;
 }
 
 
-long X11::getCardinal(const char *name, int offset) noexcept(false)
+long X11::get_cardinal(const char *name, int offset) noexcept(false)
 {
-	Atom propertyName = XInternAtom(display, name, False);
-	Atom propertyType = XA_CARDINAL;
+	Atom property_name = XInternAtom(display, name, False);
+	Atom property_type = XA_CARDINAL;
 
-	Atom returnedType;
-	int returnedFormat;
-	unsigned long numberOfItems;
+	Atom returned_type;
+	int  returned_Format;
+	unsigned long number_of_items;
 	unsigned long bytes_after_return;
-	unsigned char *returnedData;
+	unsigned char *returned_data;
 
-	long returnValue = 0;
+	long return_value = 0;
 
-	if (XGetWindowProperty(display, rootWindow, propertyName, offset, 1, False, propertyType, &returnedType,
-			&returnedFormat, &numberOfItems, &bytes_after_return, &returnedData) == Success)
+	if (XGetWindowProperty(
+			display, rootWindow, property_name, offset, 1, False, property_type, &returned_type,
+			&returned_Format, &number_of_items, &bytes_after_return, &returned_data) == Success)
 	{
-		if (returnedFormat == 32 && returnedType == propertyType && numberOfItems > 0)
+		if (returned_Format == 32 && returned_type == property_type && number_of_items > 0)
 		{
-			returnValue = ((long*) returnedData)[0];
-			XFree(returnedData);
+			return_value = ((long *) returned_data)[0];
+			XFree(returned_data);
 		}
 		else
 		{
-			XFree(returnedData);
+			XFree(returned_data);
 			e.setMessage("get_cardinal failed: Unexpected data");
 			throw e;
 		}
@@ -70,39 +75,40 @@ long X11::getCardinal(const char *name, int offset) noexcept(false)
 		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
 		throw e;
 	}
-	return returnValue;
+	return return_value;
 }
 
-std::vector<std::string> X11::getStrings(const char *name) noexcept(false)
+vector<string> X11::get_strings(const char *name) noexcept(false)
 {
-	Atom propertyName = XInternAtom(display, name, False);
-	Atom propertyType = XInternAtom(display, "UTF8_STRING", False);
+	Atom property_name = XInternAtom(display, name, False);
+	Atom property_type = XInternAtom(display, "UTF8_STRING", False);
 
-	Atom returnedType;
-	int returnedFormat;
-	unsigned long numberOfItems;
-	unsigned long bytes_after_return;
-	unsigned char *returnedData;
-	std::vector<std::string> returnValues;
+	Atom returned_type;
+	int  returned_format;
+	unsigned long  number_of_items;
+	unsigned long  bytes_after_return;
+	unsigned char* returned_data;
+	vector<string> return_values;
 
-	if (XGetWindowProperty(display, rootWindow, propertyName, 0, 1024, False, propertyType, &returnedType,
-			&returnedFormat, &numberOfItems, &bytes_after_return, &returnedData) == Success)
+	if (XGetWindowProperty(
+			display, rootWindow, property_name, 0, 1024, False, property_type, &returned_type,
+			&returned_format, &number_of_items, &bytes_after_return, &returned_data) == Success)
 	{
 
-		if (returnedType == propertyType && numberOfItems > 0)
+		if (returned_type == property_type && number_of_items > 0)
 		{
 			unsigned int pos = 0;
-			while (pos < numberOfItems)
+			while (pos < number_of_items)
 			{
-				std::string str = (char*) (&returnedData[pos]);
-				returnValues.push_back(str);
+				string str = (char *) (&returned_data[pos]);
+				return_values.push_back(str);
 				pos += str.length() + 1;
 			}
-			XFree(returnedData);
+			XFree(returned_data);
 		}
 		else
 		{
-			XFree(returnedData);
+			XFree(returned_data);
 			e.setMessage("get_strings failed: Unexpected data");
 			throw e;
 		}
@@ -112,6 +118,7 @@ std::vector<std::string> X11::getStrings(const char *name) noexcept(false)
 		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
 		throw e;
 	}
-	return returnValues;
+	return return_values;
 }
 //LCOV_EXCL_STOP
+}

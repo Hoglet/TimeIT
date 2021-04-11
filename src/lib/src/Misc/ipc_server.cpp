@@ -18,7 +18,7 @@ namespace libtimeit
 {
 using namespace std;
 
-IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer), TimerObserver(op_timer)
+IpcServer::IpcServer(string name, Timer& op_timer) : timer(op_timer), Timer_observer(op_timer)
 {
 	socketName = prepareSocketDir() + name;
 

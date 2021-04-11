@@ -23,11 +23,11 @@ TEST(ExtendedTaskAccessor, by_ID)
 	timeAccessor.create( Time_entry( taskId2, 0, 1000 ) );
 
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ("Test", task->name());
+	ASSERT_EQ("Test", task->name);
 	ASSERT_EQ(2000, task->total_time());
 
 	auto task2 = taskAccessor.by_ID(taskId2);
-	ASSERT_EQ("Test2", task2->name());
+	ASSERT_EQ("Test2", task2->name);
 	ASSERT_EQ(1000, task2->total_time());
 }
 
@@ -52,7 +52,7 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 
 	tasks = taskAccessor.by_parent_ID();
 	Extended_task &task = tasks.at(0);
-	ASSERT_EQ("Test", task.name());
+	ASSERT_EQ("Test", task.name);
 	ASSERT_EQ(1000, task.total_time());
 }
 
@@ -72,7 +72,7 @@ TEST(ExtendedTaskAccessor, getRunningTasks)
 	auto tasks = taskAccessor.getRunningTasks();
 	ASSERT_EQ(1, tasks.size());
 	Extended_task task = tasks.at(0);
-	ASSERT_EQ("Test2", task.name());
+	ASSERT_EQ("Test2", task.name);
 
 	tasks = taskAccessor.by_parent_ID();
 	auto task2 = tasks.at(0);
@@ -101,10 +101,10 @@ TEST(ExtendedTaskAccessor, setExpandedTasks)
 	Extended_task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(false, task->expanded());
+	ASSERT_EQ(false, task->expanded_);
 	taskAccessor.setTaskExpanded(taskId, true);
 	auto task2 = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(true, task2->expanded());
+	ASSERT_EQ(true, task2->expanded_);
 }
 
 TEST(ExtendedTaskAccessor, testTimeReporting)

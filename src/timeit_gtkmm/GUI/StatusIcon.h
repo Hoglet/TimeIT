@@ -20,11 +20,11 @@ namespace GUI
 {
 using namespace libtimeit;
 
-class StatusIcon: public TimekeeperObserver, public IStatusIcon, public Event_observer
+class StatusIcon: public Time_keeper_observer, public IStatusIcon, public Event_observer
 {
 public:
 	virtual ~StatusIcon();
-	StatusIcon(ITimeKeeper&, Database&, Notifier& notifier);
+	StatusIcon(Time_keeper&, Database&, Notifier& notifier);
 	virtual void show()
 	{
 	}
@@ -35,10 +35,10 @@ private:
 	void on_activate();
 	void setIcon();
 	void setTooltip();
-	void on_runningChanged();
-	void on_activityResumed()
+	void on_running_changed();
+	void on_activity_resumed()
 	{};
-	void on_idleDetected()
+	void on_idle_detected()
 	{};
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();
@@ -76,7 +76,7 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> runningIconSmall;
 
 	Gtk::Menu m_Menu_Popup;
-	ITimeKeeper& m_timeKeeper;
+	Time_keeper& m_timeKeeper;
 	Task_accessor m_taskaccessor;
 	Time_accessor m_timeaccessor;
 	std::list<ActionObserver*> observers;

@@ -12,11 +12,11 @@ namespace libtimeit
 {
 using namespace std;
 
-vector<Task>      toTasks(const string&);
-vector<Time_entry> toTimes(const string&);
+vector<Task>       to_tasks(const string& json);
+vector<Time_entry> to_times(const string& json);
 
-string toJson(vector<Task>, string username);
-string toJson(const vector<Time_entry>&);
+string to_json(vector<Task> tasks, string username);
+string to_json(const vector<Time_entry>& times);
 }
 
 #endif /* JSON_H_ */

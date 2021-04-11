@@ -15,20 +15,20 @@ using namespace std;
 
 struct asyncHTTPResponse
 {
-	shared_future<HTTPResponse> futureResponse;
+	shared_future<HTTP_response> futureResponse;
 };
 
 class INetwork
 {
 public:
-	virtual ~INetwork();
+	virtual ~INetwork() = default;
 	virtual shared_ptr<asyncHTTPResponse>
 	request(
 			string url,
 			string data,
 			string username,
 			string password,
-			bool   ignoreCertificateErrors) = 0;
+			bool   ignore_certificate_errors) = 0;
 };
 
 
@@ -37,12 +37,12 @@ class Network : public INetwork
 public:
 	Network();
 	virtual ~Network();
-	virtual std::shared_ptr<asyncHTTPResponse> request(
+	virtual shared_ptr<asyncHTTPResponse> request(
 			string url,
 			string data,
 			string username,
 			string password,
-			bool ignoreCertificateErrors);
+			bool ignore_certificate_errors);
 private:
 };
 //LCOV_EXCL_STOP

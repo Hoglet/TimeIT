@@ -11,22 +11,27 @@ namespace libtimeit
 {
 using namespace std;
 
-class AutoTracker : public libtimeit::TimerObserver
+class Auto_tracker : public Timer_observer
 {
 public:
-	AutoTracker(ITimeKeeper &timeKeeper, Database &database, Timer &timer);
-	virtual ~AutoTracker() = default;
-private:
-	void check4Changes();
-	void doTaskSwitching(int oldWorkspace, int newWorkspace);
-	//TimerObserver
-	virtual void on_signal_1_second();
+	Auto_tracker(
+			Time_keeper& time_keeper_,
+			Database&    database_,
+			Timer&       timer_
+			);
 
-	int oldWorkspace;
-	ITimeKeeper        &time_keeper;
+private:
+	void check_for_changes();
+	void do_task_switching(int old_workspace, int new_workspace);
+	//TimerObserver
+	void on_signal_1_second() override;
+
+	int old_workspace;
+
+	Time_keeper        &time_keeper;
 	Timer              &timer;
-	Autotrack_accessor  autotrack_accessor;
-	Task_accessor       task_accessor;
+
+	Auto_track_accessor  auto_track_accessor;
 	Workspace           workspace;
 };
 

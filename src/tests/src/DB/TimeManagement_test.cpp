@@ -22,7 +22,7 @@ Extended_task getTask(time_t start = 0, time_t stop = 0)
 TEST(TimeManagement, tasksTimeIs100)
 {
 	Extended_task task = getTask();
-	ASSERT_EQ(100, task.time());
+	ASSERT_EQ(100, task.time_);
 }
 
 TEST(TimeManagement, tasksTotalTimeIs150)
@@ -34,13 +34,13 @@ TEST(TimeManagement, tasksTotalTimeIs150)
 TEST(TimeManagement, staggerTest1RecordedTimePassesEnd)
 {
 	Extended_task task = getTask(0, 150);
-	ASSERT_EQ(50, task.time());
+	ASSERT_EQ(50, task.time_);
 }
 
 TEST(TimeManagement, staggerTest2RecordedTimeStartsBeforeStart)
 {
 	Extended_task task = getTask(150, 300);
-	ASSERT_EQ(50, task.time());
+	ASSERT_EQ(50, task.time_);
 }
 
 TEST(TimeManagement, staggerTest3RecordedTotalTimePassesEnd)

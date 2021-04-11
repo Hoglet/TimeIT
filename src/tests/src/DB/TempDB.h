@@ -22,8 +22,6 @@ public:
 	TempDB(Notifier &notifier);
 	virtual ~TempDB();
 	void execute(string statement);
-private:
-	TempDB();
 };
 
 }

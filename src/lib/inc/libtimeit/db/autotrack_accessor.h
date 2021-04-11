@@ -19,12 +19,12 @@ namespace libtimeit
 
 using namespace std;
 
-class Autotrack_accessor: public Accessor
+class Auto_track_accessor: public Accessor
 {
 	friend class Database;
 public:
-	Autotrack_accessor(Database& db);
-	~Autotrack_accessor() = default;
+	Auto_track_accessor(Database& db);
+	~Auto_track_accessor() = default;
 
 	Task_ID_list    task_IDs(int workspace);
 	vector<int>     workspaces(int64_t task_ID);

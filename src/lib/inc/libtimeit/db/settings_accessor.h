@@ -38,7 +38,6 @@ protected:
 	void      upgrade()        override;
 
 private:
-	Settings_accessor();
 	void  setting_changed(string name);
 
 	Database& database;

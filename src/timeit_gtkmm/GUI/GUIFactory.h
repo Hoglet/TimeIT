@@ -22,7 +22,7 @@ using namespace std;
 class GUIFactory: public IGUIFactory
 {
 public:
-	GUIFactory(ITimeKeeper&, Database &database, Timer& timer, Notifier& notifier);
+	GUIFactory(Time_keeper&, Database &database, Timer& timer, Notifier& notifier);
 	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual IStatusIcon& getStatusIcon();
@@ -50,7 +50,7 @@ private:
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
-	ITimeKeeper& timeKeeper;
+	Time_keeper& timeKeeper;
 
 	Database& database;
 	Timer& timer;

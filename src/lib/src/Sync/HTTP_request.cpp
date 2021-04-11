@@ -6,92 +6,91 @@
 #include <cstring>
 #include <stdexcept>
 
-size_t receive_data(void *ptr, size_t size, size_t nmemb, std::string *receivedData)
+namespace libtimeit
+{
+
+
+size_t receive_data(void* ptr, size_t size, size_t nmemb, string* received_data)
 {
 	int length = size * nmemb;
 	char data[length + 1];
 	strncpy(data, (const char*) ptr, length);
 	data[length] = 0;
-	receivedData->append(data);
+	received_data->append(data);
 	return size * nmemb;
 }
 
-size_t send_data(void *ptr, size_t size, size_t nmemb, HTTPRequest *caller)
-{
-	return caller->sendData(ptr, size, nmemb);
-}
 
-HTTPRequest::HTTPRequest()
+HTTP_request::HTTP_request()
 {
 	curl = curl_easy_init();
 
 	if (curl == nullptr)
 	{
-		throw std::runtime_error("Unable to initialise network");
+		throw runtime_error("Unable to initialise network");
 	}
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 //	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, receive_data);
 	curl_easy_setopt(curl, CURLOPT_READFUNCTION, send_data);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receiveBuffer);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &receive_buffer);
 	curl_easy_setopt(curl, CURLOPT_READDATA, this);
 
 
 }
 
-void HTTPRequest::ignoreCertErrors(bool ignore)
+void HTTP_request::ignore_cert_errors(bool ignore)
 {
-	ignoreCertificateErrors_ = ignore;
+	ignore_certificate_errors = ignore;
 }
 
 
-
-size_t HTTPRequest::sendData(void *ptr, size_t size, size_t nmemb)
+size_t HTTP_request::send_data(void* pVoid, size_t i, size_t i1, HTTP_request* caller)
 {
-	size_t dataLength = sendBuffer.size();
-	size_t bufferLength = size * nmemb;
-	size_t charactersToSend = dataLength - curSendPosition;
-	if (charactersToSend > bufferLength)
+	size_t data_length = caller->send_buffer.size();
+	size_t buffer_length = i * i1;
+	size_t characters_to_send = data_length - caller->cur_send_position;
+	if (characters_to_send > buffer_length)
 	{
-		charactersToSend = bufferLength;
+		characters_to_send = buffer_length;
 	}
 
-	strncpy((char*) ptr, &(sendBuffer.c_str()[curSendPosition]), charactersToSend);
-	curSendPosition += charactersToSend;
-	return charactersToSend;
+	strncpy((char*) pVoid, &(caller->send_buffer.c_str()[caller->cur_send_position]), characters_to_send);
+	caller->cur_send_position += characters_to_send;
+	return characters_to_send;
 
 }
 
-HTTPRequest::~HTTPRequest()
+HTTP_request::~HTTP_request()
 {
 	curl_easy_cleanup(curl);
 	curl = nullptr;
 };
 
-HTTPResponse HTTPRequest::PUT(
-		const std::string& url,
-		std::string data,
-		std::string username,
-		std::string password
+HTTP_response HTTP_request::PUT(
+		string url,
+		string data,
+		string username,
+		string password
 )
 {
 	curl_easy_setopt(curl, CURLOPT_PUT, 1L);
-	receiveBuffer.clear();
-	sendBuffer = data;
-	curSendPosition = 0;
+	receive_buffer.clear();
+	send_buffer = data;
+	cur_send_position = 0;
 
-	struct curl_slist *headers=NULL; // init to NULL is important
-	headers=curl_slist_append(headers, "Accept: application/json");
-	headers=curl_slist_append( headers, "Content-Type: application/json");
-	headers=curl_slist_append( headers, "charsets: utf-8");
+	struct curl_slist* headers = NULL; // init to NULL is important
+	headers = curl_slist_append(headers, "Accept: application/json");
+	headers = curl_slist_append(headers, "Content-Type: application/json");
+	headers = curl_slist_append(headers, "charsets: utf-8");
 
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
-	curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long)CURLAUTH_BASIC);
+	curl_easy_setopt(curl, CURLOPT_HTTPAUTH, (long) CURLAUTH_BASIC);
 	curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 
-	if (ignoreCertificateErrors_)
+	if (ignore_certificate_errors)
 	{
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
 		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -99,16 +98,17 @@ HTTPResponse HTTPRequest::PUT(
 	/* Perform the request, res will get the return code */
 	CURLcode res = curl_easy_perform(curl);
 
-	int httpCode;
-	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+	int http_code;
+	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
 
-	HTTPResponse result(
+	HTTP_response result(
 			url,
-			receiveBuffer,
+			receive_buffer,
 			(res == CURLE_OK),
-			httpCode,
+			http_code,
 			curl_easy_strerror(res));
 
 	curl_slist_free_all(headers);
 	return result;
+}
 }

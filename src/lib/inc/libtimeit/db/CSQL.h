@@ -46,7 +46,7 @@ public:
 protected:
 	void         init(string database_name);
 private:
-	CSQL();
+	CSQL() {};
 	CSQL(const CSQL&);
 	void operator=(const CSQL&);
 

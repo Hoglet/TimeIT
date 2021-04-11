@@ -47,8 +47,8 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 		bool    running  = row[3].boolean();
 		int64_t changed  = row[4].integer();
 		bool    deleted  = row[5].boolean();
-		auto    uuid     = toUuid(row[6].text());
-		auto    taskUUID = toUuid(row[7].text());
+		auto    uuid     = to_uuid(row[6].text());
+		auto    taskUUID = to_uuid(row[7].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -227,8 +227,8 @@ Time_list Time_accessor::time_list(int64_t taskId, time_t startTime, time_t stop
 		bool deleted = row[3].boolean();
 		bool running = row[4].boolean();
 		time_t changed = row[5].integer();
-		auto uuid = toUuid(row[6].text());
-		auto taskUUID = toUuid(row[7].text());
+		auto uuid = to_uuid(row[6].text());
+		auto taskUUID = to_uuid(row[7].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -253,7 +253,7 @@ void Time_accessor::setRunning(int64_t timeID, bool running)
 	auto te = by_ID(timeID);
 	if(te)
 	{
-		int64_t taskID = te->task_ID();
+		int64_t taskID = te->task_ID;
 		stringstream statement;
 		statement << "UPDATE times SET running = " << (int) running;
 		statement << " WHERE id=" << timeID;
@@ -280,9 +280,9 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 		bool running = row[3].boolean();
 		time_t changed = row[4].integer();
 		bool deleted = row[5].boolean();
-		auto uuid = toUuid(row[6].text());
+		auto uuid = to_uuid(row[6].text());
 		int64_t id = row[7].integer();
-		auto taskUUID = toUuid(row[8].text());
+		auto taskUUID = to_uuid(row[8].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -318,25 +318,25 @@ Time_ID Time_accessor::uuid_to_id(UUID uuid)
 
 bool Time_accessor::update(Time_entry item )
 {
-	int64_t id = item.ID();
+	int64_t id = item.ID;
 	auto existingItem = by_ID(id);
-	if (existingItem && item != *existingItem && item.changed() >= existingItem->changed())
+	if (existingItem && item != *existingItem && item.changed >= existingItem->changed)
 	{
 		Statement statement_updateTime = database.prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
-		statement_updateTime.bind_value(1, item.get_UUID().c_str());
-		statement_updateTime.bind_value(2, item.task_ID());
-		statement_updateTime.bind_value(3, item.start());
-		statement_updateTime.bind_value(4, item.stop());
+		statement_updateTime.bind_value(1, item.uuid.c_str());
+		statement_updateTime.bind_value(2, item.task_ID);
+		statement_updateTime.bind_value(3, item.start);
+		statement_updateTime.bind_value(4, item.stop);
 		statement_updateTime.bind_value(5, item.running());
-		statement_updateTime.bind_value(6, item.changed());
-		statement_updateTime.bind_value(7, item.deleted());
-		statement_updateTime.bind_value(8, item.ID());
+		statement_updateTime.bind_value(6, item.changed);
+		statement_updateTime.bind_value(7, item.deleted);
+		statement_updateTime.bind_value(8, item.ID);
 
 		statement_updateTime.execute();
 
-		database.send_notification(TASK_TIME_CHANGED, item.task_ID());
-		database.send_notification(TIME_ENTRY_CHANGED, item.ID());
+		database.send_notification(TASK_TIME_CHANGED, item.task_ID);
+		database.send_notification(TIME_ENTRY_CHANGED, item.ID);
 
 		return true;
 	}
@@ -373,18 +373,18 @@ Time_ID Time_accessor::create(Time_entry item)
 {
 	Statement statement_newEntry = database.prepare(
 			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
-	statement_newEntry.bind_value(1, item.get_UUID().c_str());
-	statement_newEntry.bind_value(2, item.task_ID());
-	statement_newEntry.bind_value(3, item.start());
-	statement_newEntry.bind_value(4, item.stop());
-	statement_newEntry.bind_value(5, item.changed());
-	statement_newEntry.bind_value(6, item.deleted());
+	statement_newEntry.bind_value(1, item.uuid.c_str());
+	statement_newEntry.bind_value(2, item.task_ID);
+	statement_newEntry.bind_value(3, item.start);
+	statement_newEntry.bind_value(4, item.stop);
+	statement_newEntry.bind_value(5, item.changed);
+	statement_newEntry.bind_value(6, item.deleted);
 	statement_newEntry.execute();
 	Time_ID time_ID = database.ID_of_last_insert();
 
-	if (item.start() != item.stop())
+	if (item.start != item.stop)
 	{
-		database.send_notification(TASK_UPDATED, item.task_ID());
+		database.send_notification(TASK_UPDATED, item.task_ID);
 	}
 	return time_ID;
 }

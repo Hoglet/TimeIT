@@ -20,7 +20,7 @@ namespace libtimeit
 using namespace std;
 using namespace libtimeit;
 
-class IpcServer: public Ipc, public TimerObserver
+class IpcServer: public Ipc, public Timer_observer
 {
 public:
 	IpcServer(string socketName, Timer&);

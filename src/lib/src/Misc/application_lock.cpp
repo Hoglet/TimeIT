@@ -13,10 +13,10 @@ namespace libtimeit
 {
 
 
-ApplicationLock::ApplicationLock(string lockBase)
+Application_lock::Application_lock(string lock_base)
 {
 	locked = false;
-	string fileName = lockBase + ".lock";
+	string fileName = lock_base + ".lock";
 	//
 	struct flock fl;
 
@@ -25,26 +25,26 @@ ApplicationLock::ApplicationLock(string lockBase)
 	fl.l_start = 0;
 	fl.l_len = 1;
 
-	if ((fdlock = open(fileName.c_str(), O_WRONLY | O_CREAT, 0666)) != -1)
+	if ((fd_lock = open(fileName.c_str(), O_WRONLY | O_CREAT, 0666)) != -1)
 	{
-		if (fcntl(fdlock, F_SETLK, &fl) != -1)
+		if (fcntl(fd_lock, F_SETLK, &fl) != -1)
 		{
 			locked = true;
 		}
 	}
 }
 
-bool ApplicationLock::lockAquired()
+bool Application_lock::lock_acquired() const
 {
 	return locked;
 }
 
 
-ApplicationLock::~ApplicationLock()
+Application_lock::~Application_lock()
 {
-	if (fdlock != -1)
+	if (fd_lock != -1)
 	{
-		close(fdlock);
+		close(fd_lock);
 	}
 }
 

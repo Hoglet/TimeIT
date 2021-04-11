@@ -13,7 +13,7 @@ TEST (AutotrackAccessor, WorkspaceAccessor)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	Autotrack_accessor autotrackAccessor(tempdb);
+	Auto_track_accessor autotrackAccessor(tempdb);
 	Extended_task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Tjohopp", 0));
 	vector<int> workspaces;
@@ -28,7 +28,7 @@ TEST (AutotrackAccessor, getTaskIDs)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	Autotrack_accessor autotrackAccessor(tempdb);
+	Auto_track_accessor autotrackAccessor(tempdb);
 	Task_accessor taskAccessor(tempdb);
 	Task task("test");
 	int taskID = taskAccessor.create(task);

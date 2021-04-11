@@ -11,21 +11,21 @@ using namespace std;
 
 General_exception ge;
 
-string toJson(vector<Task> tasks, string username)
+string to_json(vector<Task> tasks, string username)
 {
 	json_t *array = json_array();
 	for (Task task : tasks)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "name", json_string(task.name().c_str()));
-		json_object_set(obj, "id", json_string(task.get_UUID().c_str()));
-		if (task.parent_UUID())
+		json_object_set(obj, "name", json_string(task.name.c_str()));
+		json_object_set(obj, "id", json_string(task.uuid.c_str()));
+		if (task.parent_uuid)
 		{
 			json_t *parent = json_object();
-			json_object_set(parent, "id", json_string(task.parent_UUID()->c_str()));
+			json_object_set(parent, "id", json_string(task.parent_uuid->c_str()));
 			json_object_set(obj, "parent", parent);
 		}
-		if (task.completed())
+		if (task.completed)
 		{
 			json_object_set(obj, "completed", json_true());
 		}
@@ -33,8 +33,8 @@ string toJson(vector<Task> tasks, string username)
 		{
 			json_object_set(obj, "completed", json_false());
 		}
-		json_object_set(obj, "lastChange", json_integer(task.last_changed()));
-		if (task.deleted())
+		json_object_set(obj, "lastChange", json_integer(task.last_changed));
+		if (task.deleted)
 		{
 			json_object_set(obj, "deleted", json_true());
 		}
@@ -50,7 +50,7 @@ string toJson(vector<Task> tasks, string username)
 		json_array_append(array, obj);
 	}
 	char *str = json_dumps(array, 0);
-	if (str == 0)
+	if (str == nullptr)
 	{
 		//LCOV_EXCL_START
 		ge.setMessage("Failed to create json string");
@@ -62,17 +62,17 @@ string toJson(vector<Task> tasks, string username)
 
 	return result;
 }
-string toJson(const Time_list& times)
+string to_json(const Time_list& times)
 {
 	json_t *array = json_array();
-	for (Time_entry time : times)
+	for (auto time : times)
 	{
 		json_t *obj = json_object();
-		json_object_set(obj, "id", json_string(time.get_UUID().c_str()));
-		json_object_set(obj, "task", json_string(time.task_UUID()->c_str()));
-		json_object_set(obj, "start", json_integer(time.start()));
-		json_object_set(obj, "stop", json_integer(time.stop()));
-		if (time.deleted())
+		json_object_set(obj, "id", json_string(time.uuid.c_str()));
+		json_object_set(obj, "task", json_string(time.task_uuid->c_str()));
+		json_object_set(obj, "start", json_integer(time.start));
+		json_object_set(obj, "stop", json_integer(time.stop));
+		if (time.deleted)
 		{
 			json_object_set(obj, "deleted", json_true());
 		}
@@ -80,10 +80,10 @@ string toJson(const Time_list& times)
 		{
 			json_object_set(obj, "deleted", json_false());
 		}
-		json_object_set(obj, "changed", json_integer(time.changed()));
+		json_object_set(obj, "changed", json_integer(time.changed));
 
 		json_t *task = json_object();
-		json_object_set(task, "id", json_string(time.task_UUID()->c_str()));
+		json_object_set(task, "id", json_string(time.task_uuid->c_str()));
 		json_object_set(obj, "task", task);
 
 		json_array_append(array, obj);
@@ -102,7 +102,7 @@ string toJson(const Time_list& times)
 	return result;
 }
 
-vector<Task> toTasks(const string &text)
+vector<Task> to_tasks(const string &text)
 {
 
 	json_t *root;
@@ -171,10 +171,10 @@ vector<Task> toTasks(const string &text)
 				deleted = false;
 			}
 		}
-		auto uuid= toUuid(uuidString);
+		auto uuid= to_uuid(uuidString);
 		if(uuid)
 		{
-			auto parent = toUuid(parentString);
+			auto parent = to_uuid(parentString);
 			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted);
 			retVal.push_back(task);
 		}
@@ -182,7 +182,7 @@ vector<Task> toTasks(const string &text)
 	return retVal;
 }
 
-Time_list toTimes(const string &input)
+Time_list to_times(const string &input)
 {
 
 	json_t *root;
@@ -245,8 +245,8 @@ Time_list toTimes(const string &input)
 				deleted = false;
 			}
 		}
-		auto uuid= toUuid(uuidString);
-		auto taskID= toUuid(taskIDString);
+		auto uuid= to_uuid(uuidString);
+		auto taskID= to_uuid(taskIDString);
 		if(uuid && taskID)
 		{
 			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, STOPPED, changed);

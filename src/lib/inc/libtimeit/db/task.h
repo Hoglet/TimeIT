@@ -6,12 +6,6 @@
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/uuid.h>
 
-namespace Test
-{
-class TestTaskC;
-class Network_test;
-}
-;
 
 namespace libtimeit
 {
@@ -19,33 +13,31 @@ class Task_accessor;
 
 using namespace std;
 
-class Task
+struct Task
 {
-	friend class Task_accessor;
-	friend class SyncManager;
+	const Task_ID              ID          {0};
+	const string               name;
+	const class UUID           uuid;
+	const optional<class UUID> parent_uuid;
+	const bool                 completed    {false};
+	const bool                 deleted      {false};
+	const Task_ID              parent_ID    {0};
+	const time_t               last_changed {0};
 
-public:
-	Task(string name, Task_ID parent_ID = 0);
+
+
+	Task(string name_, Task_ID parent_ID = 0);
 	Task(
-		string         name,
-		Task_ID        parent_ID,
-		UUID           uuid,
-		bool           completed,
-		Task_ID        ID,
-		time_t         last_change,
-		optional<UUID> parent_UUID,
-		bool           deleted);
+		string         name_,
+		Task_ID        parentID_,
+		UUID           uuid_,
+		bool           completed_,
+		Task_ID        ID_,
+		time_t         last_change_,
+		optional<UUID> parent_uuid_,
+		bool           deleted_);
 
-	virtual ~Task();
-
-	string         name()         const;
-	Task_ID        ID()           const;
-	Task_ID        parent_ID()    const;
-	bool           completed()    const;
-	UUID           get_UUID()     const;
-	optional<UUID> parent_UUID()  const;
-	time_t         last_changed() const;
-	bool           deleted()      const;
+	virtual ~Task() = default;
 
 	Task       with_name(string new_name) const;
 	Task       with_parent(Task_ID)              const;
@@ -55,20 +47,6 @@ public:
 	friend bool       operator==(const Task &op1, const Task &op2);
 	friend bool       operator!=(const Task &op1, const Task &op2);
 
-protected:
-	Task();
-
-	Task_ID              ID_          {0};
-	string               name_;
-	class UUID           uuid_;
-	optional<class UUID> parent_Uuid_;
-	bool                 completed_   {false};
-	bool                 deleted_     {false};
-	Task_ID              parent_ID_    {0};
-	time_t               last_changed_ {0};
-
-private:
-	void operator=(const Task&) {};
 };
 
 extern bool operator==(const Task &op1, const Task &op2);

@@ -11,7 +11,7 @@ using namespace Gtk;
 using namespace Glib;
 TaskList::TaskList(
 		Database    &database,
-		ITimeKeeper &timeKeeper,
+		Time_keeper &timeKeeper,
 		Notifier    &notifier)
 		:
 		Event_observer(notifier),
@@ -20,9 +20,9 @@ TaskList::TaskList(
 
 {
 	// consider not loading and having these icons in memory multiple times accross multiple classes
-	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running.svg"), 24, 24, true);
-	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "running-idle.svg"), 24, 24, true);
-	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::getImagePath(), "blank.svg"), 24, 24, true);
+	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running.svg"), 24, 24, true);
+	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
+	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
 	treeModel = TreeStore::create(columns);
 	set_model(treeModel);
 	append_column(_("Name"), columns.col_name);
@@ -104,7 +104,7 @@ void TaskList::on_task_updated(int64_t taskID)
 			TreeModel::Row row = *iter;
 			assignValuesToRow(row, *task);
 		}
-		int64_t parentID = task->parent_ID();
+		int64_t parentID = task->parent_ID;
 		if (parentID > 0)
 		{
 			on_task_updated(parentID);
@@ -209,11 +209,11 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 
 void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 {
-	int64_t taskID = task.ID();
+	int64_t taskID = task.ID;
 	row[columns.col_id] = taskID;
-	if (task.running())
+	if (task.running_)
 	{
-		if (!m_timeKeeper.isIdle())
+		if (!m_timeKeeper.is_idle())
 		{
 			row[columns.col_pixbuf] = runningIcon;
 		}
@@ -226,11 +226,11 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 	{
 		row[columns.col_pixbuf] = blankIcon;
 	}
-	row[columns.col_name] = task.name();
+	row[columns.col_name] = task.name;
 	time_t totalTime = task.total_time();
 	if (totalTime > 0)
 	{
-		row[columns.col_time] = libtimeit::seconds2hhmm(totalTime);
+		row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);
 	}
 	else
 	{
@@ -256,8 +256,8 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 		}
 		row = *iter;
 		assignValuesToRow(row, tasks.at(i));
-		populate(&row, tasks.at(i).ID());
-		if (tasks.at(i).expanded())
+		populate(&row, tasks.at(i).ID);
+		if (tasks.at(i).expanded_)
 		{
 			TreeModel::Path path(iter);
 			this->expand_to_path(path);

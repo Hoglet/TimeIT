@@ -3,45 +3,25 @@
 //
 #include <libtimeit/sync/HTTP_response.h>
 
+namespace libtimeit
+{
+
+
 using namespace std;
 
-string HTTPResponse::url()
+HTTP_response::HTTP_response(
+			string url_,
+			string response_,
+			bool   status_OK_,
+			int    http_code_,
+			string error_message_
+		) :
+		url(url_),
+		response(response_),
+		status_OK(status_OK_),
+		http_code(http_code_),
+		error_message(error_message_)
 {
-	return url_;
 }
 
-string HTTPResponse::response()
-{
-	return response_;
 }
-
-bool   HTTPResponse::statusOK()
-{
-	return statusOK_;
-}
-
-int    HTTPResponse::httpCode()
-{
-	return httpCode_;
-}
-string HTTPResponse::errorMessage()
-{
-	return errorMessage_;
-}
-
-HTTPResponse::HTTPResponse(
-		string url,
-		string response,
-		bool statusOK,
-		int httpCode,
-		string errorMessage
-):
-url_(url),
-response_(response),
-statusOK_(statusOK),
-httpCode_(httpCode),
-errorMessage_(errorMessage)
-{
-
-}
-

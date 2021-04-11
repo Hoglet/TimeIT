@@ -38,7 +38,6 @@ protected:
 	void upgrade( list<Accessor*>&  accessors);
 	void create_views( list<Accessor*>& accessors );
 private:
-	Database();
 	Database(const Database&);
 	void operator=(const Database&);
 

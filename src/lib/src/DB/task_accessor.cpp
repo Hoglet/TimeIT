@@ -12,9 +12,6 @@ Task_accessor::Task_accessor(	Database& op_database )
 {
 }
 
-Task_accessor::~Task_accessor()
-{
-}
 
 
 void Task_accessor::create_table()
@@ -71,7 +68,7 @@ vector<Task> Task_accessor::by_parent_ID(int64_t parent)
 		}
 		string name = row[2].text();
 		bool completed = row[3].boolean();
-		auto l_uuid = toUuid(row[4].text());
+		auto l_uuid = to_uuid(row[4].text());
 		time_t last_change = row[5].integer();
 
 		if(l_uuid.has_value())
@@ -100,7 +97,7 @@ optional<Task> Task_accessor::by_ID(int64_t taskID)
 		}
 		string name = row[2].text();
 		bool completed = row[3].boolean();
-		auto l_uuid = toUuid(row[4].text());
+		auto l_uuid = to_uuid(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool deleted = row[6].boolean();
 		if(l_uuid.has_value())
@@ -131,7 +128,6 @@ optional<Task> Task_accessor::get_task_unlimited(int64_t taskID)
 		)");
 	statement_getCompleteTask.bind_value(1, taskID);
 	Query_result rows = statement_getCompleteTask.execute();
-	Task task;
 	if (rows.size() == 1)
 	{
 		vector<Data_cell> row = rows.at(0);
@@ -143,7 +139,7 @@ optional<Task> Task_accessor::get_task_unlimited(int64_t taskID)
 		}
 		string name = row[2].text();
 		bool completed = row[3].boolean();
-		auto l_uuid = toUuid(row[4].text());
+		auto l_uuid = to_uuid(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool deleted = row[6].boolean();
 		if(l_uuid.has_value())
@@ -185,7 +181,7 @@ vector<Task> Task_accessor::changed_since(time_t timestamp)
 		}
 		string name = row[2].text();
 		bool completed = row[3].boolean();
-		auto l_uuid = toUuid(row[4].text());
+		auto l_uuid = to_uuid(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool deleted = row[6].boolean();
 		if (l_uuid.has_value())
@@ -222,7 +218,7 @@ optional<class UUID> Task_accessor::uuid(int64_t id)
 		for (vector<Data_cell> row : rows)
 		{
 			auto uuid = row[0].text();
-			return toUuid(uuid);
+			return to_uuid(uuid);
 		}
 	}
 	return {};
@@ -242,58 +238,58 @@ void Task_accessor::_update(const Task &task)
 					completed = ?
 				WHERE id=?;)"
 						);
-	statement_updateTask.bind_value(1, task.name());
-	if (task.parent_ID() > 0)
+	statement_updateTask.bind_value(1, task.name);
+	if (task.parent_ID > 0)
 	{
-		statement_updateTask.bind_value(2, task.parent_ID());
+		statement_updateTask.bind_value(2, task.parent_ID);
 	}
 	else
 	{
 		statement_updateTask.bind_null_value(2);
 	}
-	statement_updateTask.bind_value(3, task.last_changed());
-	statement_updateTask.bind_value(4, task.deleted());
-	statement_updateTask.bind_value(5, task.completed());
-	statement_updateTask.bind_value(6, task.ID());
+	statement_updateTask.bind_value(3, task.last_changed);
+	statement_updateTask.bind_value(4, task.deleted);
+	statement_updateTask.bind_value(5, task.completed);
+	statement_updateTask.bind_value(6, task.ID);
 
 	statement_updateTask.execute();
 }
 
 void Task_accessor::notify(const Task &existingTask, const Task &task)
 {
-	bool parentChanged = (existingTask.parent_ID() != task.parent_ID());
-	bool taskDeleted = (existingTask.deleted() != task.deleted() && task.deleted() == true);
-	bool nameChanged = (existingTask.name() != task.name());
+	bool parentChanged = (existingTask.parent_ID != task.parent_ID);
+	bool taskDeleted = (existingTask.deleted != task.deleted && task.deleted == true);
+	bool nameChanged = (existingTask.name != task.name);
 
 	if (nameChanged)
 	{
-		database.send_notification(TASK_NAME_CHANGED, task.ID());
+		database.send_notification(TASK_NAME_CHANGED, task.ID);
 	}
 	if (parentChanged)
 	{
-		database.send_notification(TASK_PARENT_CHANGED, task.ID());
+		database.send_notification(TASK_PARENT_CHANGED, task.ID);
 	}
 	if (taskDeleted)
 	{
-		database.send_notification(TASK_REMOVED, task.ID());
+		database.send_notification(TASK_REMOVED, task.ID);
 	}
 }
 
 bool Task_accessor::update(const Task &task)
 {
-	int id = task.ID();
+	int id = task.ID;
 	if (id == 0)
 	{
-		id = ID(task.get_UUID());
+		id = ID(task.uuid);
 		if (id == 0)
 		{
 			stringstream message;
-			message << "Unable to find task with UUID=" << task.get_UUID().c_str();
+			message << "Unable to find task with UUID=" << task.uuid.c_str();
 			throw db_exception(message.str());
 		}
 	}
 	auto existingTask = get_task_unlimited(id);
-	if (existingTask.has_value() &&  task != *existingTask && task.last_changed() >= existingTask->last_changed())
+	if (existingTask.has_value() &&  task != *existingTask && task.last_changed >= existingTask->last_changed)
 	{
 
 		_update(task);
@@ -305,12 +301,12 @@ bool Task_accessor::update(const Task &task)
 
 Task_ID Task_accessor::create(const Task &task)
 {
-	UUID uuid = task.get_UUID();
-	Task_ID parentID = task.parent_ID();
-	string name = task.name();
-	bool completed = task.completed();
-	time_t changeTime = task.last_changed();
-	bool deleted = task.deleted();
+	UUID uuid = task.uuid;
+	Task_ID parentID = task.parent_ID;
+	string name = task.name;
+	bool completed = task.completed;
+	time_t changeTime = task.last_changed;
+	bool deleted = task.deleted;
 
 	Task_ID id = 0;
 
@@ -343,7 +339,7 @@ Task_ID Task_accessor::create(const Task &task)
 
 void Task_accessor::setParentID(int64_t taskID, int parentID)
 {
-	time_t now = time(0);
+	time_t now = time(nullptr);
 	stringstream statement;
 	if (parentID == 0)
 	{
@@ -361,7 +357,7 @@ void Task_accessor::setParentID(int64_t taskID, int parentID)
 
 void Task_accessor::remove(int64_t taskID)
 {
-	time_t now = time(0);
+	time_t now = time(nullptr);
 	stringstream statement;
 	statement << "UPDATE tasks SET deleted = " << true;
 	statement << " ,changed = " << now;

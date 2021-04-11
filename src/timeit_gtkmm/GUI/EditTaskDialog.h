@@ -77,7 +77,7 @@ private:
 	vector<int> workspaces;
 	int parentID;
 
-	Autotrack_accessor autoTrackAccessor;
+	Auto_track_accessor autoTrackAccessor;
 	Task_accessor      taskAccessor;
 	Workspace         workspace;
 };

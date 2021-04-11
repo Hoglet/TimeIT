@@ -18,55 +18,47 @@ enum Time_entry_state
 	DELETED
 };
 
-class Time_entry
+struct Time_entry
 {
-public:
-	Time_entry(
-			Task_ID task_ID,
-			time_t start,
-			time_t stop
-			);
-	Time_entry(
-			Time_ID          id,
-			UUID             uuid,
-			Task_ID          task_ID,
-			optional<UUID>   task_UUID,
-			time_t           start,
-			time_t           stop,
-			bool             deleted,
-			Time_entry_state state,
-			time_t           changed);
+	const int64_t              ID;
+	const class UUID           uuid;
+	const int64_t              task_ID;
+	const time_t               start;
+	const time_t               stop;
+	const bool                 deleted;
+	const Time_entry_state     state;
+	const time_t               changed;
+	const optional<class UUID> task_uuid;
 
-	time_t               start()    const;
-	time_t               stop()     const;
-	Time_ID              ID()       const;
-	Task_ID              task_ID()   const;
-	class UUID           get_UUID() const;
+	Time_entry(
+			Task_ID task_ID_,
+			time_t  start_,
+			time_t  stop_
+			);
+
+	Time_entry(
+			Time_ID          id_,
+			UUID             uuid_,
+			Task_ID          task_ID_,
+			optional<UUID>   taskUUID_,
+			time_t           start_,
+			time_t           stop_,
+			bool             deleted_,
+			Time_entry_state state_,
+			time_t           changed_);
+
+
 	bool                 running()  const;
-	time_t               changed()  const;
-	bool                 deleted()  const;
-	optional<class UUID> task_UUID() const;
 
 	Time_entry with_start(time_t) const;
 	Time_entry with_stop(time_t) const;
-	Time_entry with_deleted(bool state) const;
+	Time_entry with_deleted(bool state_) const;
 	Time_entry with( Time_entry_state ) const;
 
 	friend bool operator==(const Time_entry &op1, const Time_entry &op2);
 	friend bool operator!=(const Time_entry &op1, const Time_entry &op2);
 
-private:
-	const int64_t              id_;
-	class UUID           uuid_;
-	int64_t              task_ID_;
-	time_t               start_;
-	time_t               stop_;
-	bool                 deleted_;
-	Time_entry_state     state_;
-	time_t               changed_;
-	optional<class UUID> task_UUID_;
 
-	void operator=(const Time_entry&) {}
 };
 }
 #endif

@@ -10,40 +10,38 @@ namespace libtimeit
 using namespace libtimeit;
 using namespace std;
 
-AutoTracker::AutoTracker(
-		ITimeKeeper &op_time_keeper,
-		Database   &op_database,
-		Timer       &op_timer)
+Auto_tracker::Auto_tracker(
+		Time_keeper &time_keeper_,
+		Database   &database_,
+		Timer       &timer_)
 		:
-		timer(op_timer),
-		time_keeper(op_time_keeper),
-		autotrack_accessor(op_database),
-		task_accessor(op_database),
-		TimerObserver(op_timer)
+		timer(timer_),
+		time_keeper(time_keeper_),
+		auto_track_accessor(database_),
+		Timer_observer(timer_)
 {
-	oldWorkspace = -1;
+	old_workspace = -1;
 	on_signal_1_second(); //check if we should start anything;
 
 }
 
 
-void AutoTracker::on_signal_1_second()
+void Auto_tracker::on_signal_1_second()
 {
-	check4Changes();
+	check_for_changes();
 }
 
-void AutoTracker::check4Changes()
+void Auto_tracker::check_for_changes()
 {
-	int newWorkspace;
-	newWorkspace = workspace.get_active();
-	if (newWorkspace >= 0 && oldWorkspace != newWorkspace)
+	int new_workspace = workspace.get_active();
+	if (new_workspace >= 0 && old_workspace != new_workspace)
 	{
-		doTaskSwitching(oldWorkspace, newWorkspace);
-		oldWorkspace = newWorkspace;
+		do_task_switching(old_workspace, new_workspace);
+		old_workspace = new_workspace;
 	}
 }
 
-bool contains(std::vector<int64_t> vec, int64_t item)
+bool contains(vector<Task_ID> vec, Task_ID item)
 {
 	if (find(vec.begin(), vec.end(), item) == vec.end())
 	{
@@ -56,22 +54,22 @@ bool contains(std::vector<int64_t> vec, int64_t item)
 
 }
 
-void AutoTracker::doTaskSwitching(int oldWorkspace, int newWorkspace)
+void Auto_tracker::do_task_switching(int old_workspace, int new_workspace)
 {
-	std::vector<int64_t> tasksToStop = autotrack_accessor.task_IDs(oldWorkspace);
-	std::vector<int64_t> tasksToStart = autotrack_accessor.task_IDs(newWorkspace);
-	for (int64_t taskID : tasksToStop)
+	vector<Task_ID> tasks_to_stop  = auto_track_accessor.task_IDs(old_workspace);
+	vector<Task_ID> tasks_to_start = auto_track_accessor.task_IDs(new_workspace);
+	for (int64_t task_ID : tasks_to_stop)
 	{
-		if (false == contains(tasksToStart, taskID))
+		if (false == contains(tasks_to_start, task_ID))
 		{
-			time_keeper.StopTask(taskID);
+			time_keeper.stop(task_ID);
 		}
 	}
-	for (int64_t taskID : tasksToStart)
+	for (auto task_ID : tasks_to_start)
 	{
 		try
 		{
-			time_keeper.StartTask(taskID);
+			time_keeper.start(task_ID);
 		}
 		catch (...)
 		{

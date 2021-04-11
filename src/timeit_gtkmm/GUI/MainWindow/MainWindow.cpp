@@ -45,7 +45,7 @@ MainWindow::~MainWindow()
 
 MainWindow::MainWindow(
 		Database &database,
-		ITimeKeeper &timeKeeper,
+		Time_keeper &timeKeeper,
 		Notifier& notifier)
 		:
 		taskList(database, timeKeeper, notifier),

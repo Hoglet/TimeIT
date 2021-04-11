@@ -8,32 +8,32 @@
 #include <curl/curl.h>
 #include <string>
 
-
-
-
-class HTTPRequest
+namespace libtimeit
 {
-	friend size_t send_data(void*, size_t, size_t, HTTPRequest*);
+using namespace std;
+
+class HTTP_request
+{
 public:
-	HTTPRequest();
-	~HTTPRequest();
-	void ignoreCertErrors( bool );
-	HTTPResponse PUT(
-			const std::string& url,
-			std::string data,
-			std::string username,
-			std::string password
+	HTTP_request();
+	~HTTP_request();
+	void ignore_cert_errors(bool ignore);
+	HTTP_response PUT(
+			string url,
+			string data,
+			string username,
+			string password
 			);
 private:
-	size_t sendData(void *pVoid, size_t i, size_t i1);
+	static size_t   send_data(void *pVoid, size_t i, size_t i1, HTTP_request* caller);
 
-	CURL*       curl;
-	std::string receiveBuffer;
-	std::string sendBuffer;
+	CURL*    curl;
+	string   receive_buffer;
+	string   send_buffer;
 
-	size_t curSendPosition{0};
-	bool ignoreCertificateErrors_{false};
+	size_t   cur_send_position{0};
+	bool     ignore_certificate_errors{false};
 };
 
-
+}
 #endif //TIMEIT_HTTP_REQUEST_H

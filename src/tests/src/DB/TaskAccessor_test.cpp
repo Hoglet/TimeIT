@@ -25,8 +25,7 @@ TEST (TaskAccessor, getTask)
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ("Test", task->name()
-	);
+	ASSERT_EQ("Test", task->name );
 }
 
 TEST (TaskAccessor, testGetTasks)
@@ -49,7 +48,7 @@ TEST (TaskAccessor, testGetTasks)
 
 	tasks = taskAccessor.by_parent_ID();
 	Task &task = tasks.at(0);
-	ASSERT_EQ("Test", task.name());
+	ASSERT_EQ("Test", task.name);
 
 	tasks = taskAccessor.by_parent_ID(taskId);
 	ASSERT_EQ(1, tasks.size()) << "Finding number of sub tasks ";
@@ -63,10 +62,10 @@ TEST (TaskAccessor, setTaskName)
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ("Test", task->name());
+	ASSERT_EQ("Test", task->name);
 	taskAccessor.update(task->with_name("Tjohopp"));
 	auto task2 = taskAccessor.by_ID(taskId);
-	ASSERT_EQ("Tjohopp", task2->name());
+	ASSERT_EQ("Tjohopp", task2->name);
 }
 
 TEST (TaskAccessor, setParentID)
@@ -77,10 +76,10 @@ TEST (TaskAccessor, setParentID)
 	int64_t taskId1 = taskAccessor.create(Task("Test", 0));
 	int64_t taskId2 = taskAccessor.create(Task("Test2", 0));
 	auto task = taskAccessor.by_ID(taskId1);
-	ASSERT_EQ(0, task->parent_ID());
+	ASSERT_EQ(0, task->parent_ID);
 	taskAccessor.setParentID(taskId1, taskId2);
 	auto task2 = taskAccessor.by_ID(taskId1);
-	ASSERT_EQ(taskId2, task2->parent_ID());
+	ASSERT_EQ(taskId2, task2->parent_ID);
 }
 
 TEST (TaskAccessor, setParentID_inputValidation)
@@ -90,7 +89,7 @@ TEST (TaskAccessor, setParentID_inputValidation)
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(0, task->parent_ID());
+	ASSERT_EQ(0, task->parent_ID);
 	ASSERT_THROW(taskAccessor.setParentID(taskId, taskId + 1), db_exception);
 }
 
@@ -199,8 +198,8 @@ TEST (TaskAccessor, updateTask)
 	observer.updatedTaskID = 0;
 	taskAccessor.update(task1->with_name("Coding"));
 	auto changedTask = taskAccessor.by_ID(id);
-	ASSERT_EQ("Coding", changedTask->name());
-	ASSERT_EQ(task1->ID(), observer.nameChangedTaskID) << "Notified Task_ID: ";
+	ASSERT_EQ("Coding", changedTask->name);
+	ASSERT_EQ(task1->ID, observer.nameChangedTaskID) << "Notified Task_ID: ";
 	ASSERT_EQ(0, observer.updatedParentTaskID) << "Notified ParentID: ";
 
 	observer.nameChangedTaskID = 0;
@@ -217,10 +216,10 @@ TEST (TaskAccessor, updateTask)
 
 	auto task3 = temp_task->with_parent(id);
 	taskAccessor.update(task3);
-	ASSERT_EQ(task3.ID(), observer.updatedParentTaskID) << "Notified ParentID: ";
+	ASSERT_EQ(task3.ID, observer.updatedParentTaskID) << "Notified ParentID: ";
 
-	taskAccessor.remove(task3.ID());
-	ASSERT_EQ(task3.ID(), observer.removedTaskID) << "Notified ParentID: ";
+	taskAccessor.remove(task3.ID);
+	ASSERT_EQ(task3.ID, observer.removedTaskID) << "Notified ParentID: ";
 }
 
 TEST(TaskAccessor, lastChanged)
@@ -235,19 +234,19 @@ TEST(TaskAccessor, lastChanged)
 	vector<Task> tasks = taskAccessor.changed_since(0);
 	ASSERT_EQ(1, tasks.size()) << "Asking for all tasks";
 	Task task = tasks.at(0);
-	ASSERT_EQ(500, task.last_changed()) << "Checking change time";
+	ASSERT_EQ(500, task.last_changed) << "Checking change time";
 	tasks = taskAccessor.changed_since(600);
 	ASSERT_EQ(0, tasks.size()) << "Asking for all tasks after last inserted";
 
 	string newName = "New name";
 	Task updated_task(
 			newName,
-			task.parent_ID(),
-			task.get_UUID(),
-			task.completed(),
-			task.ID(),
+			task.parent_ID,
+			task.uuid,
+			task.completed,
+			task.ID,
 			495,
-			task.parent_UUID(),
+			task.parent_uuid,
 			false);
 
 	taskAccessor.update(updated_task);
@@ -258,7 +257,7 @@ TEST(TaskAccessor, lastChanged)
 
 	Task task2 = tasks.at(0);
 
-	ASSERT_EQ(originalName, task2.name()) <<
+	ASSERT_EQ(originalName, task2.name) <<
 										  "Updated with task changed before task in database, name should not change";
 
 }

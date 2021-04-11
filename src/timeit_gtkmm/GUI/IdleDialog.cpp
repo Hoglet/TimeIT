@@ -23,7 +23,7 @@ IdleDialog::IdleDialog(
 		Timer& timer,
 		Database& database)
 		:
-		TimerObserver(timer),
+		Timer_observer(timer),
 		m_timer(timer),
 		taskAccessor(database)
 {
@@ -77,7 +77,7 @@ void IdleDialog::setActiveTaskList(vector<int64_t> activeTaskIDs)
 		{
 			text << ", ";
 		}
-		text << task->name();
+		text << task->name;
 	}
 	taskString = text.str();
 }

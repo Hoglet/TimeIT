@@ -10,9 +10,6 @@ namespace libtimeit
 
 
 using namespace std;
-INetwork::~INetwork()
-= default;
-
 
 Network::Network()
 {
@@ -31,7 +28,7 @@ shared_ptr<asyncHTTPResponse> Network::request(
 		string data,
 		string username,
 		string password,
-		bool ignoreCertificateErrors)
+		bool ignore_certificate_errors)
 {
 
 
@@ -40,9 +37,9 @@ shared_ptr<asyncHTTPResponse> Network::request(
 
 	result->futureResponse = async(
 			launch::async,
-			[url, data, username, password, ignoreCertificateErrors]() {
-				HTTPRequest request;
-				request.ignoreCertErrors(ignoreCertificateErrors);
+			[url, data, username, password, ignore_certificate_errors]() {
+				HTTP_request request;
+				request.ignore_cert_errors(ignore_certificate_errors);
 				return request.PUT(url, data, username, password);
 			}
 	).share();

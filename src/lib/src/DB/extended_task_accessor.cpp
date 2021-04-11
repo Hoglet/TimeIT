@@ -25,7 +25,7 @@ vector<Extended_task> Extended_task_accessor::by_parent_ID(int64_t parentID, tim
 	for (unsigned int i = 0; i < tasks.size(); i++)
 	{
 		Extended_task& task = tasks.at(i);
-		int totalTime = time_accessor.total_cumulative_time(task.ID(), start, stop);
+		int totalTime = time_accessor.total_cumulative_time(task.ID, start, stop);
 		task.total_time_=totalTime;
 	}
 	return tasks;
@@ -37,8 +37,8 @@ vector<Extended_task> Extended_task_accessor::getRunningTasks(int64_t parentID)
 	for (unsigned int i = 0; i < tasks.size(); i++)
 	{
 		Extended_task& task = tasks.at(i);
-		int totalTime = task.time();
-		totalTime += getTotalChildTime(task.ID());
+		int totalTime = task.time_;
+		totalTime += getTotalChildTime(task.ID);
 		task.total_time_=totalTime;
 	}
 	return tasks;
@@ -50,8 +50,8 @@ Duration Extended_task_accessor::getTotalChildTime(int64_t id, time_t start, tim
 	int totalTime = 0;
 	for (auto task : tasks)
 	{
-		totalTime += task.time();
-		totalTime += getTotalChildTime(task.ID(), start, stop);
+		totalTime += task.time_;
+		totalTime += getTotalChildTime(task.ID, start, stop);
 	}
 	return totalTime;
 }
@@ -90,11 +90,11 @@ vector<Extended_task> Extended_task_accessor::_getExtendedTasks(int64_t taskID, 
 	Query_result rows = database.execute(statement.str());
 	for (vector<Data_cell> row : rows)
 	{
-		int id = row[0].integer();
+		int id = (int)row[0].integer();
 		int parent = 0;
 		if (row[1].has_value())
 		{
-			parent = row[1].integer();
+			parent = (int)row[1].integer();
 		}
 		string name = row[2].text();
 		bool expanded = row[3].boolean();
@@ -112,7 +112,7 @@ optional<Extended_task> Extended_task_accessor::by_ID(int64_t taskID, time_t sta
 	if (tasks.size() == 1)
 	{
 		Extended_task& task = tasks.at(0);
-		int totalTime = task.time();
+		int totalTime = task.time_;
 		totalTime += getTotalChildTime(taskID, start, stop);
 		task.total_time_=totalTime;
 		return { task };

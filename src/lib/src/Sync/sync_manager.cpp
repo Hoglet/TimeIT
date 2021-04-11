@@ -16,7 +16,7 @@ using namespace std;
 
 const int ONE_DAY = 60 * 60 * 24;
 
-SyncManager::SyncManager(
+Sync_manager::Sync_manager(
 		Database &database,
 		INetwork  &op_network,
 		Notifier& notifier,
@@ -24,10 +24,10 @@ SyncManager::SyncManager(
 		):
 		notifier_(notifier),
 		network(op_network),
-		taskAccessor(database),
-		timeAccessor(database),
-		settingsAccessor(database),
-		TimerObserver( timer)
+		task_accessor(database),
+		time_accessor(database),
+		settings_accessor(database),
+		Timer_observer(timer)
 
 {
 	int len = 1;
@@ -35,77 +35,77 @@ SyncManager::SyncManager(
 }
 
 
-SyncState SyncManager::status()
+Sync_state Sync_manager::status()
 {
 	return state;
 }
 
-void SyncManager::on_signal_1_second()
+void Sync_manager::on_signal_1_second()
 {
 	switch (state)
 	{
-		case SyncState::IDLE:
+		case Sync_state::IDLE:
 		{
 			time_t now = libtimeit::now();
-			if (isActive() && now > nextFullSync)
+			if (is_active() && now > next_full_sync)
 			{
-				nextFullSync = now + ONE_DAY;
-				lastSync = 0;
+				next_full_sync = now + ONE_DAY;
+				last_sync = 0;
 			}
-			if (isActive() && now > nextSync)
+			if (is_active() && now > next_sync)
 			{
-				state = SyncState::TASK_REQUEST;
-				currentSync = now;
-				nextSync = getNextSync(currentSync);
+				state = Sync_state::TASK_REQUEST;
+				current_sync = now;
+				next_sync = get_next_sync(current_sync);
 			}
 		}
 			break;
-		case SyncState::TASK_REQUEST:
-			outstandingRequest = requestTasks(lastSync);
-			state = SyncState::WAIT;
-			following_state = SyncState::TASK_STORE;
+		case Sync_state::TASK_REQUEST:
+			outstandingRequest = request_tasks(last_sync);
+			state = Sync_state::WAIT;
+			following_state = Sync_state::TASK_STORE;
 			break;
-		case SyncState::WAIT:
-			if ( requestDone() )
+		case Sync_state::WAIT:
+			if (request_is_done() )
 			{
 				auto response = outstandingRequest->futureResponse.get();
-				if (response.statusOK() && response.httpCode() == 200)
+				if (response.status_OK && response.http_code == 200)
 				{
 					state = following_state;
 				}
 				else
 				{
-					state = SyncState::FAIL;
+					state = Sync_state::FAIL;
 				}
 			}
 			break;
-		case SyncState::TASK_STORE:
-			syncTasksToDatabase();
-			state = SyncState::TIME_REQUEST;
-		case SyncState::TIME_REQUEST:
-			outstandingRequest = requestTimes(lastSync);
-			state = SyncState::WAIT;
-			following_state = SyncState::TIME_STORE;
+		case Sync_state::TASK_STORE:
+			sync_tasks_to_database();
+			state = Sync_state::TIME_REQUEST;
+		case Sync_state::TIME_REQUEST:
+			outstandingRequest = request_times(last_sync);
+			state = Sync_state::WAIT;
+			following_state = Sync_state::TIME_STORE;
 			break;
-		case SyncState::TIME_STORE:
-			syncTimesToDatabase();
-			state = SyncState::IDLE;
-			nextSync = getNextSync(currentSync);
-			lastSync = currentSync;
+		case Sync_state::TIME_STORE:
+			sync_times_to_database();
+			state = Sync_state::IDLE;
+			next_sync = get_next_sync(current_sync);
+			last_sync = current_sync;
 			break;
-		case SyncState::FAIL:
-			manageNetworkProblems();
-			state = SyncState::IDLE;
-			nextSync = getNextSync(currentSync);
+		case Sync_state::FAIL:
+			manage_network_problems();
+			state = Sync_state::IDLE;
+			next_sync = get_next_sync(current_sync);
 			break;
 		default:
-			state = SyncState::IDLE;
+			state = Sync_state::IDLE;
 			break;
 	}
 
 }
 
-bool SyncManager::requestDone()
+bool Sync_manager::request_is_done()
 {
 	auto future = outstandingRequest->futureResponse;
 	if(future.valid())
@@ -118,18 +118,18 @@ bool SyncManager::requestDone()
 	}
 }
 
-time_t SyncManager::getNextSync( time_t referencePoint )
+time_t Sync_manager::get_next_sync(time_t referencePoint )
 {
 
-	int syncInterval = settingsAccessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	int syncInterval = settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
 	int secondBetweenSyncs = syncInterval * 60;
 	return referencePoint + secondBetweenSyncs;
 }
 
-bool SyncManager::isActive()
+bool Sync_manager::is_active()
 {
-	string baseUrl = settingsAccessor.get_string("URL", DEFAULT_URL);
-	string username = settingsAccessor.get_string("Username", DEFAULT_USER);
+	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	string username = settings_accessor.get_string("Username", DEFAULT_USER);
 	if (baseUrl.length() > 0 && username.length() > 0)
 	{
 		return true;
@@ -139,25 +139,25 @@ bool SyncManager::isActive()
 		return false;
 	}
 }
-void SyncManager::syncTasksToDatabase()
+void Sync_manager::sync_tasks_to_database()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	vector<Task> tasks = toTasks(result.response());
+	vector<Task> tasks = to_tasks(result.response);
 
 	vector<Task> tasksToUpdate;
 	for (Task task : tasks)
 	{
-		int64_t id = taskAccessor.ID(task.get_UUID());
-		auto parentUUID = task.parent_UUID();
-		bool completed = task.completed();
+		int64_t id = task_accessor.ID(task.uuid);
+		auto parentUUID = task.parent_uuid;
+		bool completed = task.completed;
 		int64_t parent = 0;
-		time_t lastChanged = task.last_changed();
-		string name = task.name();
-		auto uuid = task.get_UUID();
-		bool deleted = task.deleted();
+		time_t lastChanged = task.last_changed;
+		string name = task.name;
+		auto uuid = task.uuid;
+		bool deleted = task.deleted;
 		if (parentUUID)
 		{
-			parent = taskAccessor.ID(*parentUUID);
+			parent = task_accessor.ID(*parentUUID);
 			if (parent == 0)
 			{
 				tasksToUpdate.push_back(task);
@@ -166,54 +166,54 @@ void SyncManager::syncTasksToDatabase()
 		Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
 		if (id > 0)
 		{
-			taskAccessor.update(tempTask);
+			task_accessor.update(tempTask);
 		}
 		else
 		{
-			taskAccessor.create(tempTask);
+			task_accessor.create(tempTask);
 		}
 	}
 //Update tasks that had missing data earlier
 	for (Task task : tasksToUpdate)
 	{
-		auto parentUUID = task.parent_UUID();
+		auto parentUUID = task.parent_uuid;
 		if (parentUUID)
 		{
-			int64_t id = taskAccessor.ID(task.get_UUID());
-			int64_t parent = taskAccessor.ID(*parentUUID);
-			bool completed = task.completed();
-			time_t lastChanged = task.last_changed();
-			string name = task.name();
-			auto uuid = task.get_UUID();
-			bool deleted = task.deleted();
+			int64_t id = task_accessor.ID(task.uuid);
+			int64_t parent = task_accessor.ID(*parentUUID);
+			bool completed = task.completed;
+			time_t lastChanged = task.last_changed;
+			string name = task.name;
+			auto uuid = task.uuid;
+			bool deleted = task.deleted;
 			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
-			taskAccessor.update(tempTask);
+			task_accessor.update(tempTask);
 		}
 	}
-	taskAccessor.enable_notifications(true);
+	task_accessor.enable_notifications(true);
 }
 
-void SyncManager::syncTimesToDatabase()
+void Sync_manager::sync_times_to_database()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	Time_list times = toTimes(result.response());
+	Time_list times = to_times(result.response);
 
-	taskAccessor.enable_notifications(false);
+	task_accessor.enable_notifications(false);
 
-	for (Time_entry item : times)
+	for (auto item : times)
 	{
-		auto taskUUID = item.task_UUID();
-		int64_t taskID = taskAccessor.ID(*taskUUID);
-		auto uuid = item.get_UUID();
-		int id = timeAccessor.uuid_to_id(uuid);
-		time_t changed = item.changed();
-		bool deleted = item.deleted();
-		time_t start = item.start();
-		time_t stop = item.stop();
+		auto taskUUID = item.task_uuid;
+		int64_t taskID = task_accessor.ID(*taskUUID);
+		auto uuid = item.uuid;
+		int id = time_accessor.uuid_to_id(uuid);
+		time_t changed = item.changed;
+		bool deleted = item.deleted;
+		time_t start = item.start;
+		time_t stop = item.stop;
 		bool running = false;
 		if (id > 0)
 		{
-			auto originalItem = timeAccessor.by_ID(id);
+			auto originalItem = time_accessor.by_ID(id);
 			if(originalItem)
 			{
 				running = originalItem->running();
@@ -233,68 +233,68 @@ void SyncManager::syncTimesToDatabase()
 		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, state, changed);
 		if (id > 0)
 		{
-			timeAccessor.update(te);
+			time_accessor.update(te);
 		}
 		else
 		{
-			timeAccessor.create(te);
+			time_accessor.create(te);
 		}
 	}
-	taskAccessor.enable_notifications(true);
+	task_accessor.enable_notifications(true);
 }
 
-shared_ptr <asyncHTTPResponse> SyncManager::requestTasks(time_t sincePointInTime)
+shared_ptr <asyncHTTPResponse> Sync_manager::request_tasks(time_t sincePointInTime)
 {
-	vector<Task> tasks = taskAccessor.changed_since(sincePointInTime);
-	string baseUrl = settingsAccessor.get_string("URL", DEFAULT_URL);
-	string username = settingsAccessor.get_string("Username", DEFAULT_USER);
-	string password = settingsAccessor.get_string("Password", DEFAULT_PASSWORD);
+	vector<Task> tasks = task_accessor.changed_since(sincePointInTime);
+	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	string username = settings_accessor.get_string("Username", DEFAULT_USER);
+	string password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settingsAccessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	string jsonString = toJson(tasks, username);
+	bool ignoreCertError = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	string jsonString = to_json(tasks, username);
 	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
-shared_ptr <asyncHTTPResponse> SyncManager::requestTimes(time_t sincePointInTime)
+shared_ptr <asyncHTTPResponse> Sync_manager::request_times(time_t sincePointInTime)
 {
-	Time_list times = timeAccessor.times_changed_since(sincePointInTime);
-	std::string jsonString = toJson(times);
-	string baseUrl = settingsAccessor.get_string("URL", DEFAULT_URL);
-	string username = settingsAccessor.get_string("Username", DEFAULT_USER);
-	string password = settingsAccessor.get_string("Password", DEFAULT_PASSWORD);
+	Time_list times = time_accessor.times_changed_since(sincePointInTime);
+	std::string jsonString = to_json(times);
+	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	string username = settings_accessor.get_string("Username", DEFAULT_USER);
+	string password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
 	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settingsAccessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	bool ignoreCertError = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
 	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
-void SyncManager::manageNetworkProblems()
+void Sync_manager::manage_network_problems()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	if (result.statusOK() == false || result.httpCode() != 200)
+	if (result.status_OK == false || result.http_code != 200)
 	{
 		std::stringstream text;
 		// %s is replaced with the URI on which the connection failed
-		text << libtimeit::string_printf(_("Failed connection to %s:\n"), result.url().c_str());
+		text << string_printf(_("Failed connection to %s:\n"), result.url.c_str());
 
-		text << _("HTTP error ") << result.httpCode() << " ";
-		if (result.httpCode() == 401)
+		text << _("HTTP error ") << result.http_code << " ";
+		if (result.http_code == 401)
 		{
 			text << _("Username or password is wrong.");
 		}
 		else
 		{
-			text << result.errorMessage();
+			text << result.error_message;
 		}
 
 		notifier_.send(EventType::ERROR_MESSAGE, _("Network error"), text.str() );
 	}
 }
 
-void SyncManager::reset()
+void Sync_manager::reset()
 {
-	nextFullSync = 0;
-	nextSync = 0;
+	next_full_sync = 0;
+	next_sync = 0;
 }
 
 

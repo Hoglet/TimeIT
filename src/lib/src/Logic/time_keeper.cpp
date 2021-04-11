@@ -7,76 +7,65 @@
 using namespace std;
 using namespace libtimeit;
 
-TimekeeperObserver::~TimekeeperObserver()
-{
-
-}
-
-ITimeKeeper::~ITimeKeeper()
-{
-
-}
 
 //LCOV_EXCL_START
-void Timekeeper::on_signal_1_second()
+void Time_keeper::on_signal_1_second()
 {
 	auto idle=idle_detector.idle();
 	// std::cout << "Timekeeper::on_signal_1_second() was m_isIdle " << m_isIdle << " will be idle " << idle << std::endl;
-	if(idle!=is_idle)
+	if(idle != is_idle_)
 	{
-		is_idle = idle;
+		is_idle_ = idle;
 		if(idle)
 		{
-			notifyIdleDetected();
+			notify_idle_detected();
 		}
 		else
 		{
-			notifyActivityResumed();
+			notify_activity_resumed();
 		}
 	}
 }
 //LCOV_EXCL_STOP
 
-Timekeeper::Timekeeper(
+Time_keeper::Time_keeper(
 		Database& database,
 		Timer& op_timer,
 		Notifier& notifier)
 		:
 		time_accessor( database ),
-		task_accessor(database ),
 		settings_accessor( database ),
 		timer( op_timer ),
 		Event_observer(notifier),
-		TimerObserver( op_timer ),
+		Timer_observer(op_timer ),
 		idle_detector(op_timer)
 
 {
 	time_accessor.stop_all();
 
-	settings_accessor;
 	on_settings_changed("");
 	enabled = true;
-	is_idle = false;
+	is_idle_ = false;
 }
 
-Timekeeper::~Timekeeper()
+Time_keeper::~Time_keeper()
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.begin();
 	while (it != active_tasks.end())
 	{
-		StopTask(it->second.taskID);
+		stop(it->second.task_ID);
 		it = active_tasks.begin();
 	}
 	//settings_accessor.detach(this);
 }
 
-void Timekeeper::on_settings_changed(string name)
+void Time_keeper::on_settings_changed(string name)
 {
 	if (name.length() < 1 || name == "Gt")
 	{
 		long idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
-		idle_detector.setIdleTimeout(idleGt);
+		idle_detector.idle_timeout(idleGt);
 	}
 	if (name.length() < 1 || name == "Gz")
 	{
@@ -84,192 +73,192 @@ void Timekeeper::on_settings_changed(string name)
 	}
 }
 
-void Timekeeper::on_signal_10_seconds()
+void Time_keeper::on_signal_10_seconds()
 {
 	if (enabled)
 	{
-		map<int64_t, TaskTime>::iterator it;
-		if (idle_detector.minutesIdle() < idle_Gz)
+		map<int64_t, Task_time>::iterator it;
+		if (idle_detector.minutes_idle() < idle_Gz)
 		{
 			//Only saving time when being certain that somebody is working
 			for (it = active_tasks.begin(); it != active_tasks.end(); ++it)
 			{
-				TaskTime tt = it->second;
-				UpdateTask(tt.taskID);
+				Task_time tt = it->second;
+				update_task(tt.task_ID);
 			}
 		}
 	}
 }
 
-void Timekeeper::StartTask(int64_t id)
+void Time_keeper::start(int64_t id)
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
 	if (it == active_tasks.end())
 	{
-		TaskTime task;
-		task.startTime = libtimeit::now();
-		task.stopTime = libtimeit::now();
-		task.dbHandle = time_accessor.create( Time_entry( id, task.startTime, task.stopTime ) );
-		task.taskID = id;
+		Task_time task;
+		task.start = libtimeit::now();
+		task.stop = libtimeit::now();
+		task.time_ID = time_accessor.create(Time_entry(id, task.start, task.stop ) );
+		task.task_ID = id;
 		active_tasks[id] = task;
-		time_accessor.setRunning(task.dbHandle, true);
-		notifyRunningChanged();
+		time_accessor.setRunning(task.time_ID, true);
+		notify_running_changed();
 	}
 }
 
-void Timekeeper::ToggleTask(int64_t id)
+void Time_keeper::toggle(int64_t id)
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
 	if (it == active_tasks.end())
 	{
-		StartTask(id);
+		start(id);
 	}
 	else
 	{
-		StopTask(id);
+		stop(id);
 	}
 }
 
-void Timekeeper::StopTask(int64_t id)
+void Time_keeper::stop(int64_t id)
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
 	if (it != active_tasks.end())
 	{
-		TaskTime task = it->second;
+		Task_time task = it->second;
 		active_tasks.erase(it);
-		auto result = time_accessor.by_ID(task.dbHandle);
+		auto result = time_accessor.by_ID(task.time_ID);
 		if(result.has_value())
 		{
 			auto original_entry = *result;
 			time_accessor.update( original_entry.with( Time_entry_state::STOPPED ));
-			time_accessor.setRunning(task.dbHandle, false);
-			if (task.stopTime - task.startTime < 60)
+			time_accessor.setRunning(task.time_ID, false);
+			if (task.stop - task.start < 60)
 			{
-				time_accessor.remove(task.dbHandle);
+				time_accessor.remove(task.time_ID);
 			}
 		}
-		notifyRunningChanged();
+		notify_running_changed();
 	}
 }
 
-void Timekeeper::on_task_removed(int64_t id)
+void Time_keeper::on_task_removed(int64_t id)
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
 	if (it != active_tasks.end())
 	{
 		active_tasks.erase(it);
-		notifyRunningChanged();
+		notify_running_changed();
 	}
 }
-void Timekeeper::on_complete_update()
+void Time_keeper::on_complete_update()
 {
 	//TODO Detect task removal during syncing
 }
 
-void Timekeeper::UpdateTask(int64_t id, time_t now)
+void Time_keeper::update_task(int64_t id, time_t now)
 {
-	map<int64_t, TaskTime>::iterator it;
+	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
 	if (it != active_tasks.end())
 	{
-		it->second.stopTime = libtimeit::now();
-		TaskTime task = it->second;
+		it->second.stop = libtimeit::now();
+		Task_time task = it->second;
 
-		auto te = time_accessor.by_ID(task.dbHandle);
+		auto te = time_accessor.by_ID(task.time_ID);
 		if(te)
 		{
-			time_accessor.update(te->with_stop(task.stopTime));
+			time_accessor.update(te->with_stop(task.stop));
 		}
 	}
 }
 
-void Timekeeper::UpdateTask(int64_t id)
+void Time_keeper::update_task(int64_t id)
 {
 	time_t now = libtimeit::now();
-	UpdateTask(id, now);
+	update_task(id, now);
 }
 
-bool Timekeeper::isActiveTask(int64_t taskID)
+bool Time_keeper::is_active_task(int64_t taskID)
 {
 	return active_tasks.find(taskID) != active_tasks.end();
 }
-bool Timekeeper::hasRunningTasks()
+bool Time_keeper::hasRunningTasks()
 {
 	return (active_tasks.empty() == false);
 }
 
-void Timekeeper::stopAll()
+void Time_keeper::stop_all()
 {
-	map<int64_t, TaskTime>::iterator it;
-	map<int64_t, TaskTime> copyOfActiveTasks = active_tasks;
+	map<int64_t, Task_time>::iterator it;
+	map<int64_t, Task_time> copyOfActiveTasks = active_tasks;
 	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
 	{
-		TaskTime tt = it->second;
-		StopTask(tt.taskID);
+		Task_time tt = it->second;
+		stop(tt.task_ID);
 	}
 }
 
-void Timekeeper::stopAllAndContinue()
+void Time_keeper::stop_all_and_continue()
 {
-	map<int64_t, TaskTime>::iterator it;
-	map<int64_t, TaskTime> copyOfActiveTasks = active_tasks;
+	map<int64_t, Task_time>::iterator it;
+	map<int64_t, Task_time> copyOfActiveTasks = active_tasks;
 	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
 	{
-		TaskTime tt = it->second;
-		StopTask(tt.taskID);
-		StartTask(tt.taskID);
+		Task_time tt = it->second;
+		stop(tt.task_ID);
+		start(tt.task_ID);
 	}
 }
 
-bool Timekeeper::isIdle()
+bool Time_keeper::is_idle()
 {
-	return is_idle;
+	return is_idle_;
 }
-int Timekeeper::minutesIdle()
+int Time_keeper::minutes_idle()
 {
-	return idle_detector.minutesIdle();
+	return idle_detector.minutes_idle();
 }
-time_t Timekeeper::timeIdle()
+time_t Time_keeper::time_idle()
 {
-	return idle_detector.timeIdle();
+	return idle_detector.time_idle();
 }
 
-void Timekeeper::notifyRunningChanged()
+void Time_keeper::notify_running_changed()
 {
-	std::list<TimekeeperObserver*>::iterator iter;
+	std::list<Time_keeper_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		TimekeeperObserver* observer = *iter;
-		observer->on_runningChanged();
+		Time_keeper_observer* observer = *iter;
+		observer->on_running_changed();
 	}
 }
 
-void Timekeeper::notifyIdleDetected()
+void Time_keeper::notify_idle_detected()
 {
-	std::list<TimekeeperObserver*>::iterator iter;
+	std::list<Time_keeper_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		TimekeeperObserver* observer = *iter;
-		observer->on_idleDetected();
+		Time_keeper_observer* observer = *iter;
+		observer->on_idle_detected();
 	}
 }
 
-void Timekeeper::notifyActivityResumed()
+void Time_keeper::notify_activity_resumed()
 {
-	std::list<TimekeeperObserver*>::iterator iter;
+	std::list<Time_keeper_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		TimekeeperObserver* observer = *iter;
-		observer->on_activityResumed();
+		Time_keeper_observer* observer = *iter;
+		observer->on_activity_resumed();
 	}
 
 }
 
-void Timekeeper::enable(bool enable)
+void Time_keeper::enable(bool enable)
 {
 	enabled = enable;
 	if (enabled)
@@ -278,11 +267,11 @@ void Timekeeper::enable(bool enable)
 	}
 }
 
-void Timekeeper::attach(TimekeeperObserver* observer)
+void Time_keeper::attach(Time_keeper_observer* observer)
 {
 	observers.push_back(observer);
 }
-void Timekeeper::detach(TimekeeperObserver* observer)
+void Time_keeper::detach(Time_keeper_observer* observer)
 {
 	observers.remove(observer);
 }

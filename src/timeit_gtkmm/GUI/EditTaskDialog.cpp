@@ -128,8 +128,8 @@ void EditTaskDialog::setTaskID(int64_t ID)
 	auto task = taskAccessor.by_ID(taskID);
 	if (task.has_value())
 	{
-		name = task->name();
-		setParent(task->parent_ID());
+		name = task->name;
+		setParent(task->parent_ID);
 		taskNameEntry.set_text(name);
 		std::vector<int> workspaces = autoTrackAccessor.workspaces(ID);
 		setTickedWorkspaces(workspaces);

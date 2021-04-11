@@ -10,17 +10,17 @@ using namespace test;
 namespace Test
 {
 
-class TKObserver: public TimekeeperObserver
+class TKObserver: public Time_keeper_observer
 {
 public:
-	virtual void on_idleDetected()
+	virtual void on_idle_detected()
 	{
 		idleDetected = true;
 	}
-	virtual void on_activityResumed()
+	virtual void on_activity_resumed()
 	{
 	}
-	virtual void on_runningChanged()
+	virtual void on_running_changed()
 	{
 		runningChanged = true;
 	}
@@ -33,7 +33,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	Notifier notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Timekeeper timeKeeper(db, timer, notifier);
+	Time_keeper timeKeeper(db, timer, notifier);
 	Task_accessor taskaccessor(db);
 	Time_accessor timeaccessor(db);
 
@@ -43,24 +43,24 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	observer.runningChanged = false;
 	vector<int64_t> runningTasks = timeaccessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks before starting ";
-	timeKeeper.StartTask(taskID);
+	timeKeeper.start(taskID);
 	runningTasks = timeaccessor.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
-	timeKeeper.StopTask(taskID);
+	timeKeeper.stop(taskID);
 	runningTasks = timeaccessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after stopping ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
-	timeKeeper.ToggleTask(taskID);
+	timeKeeper.toggle(taskID);
 	runningTasks = timeaccessor.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after toggling ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
-	timeKeeper.ToggleTask(taskID);
+	timeKeeper.toggle(taskID);
 	runningTasks = timeaccessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after toggling ";
 
@@ -72,7 +72,7 @@ TEST( TimeKeeper, update )
 	Notifier notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Timekeeper    timeKeeper(db, timer, notifier);
+	Time_keeper    timeKeeper(db, timer, notifier);
 	Task_accessor task_accessor(db);
 	Time_accessor time_accessor(db);
 
@@ -81,17 +81,17 @@ TEST( TimeKeeper, update )
 	TKObserver observer;
 	timeKeeper.attach(&observer);
 
-	timeKeeper.StartTask(taskID);
+	timeKeeper.start(taskID);
 
 	vector<Time_entry> entries = time_accessor.time_list(taskID, 0, now + 1000);
-	int64_t teID = entries.at(0).ID();
+	int64_t teID = entries.at(0).ID;
 	auto te = time_accessor.by_ID(teID);
 	time_accessor.update(te->with_start(0).with_start(10));
 
 	timeKeeper.on_signal_10_seconds();
 
 	auto changedItem = time_accessor.by_ID(teID);
-	ASSERT_TRUE( 100 < changedItem->stop()) << "Stop should be higher than 100 ";
+	ASSERT_TRUE( 100 < changedItem->stop) << "Stop should be higher than 100 ";
 
 	timeKeeper.detach(&observer);
 }
@@ -101,7 +101,7 @@ TEST( TimeKeeper, Stop_all)
 	Notifier notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Timekeeper   time_keeper(db, timer, notifier);
+	Time_keeper   time_keeper(db, timer, notifier);
 	Task_accessor task_accessor(db);
 	Time_accessor time_accessor(db);
 
@@ -109,9 +109,9 @@ TEST( TimeKeeper, Stop_all)
 	TKObserver observer;
 	time_keeper.attach(&observer);
 
-	time_keeper.StartTask(taskID);
+	time_keeper.start(taskID);
 	observer.runningChanged = false;
-	time_keeper.stopAll();
+	time_keeper.stop_all();
 	vector<int64_t> runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_TRUE( observer.runningChanged) << "Notification supplied ";

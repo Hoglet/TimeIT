@@ -5,158 +5,138 @@
 namespace libtimeit
 {
 
-Task::Task()
-{
-	last_changed_ = time(nullptr);
-}
-
-Task::~Task()
-{
-}
-
-string Task::name() const
-{
-	return name_;
-}
 
 Task Task::with_name( string new_name) const
 {
-	if(name_ == new_name)
+	if(name == new_name)
 	{
 		return *this;
 	}
 	else
 	{
-		Task newTask(*this);
-		newTask.name_ = new_name;
-		newTask.last_changed_ = time(nullptr);
-		return newTask;
+		return 	Task(
+				new_name,
+				parent_ID,
+				uuid,
+				completed,
+				ID,
+				time(nullptr),
+				parent_uuid,
+				deleted);
+
 	}
 }
 
-Task_ID Task::ID() const
+Task Task::with_parent(Task_ID new_parent_ID) const
 {
-	return ID_;
-}
-
-Task_ID Task::parent_ID() const
-{
-	return parent_ID_;
-}
-
-Task Task::with_parent(Task_ID parent_ID) const
-{
-	if(parent_ID_ == parent_ID)
+	if(parent_ID == new_parent_ID)
 	{
 		return *this;
 	}
 	else
 	{
-		Task new_task(*this);
-
-		new_task.parent_ID_ = parent_ID;
-		new_task.last_changed_ = time(nullptr);
-		return new_task;
+		return 	Task(
+				name,
+				new_parent_ID,
+				uuid,
+				completed,
+				ID,
+				time(nullptr),
+				parent_uuid,
+				deleted);
 	}
 }
 
-Task::Task( string op_name, Task_ID parent_ID): Task(op_name, parent_ID, UUID(), false, 0, 0, {}, false)
+Task::Task(string name_, Task_ID parent_ID_)
+	:
+	Task(
+			name_,
+			parent_ID_,
+			UUID(),
+			false,
+			0,
+			time( nullptr ),
+			{},
+			false)
 {
 
 }
 
 Task::Task(
-	string              op_name,
-	Task_ID              op_parentID,
-	class UUID           op_uuid,
-	bool                 op_completed,
-	Task_ID              op_ID,
-	time_t               op_lastChange,
-	optional<class UUID> op_parentUUID,
-	bool                 op_deleted)
+	string               name_,
+	Task_ID              parentID_,
+	class UUID           uuid_,
+	bool                 completed_,
+	Task_ID              ID_,
+	time_t               last_change_,
+	optional<class UUID> parent_uuid_,
+	bool                 deleted_)
 	:
-		uuid_(op_uuid),
-		parent_Uuid_(op_parentUUID)
+		name(name_),
+		parent_ID(parentID_),
+		uuid(uuid_),
+		completed(completed_),
+		ID(ID_),
+		last_changed(last_change_),
+		parent_uuid(parent_uuid_),
+		deleted(deleted_)
 {
-	if (op_lastChange == 0)
-	{
-		last_changed_ = time(nullptr);
-	}
-	else
-	{
-		last_changed_ = op_lastChange;
-	}
-	ID_ = op_ID;
-	parent_ID_ = op_parentID;
-	name_ = op_name;
-	completed_ = op_completed;
-	deleted_ = op_deleted;
+
 }
 
-UUID Task::get_UUID() const
-{
-	return uuid_;
-}
 
-optional<class UUID> Task::parent_UUID() const
-{
-	return parent_Uuid_;
-}
 
-bool Task::completed() const
+Task Task::with_completed(bool new_completed) const
 {
-	return completed_;
-}
-time_t Task::last_changed() const
-{
-	return last_changed_;
-}
-
-Task Task::with_completed(bool state) const
-{
-	if( completed_ == state )
+	if(completed == new_completed )
 	{
 		return *this;
 	}
 	else
 	{
-		Task newTask(*this);
-		newTask.completed_ = state;
-		newTask.last_changed_ = time(nullptr);
-		return newTask;
+		return 	Task(
+				name,
+				parent_ID,
+				uuid,
+				new_completed,
+				ID,
+				time(nullptr),
+				parent_uuid,
+				deleted);
 	}
 }
 
-Task Task::with_deleted(bool state) const
+Task Task::with_deleted(bool new_deleted) const
 {
-	if( deleted_ == state )
+	if(deleted == new_deleted )
 	{
 		return *this;
 	}
 	else
 	{
-		Task newTask(*this);
-		newTask.deleted_ = state;
-		newTask.last_changed_ = time(nullptr);
-		return newTask;
+		return 	Task(
+				name,
+				parent_ID,
+				uuid,
+				completed,
+				ID,
+				time(nullptr),
+				parent_uuid,
+				new_deleted);
 	}
 }
 
-bool Task::deleted() const
-{
-	return deleted_;
-}
 
 bool operator==(const Task &op1, const Task &op2)
 {
-	return (op1.name_ == op2.name_ &&
-			op1.ID_ == op2.ID_ &&
-			op1.parent_ID_ == op2.parent_ID_ &&
-			op1.uuid_ == op2.uuid_ &&
-			op1.parent_Uuid_ == op2.parent_Uuid_ &&
-			op1.completed_ == op2.completed_ &&
-			op1.deleted_ == op2.deleted_ &&
-			op1.last_changed_ == op2.last_changed_);
+	return (op1.name         == op2.name &&
+			op1.ID           == op2.ID &&
+			op1.parent_ID    == op2.parent_ID &&
+			op1.uuid         == op2.uuid &&
+			op1.parent_uuid == op2.parent_uuid &&
+			op1.completed    == op2.completed &&
+			op1.deleted      == op2.deleted &&
+			op1.last_changed == op2.last_changed);
 }
 
 bool operator!=(const Task &op1, const Task &op2)

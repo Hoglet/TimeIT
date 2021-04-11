@@ -75,7 +75,7 @@ TEST( database, testCreation )
 	openAndCloseDB();
 	openAndCloseDB();
 
-	OSAbstraction::unlink("/tmp/dbtest.db");
+	unlink("/tmp/dbtest.db");
 
 	//Testing failing creation
 	Notifier notifier;
@@ -91,23 +91,23 @@ TEST( database, testUpgrade )
 	Task_accessor taskAccessor(db);
 	ASSERT_EQ( 2, taskAccessor.changed_since().size()) << "Numbers of tasks in tasks";
 	auto task1 = taskAccessor.by_ID(1);
-	ASSERT_EQ( string("Test"), task1->name()) << "Task 1 name ";
-	ASSERT_EQ( 0, task1->parent_ID()) << "Task 1 parent ";
+	ASSERT_EQ( string("Test"), task1->name) << "Task 1 name ";
+	ASSERT_EQ( 0, task1->parent_ID) << "Task 1 parent ";
 
 	auto task2 = taskAccessor.by_ID(2);
-	ASSERT_EQ( string("Sub task"), task2->name()) << "Task 2 name ";
-	ASSERT_EQ( 1, task2->parent_ID()) << "Task 2 parent ";
+	ASSERT_EQ( string("Sub task"), task2->name) << "Task 2 name ";
+	ASSERT_EQ( 1, task2->parent_ID) << "Task 2 parent ";
 
 	Time_accessor timeAccessor(db);
 	vector<Time_entry> times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
 	Time_entry te = times.at(0);
-	ASSERT_EQ( 1, te.ID()) << "Time id ";
-	ASSERT_EQ( 2, te.task_ID()) << "Time taskID ";
-	ASSERT_EQ( 10, te.start()) << "Time start ";
-	ASSERT_EQ( 100, te.stop()) << "Time stop ";
+	ASSERT_EQ( 1, te.ID) << "Time id ";
+	ASSERT_EQ( 2, te.task_ID) << "Time taskID ";
+	ASSERT_EQ( 10, te.start) << "Time start ";
+	ASSERT_EQ( 100, te.stop) << "Time stop ";
 
-	OSAbstraction::unlink("/tmp/dbtest.db");
+	unlink("/tmp/dbtest.db");
 }
 
 TEST( database, testDatacell )

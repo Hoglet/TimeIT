@@ -33,8 +33,8 @@ public:
 private:
 	virtual void calculateTimeSpan()
 	{
-		startTime = libtimeit::getBeginingOfDay(activeDay);
-		stopTime = libtimeit::getEndOfDay(activeDay);
+		startTime = libtimeit::beginning_of_day(activeDay);
+		stopTime = libtimeit::end_of_day(activeDay);
 	}
 };
 
@@ -54,8 +54,8 @@ public:
 private:
 	virtual void calculateTimeSpan()
 	{
-		startTime = libtimeit::getBeginingOfWeek(activeDay);
-		stopTime = libtimeit::getEndOfWeek(activeDay);
+		startTime = libtimeit::beginning_of_week(activeDay);
+		stopTime = libtimeit::end_of_week(activeDay);
 	}
 };
 
@@ -75,8 +75,8 @@ public:
 private:
 	virtual void calculateTimeSpan()
 	{
-		startTime = libtimeit::getBeginingOfMonth(activeDay);
-		stopTime = libtimeit::getEndOfMonth(activeDay);
+		startTime = libtimeit::beginning_of_month(activeDay);
+		stopTime = libtimeit::end_of_month(activeDay);
 	}
 };
 
@@ -96,8 +96,8 @@ public:
 private:
 	virtual void calculateTimeSpan()
 	{
-		startTime = libtimeit::getBeginingOfYear(activeDay);
-		stopTime = libtimeit::getEndOfYear(activeDay);
+		startTime = libtimeit::beginning_of_year(activeDay);
+		stopTime = libtimeit::end_of_year(activeDay);
 	}
 };
 

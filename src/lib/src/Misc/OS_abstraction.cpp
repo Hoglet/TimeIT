@@ -15,11 +15,11 @@
 
 using namespace std;
 
-namespace OSAbstraction
+namespace libtimeit
 {
 
 //LCOV_EXCL_START
-void mkDir(std::string path)
+void make_directory(string path)
 {
 	stringstream mkdirCommand;
 	mkdirCommand << "mkdir -p \"" << path << "\"";
@@ -27,13 +27,13 @@ void mkDir(std::string path)
 }
 //LCOV_EXCL_STOP
 
-void unlink(std::string filename)
+void unlink(string filename)
 {
 	::unlink(filename.c_str());
 }
 
 // Code converted from http://www.techbytes.ca/techbyte103.html
-bool fileExists(std::string filename)
+bool file_exists(std::string filename)
 {
 	struct stat stFileInfo;
 	bool retVal;
@@ -63,7 +63,7 @@ bool fileExists(std::string filename)
 
 //LCOV_EXCL_START
 
-void showURL(std::string url)
+void show_URL(std::string url)
 {
 	std::stringstream command;
 	command << "xdg-open " << url << endl;

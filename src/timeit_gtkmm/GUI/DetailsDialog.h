@@ -39,7 +39,7 @@ class DetailsDialog:
 		public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier);
+	static std::shared_ptr<DetailsDialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
 	virtual ~DetailsDialog() ;
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
@@ -57,7 +57,7 @@ public:
 	void on_task_total_time_updated(int64_t task_id);
 
 private:
-	DetailsDialog(Database& database, ITimeKeeper &timeKeeper, Notifier& notifier);
+	DetailsDialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
@@ -109,7 +109,7 @@ private:
 	Time_accessor          m_timeAccessor;
 	Extended_task_accessor m_taskAccessor;
 	Settings_accessor      settings_accessor;
-	ITimeKeeper&           m_timeKeeper;
+	Time_keeper&           m_timeKeeper;
 };
 }
 

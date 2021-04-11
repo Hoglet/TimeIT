@@ -33,7 +33,6 @@ namespace GUI
 {
 
 using namespace std;
-using namespace Test;
 using namespace libtimeit;
 
 extern "C" {
@@ -50,7 +49,7 @@ Main::Main(int argc, char *argv[])
 	signal(SIGINT, &sighandler);
 
 	string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
-	OSAbstraction::mkDir(dbPath);
+	make_directory(dbPath);
 
 	dbName = Glib::build_filename(dbPath, "TimeIt.db");
 
@@ -105,8 +104,8 @@ int Main::run(int argc, char *argv[])
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 		textdomain(GETTEXT_PACKAGE);
 
-		ApplicationLock lock(dbName);
-		if (lock.lockAquired())
+		Application_lock lock(dbName);
+		if (lock.lock_acquired())
 		{
 
 			Gtk::Main application(argc, argv);
@@ -124,11 +123,11 @@ int Main::run(int argc, char *argv[])
 
 
 			Network network;
-			SyncManager syncManager(database, network, notifier, timer);
+			Sync_manager syncManager(database, network, notifier, timer);
 			IpcServer ipcServer(socketName, timer);
 
-			Timekeeper time_keeper(database, timer, notifier);
-			AutoTracker autotracker(time_keeper, database, timer);
+			Time_keeper time_keeper(database, timer, notifier);
+			Auto_tracker autotracker(time_keeper, database, timer);
 			GUIFactory guiFactory(time_keeper, database, timer, notifier);
 			Controller controller(guiFactory, time_keeper, database, ipcServer, notifier);
 

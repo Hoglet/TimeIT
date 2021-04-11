@@ -12,23 +12,23 @@ namespace libtimeit
 
 
 //LCOV_EXCL_START
-TimerObserver::TimerObserver(Timer& publisher) : timer( publisher )
+Timer_observer::Timer_observer(Timer& publisher) : timer(publisher )
 {
 	publisher.attach(this);
 }
 
 
-TimerObserver::~TimerObserver()
+Timer_observer::~Timer_observer()
 {
 	timer.detach(this);
 }
 
-void TimerObserver::on_signal_1_second()
+void Timer_observer::on_signal_1_second()
 {
 
 }
 
-void TimerObserver::on_signal_10_seconds()
+void Timer_observer::on_signal_10_seconds()
 {
 
 }
@@ -42,12 +42,12 @@ Timer::~Timer()
 {
 }
 
-void Timer::attach(TimerObserver *observer)
+void Timer::attach(Timer_observer *observer)
 {
 	observers.push_back(observer);
 }
 
-void Timer::detach(TimerObserver *observer)
+void Timer::detach(Timer_observer *observer)
 {
 	observers.remove(observer);
 }
@@ -71,7 +71,7 @@ void Timer::signalSender()
 	}
 	if (observers.size() > 0)
 	{
-		for (TimerObserver *observer : observers)
+		for (Timer_observer *observer : observers)
 		{
 			observer->on_signal_1_second();
 			if (signal10Seconds)
