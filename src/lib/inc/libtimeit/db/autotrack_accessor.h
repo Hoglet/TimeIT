@@ -11,7 +11,7 @@
 #include <libtimeit/db/accessor.h>
 #include "extended_task_accessor.h"
 #include "autotrack_accessor.h"
-#include "CSQL.h"
+#include "sqlite3.h"
 #include <memory>
 
 namespace libtimeit

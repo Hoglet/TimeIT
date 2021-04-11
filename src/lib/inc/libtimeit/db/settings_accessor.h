@@ -10,7 +10,7 @@
 
 #include <libtimeit/db/accessor.h>
 #include <libtimeit/db/database.h>
-#include "CSQL.h"
+#include "sqlite3.h"
 
 namespace libtimeit
 {

@@ -7,7 +7,7 @@
 #include <string>
 
 #include "extended_task.h"
-#include "CSQL.h"
+#include "sqlite3.h"
 #include "notifier.h"
 #include "time_accessor.h"
 #include "task_accessor.h"

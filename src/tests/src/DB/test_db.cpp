@@ -4,7 +4,7 @@
 #include <libtimeit/OS_abstraction.h>
 #include <libtimeit/exceptions/db_exception.h>
 #include <libtimeit/db/data_cell.h>
-#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include <sstream>
@@ -19,7 +19,7 @@ namespace test
 void createVersion4db(const char *dbname)
 {
 	unlink(dbname);
-	shared_ptr<CSQL> db = shared_ptr<CSQL>(new CSQL(dbname));
+	shared_ptr<SQLite3> db = shared_ptr<SQLite3>(new SQLite3(dbname));
 
 	//Create necessary tables
 	db->execute(
@@ -131,7 +131,7 @@ TEST( database, testSQLErrorManagement)
 {
 	const char *dbname = "/tmp/dbtest.db";
 	createVersion4db(dbname);
-	CSQL db(dbname);
+	SQLite3 db(dbname);
 	string faultyStatement = "select * from tmies";
 	ASSERT_THROW(db.execute(faultyStatement), db_exception);
 }

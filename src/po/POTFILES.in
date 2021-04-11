@@ -69,7 +69,7 @@ src/Misc/IpcServer.cpp
 src/Misc/ApplicationLock.cpp
 src/DB/TaskAccessor.cpp
 src/DB/ExtendedTask.cpp
-src/DB/DBAbstraction/CSQL.cpp
+src/DB/DBAbstraction/SQLite3.cpp
 src/DB/DBAbstraction/dbexception.cpp
 src/DB/DBAbstraction/DataCell.cpp
 src/DB/SettingsAccessor.cpp

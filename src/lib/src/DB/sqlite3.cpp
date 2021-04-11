@@ -2,23 +2,23 @@
 #include <sstream>
 #include <string>
 #include <string.h>
-#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/sqlite3.h>
 
 using namespace std;
 namespace libtimeit
 {
 
-CSQL::CSQL(string dbname)
+SQLite3::SQLite3(string dbname)
 {
 	init(dbname);
 }
 
-CSQL::~CSQL()
+SQLite3::~SQLite3()
 {
 	sqlite3_close(db);
 }
 
-void CSQL::init(string dbname)
+void SQLite3::init(string dbname)
 {
 	in_transaction = false;
 	int rc = sqlite3_open(dbname.c_str(), &db);
@@ -30,12 +30,12 @@ void CSQL::init(string dbname)
 	}
 }
 
-int64_t CSQL::ID_of_last_insert()
+int64_t SQLite3::ID_of_last_insert()
 {
 	return sqlite3_last_insert_rowid(db);
 }
 
-Statement CSQL::prepare(const string& query)
+Statement SQLite3::prepare(const string& query)
 {
 	sqlite3_stmt* stmt;
 	int rc = sqlite3_prepare_v2(db, query.c_str(), strlen(query.c_str()), &stmt, NULL);
@@ -51,13 +51,13 @@ Statement CSQL::prepare(const string& query)
 	return Statement(stmt, *this);
 }
 
-Query_result CSQL::execute(const string& query)
+Query_result SQLite3::execute(const string& query)
 {
 	Statement statement = prepare(query.data());
 	return statement.execute();
 }
 
-void CSQL::begin_transaction()
+void SQLite3::begin_transaction()
 {
 	if (in_transaction)
 	{
@@ -68,7 +68,7 @@ void CSQL::begin_transaction()
 	in_transaction = true;
 }
 
-void CSQL::end_transaction()
+void SQLite3::end_transaction()
 {
 	if (in_transaction == false)
 	{
@@ -77,7 +77,7 @@ void CSQL::end_transaction()
 	execute("COMMIT");
 	in_transaction = false;
 }
-void CSQL::try_rollback()
+void SQLite3::try_rollback()
 {
 	if (in_transaction)
 	{
@@ -86,7 +86,7 @@ void CSQL::try_rollback()
 	}
 }
 
-string CSQL::last_error_message()
+string SQLite3::last_error_message()
 {
 	return sqlite3_errmsg(db);
 }
@@ -97,10 +97,10 @@ Statement::~Statement()
 	sqlite3_finalize(stmt);
 }
 
-Statement::Statement(sqlite3_stmt* op_stmt, CSQL& op_db): db(op_db)
+Statement::Statement(sqlite3_stmt* op_stmt, SQLite3& op_db): db(op_db)
 {
 	stmt = op_stmt;
-	ncol = sqlite3_column_count(stmt);
+	number_of_columns = sqlite3_column_count(stmt);
 }
 
 void Statement::bind_value(int index, int64_t value)
@@ -132,7 +132,7 @@ Query_result Statement::execute()
 		else if (rc == SQLITE_ROW)
 		{
 			vector<Data_cell> row;
-			for (int c = 0; c < ncol; c++)
+			for (int c = 0; c < number_of_columns; c++)
 			{
 				int type = sqlite3_column_type(stmt, c);
 				if (type == SQLITE_INTEGER)

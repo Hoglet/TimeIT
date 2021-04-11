@@ -10,7 +10,7 @@
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/accessor.h>
-#include "CSQL.h"
+#include "sqlite3.h"
 #include "notifier.h"
 #include "time_entry.h"
 

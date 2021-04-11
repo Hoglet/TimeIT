@@ -1,11 +1,11 @@
-#ifndef TIMEIT_CSQL_H_
-#define TIMEIT_CSQL_H_
+#ifndef TIMEIT_SQLITE_H_
+#define TIMEIT_SQLITE_H_
 
 #include <libtimeit/exceptions/db_exception.h>
 #include <sqlite3.h>
 #include <string>
 #include <vector>
-#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/query_result.h>
 #include <stdint.h>
 #include <memory>
@@ -14,28 +14,28 @@ namespace libtimeit
 {
 
 using namespace std;
-class CSQL;
+class SQLite3;
 
 class Statement
 {
 public:
-	Statement(sqlite3_stmt* stmt, CSQL& db);
+	Statement(sqlite3_stmt* stmt, SQLite3& db);
 	~Statement();
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
 	void bind_null_value(int index);
 	Query_result execute();
 private:
-	CSQL&         db;
+	SQLite3&      db;
 	sqlite3_stmt* stmt;
-	int           ncol;
+	int           number_of_columns;
 };
 
-class CSQL
+class SQLite3
 {
 public:
-	CSQL(string database_name);
-	virtual ~CSQL();
+	SQLite3(string database_name);
+	virtual ~SQLite3();
 	Query_result execute(const string& statement);
 	int64_t      ID_of_last_insert();
 	Statement    prepare(const string& query);
@@ -46,13 +46,13 @@ public:
 protected:
 	void         init(string database_name);
 private:
-	CSQL() {};
-	CSQL(const CSQL&);
-	void operator=(const CSQL&);
+	SQLite3() {};
+	SQLite3(const SQLite3&);
+	void operator=(const SQLite3&);
 
-	sqlite3 *db             = nullptr;
-	bool     in_transaction = false;
+	sqlite3*  db             {nullptr};
+	bool      in_transaction {false};
 };
 
 }
-#endif /*CSQL_H_*/
+#endif /*TIMEIT_SQLITE_H_*/

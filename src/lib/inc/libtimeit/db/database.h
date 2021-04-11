@@ -3,14 +3,14 @@
 
 #include "notifier.h"
 #include <memory>
-#include <libtimeit/db/CSQL.h>
+#include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/query_result.h>
 #include <libtimeit/db/accessor.h>
 
 
 namespace libtimeit
 {
-class CSQL;
+class SQLite3;
 using namespace std;
 
 class Database
@@ -32,7 +32,7 @@ public:
 	int          current_DB_version();
 protected:
 	Notifier& notifier;
-	CSQL      db;
+	SQLite3      db;
 
 	void create_tables( list<Accessor*>& accessors );
 	void upgrade( list<Accessor*>&  accessors);
