@@ -141,7 +141,7 @@ void Details::on_menu_file_popup_remove()
 				else
 				{
 					// if running then keep running, starting over with zero length
-					m_timeAccessor.update(time_entry);
+					m_timeAccessor.update(time_entry.with_start(time_entry.stop));
 				}
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
