@@ -29,6 +29,7 @@ public:
 	Query_result execute(const string& statement);
 	Statement    prepare(string statement);
 	int64_t      ID_of_last_insert();
+	bool         table_exists(string name);
 	int          current_DB_version();
 protected:
 	Notifier& notifier;
@@ -36,11 +37,14 @@ protected:
 
 	void create_tables( list<Accessor*>& accessors );
 	void upgrade( list<Accessor*>&  accessors);
+	void drop_views( list<Accessor*>& accessors );
 	void create_views( list<Accessor*>& accessors );
 private:
 	Database(const Database&);
 	void operator=(const Database&);
+	int db_version{0};
 
+	void find_db_version();
 };
 
 }

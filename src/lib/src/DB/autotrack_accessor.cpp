@@ -20,7 +20,14 @@ Auto_track_accessor::Auto_track_accessor(Database& op_database) : database(op_da
 
 void  Auto_track_accessor::create_table()
 {
-
+	database.execute(R"Query(
+		CREATE TABLE IF NOT EXISTS
+			autotrack
+			(
+				taskID    INTEGER,
+				workspace INTEGER
+			)
+		)Query");
 }
 
 void  Auto_track_accessor::upgrade()

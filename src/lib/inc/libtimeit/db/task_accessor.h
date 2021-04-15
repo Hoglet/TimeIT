@@ -38,6 +38,7 @@ public:
 
 protected:
 	void      create_table()   override;
+	void      drop_views()     override {};
 	void      create_views()   override {};
 	void      upgrade()        override;
 	void      upgrade_to_DB5();

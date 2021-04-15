@@ -121,5 +121,41 @@ optional<Extended_task> Extended_task_accessor::by_ID(int64_t taskID, time_t sta
 }
 
 
+void Extended_task_accessor::drop_views()
+{
+	database.execute("DROP VIEW IF EXISTS v_running");
+	database.execute("DROP VIEW IF EXISTS v_tasks");
+}
+
+void Extended_task_accessor::create_views()
+{
+	database.execute(
+			R"Query(
+				CREATE VIEW
+					v_running
+				AS SELECT
+					taskID,
+					running
+				FROM
+				    times
+				WHERE running ="1";
+			)Query");
+	database.execute(
+			R"Query(
+				CREATE VIEW
+					v_tasks
+				AS SELECT
+					tasks.*,
+					IFNULL(v_running.running,0) as running
+				FROM
+					tasks
+				LEFT JOIN
+					v_running
+				ON
+					tasks.id=v_running.taskId
+				)Query");
+
+}
+
 
 }

@@ -394,6 +394,7 @@ void Time_accessor::upgrade_to_DB5()
 	time_t now = time(nullptr);
 
 	database.execute("DELETE FROM times WHERE taskID = 0");
+	database.execute("DROP TABLE IF EXISTS times_backup");
 	database.execute("ALTER TABLE times RENAME TO times_backup");
 	create_table();
 
@@ -409,6 +410,7 @@ void Time_accessor::upgrade_to_DB5()
 		Time_entry item(id, UUID(), taskID, {}, start, stop, false, STOPPED, now);
 		create(item);
 	}
+	database.execute("DROP TABLE IF EXISTS times_backup");
 }
 void Time_accessor::upgrade()
 {
@@ -436,9 +438,12 @@ void Time_accessor::create_table()
 		);
 }
 
-void Time_accessor::create_views()
+void Time_accessor::drop_views()
 {
 	database.execute("DROP VIEW IF EXISTS v_times");
+}
+void Time_accessor::create_views()
+{
 
 	database.execute(R"Query(
 			CREATE VIEW v_times AS

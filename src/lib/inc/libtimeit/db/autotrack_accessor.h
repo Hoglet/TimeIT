@@ -31,6 +31,7 @@ public:
 	void            set_workspaces(int64_t task_ID, vector<int> workspaces);
 protected:
 	void      create_table()   override;
+	void      drop_views()     override {};
 	void      create_views()   override {};
 	void      upgrade()        override;
 private:

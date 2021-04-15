@@ -28,6 +28,11 @@ public:
 	vector<Extended_task>   by_parent_ID(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
 	vector<Extended_task>   getRunningTasks(int64_t parentID = 0);
 private:
+	void      create_table()   override {};
+	void      drop_views()     override;
+	void      create_views()   override;
+	void      upgrade()        override {};
+
 	vector<Extended_task> _getExtendedTasks(int64_t taskID, int64_t parentID = 0, bool onlyRunning = false, time_t start = 0, time_t stop = 0);
 	Duration getTotalChildTime(int64_t id, time_t start = 0 , time_t stop = 0);
 	Time_accessor time_accessor;

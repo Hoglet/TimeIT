@@ -9,6 +9,8 @@
 #include <iostream>
 #include <list>
 #include <libtimeit/db/settings_accessor.h>
+#include <optional>
+#include <libtimeit/utils.h>
 
 using namespace std;
 
@@ -21,6 +23,30 @@ Settings_accessor::Settings_accessor(Database &op_database) : database(op_databa
 
 Settings_accessor::~Settings_accessor()
 {
+}
+
+optional<int>   Settings_accessor::value(string name)
+{
+	string statement = string_printf( R"Query(
+				SELECT
+					intValue
+				FROM
+					settings
+				WHERE
+					name = '%s'; )Query",  name.c_str());
+
+
+	Query_result rows = database.execute(statement);
+	if (rows.empty())
+	{
+		return {};
+	}
+	else
+	{
+		vector<Data_cell> row = rows.at(0);
+		return row[0].integer();
+	}
+
 }
 
 int Settings_accessor::get_int(string name, int default_value)
@@ -188,7 +214,16 @@ void Settings_accessor::setting_changed(string name)
 
 void Settings_accessor::create_table()
 {
-
+	database.execute( R"Query(
+		CREATE TABLE IF NOT EXISTS
+			settings
+			(
+				name        VARCHAR PRIMARY KEY,
+				intValue    INTEGER,
+				boolValue   BOOL,
+				stringValue VARCHAR
+			)
+		)Query");
 }
 
 void Settings_accessor::upgrade()

@@ -7,93 +7,33 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/database.h>
+#include <libtimeit/utils.h>
 
 namespace libtimeit
 {
 using namespace std;
 
-const int expectedDBVersion = 5;
+const int expected_DB_version = 5;
 
 void Database::create_tables( list<Accessor*>& accessors)
 {
-	db.execute("PRAGMA foreign_keys = ON");
-
 	for ( auto accessor : accessors )
 	{
 		accessor->create_table();
 	}
-
-	//Create necessary tables
-
-	db.execute(R"Query(
-		CREATE TABLE IF NOT EXISTS
-			autotrack
-			(
-				taskID    INTEGER,
-				workspace INTEGER
-			)
-		)Query");
-
-	db.execute( R"Query(
-		CREATE TABLE IF NOT EXISTS
-			parameters
-			(
-				id       VARCHAR PRIMARY KEY,
-				string   VARCHAR,
-				value    INTEGER,
-				boolean  BOOL
-			)
-		)Query");
-	db.execute( R"Query(
-		CREATE TABLE IF NOT EXISTS
-			settings
-			(
-				name        VARCHAR PRIMARY KEY,
-				intValue    INTEGER,
-				boolValue   BOOL,
-				stringValue VARCHAR
-			)
-		)Query");
 }
 
 
 
 int Database::current_DB_version()
 {
-	int DBVersion;
-	string statement = R"Query(
-		SELECT
-			value
-		FROM
-			parameters
-		WHERE
-			id == "dbversion"
-		)Query";
-
-	Query_result rows = db.execute(statement);
-	if ( rows.empty() )
-	{
-		DBVersion = expectedDBVersion;
-		statement = R"Query(
-			INSERT INTO
-				parameters (id, value)
-			VALUES ( "dbversion"," )Query";
-		statement += expectedDBVersion ;
-		statement += R"end(");)end";
-		db.execute(statement);
-	}
-	else
-	{
-		vector<Data_cell> row = rows.at(0);
-		DBVersion = (int)row[0].integer();
-	}
-	return DBVersion;
+	return db_version;
 }
 
 void Database::upgrade( list<Accessor*>& accessors)
 {
 	int DBVersion = current_DB_version();
-	if (DBVersion != expectedDBVersion)
+	if (DBVersion != expected_DB_version)
 	{
 		for ( auto accessor : accessors)
 		{
@@ -105,27 +45,23 @@ void Database::upgrade( list<Accessor*>& accessors)
 		//LCOV_EXCL_START
 		if (DBVersion < 4)
 		{
-			db.execute("DROP VIEW v_timesSummary;");
-			db.execute("DROP VIEW v_tasks;");
+			db.execute("DROP VIEW IF EXISTS v_timesSummary;");
+			db.execute("DROP VIEW IF EXISTS v_tasks;");
 		}
 		//LCOV_EXCL_STOP
+	}
+}
 
-		statement.str("");
-		statement << "UPDATE parameters SET value = ";
-		statement << expectedDBVersion;
-		statement << " WHERE id = \"dbversion\";";
-		db.execute(statement.str());
+void Database::drop_views( list<Accessor*>& accessors )
+{
+	for ( auto accessor : accessors)
+	{
+		accessor->drop_views();
 	}
 }
 
 void Database::create_views( list<Accessor*>& accessors )
 {
-	//Create views
-	db.execute("DROP VIEW IF EXISTS v_running");
-	db.execute("CREATE VIEW v_running AS SELECT taskID, running FROM times WHERE running =\"1\"");
-	db.execute("DROP VIEW IF EXISTS v_tasks");
-	db.execute(
-			"CREATE VIEW v_tasks AS SELECT tasks.*, IFNULL(v_running.running,0) as running FROM tasks    LEFT JOIN v_running    ON tasks.id=v_running.taskId");
 	for ( auto accessor : accessors)
 	{
 		accessor->create_views();
@@ -141,27 +77,39 @@ Database::Database(
 {
 	try
 	{
-		db.execute("PRAGMA foreign_keys = OFF");
+
+		find_db_version();
+
 		begin_transaction();
 
-		Task_accessor      tasks( *this );
-		Time_accessor      times( *this );
-		Auto_track_accessor auto_track(*this );
-		Settings_accessor  settings( *this );
+		Task_accessor          tasks( *this );
+		Time_accessor          times( *this );
+		Auto_track_accessor    auto_track(*this );
+		Settings_accessor      settings( *this );
+		Extended_task_accessor extended_tasks( *this);
+
 		list<Accessor*> accessors =
 				{
 						&tasks,
 						&times,
 						&auto_track,
 						&settings,
+						&extended_tasks,
 				};
 
 		create_tables(accessors);
+		db.execute("PRAGMA foreign_keys = OFF");
+		drop_views( accessors );
 		upgrade(accessors);
-		create_views( accessors);
+		create_views( accessors );
+
+		db_version = expected_DB_version;
+		settings.set_int("db_version", db_version);
+		db.execute( "DROP TABLE IF EXISTS parameters;" );
 
 		end_transaction();
 		db.execute("PRAGMA foreign_keys = ON");
+
 
 		times.remove_short_time_spans();
 	//LCOV_EXCL_START
@@ -173,6 +121,61 @@ Database::Database(
 	}
 	//LCOV_EXCL_STOP
 
+}
+
+bool Database::table_exists(string name)
+{
+	auto query = string_printf(
+			R"Query(
+				SELECT
+					name
+				FROM
+					sqlite_master
+				WHERE
+					type='table'
+				AND
+					name='%s')Query", name.c_str());
+	auto rows = db.execute( query );
+
+	return rows.empty() == false;
+
+
+}
+void Database::find_db_version()
+{
+
+	if ( table_exists("parameters") )
+	{
+		auto rows = db.execute(
+				R"Query(
+				SELECT
+					value
+				FROM
+					parameters
+				WHERE
+				id == "dbversion"
+			)Query");
+
+		if (rows.empty() == false)
+		{
+			vector<Data_cell> row = rows.at(0);
+			db_version = (int) row[0].integer();
+		}
+	}
+	else if ( table_exists("settings") )
+	{
+
+		Settings_accessor  settings( *this );
+		auto version = settings.value("db_version");
+		if (version.has_value())
+		{
+			db_version = version.value();
+		}
+	}
+	else
+	{
+		db_version = expected_DB_version;
+	}
 }
 
 Database::~Database()
