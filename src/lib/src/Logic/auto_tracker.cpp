@@ -45,11 +45,11 @@ bool contains(vector<Task_ID> vec, Task_ID item)
 {
 	if (find(vec.begin(), vec.end(), item) == vec.end())
 	{
-		return true;
+		return false;
 	}
 	else
 	{
-		return false;
+		return true;
 	}
 
 }
