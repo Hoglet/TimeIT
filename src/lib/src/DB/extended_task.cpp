@@ -20,6 +20,8 @@ Extended_task::Extended_task(
 				op_ID,
 				0,
 				{},
+				false,
+				0,
 				false
 				),
 		total_time_(op_total_time),

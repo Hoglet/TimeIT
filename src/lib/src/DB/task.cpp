@@ -22,7 +22,9 @@ Task Task::with_name( string new_name) const
 				ID,
 				time(nullptr),
 				parent_uuid,
-				deleted);
+				deleted,
+				idle,
+				quiet);
 
 	}
 }
@@ -43,7 +45,9 @@ Task Task::with_parent(Task_ID new_parent_ID) const
 				ID,
 				time(nullptr),
 				parent_uuid,
-				deleted);
+				deleted,
+				idle,
+				quiet);
 	}
 }
 
@@ -57,6 +61,8 @@ Task::Task(string name_, Task_ID parent_ID_)
 			0,
 			time( nullptr ),
 			{},
+			false,
+			0,
 			false)
 {
 
@@ -70,7 +76,9 @@ Task::Task(
 	Task_ID              ID_,
 	time_t               last_change_,
 	optional<class UUID> parent_uuid_,
-	bool                 deleted_)
+	bool                 deleted_,
+	int                  idle_,
+	bool                 quiet_)
 	:
 		name(name_),
 		parent_ID(parentID_),
@@ -79,7 +87,9 @@ Task::Task(
 		ID(ID_),
 		last_changed(last_change_),
 		parent_uuid(parent_uuid_),
-		deleted(deleted_)
+		deleted(deleted_),
+		idle(idle_),
+		quiet(quiet_)
 {
 
 }
@@ -102,7 +112,9 @@ Task Task::with_completed(bool new_completed) const
 				ID,
 				time(nullptr),
 				parent_uuid,
-				deleted);
+				deleted,
+				idle,
+				quiet);
 	}
 }
 
@@ -122,7 +134,9 @@ Task Task::with_deleted(bool new_deleted) const
 				ID,
 				time(nullptr),
 				parent_uuid,
-				new_deleted);
+				new_deleted,
+				idle,
+				quiet);
 	}
 }
 

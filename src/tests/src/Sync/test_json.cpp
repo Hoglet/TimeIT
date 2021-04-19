@@ -229,7 +229,7 @@ TEST( Json, testTaskStringGenerationTest )
 	auto uuid = to_uuid("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	time_t changeTime = 1374263745;
 
-	Task task(name, 1, *uuid, false, 1, changeTime, parentID, false);
+	Task task(name, 1, *uuid, false, 1, changeTime, parentID, false, 0, false);
 	vector<Task> tasks;
 	tasks.push_back(task);
 	string result = to_json(tasks, "tester");
@@ -243,7 +243,7 @@ TEST( Json, testTaskStringGenerationTest )
 
 	json_t *object = json_array_get(root, 0);
 
-	ASSERT_EQ( 7, json_object_size(object)) << "Number of fields are wrong ";
+	ASSERT_EQ( 9, json_object_size(object)) << "Number of fields are wrong ";
 
 	json_t *j_name = json_object_get(object, "name");
 	json_t *j_id = json_object_get(object, "id");

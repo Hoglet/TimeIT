@@ -18,7 +18,7 @@ TEST( Task, getters)
 
 TEST (Task, with)
 {
-	Task original("Apa", 0, UUID(), false, 0, 0, {}, false);
+	Task original("Apa", 0, UUID(), false, 0, 0, {}, false, 0, false);
 	auto now = time(0);
 
 	auto task = original.with_name("Test");

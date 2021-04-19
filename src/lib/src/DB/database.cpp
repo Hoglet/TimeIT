@@ -32,24 +32,14 @@ int Database::current_DB_version()
 
 void Database::upgrade( list<Accessor*>& accessors)
 {
-	int DBVersion = current_DB_version();
-	if (DBVersion != expected_DB_version)
+	for ( auto accessor : accessors)
 	{
-		for ( auto accessor : accessors)
-		{
-			accessor->upgrade();
-		}
-		stringstream statement;
-
-		//Upgrade existing
-		//LCOV_EXCL_START
-		if (DBVersion < 4)
-		{
-			db.execute("DROP VIEW IF EXISTS v_timesSummary;");
-			db.execute("DROP VIEW IF EXISTS v_tasks;");
-		}
-		//LCOV_EXCL_STOP
+		accessor->upgrade();
 	}
+
+	//LCOV_EXCL_START
+	db.execute("DROP VIEW IF EXISTS v_timesSummary;");
+	//LCOV_EXCL_STOP
 }
 
 void Database::drop_views( list<Accessor*>& accessors )
@@ -220,6 +210,20 @@ Statement Database::prepare(string statement)
 int64_t Database::ID_of_last_insert()
 {
 	return db.ID_of_last_insert();
+}
+
+bool Database::column_exists( string_view table, string_view  column)
+{
+	auto query = string_printf("SELECT %s FROM %s", column.data(), table.data() );
+	try
+	{
+		db.execute(query);
+		return true;
+	}
+	catch (exception& e)
+	{
+		return false;
+	}
 }
 
 }

@@ -152,18 +152,29 @@ void Sync_manager::sync_tasks_to_database()
 		bool completed = task.completed;
 		int64_t parent = 0;
 		time_t lastChanged = task.last_changed;
-		string name = task.name;
-		auto uuid = task.uuid;
+		string name  = task.name;
+		auto uuid    = task.uuid;
 		bool deleted = task.deleted;
+		int  idle    = task.idle;
+		bool quiet   = task.quiet;
+
+		auto  original_task = task_accessor.by_ID(id);
+		if( original_task.has_value() )
+		{
+			//These are only to be stored locally
+			idle  = original_task->idle;
+			quiet = original_task->quiet;
+		}
 		if (parentUUID)
 		{
 			parent = task_accessor.ID(*parentUUID);
 			if (parent == 0)
 			{
 				tasksToUpdate.push_back(task);
+				continue;
 			}
 		}
-		Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
+		Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted, idle, quiet);
 		if (id > 0)
 		{
 			task_accessor.update(tempTask);
@@ -173,21 +184,30 @@ void Sync_manager::sync_tasks_to_database()
 			task_accessor.create(tempTask);
 		}
 	}
-//Update tasks that had missing data earlier
+//Update tasks that had missing parent earlier
 	for (Task task : tasksToUpdate)
 	{
 		auto parentUUID = task.parent_uuid;
 		if (parentUUID)
 		{
-			int64_t id = task_accessor.ID(task.uuid);
-			int64_t parent = task_accessor.ID(*parentUUID);
-			bool completed = task.completed;
+			int64_t id         = task_accessor.ID(task.uuid);
+			int64_t parent     = task_accessor.ID(*parentUUID);
+			bool    completed  = task.completed;
 			time_t lastChanged = task.last_changed;
-			string name = task.name;
-			auto uuid = task.uuid;
-			bool deleted = task.deleted;
-			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted);
-			task_accessor.update(tempTask);
+			string name        = task.name;
+			auto   uuid        = task.uuid;
+			bool   deleted     = task.deleted;
+			int    idle        = task.idle;
+			bool   quiet       = task.quiet;
+			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted, idle, quiet );
+			if (id > 0)
+			{
+				task_accessor.update(tempTask);
+			}
+			else
+			{
+				task_accessor.create(tempTask);
+			}
 		}
 	}
 	task_accessor.enable_notifications(true);

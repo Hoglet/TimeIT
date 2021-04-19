@@ -25,23 +25,13 @@ string to_json(vector<Task> tasks, string username)
 			json_object_set(parent, "id", json_string(task.parent_uuid->c_str()));
 			json_object_set(obj, "parent", parent);
 		}
-		if (task.completed)
-		{
-			json_object_set(obj, "completed", json_true());
-		}
-		else
-		{
-			json_object_set(obj, "completed", json_false());
-		}
+		json_object_set(obj, "completed", json_boolean(task.completed));
 		json_object_set(obj, "lastChange", json_integer(task.last_changed));
-		if (task.deleted)
-		{
-			json_object_set(obj, "deleted", json_true());
-		}
-		else
-		{
-			json_object_set(obj, "deleted", json_false());
-		}
+		json_object_set(obj, "deleted", json_boolean(task.deleted));
+
+		json_object_set(obj, "idle", json_integer(task.idle));
+		json_object_set(obj, "quiet", json_boolean(task.quiet));
+
 
 		json_t *owner = json_object();
 		json_object_set(owner, "username", json_string(username.c_str()));
@@ -119,15 +109,19 @@ vector<Task> to_tasks(const string &text)
 		string parentString;
 		bool completed;
 		time_t lastChanged;
-		bool deleted;
+		bool   deleted;
+		int    idle{0};
+		bool   quiet{false};
 
-		json_t *object = json_array_get(root, i);
-		json_t *j_name = json_object_get(object, "name");
-		json_t *j_id = json_object_get(object, "id");
-		json_t *j_parent = json_object_get(object, "parent");
-		json_t *j_completed = json_object_get(object, "completed");
+		json_t *object        = json_array_get(root, i);
+		json_t *j_name        = json_object_get(object, "name");
+		json_t *j_id          = json_object_get(object, "id");
+		json_t *j_parent      = json_object_get(object, "parent");
+		json_t *j_completed   = json_object_get(object, "completed");
 		json_t *j_lastChanged = json_object_get(object, "lastChange");
-		json_t *j_deleted = json_object_get(object, "deleted");
+		json_t *j_deleted     = json_object_get(object, "deleted");
+		json_t *j_idle        = json_object_get(object, "idle");
+		json_t *j_quiet       = json_object_get(object, "quiet");
 
 		if (json_is_string(j_name))
 		{
@@ -147,14 +141,7 @@ vector<Task> to_tasks(const string &text)
 		}
 		if (json_is_boolean(j_completed))
 		{
-			if (json_is_true(j_completed))
-			{
-				completed = true;
-			}
-			else
-			{
-				completed = false;
-			}
+			completed = json_is_true(j_completed);
 		}
 		if (json_is_integer(j_lastChanged))
 		{
@@ -162,20 +149,21 @@ vector<Task> to_tasks(const string &text)
 		}
 		if (json_is_boolean(j_deleted))
 		{
-			if (json_is_true(j_deleted))
-			{
-				deleted = true;
-			}
-			else
-			{
-				deleted = false;
-			}
+			deleted = json_is_true(j_deleted);
+		}
+		if(json_is_integer(j_idle))
+		{
+			idle = json_integer_value(j_idle);
+		}
+		if(json_is_boolean(j_quiet))
+		{
+			idle = json_boolean_value(j_quiet);
 		}
 		auto uuid= to_uuid(uuidString);
 		if(uuid)
 		{
 			auto parent = to_uuid(parentString);
-			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted);
+			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted, idle, quiet);
 			retVal.push_back(task);
 		}
 	}

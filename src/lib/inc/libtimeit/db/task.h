@@ -23,6 +23,8 @@ struct Task
 	const bool                 deleted      {false};
 	const Task_ID              parent_ID    {0};
 	const time_t               last_changed {0};
+	const int                  idle         {0};
+	const bool                 quiet        {false};
 
 
 
@@ -35,7 +37,9 @@ struct Task
 		Task_ID        ID_,
 		time_t         last_change_,
 		optional<UUID> parent_uuid_,
-		bool           deleted_);
+		bool           deleted_,
+		int            idle_,
+		bool           quiet_);
 
 	virtual ~Task() = default;
 
