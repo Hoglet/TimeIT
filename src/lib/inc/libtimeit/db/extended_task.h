@@ -9,19 +9,19 @@ class Extended_task : public Task
 {
 	friend class Extended_task_accessor;
 public:
-	const bool expanded_;
-	const bool running_;
-	const int  time_;
+	const bool expanded;
+	const bool running;
+	const int  time;
 
 	int total_time() const;
 	Extended_task(
 			int           ID,
-			int           op_parent_ID,
-			const string& op_name,
-			int           op_time = 0,
-			bool          op_expanded = false,
-			bool          op_running = false,
-			int           op_total_time = 0);
+			int           parent_ID,
+			const string& name,
+			int           time = 0,
+			bool          expanded = false,
+			bool          running = false,
+			int           total_time = 0);
 private:
 	int  total_time_;
 };

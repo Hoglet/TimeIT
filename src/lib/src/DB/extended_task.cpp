@@ -4,20 +4,20 @@ namespace libtimeit
 {
 
 Extended_task::Extended_task(
-		int           op_ID,
-		int           op_parent_ID,
-		const string& op_name,
-		int           op_time,
-		bool          op_expanded,
-		bool          op_running,
+		int           ID,
+		int           parent_ID,
+		const string& name,
+		int           time,
+		bool          expanded,
+		bool          running,
 		int           op_total_time)
 		:
 		Task(
-				op_name,
-				op_parent_ID,
+				name,
+				parent_ID,
 				UUID(),
 				false,
-				op_ID,
+				ID,
 				0,
 				{},
 				false,
@@ -25,9 +25,9 @@ Extended_task::Extended_task(
 				false
 				),
 		total_time_(op_total_time),
-		expanded_(op_expanded),
-		running_(op_running),
-		time_(op_time)
+		expanded(expanded),
+		running(running),
+		time(time)
 {
 }
 

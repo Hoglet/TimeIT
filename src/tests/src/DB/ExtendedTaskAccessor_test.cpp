@@ -101,10 +101,10 @@ TEST(ExtendedTaskAccessor, setExpandedTasks)
 	Extended_task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(false, task->expanded_);
+	ASSERT_EQ(false, task->expanded);
 	taskAccessor.setTaskExpanded(taskId, true);
 	auto task2 = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(true, task2->expanded_);
+	ASSERT_EQ(true, task2->expanded);
 }
 
 TEST(ExtendedTaskAccessor, testTimeReporting)

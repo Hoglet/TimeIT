@@ -211,7 +211,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 {
 	int64_t taskID = task.ID;
 	row[columns.col_id] = taskID;
-	if (task.running_)
+	if (task.running)
 	{
 		if (!m_timeKeeper.is_idle())
 		{
@@ -257,7 +257,7 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 		row = *iter;
 		assignValuesToRow(row, tasks.at(i));
 		populate(&row, tasks.at(i).ID);
-		if (tasks.at(i).expanded_)
+		if (tasks.at(i).expanded)
 		{
 			TreeModel::Path path(iter);
 			this->expand_to_path(path);
