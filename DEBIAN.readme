@@ -1,7 +1,7 @@
 
 Making new version:
 * dch -i
-* checking files
+* checkin files
 * tag version with git
 
 Making  package:
