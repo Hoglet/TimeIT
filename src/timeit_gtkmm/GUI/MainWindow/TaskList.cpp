@@ -88,7 +88,7 @@ void TaskList::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel
 	taskAccessor.setTaskExpanded(id, false);
 }
 
-void TaskList::on_task_added(int64_t taskID)
+void TaskList::on_task_added(int64_t /*id*/)
 {
 	doUpdate();
 }
@@ -142,7 +142,7 @@ void TaskList::on_selection_changed()
 	}
 }
 
-void TaskList::on_parent_changed(int64_t)
+void TaskList::on_parent_changed(int64_t /*id*/)
 {
 	doUpdate();
 }
@@ -190,7 +190,7 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 	for (iter = children.begin(); iter != children.end(); iter++)
 	{
 		TreeModel::Row row = *iter;
-		if (row.children().size() > 0)
+		if ( !row.children().empty() )
 		{
 			TreeIter subIter = subSearch(id, row.children());
 			if (subIter != row.children().end())
@@ -246,7 +246,7 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 	{
 		TreeModel::Row row;
 		TreeModel::iterator iter;
-		if (parent)
+		if (parent != nullptr)
 		{
 			iter = treeModel->append(parent->children());
 		}

@@ -16,10 +16,10 @@ public:
 	Data_cell(const char*);
 	virtual ~Data_cell();
 
-	bool     has_value();
-	int64_t  integer();
+	bool     has_value() const;
+	int64_t  integer() const;
 	string   text();
-	bool     boolean();
+	bool     boolean() const;
 protected:
 	int      type;
 	string   txt;

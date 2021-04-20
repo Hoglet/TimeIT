@@ -55,7 +55,7 @@ public:
 	virtual void on_action_report_bug();
 
 	//SummaryObserver
-	virtual void on_showDetailsClicked(GUI::ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime);
+	virtual void on_showDetailsClicked(int64_t taskId, time_t startTime, time_t stopTime);
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime);
 
 	//
@@ -74,7 +74,6 @@ private:
 	IGUIFactory &guiFactory;
 	Time_keeper &timeKeeper;
 	shared_ptr<IdleDialog> idleDialog;
-	Extended_task_accessor taskAccessor;
 	Time_accessor         timeAccessor;
 	Settings_accessor     settingsAccessor;
 

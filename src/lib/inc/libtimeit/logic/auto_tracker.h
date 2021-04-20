@@ -29,7 +29,6 @@ private:
 	int old_workspace;
 
 	Time_keeper        &time_keeper;
-	Timer              &timer;
 
 	Auto_track_accessor  auto_track_accessor;
 	Workspace           workspace;

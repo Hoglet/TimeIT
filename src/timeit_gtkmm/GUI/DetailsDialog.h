@@ -21,21 +21,12 @@ namespace GUI
 {
 using namespace libtimeit;
 
-class IDetailsDialog
-{
-public:
-	virtual ~IDetailsDialog() {};
-	virtual void setTimeEntryID(int64_t id) = 0;
-	virtual void set(int64_t ID,time_t startTime,time_t stopTime) = 0;
-	virtual void  show() = 0;
-};
 
 class DetailsDialog:
 		public Gtk::Dialog,
 		public SummaryObserver,
 		public DetailsObserver,
 		public Event_observer,
-		public IDetailsDialog,
 		public IWidget
 {
 public:
@@ -61,7 +52,7 @@ private:
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
-	virtual void on_showDetailsClicked(ISummary* summary,int64_t taskId, time_t startTime, time_t stopTime) {};
+	virtual void on_showDetailsClicked(int64_t taskId, time_t startTime, time_t stopTime) {};
 
 	//DetailsObserver
 	void on_selected_changed();
@@ -105,7 +96,6 @@ private:
 	time_t  rangeStop;
 	int64_t m_taskID;
 	int64_t m_timeEntryID;
-	std::weak_ptr<DetailsDialog> weak_this_ptr;
 	Time_accessor          m_timeAccessor;
 	Extended_task_accessor m_taskAccessor;
 	Settings_accessor      settings_accessor;

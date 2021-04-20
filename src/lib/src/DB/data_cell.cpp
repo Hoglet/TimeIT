@@ -37,12 +37,12 @@ Data_cell::~Data_cell()
 {
 }
 
-bool Data_cell::has_value()
+bool Data_cell::has_value() const
 {
 	return (type != DATACELL_NULL);
 }
 
-int64_t Data_cell::integer()
+int64_t Data_cell::integer() const
 {
 	if (type != DATACELL_INTEGER)
 	{
@@ -61,7 +61,7 @@ string Data_cell::text()
 	return txt;
 }
 
-bool Data_cell::boolean()
+bool Data_cell::boolean() const
 {
 	if (type != DATACELL_INTEGER)
 	{

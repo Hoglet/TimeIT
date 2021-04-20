@@ -60,7 +60,6 @@ public:
 	Details(Database &database, Notifier& notifier);
 	~Details() = default;
 	void set(int64_t ID, time_t startTime, time_t stopTime);
-	void on_selectedTaskChanged(Summary&);
 	bool on_button_press_event(GdkEventButton *event);
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();

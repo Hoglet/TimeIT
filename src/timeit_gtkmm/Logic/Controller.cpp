@@ -13,10 +13,10 @@
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
 #include <GUIFactory.h>
-#include <libnotify/notify.h>
+//#include <libnotify/notify.h>
 #include <MainWindow/MainWindow.h>
 
-constexpr auto DUPLICATE_RESHOW_TIME = 600;
+//constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
 using namespace GUI;
 using namespace libtimeit;
@@ -32,7 +32,6 @@ Controller::Controller(
 		Event_observer( notifier ),
 		guiFactory(op_guiFactory),
 		timeKeeper(op_timeKeeper),
-		taskAccessor(database),
 		timeAccessor(database),
 		settingsAccessor(database)
 
@@ -120,7 +119,7 @@ void Controller::on_action_help()
 			helpToUse << "file://" << defaultHelp.str();
 		}
 	}
-	show_URL(helpToUse.str().c_str());
+	show_URL(helpToUse.str());
 }
 //LCOV_EXCL_STOP
 void Controller::on_action_start_task()
@@ -138,7 +137,7 @@ void Controller::on_action_edit_task()
 	//EditTaskDialog* dialog;
 
 	//m_refXML->get_widget_derived("EditTaskDialog", dialog);
-	if (selectedTaskID)
+	if (selectedTaskID > 0)
 	{
 		WidgetPtr editTaskDialog = guiFactory.getWidget(EDIT_TASK_DIALOG);
 		std::dynamic_pointer_cast<IEditTaskDialog>(editTaskDialog)->setTaskID(selectedTaskID);
@@ -148,7 +147,7 @@ void Controller::on_action_edit_task()
 
 void Controller::on_action_add_time()
 {
-	if (selectedTaskID)
+	if (selectedTaskID > 0)
 	{
 		guiFactory.getAddTime(selectedTaskID)->show();
 	}
@@ -252,9 +251,9 @@ void Controller::on_action_preferences()
 	preferenceDialog->show();
 }
 
-void Controller::on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime)
+void Controller::on_showDetailsClicked( int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::shared_ptr<IDetailsDialog> detailsDialog = std::dynamic_pointer_cast<IDetailsDialog>(
+	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(
 			guiFactory.getWidget(GUI::DETAILS_DIALOG));
 	if (detailsDialog)
 	{
@@ -271,7 +270,7 @@ void Controller::on_running_changed()
 	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory.getWidget(DETAILS_DIALOG));
 	detailsDialog->on_runningTasksChanged();
 }
-void Controller::on_selection_changed(int64_t id, time_t startTime, time_t stopTime)
+void Controller::on_selection_changed(int64_t, time_t, time_t)
 {
 }
 

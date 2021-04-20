@@ -39,7 +39,7 @@ void Notifier::detach(Event_observer* observer)
 	}
 }
 
-void Notifier::send(EventType type, const string headline, const string message)
+void Notifier::send(EventType type, string headline, string message)
 {
 	for (Event_observer *observer : observers)
 	{

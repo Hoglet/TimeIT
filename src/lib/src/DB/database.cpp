@@ -17,7 +17,7 @@ const int expected_DB_version = 5;
 
 void Database::create_tables( list<Accessor*>& accessors)
 {
-	for ( auto accessor : accessors )
+	for ( auto *accessor : accessors )
 	{
 		accessor->create_table();
 	}
@@ -25,14 +25,14 @@ void Database::create_tables( list<Accessor*>& accessors)
 
 
 
-int Database::current_DB_version()
+int Database::current_DB_version() const
 {
 	return db_version;
 }
 
 void Database::upgrade( list<Accessor*>& accessors)
 {
-	for ( auto accessor : accessors)
+	for ( auto *accessor : accessors)
 	{
 		accessor->upgrade();
 	}
@@ -44,7 +44,7 @@ void Database::upgrade( list<Accessor*>& accessors)
 
 void Database::drop_views( list<Accessor*>& accessors )
 {
-	for ( auto accessor : accessors)
+	for ( auto *accessor : accessors)
 	{
 		accessor->drop_views();
 	}
@@ -52,7 +52,7 @@ void Database::drop_views( list<Accessor*>& accessors )
 
 void Database::create_views( list<Accessor*>& accessors )
 {
-	for ( auto accessor : accessors)
+	for ( auto *accessor : accessors)
 	{
 		accessor->create_views();
 	}
@@ -127,7 +127,7 @@ bool Database::table_exists(string name)
 					name='%s')Query", name.c_str());
 	auto rows = db.execute( query );
 
-	return rows.empty() == false;
+	return !rows.empty();
 
 
 }
@@ -146,7 +146,7 @@ void Database::find_db_version()
 				id == "dbversion"
 			)Query");
 
-		if (rows.empty() == false)
+		if (!rows.empty())
 		{
 			vector<Data_cell> row = rows.at(0);
 			db_version = (int) row[0].integer();
@@ -204,7 +204,7 @@ Query_result Database::execute(const string& statement)
 }
 Statement Database::prepare(string statement)
 {
-	return db.prepare(statement.c_str());
+	return db.prepare(statement);
 }
 
 int64_t Database::ID_of_last_insert()

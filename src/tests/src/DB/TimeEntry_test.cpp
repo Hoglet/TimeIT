@@ -1,3 +1,7 @@
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-magic-numbers"
+#endif
 #include <gtest/gtest.h>
 #include <libtimeit/db/time_entry.h>
 
@@ -5,8 +9,8 @@ using namespace libtimeit;
 
 Time_entry getTestTimeEntry()
 {
-	auto uuid = to_uuid("00a600df-00da-414c-8078-0182005b0109");
-	return Time_entry(1, *uuid, 1, to_uuid("00a600df-00da-414c-8078-0182005b0107") , 100, 1100, false, STOPPED, 1100);
+	auto uuid = UUID::from_string("00a600df-00da-414c-8078-0182005b0109");
+	return Time_entry(1, *uuid, 1, UUID::from_string("00a600df-00da-414c-8078-0182005b0107") , 100, 1100, false, STOPPED, 1100);
 }
 
 /*TEST(TimeEntry, changeStartTime)
@@ -38,3 +42,7 @@ TEST(TimeEntry, setDeleted)
 
 
 
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif

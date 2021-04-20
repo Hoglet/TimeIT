@@ -46,7 +46,7 @@ Task_ID_list Auto_track_accessor::task_IDs(int workspace)
 	{
 		int64_t id = row[0].integer();
 		auto task = task_accessor.by_ID(id);
-		if(task.has_value() && task->deleted == false)
+		if (task.has_value() && !task->deleted)
 		{
 			return_value.push_back(id);
 		}

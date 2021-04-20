@@ -1,6 +1,8 @@
 #ifndef TIME_KEEPER_H_
 #define TIME_KEEPER_H_
 
+static const int MINUTE = 60;
+
 #include <list>
 #include <map>
 #include <libtimeit/db/task.h>
@@ -68,31 +70,30 @@ public:
 	void on_signal_10_seconds();
 
 private:
-	void update_task(int64_t id, time_t now);
 
-	virtual void on_task_added(int64_t)
+	virtual void on_task_added(Task_ID /*id*/)
 	{
 	};
 
-	virtual void on_task_updated(int64_t)
+	virtual void on_task_updated(Task_ID /*id*/)
 	{
 	};
 
-	virtual void on_task_name_changed(int64_t)
+	virtual void on_task_name_changed(Task_ID /*id*/)
 	{
 	};
 
-	virtual void on_task_time_changed(int64_t)
+	virtual void on_task_time_changed(Task_ID /*id*/)
 	{
 	};
-	virtual void on_task_removed(int64_t);
+	virtual void on_task_removed(Task_ID /*id*/);
 	virtual void on_settings_changed(string);
 	virtual void on_complete_update();
 
 	void update_task(int64_t id);
 
-	bool enabled;
-	bool is_idle_;
+	bool enabled{true};
+	bool is_idle_{false};
 
 	struct Task_time
 	{
@@ -110,7 +111,6 @@ private:
 	void notify_idle_detected();
 	void notify_activity_resumed();
 
-	Timer&                       timer;
 	list<Time_keeper_observer *> observers;
 
 	Time_accessor      time_accessor;

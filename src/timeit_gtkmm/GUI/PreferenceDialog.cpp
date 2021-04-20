@@ -200,7 +200,7 @@ bool PreferenceDialog::on_focus_changed(GdkEventFocus*)
 	return false;
 }
 
-bool PreferenceDialog::on_button_released(GdkEventButton *event)
+bool PreferenceDialog::on_button_released(GdkEventButton*)
 {
 	on_data_changed();
 	return false;

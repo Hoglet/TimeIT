@@ -30,16 +30,16 @@ public:
 	Statement    prepare(string statement);
 	int64_t      ID_of_last_insert();
 	bool         table_exists(string name);
-	int          current_DB_version();
+	int          current_DB_version() const;
 	bool         column_exists( string_view string, string_view string_1);
 protected:
 	Notifier& notifier;
 	SQLite3      db;
 
-	void create_tables( list<Accessor*>& accessors );
+	static void create_tables( list<Accessor*>& accessors );
 	void upgrade( list<Accessor*>&  accessors);
-	void drop_views( list<Accessor*>& accessors );
-	void create_views( list<Accessor*>& accessors );
+	static void drop_views( list<Accessor*>& accessors );
+	static void create_views( list<Accessor*>& accessors );
 private:
 	Database(const Database&);
 	void operator=(const Database&);

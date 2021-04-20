@@ -29,7 +29,6 @@ public:
 	virtual WidgetPtr getAddTime(int64_t taskID);
 
 	void quit();
-	void init(int argc, char *argv[]);
 private:
 	WidgetPtr addTimeInstance;
 	WidgetPtr addTaskInstance;

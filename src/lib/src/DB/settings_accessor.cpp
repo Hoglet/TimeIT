@@ -76,7 +76,6 @@ bool Settings_accessor::set_int(string name, int value)
 	statement << "SELECT intValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	bool return_value = false;
 
 	Query_result rows = database.execute(statement.str());
 	if (rows.size())
@@ -87,7 +86,6 @@ bool Settings_accessor::set_int(string name, int value)
 		statement << " WHERE name = '" << name << "'";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
 	else //Value did not exist
 	{
@@ -97,9 +95,8 @@ bool Settings_accessor::set_int(string name, int value)
 		statement << " VALUES (" << value << ", '" << name << "') ";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
-	return return_value;
+	return true;
 }
 
 bool Settings_accessor::get_bool(string name, bool default_value)
@@ -129,7 +126,6 @@ bool Settings_accessor::set_bool(string name, bool value)
 	statement << "SELECT boolValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	bool return_value = false;
 	Query_result rows = database.execute(statement.str());
 	if (rows.size())
 	{
@@ -139,7 +135,6 @@ bool Settings_accessor::set_bool(string name, bool value)
 		statement << " WHERE name = '" << name << "'";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
 	else //Value did not exist
 	{
@@ -149,9 +144,8 @@ bool Settings_accessor::set_bool(string name, bool value)
 		statement << " VALUES (" << value << ", '" << name << "') ";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
-	return return_value;
+	return true;
 }
 
 string Settings_accessor::get_string(string name, string default_value)
@@ -181,7 +175,6 @@ bool Settings_accessor::set_string(string name, string value)
 	statement << "SELECT stringValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	bool return_value = false;
 	Query_result rows = database.execute(statement.str());
 	if (rows.size())
 	{
@@ -191,7 +184,6 @@ bool Settings_accessor::set_string(string name, string value)
 		statement << " WHERE name = '" << name << "'";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
 	else //Value did not exist
 	{
@@ -201,9 +193,8 @@ bool Settings_accessor::set_string(string name, string value)
 		statement << " VALUES ('" << value << "', '" << name << "') ";
 		database.execute(statement.str());
 		setting_changed(name);
-		return_value = true;
 	}
-	return return_value;
+	return true;
 }
 
 

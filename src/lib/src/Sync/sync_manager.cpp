@@ -1,7 +1,6 @@
 #include "libtimeit/sync/sync_manager.h"
 
 #include <libtimeit/utils.h>
-#include <iostream>
 #include <libtimeit/sync/json.h>
 #include <libtimeit/db/default_values.h>
 #include <sstream>
@@ -11,6 +10,9 @@
 
 namespace libtimeit
 {
+
+static const int HTTP_OK = 200;
+static const int HTTP_UNAUTHORIZED = 401;
 
 using namespace std;
 
@@ -69,7 +71,7 @@ void Sync_manager::on_signal_1_second()
 			if (request_is_done() )
 			{
 				auto response = outstandingRequest->futureResponse.get();
-				if (response.status_OK && response.http_code == 200)
+				if (response.status_OK && response.http_code == HTTP_OK)
 				{
 					state = following_state;
 				}
@@ -97,9 +99,6 @@ void Sync_manager::on_signal_1_second()
 			manage_network_problems();
 			state = Sync_state::IDLE;
 			next_sync = get_next_sync(current_sync);
-			break;
-		default:
-			state = Sync_state::IDLE;
 			break;
 	}
 
@@ -225,7 +224,7 @@ void Sync_manager::sync_times_to_database()
 		auto taskUUID = item.task_uuid;
 		int64_t taskID = task_accessor.ID(*taskUUID);
 		auto uuid = item.uuid;
-		int id = time_accessor.uuid_to_id(uuid);
+		auto id = time_accessor.uuid_to_id(uuid);
 		time_t changed = item.changed;
 		bool deleted = item.deleted;
 		time_t start = item.start;
@@ -240,17 +239,17 @@ void Sync_manager::sync_times_to_database()
 			}
 		}
 
-		Time_entry_state state = STOPPED;
+		Time_entry_state state_ = STOPPED;
 		if ( running )
 		{
-			state = RUNNING;
+			state_ = RUNNING;
 		}
 		if ( deleted )
 		{
-			state = DELETED;
+			state_ = DELETED;
 		}
 
-		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, state, changed);
+		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, state_, changed);
 		if (id > 0)
 		{
 			time_accessor.update(te);
@@ -288,17 +287,18 @@ shared_ptr <asyncHTTPResponse> Sync_manager::request_times(time_t sincePointInTi
 	return network.request(url, jsonString, username, password, ignoreCertError);
 }
 
+
 void Sync_manager::manage_network_problems()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	if (result.status_OK == false || result.http_code != 200)
+	if ( !result.status_OK || result.http_code != HTTP_OK)
 	{
 		std::stringstream text;
 		// %s is replaced with the URI on which the connection failed
 		text << string_printf(_("Failed connection to %s:\n"), result.url.c_str());
 
 		text << _("HTTP error ") << result.http_code << " ";
-		if (result.http_code == 401)
+		if (result.http_code == HTTP_UNAUTHORIZED)
 		{
 			text << _("Username or password is wrong.");
 		}

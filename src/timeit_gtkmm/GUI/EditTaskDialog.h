@@ -70,12 +70,12 @@ private:
 	ParentChooser parentChooser;
 
 	string name;
-	int taskID;
-	int numberOfWorkspaces;
-	int numColumns;
-	int numRows;
+	Task_ID  taskID;
+	unsigned numberOfWorkspaces;
+	unsigned numColumns;
+	unsigned numRows;
 	vector<int> workspaces;
-	int parentID;
+	Task_ID parentID;
 
 	Auto_track_accessor autoTrackAccessor;
 	Task_accessor      taskAccessor;

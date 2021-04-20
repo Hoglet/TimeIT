@@ -1,10 +1,10 @@
 #include "EditTaskDialog.h"
 #include "ParentChooser.h"
-#include <sstream>
 #include <iostream>
 #include <libtimeit/logic/workspace.h>
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
+
 namespace GUI
 {
 using namespace libtimeit;
@@ -48,6 +48,11 @@ EditTaskDialog::EditTaskDialog(Database &database) :
 		++iter;
 	}
 }
+
+static const int BORDER_WIDTH = 5;
+
+static const int PADDING = 3;
+
 void EditTaskDialog::createLayout()
 {
 
@@ -74,15 +79,15 @@ void EditTaskDialog::createLayout()
 	get_action_area()->pack_start(CancelButton);
 	get_action_area()->pack_start(OKButton);
 	get_vbox()->set_spacing(2);
-	get_vbox()->pack_start(hbox1, Gtk::PACK_EXPAND_WIDGET, 3);
-	get_vbox()->pack_start(table2, Gtk::PACK_EXPAND_WIDGET, 3);
-	set_border_width(5);
+	get_vbox()->pack_start(hbox1, Gtk::PACK_EXPAND_WIDGET, PADDING);
+	get_vbox()->pack_start(table2, Gtk::PACK_EXPAND_WIDGET, PADDING);
+	set_border_width(BORDER_WIDTH);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER_ON_PARENT);
 	set_has_separator(false);
 
-	for (int row = 0; row < numRows; row++)
+	for (unsigned row = 0; row < numRows; row++)
 	{
-		for (int column = 0; column < numColumns; column++)
+		for (unsigned column = 0; column < numColumns; column++)
 		{
 			if ((row * numColumns + column) < numberOfWorkspaces)
 			{
@@ -148,11 +153,11 @@ void EditTaskDialog::setParent(int ID)
 void EditTaskDialog::setTickedWorkspaces(vector<int> workspaces)
 {
 
-	vector<Gtk::CheckButton*>::iterator chbiter = checkbutton.begin();
-	while (chbiter != checkbutton.end())
+	vector<Gtk::CheckButton*>::iterator check_button_iter = checkbutton.begin();
+	while (check_button_iter != checkbutton.end())
 	{
-		(*chbiter)->set_active(false);
-		chbiter++;
+		(*check_button_iter)->set_active(false);
+		check_button_iter++;
 	}
 	std::vector<int>::iterator iter = workspaces.begin();
 	while (iter != workspaces.end())
@@ -206,7 +211,8 @@ void EditTaskDialog::check4changes()
 {
 	vector<int> tickedWorkspaces = getTickedWorkspaces();
 
-	if (taskNameEntry.get_text() != name || tickedWorkspaces != workspaces || parentChooser.getParentID() != parentID)
+	string entry_name = taskNameEntry.get_text();
+	if ( name != entry_name  || tickedWorkspaces != workspaces || parentChooser.getParentID() != parentID)
 	{
 		OKButton.set_sensitive(true);
 	}

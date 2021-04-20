@@ -32,7 +32,6 @@ public:
 	private:
 	void on_show_menu();
 	string socketName;
-	Timer& timer;
 	list<Event_observer*> observers;
 	int sock;
 };

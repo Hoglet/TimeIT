@@ -1,0 +1,5 @@
+Checks: 'readability-*, modernize-*, cppcoreguidelines-*, bugprone-*,-*'
+CheckOptions:
+        - key: readability-function-cognitive-complexity.Threshold
+          value: 10
+FormatStyle: 'file'

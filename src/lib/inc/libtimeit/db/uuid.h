@@ -10,15 +10,12 @@ namespace libtimeit
 {
 using namespace std;
 
-class UUID;
-
-optional<UUID> to_uuid(string uuid);
-
 class UUID
 {
-	friend optional<UUID> to_uuid(string uuid);
 public:
 	UUID();
+	static optional<UUID> from_string(string uuid);
+
 	bool operator==(const UUID &rhs) const;
 	bool operator!=(const UUID &rhs) const;
 	const char *c_str() const;

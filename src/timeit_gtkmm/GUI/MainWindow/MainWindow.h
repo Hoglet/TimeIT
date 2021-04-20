@@ -104,7 +104,6 @@ private:
 	void createLayout();
 	void relateWidgets();
 	void setCalendar();
-	void connectSignals();
 
 	void defaultLayout();
 	void classicLayout();

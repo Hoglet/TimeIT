@@ -31,7 +31,7 @@ public:
 	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
 	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	virtual void on_date_changed();
+	void on_date_changed();
 	void on_month_changed();
 	void on_change();
 	virtual void on_response(int response_id);
@@ -48,7 +48,6 @@ private:
 	Gtk::Label startTimeLabel;
 	Gtk::Label stopTimeLabel;
 	Gtk::Label startColonLabel, toLabel, stopColonLabel;
-	Gtk::ScrolledWindow scrolledWindow;
 	LZSpinButton startTimeHour;
 	LZSpinButton startTimeMinute;
 	LZSpinButton stopTimeHour;

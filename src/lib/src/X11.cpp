@@ -52,7 +52,7 @@ long X11::get_cardinal(const char *name, int offset) noexcept(false)
 	unsigned long bytes_after_return;
 	unsigned char *returned_data;
 
-	long return_value = 0;
+	long return_value;
 
 	if (XGetWindowProperty(
 			display, rootWindow, property_name, offset, 1, False, property_type, &returned_type,

@@ -14,11 +14,7 @@ using namespace std;
 
 bool rangeTestG4(const char &c)
 {
-	if (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B')
-	{
-		return true;
-	}
-	return false;
+	return  (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B');
 }
 
 bool is_valid_uuid(const string &uuid)
@@ -30,8 +26,7 @@ bool is_valid_uuid(const string &uuid)
 	}
 
 	//"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
-	int position = 0;
-	for (position = 0; position < 8; position++)
+	for (int position = 0; position < 8; position++)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -43,7 +38,7 @@ bool is_valid_uuid(const string &uuid)
 		return false;
 	}
 
-	for (position = 9; position < 13; position++)
+	for (int position = 9; position < 13; position++)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -56,7 +51,7 @@ bool is_valid_uuid(const string &uuid)
 		return false;
 	}
 
-	for (position = 14; position < 18; position++)
+	for (int position = 14; position < 18; position++)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -73,7 +68,7 @@ bool is_valid_uuid(const string &uuid)
 	{
 		return false;
 	}
-	for (position = 19; position < 23; position++)
+	for (int position = 19; position < 23; position++)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -88,7 +83,7 @@ bool is_valid_uuid(const string &uuid)
 	{
 		return false;
 	}
-	for (position = 24; position < 36; position++)
+	for (int position = 24; position < 36; position++)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -98,8 +93,7 @@ bool is_valid_uuid(const string &uuid)
 	return true;
 }
 
-
-optional<UUID> to_uuid(string uuid)
+optional<UUID> UUID::from_string(string uuid)
 {
 	if (is_valid_uuid(uuid))
 	{

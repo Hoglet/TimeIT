@@ -26,7 +26,7 @@ public:
 	SummaryObserver();
 	virtual ~SummaryObserver();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
-	virtual void on_showDetailsClicked(ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime) = 0;
+	virtual void on_showDetailsClicked(int64_t taskId, time_t startTime, time_t stopTime) = 0;
 	void attach(ISummary *subject);
 	void detach(ISummary *subject);
 private:
@@ -51,16 +51,16 @@ public:
 	~Summary() = default;
 	void setReferences(Gtk::Calendar &calendar);
 	int64_t getSelectedID();
-	time_t getStartTime()
+	time_t getStartTime() const
 	{
 		return startTime;
 	}
-	time_t getStopTime()
+	time_t getStopTime() const
 	{
 		return stopTime;
 	}
-	void attach(SummaryObserver*);
-	void detach(SummaryObserver*);
+	void attach(SummaryObserver* /*observer*/);
+	void detach(SummaryObserver* /*observer*/);
 	virtual bool on_focus(Gtk::DirectionType direction);
 protected:
 	Gtk::TreeModel::Row add(int64_t id);
@@ -89,7 +89,7 @@ protected:
 	virtual void on_task_name_changed(int64_t);
 	virtual void on_task_time_changed(int64_t);
 	void init();
-	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
+	void populate();
 	void empty();
 	virtual void calculateTimeSpan();
 	Gtk::TreeModel::iterator findRow(int id);

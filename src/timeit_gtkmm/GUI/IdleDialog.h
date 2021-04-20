@@ -54,8 +54,6 @@ private:
 	virtual void on_signal_1_second() {};
 	virtual void on_signal_10_seconds();
 	void setText();
-	void updater();
-	void run();
 	Gtk::Label  text;
 	Gtk::Button revertButton;
 	Gtk::Button revertAndContinueButton;

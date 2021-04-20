@@ -19,7 +19,6 @@ namespace GUI
 std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier)
 {
 	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper, notifier));
-	retVal->weak_this_ptr = weak_ptr<DetailsDialog>(retVal);
 	return retVal;
 }
 

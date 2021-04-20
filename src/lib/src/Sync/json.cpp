@@ -107,11 +107,11 @@ vector<Task> to_tasks(const string &text)
 		string name;
 		string uuidString;
 		string parentString;
-		bool completed;
-		time_t lastChanged;
-		bool   deleted;
-		int    idle{0};
-		bool   quiet{false};
+		bool   completed   {false};
+		time_t lastChanged {0};
+		bool   deleted     {false};
+		int    idle        {0};
+		bool   quiet       {false};
 
 		json_t *object        = json_array_get(root, i);
 		json_t *j_name        = json_object_get(object, "name");
@@ -159,10 +159,10 @@ vector<Task> to_tasks(const string &text)
 		{
 			idle = json_boolean_value(j_quiet);
 		}
-		auto uuid= to_uuid(uuidString);
+		auto uuid= UUID::from_string(uuidString);
 		if(uuid)
 		{
-			auto parent = to_uuid(parentString);
+			auto parent = UUID::from_string(parentString);
 			Task task(name, 0, *uuid, completed, 0, lastChanged, parent, deleted, idle, quiet);
 			retVal.push_back(task);
 		}
@@ -185,10 +185,10 @@ Time_list to_times(const string &input)
 		int64_t id = 0;
 		string uuidString;
 		string taskIDString;
-		time_t start;
-		time_t stop;
-		time_t changed;
-		bool deleted;
+		time_t start   {0};
+		time_t stop    {0};
+		time_t changed {false};
+		bool deleted   {false};
 
 		json_t *object = json_array_get(root, i);
 		json_t *j_task = json_object_get(object, "task");
@@ -233,8 +233,8 @@ Time_list to_times(const string &input)
 				deleted = false;
 			}
 		}
-		auto uuid= to_uuid(uuidString);
-		auto taskID= to_uuid(taskIDString);
+		auto uuid= UUID::from_string(uuidString);
+		auto taskID= UUID::from_string(taskIDString);
 		if(uuid && taskID)
 		{
 			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, STOPPED, changed);

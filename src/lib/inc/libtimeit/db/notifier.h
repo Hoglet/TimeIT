@@ -35,7 +35,7 @@ public:
 	virtual ~Notifier();
 	void send_notification(message_type type, int64_t item_id, string name = "");
 	void enabled(bool);
-	void send(EventType type, const string headline, const string message);
+	void send(EventType type, string headline, string message);
 	int size();
 protected:
 	void attach(Event_observer*);

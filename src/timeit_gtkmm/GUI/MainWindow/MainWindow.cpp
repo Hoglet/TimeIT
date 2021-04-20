@@ -185,8 +185,7 @@ using namespace Glib::Container_Helpers;
 void MainWindow::removeChildren(Container &container)
 {
 	Glib::ListHandle<Gtk::Widget*> listh = container.get_children();
-	Glib::ListHandle<Gtk::Widget*>::iterator iter(listh.begin());
-	for (iter = listh.begin(); iter != listh.end(); ++iter)
+	for (auto iter = listh.begin(); iter != listh.end(); ++iter)
 	{
 		Gtk::Widget *widget = (*iter);
 		container.remove(*widget);

@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -34,9 +36,6 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 			"SELECT taskID, start, stop, running, changed, deleted, uuid, task_UUID FROM v_times WHERE id = ?");
 	statement.bind_value(1, id);
 
-	string taskUUID;
-	string uuid;
-
 	Query_result rows = statement.execute();
 	if (rows.size() > 0)
 	{
@@ -47,8 +46,8 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 		bool    running  = row[3].boolean();
 		int64_t changed  = row[4].integer();
 		bool    deleted  = row[5].boolean();
-		auto    uuid     = to_uuid(row[6].text());
-		auto    taskUUID = to_uuid(row[7].text());
+		auto    uuid     = UUID::from_string(row[6].text());
+		auto    taskUUID = UUID::from_string(row[7].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -69,6 +68,7 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 	}
 	return {};
 }
+
 
 Duration Time_accessor::duration_time(int64_t task_ID, time_t start, time_t stop)
 {
@@ -227,8 +227,8 @@ Time_list Time_accessor::time_list(int64_t taskId, time_t startTime, time_t stop
 		bool deleted = row[3].boolean();
 		bool running = row[4].boolean();
 		time_t changed = row[5].integer();
-		auto uuid = to_uuid(row[6].text());
-		auto taskUUID = to_uuid(row[7].text());
+		auto uuid = UUID::from_string(row[6].text());
+		auto taskUUID = UUID::from_string(row[7].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -280,9 +280,9 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 		bool running = row[3].boolean();
 		time_t changed = row[4].integer();
 		bool deleted = row[5].boolean();
-		auto uuid = to_uuid(row[6].text());
+		auto uuid = UUID::from_string(row[6].text());
 		int64_t id = row[7].integer();
-		auto taskUUID = to_uuid(row[8].text());
+		auto taskUUID = UUID::from_string(row[8].text());
 
 		Time_entry_state state = STOPPED;
 		if ( running )
@@ -507,3 +507,5 @@ Task_ID_list Time_accessor::active_tasks(time_t start, time_t stop)
 }
 
 }
+
+#pragma clang diagnostic pop

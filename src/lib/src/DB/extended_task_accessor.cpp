@@ -115,7 +115,7 @@ optional<Extended_task> Extended_task_accessor::by_ID(int64_t taskID, time_t sta
 		int totalTime = task.time;
 		totalTime += getTotalChildTime(taskID, start, stop);
 		task.total_time_=totalTime;
-		return { task };
+		return task;
 	}
 	return {};
 }

@@ -53,7 +53,6 @@ Main::Main(int argc, char *argv[])
 
 	dbName = Glib::build_filename(dbPath, "TimeIt.db");
 
-	test = false;
 	for (int i = 0; i < argc; i++)
 	{
 		string argument = argv[i];
@@ -126,10 +125,10 @@ int Main::run(int argc, char *argv[])
 			Sync_manager syncManager(database, network, notifier, timer);
 			IpcServer ipcServer(socketName, timer);
 
-			Time_keeper time_keeper(database, timer, notifier);
+			Time_keeper  time_keeper(database, timer, notifier);
 			Auto_tracker autotracker(time_keeper, database, timer);
-			GUIFactory guiFactory(time_keeper, database, timer, notifier);
-			Controller controller(guiFactory, time_keeper, database, ipcServer, notifier);
+			GUIFactory   guiFactory(time_keeper, database, timer, notifier);
+			Controller   controller(guiFactory, time_keeper, database, ipcServer, notifier);
 
 			controller.start();
 

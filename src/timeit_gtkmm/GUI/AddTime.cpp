@@ -20,7 +20,6 @@ AddTime::AddTime(
 		ICalendar& op_calendar,
 		Database& database)
 		:
-		table(7, 4),
 		yearLabel(_("Year")),
 		monthLabel(_("Month")),
 		dayLabel(_("Day")),
@@ -34,7 +33,6 @@ AddTime::AddTime(
 		m_taskAccessor(database)
 {
 	set_deletable(false);
-	//OKButton.set_sensitive(false);
 
 	auto task = m_taskAccessor.by_ID(taskID);
 	if (task.has_value())
@@ -99,21 +97,12 @@ AddTime::AddTime(
 		table.attach(stopColonLabel, 5, 6, 3, 4);
 		table.attach(stopTimeMinute, 6, 7, 3, 4);
 	}
-	//get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
-	//get_action_area()->pack_start(CancelButton);
+
 	add_button(Gtk::StockID("gtk-cancel"), Gtk::RESPONSE_CANCEL);
 	OKButton = add_button(Gtk::StockID("gtk-apply"), Gtk::RESPONSE_OK);
 	OKButton->set_sensitive(false);
 	show_all_children();
 
-	//Connect signals
-	/*	OKButton.signal_clicked().connect(sigc::mem_fun(this, &DetailsDialog::on_OKButton_clicked));
-	 CancelButton.signal_clicked().connect(sigc::mem_fun(this, &DetailsDialog::on_CancelButton_clicked));
-	 startTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	 startTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	 stopTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	 stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &DetailsDialog::on_change));
-	 */
 
 }
 
@@ -126,9 +115,9 @@ void AddTime::on_response(int response_id)
 {
 	if (response_id == Gtk::RESPONSE_OK)
 	{
-		guint y = year.get_value_as_int();
-		guint m = month.get_value_as_int() - 1;
-		guint d = day.get_value_as_int();
+		auto y = year.get_value_as_int();
+		auto m = month.get_value_as_int() - 1;
+		auto d = day.get_value_as_int();
 
 		int startH = startTimeHour.get_value_as_int();
 		int startM = startTimeMinute.get_value_as_int();
@@ -172,13 +161,14 @@ void AddTime::on_change()
 void AddTime::on_month_changed()
 {
 
-	guint y = year.get_value_as_int();
-	guint m = month.get_value_as_int() - 1;
+	auto y = year.get_value_as_int();
+	auto m = month.get_value_as_int() - 1;
 
-	//Avoiding problems with dayligt saving time by checking second day of month
+	//Avoiding problems with daylight saving time by checking second day of month
 	time_t activeDay = libtimeit::to_time(y, m, 2);
 	int maxDay = libtimeit::days_in_month(activeDay);
 	day.set_range(1, maxDay);
 }
 
 }
+

@@ -30,22 +30,18 @@ void Time_keeper::on_signal_1_second()
 
 Time_keeper::Time_keeper(
 		Database& database,
-		Timer& op_timer,
+		Timer& timer,
 		Notifier& notifier)
 		:
 		time_accessor( database ),
 		settings_accessor( database ),
-		timer( op_timer ),
 		Event_observer(notifier),
-		Timer_observer(op_timer ),
-		idle_detector(op_timer)
+		Timer_observer(timer ),
+		idle_detector(timer)
 
 {
 	time_accessor.stop_all();
-
 	on_settings_changed("");
-	enabled = true;
-	is_idle_ = false;
 }
 
 Time_keeper::~Time_keeper()
@@ -135,7 +131,7 @@ void Time_keeper::stop(int64_t id)
 			auto original_entry = *result;
 			time_accessor.update( original_entry.with( Time_entry_state::STOPPED ));
 			time_accessor.setRunning(task.time_ID, false);
-			if (task.stop - task.start < 60)
+			if (task.stop - task.start < MINUTE)
 			{
 				time_accessor.remove(task.time_ID);
 			}
@@ -159,7 +155,7 @@ void Time_keeper::on_complete_update()
 	//TODO Detect task removal during syncing
 }
 
-void Time_keeper::update_task(int64_t id, time_t now)
+void Time_keeper::update_task(int64_t id)
 {
 	map<int64_t, Task_time>::iterator it;
 	it = active_tasks.find(id);
@@ -176,19 +172,13 @@ void Time_keeper::update_task(int64_t id, time_t now)
 	}
 }
 
-void Time_keeper::update_task(int64_t id)
-{
-	time_t now = libtimeit::now();
-	update_task(id, now);
-}
-
 bool Time_keeper::is_active_task(int64_t taskID)
 {
 	return active_tasks.find(taskID) != active_tasks.end();
 }
 bool Time_keeper::hasRunningTasks()
 {
-	return (active_tasks.empty() == false);
+	return ( !active_tasks.empty() );
 }
 
 void Time_keeper::stop_all()

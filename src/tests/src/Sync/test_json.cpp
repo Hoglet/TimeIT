@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <gtest/gtest.h>
 #include <libtimeit/sync/json.h>
 #include <libtimeit/db/task.h>
@@ -225,8 +227,8 @@ TEST( Json, threeWayTimeTest2 )
 TEST( Json, testTaskStringGenerationTest )
 {
 	string name = "task1";
-	auto parentID = to_uuid("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
-	auto uuid = to_uuid("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
+	auto parentID = UUID::from_string("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
+	auto uuid = UUID::from_string("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	time_t changeTime = 1374263745;
 
 	Task task(name, 1, *uuid, false, 1, changeTime, parentID, false, 0, false);
@@ -262,3 +264,5 @@ TEST( Json, testTaskStringGenerationTest )
 	ASSERT_STREQ( "tester", json_string_value(json_object_get(j_owner, "username"))) << "Owner id is incorrect";
 }
 
+
+#pragma clang diagnostic pop

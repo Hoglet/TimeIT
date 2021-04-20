@@ -1,158 +1,179 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html lang="en">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="../style.css" type="text/css" rel="stylesheet">
-<title>TimeIT the unobtrusive timetracker</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link href="../style.css" type="text/css" rel="stylesheet">
+    <title>TimeIT the unobtrusive time tracker</title>
 </head>
 <body>
 <img src="TimeIT-MainWindow.png" width="400" height="272" border="0" alt="" align="right">
-<H1>TimeIT timetracker</h1>
+<H1>TimeIT time tracker</h1>
 
 <H2>Introduction</h2>
 <p>
-TimeIT is a tool intended to help you to keep track on how much time you
-spend on tasks.</p><p>It is intended to be discreet and unobtrusive. It is using
-workspace-tracking and idle detection to minimize the interaction needed, in the
-intended use case you are not even interacting at all with the program</p>
+    TimeIT is a tool intended to help you to keep track on how much time you
+    spend on tasks.</p>
+<p>It is intended to be discreet and unobtrusive. It is using
+    workspace-tracking and idle detection to minimize the interaction needed, in the
+    intended use case you are not even interacting at all with the program</p>
 
 <H2>Download</H2>
-<p>You can download this project in either <a href="http://github.com/Hoglet/TimeIT/zipball/master">zip</a> or <a href="http://github.com/Hoglet/TimeIT/tarball/master">tar</a> formats.
+<p>You can download this project in either <a href="https://github.com/Hoglet/TimeIT/zipball/master">zip</a> or <a
+        href="https://github.com/Hoglet/TimeIT/tarball/master">tar</a> formats.
 </p>
 <p>
-You can also clone the project with Git by running:
+    You can also clone the project with Git by running:
 </p>
 <pre>
 $ git clone git://github.com/Hoglet/TimeIT
 </pre>
 
 <p>
-Prepackaged binaries are available for Debian/Ubuntu: <a href="https://launchpad.net/~hoglet/+archive/timeit
+    Prepackaged binaries are available for Debian/Ubuntu: <a href="https://launchpad.net/~hoglet/+archive/timeit
 ">https://launchpad.net/~hoglet/+archive/timeit</a>
 <H2>Main Components</h2>
 <H3>Main window</h3>
 <H3>Status icon</h3>
 <table>
-<tr>
-<td>
-The program puts into the status tray, if such exists, an icon which:
-<ul>
-<li>Shows the state: green if timer(s) are running.</li>
-<li>Toggles main window when clicked</li>
-<li>Has a small menu on right click</li>
-</ul>
-</td>
-<td>
-<img src="StatusIcon.png" width="44" height="31" alt="Status Icon">
-</td>
-</tr>
+    <tr>
+        <td>
+            The program puts into the status tray, if such exists, an icon which:
+            <ul>
+                <li>Shows the state: green if timer(s) are running.</li>
+                <li>Toggles main window when clicked</li>
+                <li>Has a small menu on right click</li>
+            </ul>
+        </td>
+        <td>
+            <img src="StatusIcon.png" width="44" height="31" alt="Status Icon">
+        </td>
+    </tr>
 </table>
 
 <H2>Tasks</h2>
 Tasks can be organized in a tree where one task is parent to others thus grouping tasks bonded
 together like different parts of a project. Parents are then shown with the aggregated time.
 <table>
-<tr><td>
-<H3>Create/edit task</h3>
-Creating, or editing, a task is done through menu, toolbar or context menu.
-The dialog then opened contains possibility ty change following aspects of the task:
-<dl>
-<dt>Name</dt>
-<dd>The name of the task</dd>
-<dt>Parent</dt>
-<dd>
-</dd>
-<dt>Workspace</dt>
-<dd>
-This is setting on which workspaces TimeIT should run the tasks timer.
-</dd>
-</dl>
-</td>
-<td><img src="TimeIT-EditTask.png" width="289" height="151" border="0" alt="Edit task"><br><small>Edit task window</small></td></tr>
+    <tr>
+        <td>
+            <H3>Create/edit task</h3>
+            Creating, or editing, a task is done through menu, toolbar or context menu.
+            The dialog then opened contains possibility ty change following aspects of the task:
+            <dl>
+                <dt>Name</dt>
+                <dd>The name of the task</dd>
+                <dt>Parent</dt>
+                <dd>
+                </dd>
+                <dt>Workspace</dt>
+                <dd>
+                    This is setting on which workspaces TimeIT should run the tasks timer.
+                </dd>
+            </dl>
+        </td>
+        <td><img src="TimeIT-EditTask.png" width="289" height="151" border="0" alt="Edit task"><br><small>Edit task
+            window</small></td>
+    </tr>
 </table>
 <h3>Start a task manually</h3>
 
 <H2>Idle detection</h2>
 <table>
-<tr>
-<td>
-If TimeIT is detecting idle while a task, or tasks, are running it is presenting a dialog with three choices:
-<dl>
-<dt>Revert and stop</dt>
-<dd>Idle time was not active. Reseting to last known active time and stop counting time</dd>
-<dt>Revert and continue</dt>
-<dd>Idle time was not active. Reseting to last known active time and Continuing counting time from current time</dd>
-<dt>Continue</dt>
-<dd>Time span was activity of the computer. Continuing counting time</dd>
-</dl>
-</td>
-<td><img src="TimeIT-IdleDialog.png" width="360" height="107" border="0" alt="" align="right">
-</td>
-</tr>
+    <tr>
+        <td>
+            If TimeIT is detecting idle while a task, or tasks, are running it is presenting a dialog with three
+            choices:
+            <dl>
+                <dt>Revert and stop</dt>
+                <dd>Idle time was not active. Resetting to last known active time and stop counting time</dd>
+                <dt>Revert and continue</dt>
+                <dd>Idle time was not active. Resetting to last known active time and Continuing counting time from
+                    current time
+                </dd>
+                <dt>Continue</dt>
+                <dd>Time span was activity of the computer. Continuing counting time</dd>
+            </dl>
+        </td>
+        <td><img src="TimeIT-IdleDialog.png" width="360" height="107" border="0" alt="" align="right">
+        </td>
+    </tr>
 </table>
 <H2>Preferences</h2>
 <table>
-<tr>
-<td>
-Here you can set how TimeIT behaves.
+    <tr>
+        <td>
+            Here you can set how TimeIT behaves.
 
-<dl>
-<dt>Compact layout</dt>
-<dd>Enables a more compact layout than the traditional full width menu and tool bar.</dd>
-<dt>Start minimized</dt>
-<dd>If enabled then the main window will not open on start. This is the intended behavior but it is not enabled default to avoid confusion</dd>
-<dt>Idle time</dt>
-<dd>This is the time of no activity after which TimeIT decides that a break has occured.</dd>
-<dt>Zero time</dt>
-<dd>Shorter than this time will not be counted.</dd>
-<dt>Quiet mode</dt>
-<dd>Idle detection is not presenting a dialog questioning why the computer has been idle. No idle periods are registered as work.</dd>
-<dt>Sync server</dt>
-<dd>
-If you have access to a <a href="http://github.com/Hoglet/TimeIT-Server">TimeIT-Server</a> then you can sync data between all instances of TimeIT.
-<p>
-<dl>
-<dt>URI</dt>
-<dd>base URI of the server</dd>
-<dt>User</dt>
-<dd>Username as written in the server. Se TimeIT-Server.</dd>
-<dt>Password</dt>
-<dd>Use a good password</dd>
-<dt>Ignore certificate errors</dt>
-<dd>If you are using a self signed certificate then this is needed. Remember; if enabled then you become vulnerable to Man-In-The-Middle attacks.<dd>
-<dt>Sync interval</dt>
-<dd>How often you want to merge the databases.</dd>
-</dl>
-</p>
-</dd>
-</td>
-<td><img src="MainWindow-Preferences.png" width="331" height="344" border="0" alt="" align="right">
-</td>
-</tr>
+            <dl>
+                <dt>Compact layout</dt>
+                <dd>Enables a more compact layout than the traditional full width menu and tool bar.</dd>
+                <dt>Start minimized</dt>
+                <dd>If enabled then the main window will not open on start. This is the intended behavior but it is not
+                    enabled default to avoid confusion
+                </dd>
+                <dt>Idle time</dt>
+                <dd>This is the time of no activity after which TimeIT decides that a break has occurred.</dd>
+                <dt>Zero time</dt>
+                <dd>Shorter than this time will not be counted.</dd>
+                <dt>Quiet mode</dt>
+                <dd>Idle detection is not presenting a dialog questioning why the computer has been idle. No idle
+                    periods
+                    are registered as work.
+                </dd>
+                <dt>Sync server</dt>
+                <dd>
+                    If you have access to a <a href="https://github.com/Hoglet/TimeIT-Server">TimeIT-Server</a> then you
+                    can
+                    sync data between all instances of TimeIT.
+                    <dl>
+                        <dt>URI</dt>
+                        <dd>base URI of the server</dd>
+                        <dt>User</dt>
+                        <dd>Username as written in the server. Se TimeIT-Server.</dd>
+                        <dt>Password</dt>
+                        <dd>Use a good password</dd>
+                        <dt>Ignore certificate errors</dt>
+                        <dd>If you are using a self signed certificate then this is needed. Remember; if enabled then
+                            you
+                            become vulnerable to Man-In-The-Middle attacks.
+                        </dd>
+                        <dt>Sync interval</dt>
+                        <dd>How often you want to merge the databases.</dd>
+                    </dl>
+                </dd>
+            </dl>
+        </td>
+        <td><img src="MainWindow-Preferences.png" width="331" height="344" border="0" alt="" align="right">
+        </td>
+    </tr>
 </table>
 <H2>Add time manually</h2>
 To add time to a task you simply select the task in the list and then select "Add time" from Task menu (or context menu)
 <H2>Summaries</h2>
 <table>
-<tr>
-<td>This area shows how much time is recorded on tasks and the accumulated value for the parents. You can choose between grouping per day, week, month or year. Changing date in the calendar changes what point in time being used, enabling checking time spent in previous days or years.</td>
-<td><img src="TimeIT-summaries.png" width="345" height="241" border="0" alt="" align="right">
-</td>
-</tr>
+    <tr>
+        <td>This area shows how much time is recorded on tasks and the accumulated value for the parents. You can choose
+            between grouping per day, week, month or year. Changing date in the calendar changes what point in time
+            being used, enabling checking time spent in previous days or years.
+        </td>
+        <td><img src="TimeIT-summaries.png" width="345" height="241" border="0" alt="" align="right">
+        </td>
+    </tr>
 </table>
 <h3>Show/Edit time records</h3>
-<table><tr>
-<td>
-<p>By double clicking or using context menu on an item in the summary you
-bring up a window showing the individual time recordings that together bring the sum shown in summary.
-</p>
-<p>
-Here you can edit or remove times.
-</td>
-<td>
-<img src="TimeIT-EditTime.png" width="261" height="217" border="0" alt="">
-</td>
-</tr>
+<table>
+    <tr>
+        <td>
+            <p>By double clicking or using context menu on an item in the summary you
+                bring up a window showing the individual time recordings that together bring the sum shown in summary.
+            </p>
+            <p>
+                Here you can edit or remove times.
+        </td>
+        <td>
+            <img src="TimeIT-EditTime.png" width="261" height="217" border="0" alt="">
+        </td>
+    </tr>
 </table>
 
 

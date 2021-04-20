@@ -86,7 +86,7 @@ void Summary::on_menu_showDetails()
 	while (iter != observers.end())
 	{
 		SummaryObserver *observer = *iter;
-		observer->on_showDetailsClicked(this, id, startTime, stopTime);
+		observer->on_showDetailsClicked( id, startTime, stopTime);
 		++iter;
 	}
 }
@@ -296,10 +296,7 @@ TreeModel::Row Summary::add(int64_t id)
 	return row;
 }
 
-/*
- * Populate is filling the list, updating existing and adding elements not in list
- */
-void Summary::populate(Gtk::TreeModel::Row *parent, int parentID)
+void Summary::populate()
 {
 	if (isVisible())
 	{

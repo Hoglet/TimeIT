@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <sstream>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/utils.h>
@@ -71,7 +73,7 @@ vector<Task> Task_accessor::by_parent_ID(int64_t parent)
 		}
 		string name        = row[2].text();
 		bool completed     = row[3].boolean();
-		auto l_uuid        = to_uuid(row[4].text());
+		auto l_uuid        = UUID::from_string(row[4].text());
 		time_t last_change = row[5].integer();
 		int    idle        = row[6].integer();
 		bool   quiet       = row[7].boolean();
@@ -116,7 +118,7 @@ optional<Task> Task_accessor::by_ID(int64_t taskID)
 		}
 		string name       = row[2].text();
 		bool completed    = row[3].boolean();
-		auto l_uuid       = to_uuid(row[4].text());
+		auto l_uuid       = UUID::from_string(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool deleted      = row[6].boolean();
 		int  idle         = row[7].integer();
@@ -124,8 +126,7 @@ optional<Task> Task_accessor::by_ID(int64_t taskID)
 		if(l_uuid.has_value())
 		{
 			auto parentUUID = uuid(parent);
-			Task task(name, parent, *l_uuid, completed, id, lastChange, parentUUID, deleted, idle, quiet);
-			return { task };
+			return Task(name, parent, *l_uuid, completed, id, lastChange, parentUUID, deleted, idle, quiet);
 		}
 	}
 	return {};
@@ -162,7 +163,7 @@ optional<Task> Task_accessor::get_task_unlimited(int64_t taskID)
 		}
 		string name       = row[2].text();
 		bool   completed  = row[3].boolean();
-		auto   l_uuid     = to_uuid(row[4].text());
+		auto   l_uuid     = UUID::from_string(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool   deleted    = row[6].boolean();
 		int    idle       = row[7].integer();
@@ -208,7 +209,7 @@ vector<Task> Task_accessor::changed_since(time_t timestamp)
 		}
 		string name       = row[2].text();
 		bool   completed  = row[3].boolean();
-		auto   l_uuid     = to_uuid(row[4].text());
+		auto   l_uuid     = UUID::from_string(row[4].text());
 		time_t lastChange = row[5].integer();
 		bool   deleted    = row[6].boolean();
 		int    idle       = row[7].integer();
@@ -247,7 +248,7 @@ optional<class UUID> Task_accessor::uuid(int64_t id)
 		for (vector<Data_cell> row : rows)
 		{
 			auto uuid = row[0].text();
-			return to_uuid(uuid);
+			return UUID::from_string(uuid);
 		}
 	}
 	return {};
@@ -337,8 +338,6 @@ Task_ID Task_accessor::create(const Task &task)
 	time_t changeTime = task.last_changed;
 	bool deleted = task.deleted;
 
-	Task_ID id = 0;
-
 	Statement statement_newTask = database.prepare(
 			R"Query(
 				INSERT INTO
@@ -360,7 +359,7 @@ Task_ID Task_accessor::create(const Task &task)
 	statement_newTask.bind_value(6, deleted);
 
 	statement_newTask.execute();
-	id = database.ID_of_last_insert();
+	Task_ID id = database.ID_of_last_insert();
 
 	database.send_notification(TASK_ADDED, id);
 	return id;
@@ -442,7 +441,7 @@ void Task_accessor::upgrade()
 				;
 			)Query";
 		database.execute( query );
-		query = R"Query(
+		auto query2 = R"Query(
 			ALTER TABLE
 				tasks
 			ADD
@@ -450,7 +449,7 @@ void Task_accessor::upgrade()
 			DEFAULT 0
 				;
 			)Query";
-		database.execute( query );
+		database.execute( query2 );
 	}
 }
 
@@ -472,3 +471,5 @@ void Task_accessor::setTaskExpanded(int64_t taskID, bool expanded)
 }
 
 }
+
+#pragma clang diagnostic pop

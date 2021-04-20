@@ -25,7 +25,6 @@ public:
 private:
 	std::string dbName;
 	std::string socketName = "timeit.socket";
-	bool test;
 };
 
 }
