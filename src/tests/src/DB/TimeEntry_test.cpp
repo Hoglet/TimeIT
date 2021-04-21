@@ -1,7 +1,3 @@
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-magic-numbers"
-#endif
 #include <gtest/gtest.h>
 #include <libtimeit/db/time_entry.h>
 
@@ -39,10 +35,3 @@ TEST(TimeEntry, setDeleted)
 	ASSERT_TRUE(changedItem.deleted);
 	ASSERT_TRUE(changedItem.changed >= now) << "Changed time should be at current time";
 }
-
-
-
-
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif

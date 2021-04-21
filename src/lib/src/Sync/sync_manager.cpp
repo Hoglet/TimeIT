@@ -1,4 +1,4 @@
-#include "libtimeit/sync/sync_manager.h"
+#include <libtimeit/sync/sync_manager.h>
 
 #include <libtimeit/utils.h>
 #include <libtimeit/sync/json.h>
@@ -13,6 +13,7 @@ namespace libtimeit
 
 static const int HTTP_OK = 200;
 static const int HTTP_UNAUTHORIZED = 401;
+static const int MINUTE = 60;
 
 using namespace std;
 
@@ -32,8 +33,6 @@ Sync_manager::Sync_manager(
 		Timer_observer(timer)
 
 {
-	int len = 1;
-	auto text = unique_ptr<char[]>(new char[len]);
 }
 
 
@@ -111,17 +110,15 @@ bool Sync_manager::request_is_done()
 	{
 		return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
+
 
 time_t Sync_manager::get_next_sync(time_t referencePoint )
 {
 
 	int syncInterval = settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
-	int secondBetweenSyncs = syncInterval * 60;
+	int secondBetweenSyncs = syncInterval * MINUTE;
 	return referencePoint + secondBetweenSyncs;
 }
 
@@ -129,14 +126,7 @@ bool Sync_manager::is_active()
 {
 	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
 	string username = settings_accessor.get_string("Username", DEFAULT_USER);
-	if (baseUrl.length() > 0 && username.length() > 0)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (baseUrl.length() > 0 && username.length() > 0);
 }
 void Sync_manager::sync_tasks_to_database()
 {
@@ -214,8 +204,8 @@ void Sync_manager::sync_tasks_to_database()
 
 void Sync_manager::sync_times_to_database()
 {
-	auto result = outstandingRequest->futureResponse.get();
-	Time_list times = to_times(result.response);
+	auto resultA = outstandingRequest->futureResponse.get();
+	Time_list times = to_times(resultA.response);
 
 	task_accessor.enable_notifications(false);
 

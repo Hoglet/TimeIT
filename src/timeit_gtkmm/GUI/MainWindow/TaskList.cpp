@@ -79,13 +79,13 @@ void TaskList::on_row_expanded(const TreeModel::iterator &iter, const TreeModel:
 {
 	TreeModel::Row row = *iter;
 	int id = row[columns.col_id];
-	taskAccessor.setTaskExpanded(id, true);
+	taskAccessor.set_task_expanded(id, true);
 }
 void TaskList::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel::Path &path)
 {
 	TreeModel::Row row = *iter;
 	int id = row[columns.col_id];
-	taskAccessor.setTaskExpanded(id, false);
+	taskAccessor.set_task_expanded(id, false);
 }
 
 void TaskList::on_task_added(int64_t /*id*/)

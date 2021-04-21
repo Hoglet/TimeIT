@@ -60,7 +60,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 	case EDIT_TASK_DIALOG:
 		if (editTaskDialogInstace == 0)
 		{
-			shared_ptr<EditTaskDialog> dialog(new EditTaskDialog(database));
+			shared_ptr<Edit_task_dialog> dialog(new Edit_task_dialog(database));
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_editTask_hide));
 			editTaskDialogInstace = dialog;
 		}

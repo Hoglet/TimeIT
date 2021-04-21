@@ -7,8 +7,6 @@
 #ifndef TIMEIT_NOTIFIER_H
 #define TIMEIT_NOTIFIER_H
 
-#pragma once
-
 #include <cstdint>
 #include <list>
 #include <string>

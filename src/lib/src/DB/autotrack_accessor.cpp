@@ -54,9 +54,9 @@ Task_ID_list Auto_track_accessor::task_IDs(int workspace)
 	return return_value;
 }
 
-vector<int> Auto_track_accessor::workspaces(int64_t taskID)
+vector<unsigned> Auto_track_accessor::workspaces(int64_t taskID)
 {
-	vector<int> retVal;
+	vector<unsigned> retVal;
 	stringstream     statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
 	Query_result rows = database.execute(statement.str());
@@ -68,13 +68,13 @@ vector<int> Auto_track_accessor::workspaces(int64_t taskID)
 	return retVal;
 }
 
-void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<int> workspaces)
+void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<unsigned> workspaces)
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << task_ID;
 	database.execute(statement.str());
 
-	for (int workspace : workspaces)
+	for (auto workspace : workspaces)
 	{
 		statement.str("");
 		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << task_ID << ", " << workspace << ")";

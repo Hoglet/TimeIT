@@ -26,9 +26,9 @@ public:
 	Auto_track_accessor(Database& db);
 	~Auto_track_accessor() = default;
 
-	Task_ID_list    task_IDs(int workspace);
-	vector<int>     workspaces(int64_t task_ID);
-	void            set_workspaces(int64_t task_ID, vector<int> workspaces);
+	Task_ID_list     task_IDs(int workspace);
+	vector<unsigned> workspaces(int64_t task_ID);
+	void             set_workspaces(int64_t task_ID, vector<unsigned> workspaces);
 protected:
 	void      create_table()   override;
 	void      drop_views()     override {};

@@ -1,5 +1,5 @@
-#ifndef EDITTASKDIALOG_H_
-#define EDITTASKDIALOG_H_
+#ifndef EDIT_TASK_DIALOG_H_
+#define EDIT_TASK_DIALOG_H_
 
 #include "ParentChooser.h"
 #include <gtkmm.h>
@@ -11,75 +11,69 @@
 #include <IWidget.h>
 #include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/database.h>
+#include <glibmm/i18n.h>
 
 namespace GUI
 {
 using namespace std;
 using namespace libtimeit;
 
-class IEditTaskDialog
+class Edit_task_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	virtual ~IEditTaskDialog() {};
-	virtual void setTaskID(int64_t) = 0;
-};
-
-class IAddTaskDialog
-{
-public:
-	virtual ~IAddTaskDialog() {};
-	virtual void setParent(int ID) = 0;
-};
-
-class EditTaskDialog: public Gtk::Dialog, public IEditTaskDialog, public IAddTaskDialog, public IWidget
-{
-public:
-	EditTaskDialog( Database& database);
-	virtual ~EditTaskDialog();
-	void on_OKButton_clicked();
-	void on_CancelButton_clicked();
+	Edit_task_dialog(Database& database);
+	Edit_task_dialog(Edit_task_dialog const&) = delete;
+	Edit_task_dialog& operator = (Edit_task_dialog const&) = delete;
+	Edit_task_dialog(Edit_task_dialog&&) = delete;
+	Edit_task_dialog& operator=(Edit_task_dialog&&) = delete;
+	~Edit_task_dialog() override;
+	void on_OK_button_clicked();
+	void on_cancel_button_clicked();
 	void on_data_changed();
-	virtual void setTaskID(int64_t);
-	virtual void setParent(int ID);
+	void set_task_id(Task_ID ID);
+	void set_parent(Task_ID ID);
 
 	// IWidget interface
-	virtual void show() { Gtk::Dialog::show(); }
-	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
-	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void show() override;
+	void hide() override;
+	void move(int x, int y) override;
+	bool is_visible() override;
+	void get_position(int& window_x, int& window_y) override;
 private:
-	void createLayout();
-	void check4changes();
-	vector<int> getTickedWorkspaces();
-	void setTickedWorkspaces( vector<int> workspaces );
+	void             create_layout();
+	void             check_for_changes();
+	vector<unsigned> get_ticked_workspaces();
+	void             set_ticked_workspaces(vector<unsigned> workspaces );
 
-	Gtk::Label NameLabel;
-	Gtk::HBox hbox1;
-	Gtk::HBox hbox2;
-	Gtk::HBox hbox3;
-	std::vector<Gtk::CheckButton*> checkbutton;
-	Gtk::Table workspaceTable;
-	Gtk::Label label1;
-	Gtk::Frame DesktopFrame;
-	Gtk::Table table2;
-	Gtk::Button CancelButton;
-	Gtk::Button OKButton;
-	Gtk::Entry taskNameEntry;
-	Gtk::Label parentLabel;
-	ParentChooser parentChooser;
+	Gtk::Label  name_label       {_("Name: ")};
+	Gtk::HBox   horizontal_box_1;
+	Gtk::HBox   horizontal_box_2;
+	Gtk::HBox   horizontal_box_3;
 
-	string name;
-	Task_ID  taskID;
-	unsigned numberOfWorkspaces;
-	unsigned numColumns;
-	unsigned numRows;
-	vector<int> workspaces;
-	Task_ID parentID;
+	std::vector<Gtk::CheckButton*> check_button;
+	Gtk::Table    workspace_table;
+	Gtk::Label    label1;
+	Gtk::Frame    desktop_frame;
+	Gtk::Table    table2;
 
-	Auto_track_accessor autoTrackAccessor;
-	Task_accessor      taskAccessor;
-	Workspace         workspace;
+	Gtk::Button   cancel_button   {Gtk::StockID("gtk-revert-to-saved")};
+	Gtk::Button   ok_button       {Gtk::StockID("gtk-apply")};
+	Gtk::Entry    task_name_entry;
+
+	// This is the Parent in the context "Parent task"
+	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+	// Parent task and child task.
+	Gtk::Label    parent_label   {_("Parent: ")};
+	ParentChooser parent_chooser;
+
+	string           name;
+	Task_ID          task_id     {0};
+	Task_ID          parent_id   {0};
+	vector<unsigned> workspaces;
+
+	Auto_track_accessor auto_track_accessor;
+	Task_accessor       task_accessor;
+	Workspace           workspace;
 };
 }
-#endif /*EDITTASKDIALOG_H_*/
+#endif /*EDIT_TASK_DIALOG_H_*/

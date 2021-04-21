@@ -31,7 +31,7 @@ void Auto_tracker::on_signal_1_second()
 
 void Auto_tracker::check_for_changes()
 {
-	int new_workspace = workspace.get_active();
+	int new_workspace = workspace.active();
 	if (new_workspace >= 0 && old_workspace != new_workspace)
 	{
 		do_task_switching(old_workspace, new_workspace);

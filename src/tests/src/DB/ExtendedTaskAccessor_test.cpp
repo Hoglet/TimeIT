@@ -102,7 +102,7 @@ TEST(ExtendedTaskAccessor, setExpandedTasks)
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
 	ASSERT_EQ(false, task->expanded);
-	taskAccessor.setTaskExpanded(taskId, true);
+	taskAccessor.set_task_expanded(taskId, true);
 	auto task2 = taskAccessor.by_ID(taskId);
 	ASSERT_EQ(true, task2->expanded);
 }

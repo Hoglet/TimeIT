@@ -7,8 +7,6 @@
 
 #include "libtimeit/logic/workspace.h"
 #include <iostream>
-#include <string.h>
-#include <string>
 #include <vector>
 
 namespace libtimeit
@@ -25,15 +23,17 @@ Workspace::Workspace()
 	{
 		supports_layout = false;
 	}
-	find_layout();
 }
 
 Workspace::~Workspace()
 {
 }
 
-void Workspace::find_layout()
+Layout Workspace::layout()
 {
+	unsigned rows {1};
+	unsigned columns {1};
+	unsigned number_of_workspaces {1};
 	try
 	{
 		is_virtual = false;
@@ -91,20 +91,21 @@ void Workspace::find_layout()
 	{
 		cerr << e.what();
 	}
+	return Layout(number_of_workspaces, rows, columns);
 }
 
-int Workspace::get_active()
+unsigned Workspace::active()
 {
-	int active = 0;
-	find_layout();
-	if (number_of_workspaces != x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0))
+	unsigned active = 0;
+	auto layout = this->layout();
+	if (layout.number_of_workspaces != x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0))
 	{
 		int x = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 0);
 		int y = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 1);
 
-		int currentColumn = x / viewport_width + 1;
-		int currentRow = y / viewport_height + 1;
-		active = currentColumn * currentRow - 1;
+		int current_column = x / viewport_width + 1;
+		int current_row = y / viewport_height + 1;
+		active = current_column * current_row - 1;
 	}
 	else
 	{
@@ -120,20 +121,20 @@ int Workspace::get_active()
 	return active;
 }
 
-string Workspace::get_name(int workspaceNR)
+string Workspace::name(unsigned workspace_nr)
 {
 	if (is_virtual)
 	{
-		workspaceNR = 0;
+		workspace_nr = 0;
 	}
 	string retVal;
 	try
 	{
 		vector<string> names = x11.get_strings("_NET_DESKTOP_NAMES");
 
-		if ((int) names.size() > workspaceNR)
+		if ((int) names.size() > workspace_nr)
 		{
-			retVal = names.at(workspaceNR);
+			retVal = names.at(workspace_nr);
 		}
 	}
 	catch (const General_exception &e)
@@ -141,24 +142,6 @@ string Workspace::get_name(int workspaceNR)
 		cerr << e.what();
 	}
 	return retVal;
-}
-
-int Workspace::get_numberOfColumns()
-{
-	find_layout();
-	return columns;
-}
-
-int Workspace::get_numberOfRows()
-{
-	find_layout();
-	return rows;
-}
-
-int Workspace::get_numberOfWorkspaces()
-{
-	find_layout();
-	return number_of_workspaces;
 }
 
 }

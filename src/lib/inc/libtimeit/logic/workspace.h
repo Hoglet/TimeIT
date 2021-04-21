@@ -1,10 +1,3 @@
-/*
- * Workspace.h
- *
- *  Created on: 2008-aug-15
- *      Author: hoglet
- */
-
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 #include <string>
@@ -15,26 +8,37 @@ namespace libtimeit
 
 using namespace std;
 
+struct Layout
+{
+	const unsigned  number_of_workspaces;
+	const unsigned  rows;
+	const unsigned  columns;
+	Layout(
+			unsigned number_of_workspaces_,
+			unsigned rows_,
+			unsigned columns_)
+			:
+			number_of_workspaces(number_of_workspaces_),
+			rows(rows_),
+			columns(columns_)
+	{};
+};
 class Workspace
 {
 public:
 	Workspace();
 	virtual ~Workspace();
 
-	int get_active();
-	string get_name(int workspaceNR);
-	int get_numberOfColumns();
-	int get_numberOfRows();
-	int get_numberOfWorkspaces();
+	unsigned active();
+	string name(unsigned workspace_nr);
+
+	Layout layout();
 
 private:
-	void find_layout();
 
 	bool supports_layout = true;
 	bool is_virtual;
-	int  number_of_workspaces;
-	int  rows;
-	int  columns;
+
 	int  desktop_width;
 	int  desktop_height;
 	int  viewport_width;

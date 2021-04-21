@@ -2,101 +2,94 @@
 #include "ParentChooser.h"
 #include <iostream>
 #include <libtimeit/logic/workspace.h>
-#include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 
 namespace GUI
 {
+static const int BORDER_WIDTH = 5;
+static const int PADDING = 3;
+
 using namespace libtimeit;
 using namespace std;
-EditTaskDialog::EditTaskDialog(Database &database) :
-		CancelButton(Gtk::StockID("gtk-revert-to-saved")),
-		OKButton(Gtk::StockID("gtk-apply")),
-		parentChooser(database),
-		autoTrackAccessor(database),
-		taskAccessor(database)
+Edit_task_dialog::Edit_task_dialog(Database &database) :
+		parent_chooser(database),
+		auto_track_accessor(database),
+		task_accessor(database)
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
 
-	parentID = 0;
-	taskID = 0;
-	numRows = workspace.get_numberOfRows();
-	numColumns = workspace.get_numberOfColumns();
-	numberOfWorkspaces = workspace.get_numberOfWorkspaces();
 
-	// This is the Parent in the context "Parent task"
-	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
-	// Parent task and child task.
-	parentLabel.set_text(_("Parent: "));
-	NameLabel.set_text(_("Name: "));
+
 	/* This txt is the headline for the area where you choose
 	 on what workspace the task should be automatically started */
-	std::string text = libtimeit::string_printf("<b>%s</b>", _("Workspace tracking"));
+	string text = string_printf("<b>%s</b>", _("Workspace tracking"));
 	label1.set_text(text);
 
-	createLayout();
-	OKButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_OKButton_clicked));
-	CancelButton.signal_clicked().connect(sigc::mem_fun(this, &EditTaskDialog::on_CancelButton_clicked));
-	taskNameEntry.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
-	parentChooser.signal_changed().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
+	create_layout();
+	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_OK_button_clicked));
+	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_cancel_button_clicked));
+	task_name_entry.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
+	parent_chooser.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
 
-	std::vector<Gtk::CheckButton*>::iterator iter = checkbutton.begin();
-	while (iter != checkbutton.end())
+	auto iter = check_button.begin();
+	while (iter != check_button.end())
 	{
-		(*iter)->signal_toggled().connect(sigc::mem_fun(this, &EditTaskDialog::on_data_changed));
+		(*iter)->signal_toggled().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
 		++iter;
 	}
 }
 
-static const int BORDER_WIDTH = 5;
 
-static const int PADDING = 3;
 
-void EditTaskDialog::createLayout()
+void Edit_task_dialog::create_layout()
 {
+	auto layout = workspace.layout();
+	auto num_rows    = layout.rows;
+	auto num_columns = layout.columns;
+	auto number_of_workspaces = layout.number_of_workspaces;
 
-	workspaceTable.resize(numRows, numColumns);
+	workspace_table.resize(num_rows, num_columns);
 	table2.resize(3, 2);
-	taskNameEntry.set_flags(Gtk::CAN_FOCUS);
-	hbox1.pack_start(parentLabel, Gtk::PACK_SHRINK, 0);
-	hbox1.pack_start(parentChooser);
-	hbox2.pack_start(NameLabel, Gtk::PACK_SHRINK, 0);
-	hbox2.pack_start(taskNameEntry);
+	task_name_entry.set_flags(Gtk::CAN_FOCUS);
+	horizontal_box_1.pack_start(parent_label, Gtk::PACK_SHRINK, 0);
+	horizontal_box_1.pack_start(parent_chooser);
+	horizontal_box_2.pack_start(name_label, Gtk::PACK_SHRINK, 0);
+	horizontal_box_2.pack_start(task_name_entry);
 
 	label1.set_use_markup(true);
-	DesktopFrame.add(workspaceTable);
-	DesktopFrame.set_label_widget(label1);
+	desktop_frame.add(workspace_table);
+	desktop_frame.set_label_widget(label1);
 	table2.set_row_spacings(3);
 	table2.set_col_spacings(3);
-	table2.attach(hbox2, 0, 1, 0, 1);
-	table2.attach(hbox3, 0, 1, 1, 2);
-	table2.attach(DesktopFrame, 0, 1, 2, 3);
-	CancelButton.set_flags(Gtk::CAN_FOCUS);
-	OKButton.set_sensitive(false);
-	OKButton.set_flags(Gtk::CAN_FOCUS);
+	table2.attach(horizontal_box_2, 0, 1, 0, 1);
+	table2.attach(horizontal_box_3, 0, 1, 1, 2);
+	table2.attach(desktop_frame, 0, 1, 2, 3);
+	cancel_button.set_flags(Gtk::CAN_FOCUS);
+	ok_button.set_sensitive(false);
+	ok_button.set_flags(Gtk::CAN_FOCUS);
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
-	get_action_area()->pack_start(CancelButton);
-	get_action_area()->pack_start(OKButton);
+	get_action_area()->pack_start(cancel_button);
+	get_action_area()->pack_start(ok_button);
 	get_vbox()->set_spacing(2);
-	get_vbox()->pack_start(hbox1, Gtk::PACK_EXPAND_WIDGET, PADDING);
+	get_vbox()->pack_start(horizontal_box_1, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	get_vbox()->pack_start(table2, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	set_border_width(BORDER_WIDTH);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER_ON_PARENT);
 	set_has_separator(false);
 
-	for (unsigned row = 0; row < numRows; row++)
+	for (unsigned row = 0; row < num_rows; row++)
 	{
-		for (unsigned column = 0; column < numColumns; column++)
+		for (unsigned column = 0; column < num_columns; column++)
 		{
-			if ((row * numColumns + column) < numberOfWorkspaces)
+			if ((row * num_columns + column) < number_of_workspaces)
 			{
-				std::string buttonText = workspace.get_name(row * numColumns + column);
-				Gtk::CheckButton *newWorkspace = new class Gtk::CheckButton(buttonText);
-				newWorkspace->set_flags(Gtk::CAN_FOCUS);
-				newWorkspace->set_mode(true);
-				workspaceTable.attach(*newWorkspace, column, column + 1, row, row + 1);
-				checkbutton.push_back(newWorkspace);
+				string button_text = workspace.name(row * num_columns + column);
+				auto *new_workspace = new class Gtk::CheckButton(button_text);
+				new_workspace->set_flags(Gtk::CAN_FOCUS);
+				new_workspace->set_mode(true);
+				workspace_table.attach(*new_workspace, column, column + 1, row, row + 1);
+				check_button.push_back(new_workspace);
 			}
 		}
 	}
@@ -104,19 +97,18 @@ void EditTaskDialog::createLayout()
 	show_all_children();
 }
 
-std::vector<int> EditTaskDialog::getTickedWorkspaces()
+vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
 {
-	Gtk::CheckButton *workspaceCheckButton;
-	std::vector<int> workspaces;
+	vector<unsigned> workspace_list;
 
-	for (unsigned int i = 0; i < checkbutton.size(); i++)
+	for (unsigned int i = 0; i < check_button.size(); i++)
 	{
 		try
 		{
-			workspaceCheckButton = checkbutton.at(i);
-			if (workspaceCheckButton->get_active())
+			auto* workspace_check_button = check_button.at(i);
+			if (workspace_check_button->get_active())
 			{
-				workspaces.push_back(i);
+				workspace_list.push_back(i);
 			}
 		}
 		catch (...)
@@ -124,47 +116,47 @@ std::vector<int> EditTaskDialog::getTickedWorkspaces()
 			cerr << " vector (checkbutton) contains less than size() says!\n";
 		}
 	}
-	return workspaces;
+	return workspace_list;
 }
 
-void EditTaskDialog::setTaskID(int64_t ID)
+void Edit_task_dialog::set_task_id(Task_ID ID)
 {
-	taskID = ID;
-	auto task = taskAccessor.by_ID(taskID);
+	task_id = ID;
+	auto task = task_accessor.by_ID(task_id);
 	if (task.has_value())
 	{
 		name = task->name;
-		setParent(task->parent_ID);
-		taskNameEntry.set_text(name);
-		std::vector<int> workspaces = autoTrackAccessor.workspaces(ID);
-		setTickedWorkspaces(workspaces);
-		OKButton.set_sensitive(false);
-		this->workspaces = workspaces;
-		parentChooser.setID(ID);
+		set_parent(task->parent_ID);
+		task_name_entry.set_text(name);
+		vector<unsigned> workspace_list = auto_track_accessor.workspaces(ID);
+		set_ticked_workspaces(workspace_list);
+		ok_button.set_sensitive(false);
+		workspaces = workspace_list;
+		parent_chooser.setID(ID);
 	}
 }
 
-void EditTaskDialog::setParent(int ID)
+void Edit_task_dialog::set_parent(Task_ID ID)
 {
-	parentID = ID;
-	parentChooser.setParentID(parentID);
+	parent_id = ID;
+	parent_chooser.setParentID(parent_id);
 }
 
-void EditTaskDialog::setTickedWorkspaces(vector<int> workspaces)
+void Edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
 {
 
-	vector<Gtk::CheckButton*>::iterator check_button_iter = checkbutton.begin();
-	while (check_button_iter != checkbutton.end())
+	auto check_button_iter = check_button.begin();
+	while (check_button_iter != check_button.end())
 	{
 		(*check_button_iter)->set_active(false);
 		check_button_iter++;
 	}
-	std::vector<int>::iterator iter = workspaces.begin();
-	while (iter != workspaces.end())
+	auto iter = workspaces_list.begin();
+	while (iter != workspaces_list.end())
 	{
 		try
 		{
-			checkbutton.at(*iter)->set_active(true);
+			check_button.at(*iter)->set_active(true);
 		}
 		catch (...)
 		{
@@ -174,67 +166,93 @@ void EditTaskDialog::setTickedWorkspaces(vector<int> workspaces)
 	}
 
 }
-void EditTaskDialog::on_OKButton_clicked()
+void Edit_task_dialog::on_OK_button_clicked()
 {
-	string name;
-	stringstream checkButtonName;
-	vector<int> workspaces = getTickedWorkspaces();
-	name = taskNameEntry.get_text();
-	parentID = parentChooser.getParentID();
 
-	if (taskID < 1)
+	stringstream check_button_name;
+	auto workspace_list = get_ticked_workspaces();
+	auto new_name = task_name_entry.get_text();
+	parent_id = parent_chooser.getParentID();
+
+	if (task_id < 1)
 	{
-		Task task(name,parentID);
-		taskID = taskAccessor.create(task);
+		Task task(new_name, parent_id);
+		task_id = task_accessor.create(task);
 	}
 	else
 	{
-		taskAccessor.setParentID(taskID, parentID);
-		auto task = taskAccessor.by_ID(taskID);
+		task_accessor.set_parent_id(task_id, parent_id);
+		auto task = task_accessor.by_ID(task_id);
 		if (task.has_value())
 		{
-			taskAccessor.update(task->with_name(name));
+			task_accessor.update(task->with_name(new_name));
 		}
 	}
-	autoTrackAccessor.set_workspaces(taskID, workspaces);
-	taskID = -1;
-	parentID = 0;
+	auto_track_accessor.set_workspaces(task_id, workspace_list);
+	task_id = -1;
+	parent_id = 0;
 	hide();
 }
-void EditTaskDialog::on_CancelButton_clicked()
+void Edit_task_dialog::on_cancel_button_clicked()
 {
-	taskID = -1;
-	parentID = 0;
+	task_id = -1;
+	parent_id = 0;
 	hide();
 }
-void EditTaskDialog::check4changes()
+void Edit_task_dialog::check_for_changes()
 {
-	vector<int> tickedWorkspaces = getTickedWorkspaces();
+	auto ticked_workspaces = get_ticked_workspaces();
 
-	string entry_name = taskNameEntry.get_text();
-	if ( name != entry_name  || tickedWorkspaces != workspaces || parentChooser.getParentID() != parentID)
+	string entry_name = task_name_entry.get_text();
+	if ( name != entry_name || ticked_workspaces != workspaces || parent_chooser.getParentID() != parent_id)
 	{
-		OKButton.set_sensitive(true);
+		ok_button.set_sensitive(true);
 	}
 	else
 	{
-		OKButton.set_sensitive(false);
+		ok_button.set_sensitive(false);
 	}
 }
 
-void EditTaskDialog::on_data_changed()
+void Edit_task_dialog::on_data_changed()
 {
-	check4changes();
+	check_for_changes();
 }
 
-EditTaskDialog::~EditTaskDialog()
+Edit_task_dialog::~Edit_task_dialog()
 {
-	vector<Gtk::CheckButton*>::iterator iter = checkbutton.end();
-	for (; iter != checkbutton.end(); iter++)
+	auto iter = check_button.end();
+	for (; iter != check_button.end(); iter++)
 	{
 		Gtk::CheckButton *button = *iter;
 		delete button;
 	}
 
 }
+
+void Edit_task_dialog::get_position(int &Window_x, int &Window_y)
+{
+	Gtk::Dialog::get_position(Window_x, Window_y);
+}
+
+bool Edit_task_dialog::is_visible()
+{
+	return Gtk::Dialog::is_visible();
+}
+
+void Edit_task_dialog::move(int x, int y)
+{
+	Gtk::Dialog::move(x,y);
+}
+
+void Edit_task_dialog::hide()
+{
+	Gtk::Dialog::hide();
+}
+
+void Edit_task_dialog::show()
+{
+	Gtk::Dialog::show();
+}
+
 }

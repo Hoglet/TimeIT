@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <gtest/gtest.h>
 #include <libtimeit/sync/json.h>
 #include <libtimeit/db/task.h>
@@ -265,4 +263,3 @@ TEST( Json, testTaskStringGenerationTest )
 }
 
 
-#pragma clang diagnostic pop

@@ -1,9 +1,3 @@
-/*
- * Controller.cpp
- *
- *  Created on: Mar 12, 2009
- *      Author: hoglet
- */
 
 #include <EditTaskDialog.h>
 #include "Controller.h"
@@ -13,10 +7,8 @@
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
 #include <GUIFactory.h>
-//#include <libnotify/notify.h>
 #include <MainWindow/MainWindow.h>
 
-//constexpr auto DUPLICATE_RESHOW_TIME = 600;
 
 using namespace GUI;
 using namespace libtimeit;
@@ -103,18 +95,18 @@ void Controller::on_action_report_bug()
 
 void Controller::on_action_help()
 {
-	std::stringstream translatedHelp { };
-	std::stringstream helpToUse { };
+	stringstream translatedHelp { };
+	stringstream helpToUse { };
 	translatedHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/" << ISO_639_language_string() << "/index.html";
-	if (file_exists(std::string(translatedHelp.str())))
+	if (file_exists(string(translatedHelp.str())))
 	{
 		helpToUse << "file://" << translatedHelp.str();
 	}
 	else
 	{
-		std::stringstream defaultHelp;
+		stringstream defaultHelp;
 		defaultHelp << PACKAGE_DATA_DIR << "/doc/timeit/html/C/index.html";
-		if (file_exists(std::string(defaultHelp.str())))
+		if (file_exists(string(defaultHelp.str())))
 		{
 			helpToUse << "file://" << defaultHelp.str();
 		}
@@ -140,7 +132,7 @@ void Controller::on_action_edit_task()
 	if (selectedTaskID > 0)
 	{
 		WidgetPtr editTaskDialog = guiFactory.getWidget(EDIT_TASK_DIALOG);
-		std::dynamic_pointer_cast<IEditTaskDialog>(editTaskDialog)->setTaskID(selectedTaskID);
+		dynamic_pointer_cast<Edit_task_dialog>(editTaskDialog)->set_task_id(selectedTaskID);
 		editTaskDialog->show();
 	}
 }
@@ -172,10 +164,10 @@ void Controller::on_activity_resumed()
 	}
 	else
 	{
-		idleDialog = std::dynamic_pointer_cast<IdleDialog>(guiFactory.getWidget(GUI::IDLE_DIALOG));
+		idleDialog = dynamic_pointer_cast<IdleDialog>(guiFactory.getWidget(GUI::IDLE_DIALOG));
 		idleDialog->attach(this);
 		idleDialog->setIdleStartTime(idleStartTime);
-		std::vector<int64_t> taskIDs = timeAccessor.currently_running();
+		vector<int64_t> taskIDs = timeAccessor.currently_running();
 		idleDialog->setActiveTaskList(taskIDs);
 		idleDialog->show();
 	}
@@ -192,9 +184,9 @@ void Controller::on_idle_detected()
 
 void Controller::on_idleChanged()
 {
-	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory.getWidget(MAIN_WINDOW));
+	shared_ptr<MainWindow> mainWindow = dynamic_pointer_cast<MainWindow>(guiFactory.getWidget(MAIN_WINDOW));
 	mainWindow->on_runningTasksChanged();
-	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory.getWidget(DETAILS_DIALOG));
+	shared_ptr<DetailsDialog> detailsDialog = dynamic_pointer_cast<DetailsDialog>(guiFactory.getWidget(DETAILS_DIALOG));
 	detailsDialog->on_runningTasksChanged();
 }
 
@@ -233,15 +225,15 @@ void Controller::on_action_stopTimers()
 	timeKeeper.stop_all();
 }
 
-void Controller::on_action_task_selection_changed(int selectedTaskID)
+void Controller::on_action_task_selection_changed(int selected_task_ID)
 {
-	this->selectedTaskID = selectedTaskID;
+	this->selectedTaskID = selected_task_ID;
 }
 
 void Controller::on_action_add_task()
 {
 	WidgetPtr addTaskDialog = guiFactory.getWidget(ADD_TASK_DIALOG);
-	std::dynamic_pointer_cast<IAddTaskDialog>(addTaskDialog)->setParent(selectedTaskID);
+	dynamic_pointer_cast<Edit_task_dialog>(addTaskDialog)->set_parent(selectedTaskID);
 	addTaskDialog->show();
 }
 
@@ -253,7 +245,7 @@ void Controller::on_action_preferences()
 
 void Controller::on_showDetailsClicked( int64_t taskId, time_t startTime, time_t stopTime)
 {
-	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(
+	shared_ptr<DetailsDialog> detailsDialog = dynamic_pointer_cast<DetailsDialog>(
 			guiFactory.getWidget(GUI::DETAILS_DIALOG));
 	if (detailsDialog)
 	{
@@ -265,9 +257,9 @@ void Controller::on_showDetailsClicked( int64_t taskId, time_t startTime, time_t
 //LCOV_EXCL_START
 void Controller::on_running_changed()
 {
-	std::shared_ptr<MainWindow> mainWindow = std::dynamic_pointer_cast<MainWindow>(guiFactory.getWidget(MAIN_WINDOW));
+	shared_ptr<MainWindow> mainWindow = dynamic_pointer_cast<MainWindow>(guiFactory.getWidget(MAIN_WINDOW));
 	mainWindow->on_runningTasksChanged();
-	std::shared_ptr<DetailsDialog> detailsDialog = std::dynamic_pointer_cast<DetailsDialog>(guiFactory.getWidget(DETAILS_DIALOG));
+	shared_ptr<DetailsDialog> detailsDialog = dynamic_pointer_cast<DetailsDialog>(guiFactory.getWidget(DETAILS_DIALOG));
 	detailsDialog->on_runningTasksChanged();
 }
 void Controller::on_selection_changed(int64_t, time_t, time_t)

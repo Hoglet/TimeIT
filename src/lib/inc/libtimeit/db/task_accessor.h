@@ -33,8 +33,8 @@ public:
 	Task_ID  ID(UUID uuid);
 	void     enable_notifications(bool);
 
-	void     setParentID(int64_t taskID, int parentID);
-	void     setTaskExpanded(int64_t taskID, bool expanded);
+	void     set_parent_id(Task_ID task_id, Task_ID parent_id);
+	void     set_task_expanded(Task_ID taskID, bool expanded);
 
 protected:
 	void      create_table()   override;
@@ -49,8 +49,8 @@ private:
 	void notify(const Task &old_task, const Task &new_task);
 	void _update(const Task &task);
 
-	optional<class UUID> uuid(int64_t id);
-	optional<Task>       get_task_unlimited(int64_t taskID);
+	optional<class UUID> uuid(Task_ID id);
+	optional<Task>       get_task_unlimited(Task_ID taskID);
 };
 
 }

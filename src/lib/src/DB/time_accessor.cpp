@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -508,4 +506,3 @@ Task_ID_list Time_accessor::active_tasks(time_t start, time_t stop)
 
 }
 
-#pragma clang diagnostic pop

@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-magic-numbers"
 #include <sstream>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/utils.h>
@@ -132,7 +130,7 @@ optional<Task> Task_accessor::by_ID(int64_t taskID)
 	return {};
 }
 
-optional<Task> Task_accessor::get_task_unlimited(int64_t taskID)
+optional<Task> Task_accessor::get_task_unlimited(Task_ID taskID)
 {
 	Statement statement_getCompleteTask = database.prepare(R"(
 		SELECT
@@ -238,7 +236,7 @@ Task_ID Task_accessor::ID(UUID uuid)
 	return id;
 }
 
-optional<class UUID> Task_accessor::uuid(int64_t id)
+optional<class UUID> Task_accessor::uuid(Task_ID id)
 {
 	if(id)
 	{
@@ -365,7 +363,7 @@ Task_ID Task_accessor::create(const Task &task)
 	return id;
 }
 
-void Task_accessor::setParentID(int64_t taskID, int parentID)
+void Task_accessor::set_parent_id(Task_ID taskID, Task_ID parentID)
 {
 	time_t now = time(nullptr);
 	stringstream statement;
@@ -455,7 +453,7 @@ void Task_accessor::upgrade()
 
 
 
-void Task_accessor::setTaskExpanded(int64_t taskID, bool expanded)
+void Task_accessor::set_task_expanded(Task_ID taskID, bool expanded)
 {
 	auto statement = string_printf(
 			R"Query(
@@ -472,4 +470,3 @@ void Task_accessor::setTaskExpanded(int64_t taskID, bool expanded)
 
 }
 
-#pragma clang diagnostic pop

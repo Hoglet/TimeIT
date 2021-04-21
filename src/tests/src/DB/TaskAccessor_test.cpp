@@ -77,7 +77,7 @@ TEST (TaskAccessor, setParentID)
 	int64_t taskId2 = taskAccessor.create(Task("Test2", 0));
 	auto task = taskAccessor.by_ID(taskId1);
 	ASSERT_EQ(0, task->parent_ID);
-	taskAccessor.setParentID(taskId1, taskId2);
+	taskAccessor.set_parent_id(taskId1, taskId2);
 	auto task2 = taskAccessor.by_ID(taskId1);
 	ASSERT_EQ(taskId2, task2->parent_ID);
 }
@@ -90,7 +90,7 @@ TEST (TaskAccessor, setParentID_inputValidation)
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
 	ASSERT_EQ(0, task->parent_ID);
-	ASSERT_THROW(taskAccessor.setParentID(taskId, taskId + 1), db_exception);
+	ASSERT_THROW(taskAccessor.set_parent_id(taskId, taskId + 1), db_exception);
 }
 
 TEST (TaskAccessor, remove)

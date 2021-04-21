@@ -16,10 +16,10 @@ TEST (AutotrackAccessor, WorkspaceAccessor)
 	Auto_track_accessor autotrackAccessor(tempdb);
 	Extended_task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Tjohopp", 0));
-	vector<int> workspaces;
+	vector<unsigned> workspaces;
 	workspaces.push_back(1);
 	autotrackAccessor.set_workspaces(taskId, workspaces);
-	vector<int> result = autotrackAccessor.workspaces(1);
+	vector<unsigned> result = autotrackAccessor.workspaces(1);
 	ASSERT_EQ(result, workspaces);
 }
 
@@ -32,7 +32,7 @@ TEST (AutotrackAccessor, getTaskIDs)
 	Task_accessor taskAccessor(tempdb);
 	Task task("test");
 	int taskID = taskAccessor.create(task);
-	vector<int> workspaces;
+	vector<unsigned> workspaces;
 
 	workspaces.push_back(1);
 	autotrackAccessor.set_workspaces(taskID, workspaces);
