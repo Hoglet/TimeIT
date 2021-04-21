@@ -329,32 +329,27 @@ bool Task_accessor::update(const Task &task)
 
 Task_ID Task_accessor::create(const Task &task)
 {
-	UUID uuid = task.uuid;
-	Task_ID parentID = task.parent_ID;
-	string name = task.name;
-	bool completed = task.completed;
-	time_t changeTime = task.last_changed;
-	bool deleted = task.deleted;
-
 	Statement statement_newTask = database.prepare(
 			R"Query(
 				INSERT INTO
-					tasks (name,parent,changed,uuid,completed,deleted)
-				VALUES (?,?,?,?,?,?);
+					tasks (name,parent,changed,uuid,completed,deleted,idle,quiet)
+				VALUES (?,?,?,?,?,?,?,?);
 				)Query");
-	statement_newTask.bind_value(1, name);
-	if (parentID > 0)
+	statement_newTask.bind_value(1, task.name);
+	if (task.parent_ID > 0)
 	{
-		statement_newTask.bind_value(2, parentID);
+		statement_newTask.bind_value(2, task.parent_ID);
 	}
 	else
 	{
 		statement_newTask.bind_null_value(2);
 	}
-	statement_newTask.bind_value(3, changeTime);
-	statement_newTask.bind_value(4, uuid.c_str());
-	statement_newTask.bind_value(5, completed);
-	statement_newTask.bind_value(6, deleted);
+	statement_newTask.bind_value(3, task.last_changed);
+	statement_newTask.bind_value(4, task.uuid.c_str());
+	statement_newTask.bind_value(5, task.completed);
+	statement_newTask.bind_value(6, task.deleted);
+	statement_newTask.bind_value(7, task.idle);
+	statement_newTask.bind_value(8, task.quiet);
 
 	statement_newTask.execute();
 	Task_ID id = database.ID_of_last_insert();

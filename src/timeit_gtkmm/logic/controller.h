@@ -79,7 +79,7 @@ private:
 
 	int mainWindow_x = 0;
 	int mainWindow_y = 0;
-	int selectedTaskID = -1;
+	unsigned selectedTaskID = 0;
 	long idleStartTime = 0;
 
 };
