@@ -35,14 +35,9 @@ include_directories(${GTKMM_INCLUDE_DIRS}
                     ${CURL_INCLUDE_DIRS}
                     ${NOTIFY_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
-                    "${PROJECT_SOURCE_DIR}/DB/"
-                    "${PROJECT_SOURCE_DIR}/Logic/"
-                    "${PROJECT_SOURCE_DIR}/GUI/"
-                    "${PROJECT_SOURCE_DIR}/Misc/"
-                    "${PROJECT_SOURCE_DIR}/Sync/"
-                    "${PROJECT_SOURCE_DIR}/Tests/"
-                    "${PROJECT_SOURCE_DIR}/DB/DBAbstraction/"
-                    "${PROJECT_SOURCE_DIR}/../cute_lib/"
+                    "${PROJECT_SOURCE_DIR}/logic/"
+                    "${PROJECT_SOURCE_DIR}/gui/"
+                    "${PROJECT_SOURCE_DIR}/misc/"
                     )
 
 
