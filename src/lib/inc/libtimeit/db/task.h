@@ -13,17 +13,17 @@ class Task_accessor;
 
 using namespace std;
 
-struct Task
+struct [[nodiscard]]  Task
 {
-	const Task_ID              ID          {0};
+	const Task_ID              id           {0};
 	const string               name;
 	const class UUID           uuid;
 	const optional<class UUID> parent_uuid;
 	const bool                 completed    {false};
 	const bool                 deleted      {false};
-	const Task_ID              parent_ID    {0};
+	const Task_ID              parent_id    {0};
 	const time_t               last_changed {0};
-	const int                  idle         {0};
+	const unsigned             idle         {0};
 	const bool                 quiet        {false};
 
 
@@ -38,15 +38,17 @@ struct Task
 		time_t         last_change_,
 		optional<UUID> parent_uuid_,
 		bool           deleted_,
-		int            idle_,
+		unsigned       idle_,
 		bool           quiet_);
 
 	virtual ~Task() = default;
 
-	Task       with_name(string new_name) const;
-	Task       with_parent(Task_ID)              const;
-	Task       with_completed(bool)              const;
-	Task       with_deleted(bool)                const;
+	Task       with_name(string /*new_name*/)     const;
+	Task       with_parent(Task_ID /*id*/)        const;
+	Task       with_completed(bool /*completed*/) const;
+	Task       with_deleted(bool  /*deleted*/)    const;
+	Task       with_idle(unsigned /*idle*/)       const;
+	Task       with_quiet(bool /*quiet*/)         const;
 
 	friend bool       operator==(const Task &op1, const Task &op2);
 	friend bool       operator!=(const Task &op1, const Task &op2);

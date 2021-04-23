@@ -13,8 +13,7 @@ TEST (TaskAccessor, NewTask_inputValidation)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	Task_accessor taskAccessor(tempdb);
-	ASSERT_THROW(taskAccessor.create(Task("Test", 100)), db_exception);
+	ASSERT_THROW(Task_accessor(tempdb).create(Task("Test", 100)), db_exception);
 }
 
 TEST (TaskAccessor, getTask)
@@ -76,10 +75,10 @@ TEST (TaskAccessor, setParentID)
 	int64_t taskId1 = taskAccessor.create(Task("Test", 0));
 	int64_t taskId2 = taskAccessor.create(Task("Test2", 0));
 	auto task = taskAccessor.by_ID(taskId1);
-	ASSERT_EQ(0, task->parent_ID);
+	ASSERT_EQ(0, task->parent_id);
 	taskAccessor.set_parent_id(taskId1, taskId2);
 	auto task2 = taskAccessor.by_ID(taskId1);
-	ASSERT_EQ(taskId2, task2->parent_ID);
+	ASSERT_EQ(taskId2, task2->parent_id);
 }
 
 TEST (TaskAccessor, setParentID_inputValidation)
@@ -89,7 +88,7 @@ TEST (TaskAccessor, setParentID_inputValidation)
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(0, task->parent_ID);
+	ASSERT_EQ(0, task->parent_id);
 	ASSERT_THROW(taskAccessor.set_parent_id(taskId, taskId + 1), db_exception);
 }
 
@@ -199,7 +198,7 @@ TEST (TaskAccessor, updateTask)
 	taskAccessor.update(task1->with_name("Coding"));
 	auto changedTask = taskAccessor.by_ID(id);
 	ASSERT_EQ("Coding", changedTask->name);
-	ASSERT_EQ(task1->ID, observer.nameChangedTaskID) << "Notified Task_ID: ";
+	ASSERT_EQ(task1->id, observer.nameChangedTaskID) << "Notified Task_ID: ";
 	ASSERT_EQ(0, observer.updatedParentTaskID) << "Notified ParentID: ";
 
 	observer.nameChangedTaskID = 0;
@@ -216,10 +215,10 @@ TEST (TaskAccessor, updateTask)
 
 	auto task3 = temp_task->with_parent(id);
 	taskAccessor.update(task3);
-	ASSERT_EQ(task3.ID, observer.updatedParentTaskID) << "Notified ParentID: ";
+	ASSERT_EQ(task3.id, observer.updatedParentTaskID) << "Notified ParentID: ";
 
-	taskAccessor.remove(task3.ID);
-	ASSERT_EQ(task3.ID, observer.removedTaskID) << "Notified ParentID: ";
+	taskAccessor.remove(task3.id);
+	ASSERT_EQ(task3.id, observer.removedTaskID) << "Notified ParentID: ";
 }
 
 TEST(TaskAccessor, lastChanged)
@@ -241,10 +240,10 @@ TEST(TaskAccessor, lastChanged)
 	string newName = "New name";
 	Task updated_task(
 			newName,
-			task.parent_ID,
+			task.parent_id,
 			task.uuid,
 			task.completed,
-			task.ID,
+			task.id,
 			495,
 			task.parent_uuid,
 			false,

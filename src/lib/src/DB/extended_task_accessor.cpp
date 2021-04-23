@@ -25,7 +25,7 @@ vector<Extended_task> Extended_task_accessor::by_parent_ID(int64_t parentID, tim
 	for (unsigned int i = 0; i < tasks.size(); i++)
 	{
 		Extended_task& task = tasks.at(i);
-		int totalTime = time_accessor.total_cumulative_time(task.ID, start, stop);
+		int totalTime = time_accessor.total_cumulative_time(task.id, start, stop);
 		task.total_time_=totalTime;
 	}
 	return tasks;
@@ -38,7 +38,7 @@ vector<Extended_task> Extended_task_accessor::getRunningTasks(int64_t parentID)
 	{
 		Extended_task& task = tasks.at(i);
 		int totalTime = task.time;
-		totalTime += getTotalChildTime(task.ID);
+		totalTime += getTotalChildTime(task.id);
 		task.total_time_=totalTime;
 	}
 	return tasks;
@@ -51,7 +51,7 @@ Duration Extended_task_accessor::getTotalChildTime(int64_t id, time_t start, tim
 	for (auto task : tasks)
 	{
 		totalTime += task.time;
-		totalTime += getTotalChildTime(task.ID, start, stop);
+		totalTime += getTotalChildTime(task.id, start, stop);
 	}
 	return totalTime;
 }

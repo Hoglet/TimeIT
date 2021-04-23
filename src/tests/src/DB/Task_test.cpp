@@ -8,8 +8,8 @@ using namespace libtimeit;
 TEST( Task, getters)
 {
 	Task task("Name");
-	ASSERT_EQ(0, task.ID);
-	ASSERT_EQ(0, task.parent_ID);
+	ASSERT_EQ(0, task.id);
+	ASSERT_EQ(0, task.parent_id);
 
 	ASSERT_EQ("Name", task.name);
 	ASSERT_EQ(false, task.completed);
@@ -25,7 +25,7 @@ TEST (Task, with)
 	ASSERT_EQ("Test", task.name);
 
 	auto task2 = original.with_parent(13);
-	ASSERT_EQ(13, task2.parent_ID);
+	ASSERT_EQ(13, task2.parent_id);
 
 	auto task3 = original.with_completed(true);
 	ASSERT_EQ(true, task3.completed);
@@ -33,8 +33,7 @@ TEST (Task, with)
 	auto task4 = original.with_deleted(true);
 	ASSERT_EQ(true, task4.deleted);
 
-	auto lastChanged = task4.last_changed;
-	ASSERT_TRUE(abs(lastChanged - now) < 2);
+	ASSERT_TRUE(abs(task4.last_changed - now) < 2);
 
 }
 

@@ -57,8 +57,8 @@ StatusIcon::~StatusIcon()
 
 void StatusIcon::populateContextMenu()
 {
-	Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
-	menulist.clear();
+	Gtk::Menu::MenuList &menu_list = m_Menu_Popup.items();
+	menu_list.clear();
 
 	latestTasks = m_timeaccessor.latest_active_tasks(5);
 	std::vector<int64_t> runningTasks = m_timeaccessor.currently_running();
@@ -83,19 +83,21 @@ void StatusIcon::populateContextMenu()
 			switch (i)
 			{
 			case 0:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task1)));
 				break;
 			case 1:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task2)));
 				break;
 			case 2:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task3)));
 				break;
 			case 3:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task4)));
 				break;
 			case 4:
-				menulist.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menuLine.c_str(), *menuIcon, sigc::mem_fun(*this, &StatusIcon::on_menu_toggle_task5)));
+				break;
+			default:
 				break;
 			}
 		}
@@ -104,12 +106,12 @@ void StatusIcon::populateContextMenu()
 			//Ignore all errors
 		}
 	}
-	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle main window"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
-	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
-	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &StatusIcon::on_menu_preferences)));
-	menulist.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &StatusIcon::on_menu_about)));
+	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle main window"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_open)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this, &StatusIcon::on_menu_stop_all_timers)));
+	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"), sigc::mem_fun(*this, &StatusIcon::on_menu_file_popup_quit)));
+	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &StatusIcon::on_menu_preferences)));
+	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &StatusIcon::on_menu_about)));
 
 }
 
@@ -120,9 +122,9 @@ std::string StatusIcon::completeTaskPath(int64_t id)
 	if (task.has_value())
 	{
 		taskName = task->name;
-		if (task->parent_ID > 0)
+		if (task->parent_id > 0)
 		{
-			taskName = completeTaskPath(task->parent_ID) + " / " + taskName;
+			taskName = completeTaskPath(task->parent_id) + " / " + taskName;
 		}
 	}
 	return taskName;

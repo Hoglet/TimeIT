@@ -64,7 +64,7 @@ vector<Task> Task_accessor::by_parent_ID(int64_t parent)
 	for (vector<Data_cell> row : rows)
 	{
 		int id = row[0].integer();
-		int parent = 0;
+		parent = 0;
 		if (row[1].has_value())
 		{
 			parent = row[1].integer();
@@ -263,13 +263,15 @@ void Task_accessor::_update(const Task &task)
 					parent = ? ,
 					changed = ? ,
 					deleted = ?,
-					completed = ?
+					completed = ?,
+					idle = ?,
+					quiet = ?
 				WHERE id=?;)"
 						);
 	statement_updateTask.bind_value(1, task.name);
-	if (task.parent_ID > 0)
+	if (task.parent_id > 0)
 	{
-		statement_updateTask.bind_value(2, task.parent_ID);
+		statement_updateTask.bind_value(2, task.parent_id);
 	}
 	else
 	{
@@ -278,34 +280,36 @@ void Task_accessor::_update(const Task &task)
 	statement_updateTask.bind_value(3, task.last_changed);
 	statement_updateTask.bind_value(4, task.deleted);
 	statement_updateTask.bind_value(5, task.completed);
-	statement_updateTask.bind_value(6, task.ID);
+	statement_updateTask.bind_value(6, task.idle);
+	statement_updateTask.bind_value(7, task.quiet);
+	statement_updateTask.bind_value(8, task.id);
 
 	statement_updateTask.execute();
 }
 
 void Task_accessor::notify(const Task &existingTask, const Task &task)
 {
-	bool parentChanged = (existingTask.parent_ID != task.parent_ID);
+	bool parentChanged = (existingTask.parent_id != task.parent_id);
 	bool taskDeleted = (existingTask.deleted != task.deleted && task.deleted == true);
 	bool nameChanged = (existingTask.name != task.name);
 
 	if (nameChanged)
 	{
-		database.send_notification(TASK_NAME_CHANGED, task.ID);
+		database.send_notification(TASK_NAME_CHANGED, task.id);
 	}
 	if (parentChanged)
 	{
-		database.send_notification(TASK_PARENT_CHANGED, task.ID);
+		database.send_notification(TASK_PARENT_CHANGED, task.id);
 	}
 	if (taskDeleted)
 	{
-		database.send_notification(TASK_REMOVED, task.ID);
+		database.send_notification(TASK_REMOVED, task.id);
 	}
 }
 
 bool Task_accessor::update(const Task &task)
 {
-	int id = task.ID;
+	int id = task.id;
 	if (id == 0)
 	{
 		id = ID(task.uuid);
@@ -336,9 +340,9 @@ Task_ID Task_accessor::create(const Task &task)
 				VALUES (?,?,?,?,?,?,?,?);
 				)Query");
 	statement_newTask.bind_value(1, task.name);
-	if (task.parent_ID > 0)
+	if (task.parent_id > 0)
 	{
-		statement_newTask.bind_value(2, task.parent_ID);
+		statement_newTask.bind_value(2, task.parent_id);
 	}
 	else
 	{

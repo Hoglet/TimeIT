@@ -19,7 +19,7 @@ TaskList::TaskList(
 		m_timeKeeper(timeKeeper)
 
 {
-	// consider not loading and having these icons in memory multiple times accross multiple classes
+	// consider not loading and having these icons in memory multiple times across multiple classes
 	runningIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running.svg"), 24, 24, true);
 	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
 	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
@@ -35,16 +35,16 @@ TaskList::TaskList(
 	populate();
 
 	//Popup menu
-	Gtk::Menu::MenuList &menulist = Menu_Popup.items();
+	Gtk::Menu::MenuList &menu_list = Menu_Popup.items();
 
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &TaskList::on_menu_start)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(*this, &TaskList::on_menu_stop)));
-	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &TaskList::on_menu_add_time)));
-	menulist.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &TaskList::on_menu_add_task)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &TaskList::on_menu_edit)));
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(*this, &TaskList::on_menu_remove_task)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &TaskList::on_menu_start)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(*this, &TaskList::on_menu_stop)));
+	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &TaskList::on_menu_add_time)));
+	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &TaskList::on_menu_add_task)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &TaskList::on_menu_edit)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(*this, &TaskList::on_menu_remove_task)));
 
 }
 
@@ -104,7 +104,7 @@ void TaskList::on_task_updated(int64_t taskID)
 			TreeModel::Row row = *iter;
 			assignValuesToRow(row, *task);
 		}
-		int64_t parentID = task->parent_ID;
+		int64_t parentID = task->parent_id;
 		if (parentID > 0)
 		{
 			on_task_updated(parentID);
@@ -209,7 +209,7 @@ Gtk::TreeModel::iterator TaskList::subSearch(int id, TreeModel::Children childre
 
 void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 {
-	int64_t taskID = task.ID;
+	int64_t taskID = task.id;
 	row[columns.col_id] = taskID;
 	if (task.running)
 	{
@@ -256,7 +256,7 @@ void TaskList::populate(TreeModel::Row *parent, int parentID)
 		}
 		row = *iter;
 		assignValuesToRow(row, tasks.at(i));
-		populate(&row, tasks.at(i).ID);
+		populate(&row, tasks.at(i).id);
 		if (tasks.at(i).expanded)
 		{
 			TreeModel::Path path(iter);

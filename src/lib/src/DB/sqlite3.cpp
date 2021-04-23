@@ -22,9 +22,9 @@ void SQLite3::init(string dbname)
 {
 	in_transaction = false;
 	int rc = sqlite3_open(dbname.c_str(), &db);
-	if (rc)
+	if ( rc != SQLITE_OK )
 	{
-		auto message = sqlite3_errmsg(db);
+		auto* message = sqlite3_errmsg(db);
 		sqlite3_close(db);
 		throw db_exception(message, rc);
 	}
@@ -38,7 +38,7 @@ int64_t SQLite3::ID_of_last_insert()
 Statement SQLite3::prepare(const string& query)
 {
 	sqlite3_stmt* stmt;
-	int rc = sqlite3_prepare_v2(db, query.c_str(), strlen(query.c_str()), &stmt, NULL);
+	int rc = sqlite3_prepare_v2(db, query.c_str(), strlen(query.c_str()), &stmt, nullptr);
 	if (rc != SQLITE_OK)
 	{
 		std::stringstream message;
@@ -53,7 +53,7 @@ Statement SQLite3::prepare(const string& query)
 
 Query_result SQLite3::execute(const string& query)
 {
-	Statement statement = prepare(query.data());
+	Statement statement = prepare(query);
 	return statement.execute();
 }
 

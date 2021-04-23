@@ -20,3 +20,5 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.ConstantCase
     value: UPPER_CASE
+  - key: readability-identifier-naming.ConstantMemberCase
+    value: lower_case

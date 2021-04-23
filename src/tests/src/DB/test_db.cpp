@@ -92,11 +92,11 @@ TEST( database, testUpgrade )
 	ASSERT_EQ( 2, taskAccessor.changed_since().size()) << "Numbers of tasks in tasks";
 	auto task1 = taskAccessor.by_ID(1);
 	ASSERT_EQ( string("Test"), task1->name) << "Task 1 name ";
-	ASSERT_EQ( 0, task1->parent_ID) << "Task 1 parent ";
+	ASSERT_EQ( 0, task1->parent_id) << "Task 1 parent ";
 
 	auto task2 = taskAccessor.by_ID(2);
 	ASSERT_EQ( string("Sub task"), task2->name) << "Task 2 name ";
-	ASSERT_EQ( 1, task2->parent_ID) << "Task 2 parent ";
+	ASSERT_EQ( 1, task2->parent_id) << "Task 2 parent ";
 
 	Time_accessor timeAccessor(db);
 	vector<Time_entry> times = timeAccessor.times_changed_since();

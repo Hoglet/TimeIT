@@ -111,11 +111,11 @@ void ParentChooser::populate(std::string &baseString, int parentID)
 			name = baseString;
 		}
 		name += task.name;
-		row[Columns.col_id] = task.ID;
+		row[Columns.col_id] = task.id;
 		row[Columns.col_name] = name;
 
 		string newBaseString = baseString + "    ";
-		populate(newBaseString, task.ID);
+		populate(newBaseString, task.id);
 	}
 }
 

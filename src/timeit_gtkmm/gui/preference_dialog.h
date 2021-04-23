@@ -50,8 +50,6 @@ private:
 	Gtk::SpinButton	GzEntry;
 	Gtk::SpinButton	GtEntry;
 
-	Gtk::Label QuietLabel;
-	Gtk::CheckButton QuietButton;
 	Gtk::Label UrlLabel;
 	Gtk::Label UserLabel;
 	Gtk::Label PasswordLabel;

@@ -32,7 +32,6 @@ PreferenceDialog::PreferenceDialog(Database &database) :
 	CompactLayoutButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	StartMinimizedButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GzEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	QuietButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	GtEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	UrlEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
 	UserEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
@@ -56,15 +55,12 @@ PreferenceDialog::PreferenceDialog(Database &database) :
 		GtLabel.set_text(_("Idle time (m)"));
 		GtEntry.set_range(1, 60);
 		GtEntry.set_increments(1, 10);
-		QuietLabel.set_text(_("Quiet mode"));
 
 		TimeConstantTable.attach(GtLabel, 0, 1, 0, 1);
 		TimeConstantTable.attach(GtEntry, 1, 2, 0, 1);
 		TimeConstantTable.attach(GzLabel, 0, 1, 1, 2);
-		TimeConstantTable.attach(QuietLabel, 0, 1, 2, 3);
 		TimeConstantTable.attach(GtEntry, 1, 2, 0, 1);
 		TimeConstantTable.attach(GzEntry, 1, 2, 1, 2);
-		TimeConstantTable.attach(QuietButton, 1, 2, 2, 3);
 	}
 	get_vbox()->pack_start(TimeConstantTable, Gtk::PACK_EXPAND_WIDGET, 3);
 
@@ -138,7 +134,6 @@ void PreferenceDialog::set_values()
 	GtEntry.set_value(oldGt);
 	CompactLayoutButton.set_active(oldCompactLayout);
 	StartMinimizedButton.set_active(oldStartMinimized);
-	QuietButton.set_active(oldQuietMode);
 	UrlEntry.set_text(oldURL);
 	UserEntry.set_text(oldUser);
 	PasswordEntry.set_text(oldPassword);
@@ -152,7 +147,6 @@ void PreferenceDialog::get_values()
 	startMinimized = StartMinimizedButton.get_active();
 	gz = GzEntry.get_value_as_int();
 	gt = GtEntry.get_value_as_int();
-	quietMode = QuietButton.get_active();
 	URL = UrlEntry.get_text();
 	if (URL.length() > 0)
 	{

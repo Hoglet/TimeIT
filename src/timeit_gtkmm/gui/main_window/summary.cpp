@@ -1,7 +1,7 @@
 #include "summary.h"
 #include "libtimeit/utils.h"
-#include "details_dialog.h"
 #include <glibmm/i18n.h>
+
 using namespace std;
 using namespace Gtk;
 using namespace Glib;
@@ -56,9 +56,9 @@ Summary::Summary(
 	refTreeSelection = get_selection();
 	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
 
-	Gtk::Menu::MenuList &menulist = Menu_Popup.items();
+	Gtk::Menu::MenuList &menu_list = Menu_Popup.items();
 
-	menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
 
 }
 
@@ -163,7 +163,7 @@ void Summary::on_task_updated(int64_t taskID)
 			TreeModel::Row row = *iter;
 			time_t totalTime = timeAccessor.total_cumulative_time(taskID, startTime, stopTime);
 			assignValuesToRow(row, *task, totalTime);
-			int64_t parentID = task->parent_ID;
+			int64_t parentID = task->parent_id;
 			if (parentID > 0)
 			{
 				on_task_updated(parentID);
@@ -272,7 +272,7 @@ TreeModel::Row Summary::add(int64_t id)
 {
 	auto task = taskAccessor.by_ID(id);
 	TreeModel::Row row;
-	int64_t parentID = task->parent_ID;
+	int64_t parentID = task->parent_id;
 	if (parentID)
 	{
 		Gtk::TreeIter iter = findRow(parentID);
@@ -316,7 +316,7 @@ void Summary::populate()
 
 void Summary::assignValuesToRow(TreeModel::Row &row, Task& task, time_t totalTime)
 {
-	row[columns.col_id] = task.ID;
+	row[columns.col_id] = task.id;
 	row[columns.col_name] = task.name;
 	row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);
 }
