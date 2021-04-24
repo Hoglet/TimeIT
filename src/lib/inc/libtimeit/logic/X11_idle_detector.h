@@ -24,7 +24,7 @@ public:
 	virtual ~X11_idle_detector();
 	int    minutes_idle();
 	time_t time_idle();
-	void idle_timeout(int minutes);
+	void idle_timeout(unsigned minutes);
 	void reset();
 	bool idle();
 private:

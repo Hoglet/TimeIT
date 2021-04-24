@@ -86,7 +86,7 @@ void Summary::on_menu_showDetails()
 	while (iter != observers.end())
 	{
 		SummaryObserver *observer = *iter;
-		observer->on_showDetailsClicked( id, startTime, stopTime);
+		observer->on_show_details_clicked(id, startTime, stopTime);
 		++iter;
 	}
 }

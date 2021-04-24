@@ -67,7 +67,7 @@ X11_idle_detector::~X11_idle_detector()
 	}
 }
 
-void X11_idle_detector::idle_timeout(int minutes)
+void X11_idle_detector::idle_timeout(unsigned minutes)
 {
 	idle_timeout_ = minutes * 60;
 }

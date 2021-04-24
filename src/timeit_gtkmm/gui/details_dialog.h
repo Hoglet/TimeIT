@@ -52,7 +52,7 @@ private:
 
 	//SummaryObserver
 	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
-	virtual void on_showDetailsClicked(int64_t taskId, time_t startTime, time_t stopTime) {};
+	virtual void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) {};
 
 	//DetailsObserver
 	void on_selected_changed();

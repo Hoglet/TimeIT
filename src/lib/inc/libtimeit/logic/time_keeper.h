@@ -1,3 +1,4 @@
+
 #ifndef TIME_KEEPER_H_
 #define TIME_KEEPER_H_
 
@@ -7,7 +8,6 @@ static const int MINUTE = 60;
 #include <map>
 #include <libtimeit/db/task.h>
 #include <libtimeit/timer.h>
-#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/logic/X11_idle_detector.h>
 #include <libtimeit/db/task_accessor.h>
@@ -38,13 +38,12 @@ public:
 			Notifier& notifier
 			);
 
-	virtual ~Time_keeper();
+	~Time_keeper() override;
 
 	void start(Task_ID id);
 	void stop(Task_ID id);
 	void toggle(Task_ID id);
 
-	bool is_active_task(int64_t taskID);
 	bool hasRunningTasks();
 
 	//Enable (or disable) automatic time keeping.
@@ -61,34 +60,18 @@ public:
 	void detach(Time_keeper_observer *);
 
 	//
-	virtual bool   is_idle();
-	virtual time_t time_idle();
-	virtual int    minutes_idle();
+	[[nodiscard]] bool   is_idle() const;
+	time_t               time_idle();
 
 	//TimerProxyObserver interface
-	void on_signal_1_second();
-	void on_signal_10_seconds();
+	void on_signal_1_second() override;
+	void on_signal_10_seconds() override;
 
 private:
 
-	virtual void on_task_added(Task_ID /*id*/)
-	{
-	};
-
-	virtual void on_task_updated(Task_ID /*id*/)
-	{
-	};
-
-	virtual void on_task_name_changed(Task_ID /*id*/)
-	{
-	};
-
-	virtual void on_task_time_changed(Task_ID /*id*/)
-	{
-	};
-	virtual void on_task_removed(Task_ID /*id*/);
-	virtual void on_settings_changed(string);
-	virtual void on_complete_update();
+	void on_task_removed(Task_ID /*id*/) override;
+	void on_settings_changed(string /*name*/) override;
+	void on_complete_update() override;
 
 	void update_task(int64_t id);
 
@@ -105,7 +88,6 @@ private:
 	map<int64_t, Task_time> active_tasks;
 
 	int idle_Gz;
-	int idle_Gt;
 
 	void notify_running_changed();
 	void notify_idle_detected();
@@ -119,4 +101,5 @@ private:
 	X11_idle_detector idle_detector;
 };
 }
+
 #endif /*TIME_KEEPER_H_*/

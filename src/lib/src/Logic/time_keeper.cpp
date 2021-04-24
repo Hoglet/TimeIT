@@ -12,7 +12,7 @@ using namespace libtimeit;
 void Time_keeper::on_signal_1_second()
 {
 	auto idle=idle_detector.idle();
-	// std::cout << "Timekeeper::on_signal_1_second() was m_isIdle " << m_isIdle << " will be idle " << idle << std::endl;
+
 	if(idle != is_idle_)
 	{
 		is_idle_ = idle;
@@ -41,7 +41,9 @@ Time_keeper::Time_keeper(
 
 {
 	time_accessor.stop_all();
-	on_settings_changed("");
+	idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
+	auto idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+	idle_detector.idle_timeout(idle_time);
 }
 
 Time_keeper::~Time_keeper()
@@ -58,12 +60,12 @@ Time_keeper::~Time_keeper()
 
 void Time_keeper::on_settings_changed(string name)
 {
-	if (name.length() < 1 || name == "Gt")
+	if ( name == "Gt")
 	{
-		long idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
-		idle_detector.idle_timeout(idleGt);
+		auto idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+		idle_detector.idle_timeout(idle_time);
 	}
-	if (name.length() < 1 || name == "Gz")
+	if ( name == "Gz")
 	{
 		idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 	}
@@ -92,7 +94,8 @@ void Time_keeper::start(int64_t id)
 	it = active_tasks.find(id);
 	if (it == active_tasks.end())
 	{
-		Task_time task;
+
+		Task_time task{};
 		task.start = libtimeit::now();
 		task.stop = libtimeit::now();
 		task.time_ID = time_accessor.create(Time_entry(id, task.start, task.stop ) );
@@ -172,10 +175,6 @@ void Time_keeper::update_task(int64_t id)
 	}
 }
 
-bool Time_keeper::is_active_task(int64_t taskID)
-{
-	return active_tasks.find(taskID) != active_tasks.end();
-}
 bool Time_keeper::hasRunningTasks()
 {
 	return ( !active_tasks.empty() );
@@ -184,8 +183,8 @@ bool Time_keeper::hasRunningTasks()
 void Time_keeper::stop_all()
 {
 	map<int64_t, Task_time>::iterator it;
-	map<int64_t, Task_time> copyOfActiveTasks = active_tasks;
-	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
+	auto copy_of_active_tasks = active_tasks;
+	for (it = copy_of_active_tasks.begin(); it != copy_of_active_tasks.end(); ++it)
 	{
 		Task_time tt = it->second;
 		stop(tt.task_ID);
@@ -195,8 +194,8 @@ void Time_keeper::stop_all()
 void Time_keeper::stop_all_and_continue()
 {
 	map<int64_t, Task_time>::iterator it;
-	map<int64_t, Task_time> copyOfActiveTasks = active_tasks;
-	for (it = copyOfActiveTasks.begin(); it != copyOfActiveTasks.end(); ++it)
+	map<int64_t, Task_time> copy_of_active_tasks = active_tasks;
+	for (it = copy_of_active_tasks.begin(); it != copy_of_active_tasks.end(); ++it)
 	{
 		Task_time tt = it->second;
 		stop(tt.task_ID);
@@ -204,14 +203,11 @@ void Time_keeper::stop_all_and_continue()
 	}
 }
 
-bool Time_keeper::is_idle()
+bool Time_keeper::is_idle() const
 {
 	return is_idle_;
 }
-int Time_keeper::minutes_idle()
-{
-	return idle_detector.minutes_idle();
-}
+
 time_t Time_keeper::time_idle()
 {
 	return idle_detector.time_idle();

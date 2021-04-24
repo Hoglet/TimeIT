@@ -26,7 +26,7 @@ public:
 	SummaryObserver();
 	virtual ~SummaryObserver();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
-	virtual void on_showDetailsClicked(int64_t taskId, time_t startTime, time_t stopTime) = 0;
+	virtual void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) = 0;
 	void attach(ISummary *subject);
 	void detach(ISummary *subject);
 private:
