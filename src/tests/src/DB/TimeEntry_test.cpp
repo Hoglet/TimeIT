@@ -6,7 +6,7 @@ using namespace libtimeit;
 Time_entry getTestTimeEntry()
 {
 	auto uuid = UUID::from_string("00a600df-00da-414c-8078-0182005b0109");
-	return Time_entry(1, *uuid, 1, UUID::from_string("00a600df-00da-414c-8078-0182005b0107") , 100, 1100, false, STOPPED, 1100);
+	return Time_entry(1, *uuid, 1, UUID::from_string("00a600df-00da-414c-8078-0182005b0107") , 100, 1100, STOPPED, 1100);
 }
 
 /*TEST(TimeEntry, changeStartTime)
@@ -31,7 +31,7 @@ TEST(TimeEntry, setDeleted)
 {
 	Time_entry te=getTestTimeEntry();
 	time_t now=time(0);
-	auto changedItem= te.with_deleted(true);
-	ASSERT_TRUE(changedItem.deleted);
+	auto changedItem= te.with(DELETED);
+	ASSERT_TRUE(changedItem.state == DELETED);
 	ASSERT_TRUE(changedItem.changed >= now) << "Changed time should be at current time";
 }

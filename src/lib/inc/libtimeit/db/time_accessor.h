@@ -32,7 +32,6 @@ public:
 	void                 remove(Time_ID id);
 
 	void                 stop_all();
-	void                 setRunning(Time_ID time_ID, bool running);
 	Task_ID_list         latest_active_tasks(int amount);
 
 
@@ -46,6 +45,7 @@ public:
 	Task_ID_list         currently_running();
 	Task_ID_list         active_tasks(time_t start, time_t stop) ;
 
+	Time_list            by_state(Time_entry_state state) const;
 protected:
 	void                 create_table()   override;
 	void                 drop_views()     override;

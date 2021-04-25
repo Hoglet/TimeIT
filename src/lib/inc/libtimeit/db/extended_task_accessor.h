@@ -26,7 +26,6 @@ public:
 
 	optional<Extended_task> by_ID(int64_t taskID, time_t start = 0, time_t stop = 0);
 	vector<Extended_task>   by_parent_ID(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
-	vector<Extended_task>   getRunningTasks(int64_t parentID = 0);
 private:
 	void      create_table()   override {};
 	void      drop_views()     override;

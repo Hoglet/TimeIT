@@ -59,9 +59,9 @@ public:
 	void on_selection_changed(Task_ID id, time_t start, time_t stop) override;
 
 	//
-	void on_idle_detected() override;
+	void on_idle_detected( Time_ID id ) override;
+	void on_idleChanged();
 	void on_activity_resumed() override;
-	virtual void on_idleChanged();
 	void on_running_changed() override;
 	void on_action_toggleMainWindow() override;
 	void on_show_main_window() override;

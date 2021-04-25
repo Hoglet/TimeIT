@@ -56,29 +56,6 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 	ASSERT_EQ(1000, task.total_time());
 }
 
-TEST(ExtendedTaskAccessor, getRunningTasks)
-{
-	Notifier notifier;
-	TempDB tempdb(notifier);
-	Extended_task_accessor taskAccessor(tempdb );
-	int64_t taskId = taskAccessor.create(Task("Test", 0));
-
-	int64_t taskId2 = taskAccessor.create(Task("Test2", taskId));
-
-	Time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create( Time_entry( taskId2, 0, 1000 ) );
-	timeAccessor.setRunning(timeId, true);
-
-	auto tasks = taskAccessor.getRunningTasks();
-	ASSERT_EQ(1, tasks.size());
-	Extended_task task = tasks.at(0);
-	ASSERT_EQ("Test2", task.name);
-
-	tasks = taskAccessor.by_parent_ID();
-	auto task2 = tasks.at(0);
-	ASSERT_EQ(1000, task2.total_time());
-}
-
 TEST(ExtendedTaskAccessor, testTotalTime)
 {
 	Notifier notifier;

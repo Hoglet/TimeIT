@@ -62,7 +62,7 @@ string to_json(const Time_list& times)
 		json_object_set(obj, "task", json_string(time.task_uuid->c_str()));
 		json_object_set(obj, "start", json_integer(time.start));
 		json_object_set(obj, "stop", json_integer(time.stop));
-		if (time.deleted)
+		if (time.state == DELETED)
 		{
 			json_object_set(obj, "deleted", json_true());
 		}
@@ -188,7 +188,7 @@ Time_list to_times(const string &input)
 		time_t start   {0};
 		time_t stop    {0};
 		time_t changed {false};
-		bool deleted   {false};
+		auto   state   {STOPPED};
 
 		json_t *object = json_array_get(root, i);
 		json_t *j_task = json_object_get(object, "task");
@@ -226,18 +226,14 @@ Time_list to_times(const string &input)
 		{
 			if (json_is_true(j_deleted))
 			{
-				deleted = true;
-			}
-			else
-			{
-				deleted = false;
+				state = DELETED;
 			}
 		}
 		auto uuid= UUID::from_string(uuidString);
 		auto taskID= UUID::from_string(taskIDString);
 		if(uuid && taskID)
 		{
-			Time_entry item(id, *uuid, 0, *taskID, start, stop, deleted, STOPPED, changed);
+			Time_entry item(id, *uuid, 0, *taskID, start, stop, state, changed);
 			retVal.push_back(item);
 		}
 	}

@@ -216,7 +216,7 @@ void Sync_manager::sync_times_to_database()
 		auto uuid = item.uuid;
 		auto id = time_accessor.uuid_to_id(uuid);
 		time_t changed = item.changed;
-		bool deleted = item.deleted;
+		bool deleted = item.state == DELETED;
 		time_t start = item.start;
 		time_t stop = item.stop;
 		bool running = false;
@@ -239,7 +239,7 @@ void Sync_manager::sync_times_to_database()
 			state_ = DELETED;
 		}
 
-		Time_entry te(id, uuid, taskID, taskUUID, start, stop, deleted, state_, changed);
+		Time_entry te(id, uuid, taskID, taskUUID, start, stop, state_, changed);
 		if (id > 0)
 		{
 			time_accessor.update(te);

@@ -154,7 +154,8 @@ void Controller::on_activity_resumed()
 {
 	if( ! time_keeper.hasRunningTasks())
 	{
-		time_keeper.enable(false);
+		auto i=4;
+		//time_keeper.enable(false);
 		return;
 	}
 	bool quiet = settings_accessor.get_bool("Quiet", DEFAULT_QUIET_MODE);
@@ -174,9 +175,10 @@ void Controller::on_activity_resumed()
 	on_idleChanged();
 }
 
-void Controller::on_idle_detected()
+void Controller::on_idle_detected( Time_ID id)
 {
-	time_keeper.enable(false);
+	int i=4;
+	//time_keeper.enable(false);
 	time_t now = time(nullptr);
 	idle_start_time = now - time_keeper.time_idle();
 	on_idleChanged();
@@ -193,7 +195,7 @@ void Controller::on_idleChanged()
 void Controller::on_action_revertAndContinue()
 {
 	time_keeper.stop_all_and_continue();
-	time_keeper.enable(true);
+	//time_keeper.enable(true);
 	if (idle_dialog != nullptr)
 	{
 		idle_dialog->detach(this);
@@ -204,7 +206,7 @@ void Controller::on_action_revertAndContinue()
 void Controller::on_action_revertAndStop()
 {
 	time_keeper.stop_all();
-	time_keeper.enable(true);
+	//time_keeper.enable(true);
 	if (idle_dialog != nullptr)
 	{
 		idle_dialog->detach(this);
@@ -213,7 +215,7 @@ void Controller::on_action_revertAndStop()
 }
 void Controller::on_action_continue()
 {
-	time_keeper.enable(true);
+	//time_keeper.enable(true);
 	if (idle_dialog != nullptr)
 	{
 		idle_dialog->detach(this);

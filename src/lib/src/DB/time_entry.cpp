@@ -10,7 +10,6 @@ Time_entry::Time_entry(
 		optional<class UUID>  taskUUID_,
 		time_t                start_,
 		time_t                stop_,
-		bool                  deleted_,
 		Time_entry_state      state_,
 		time_t                changed_)
 		:
@@ -20,7 +19,6 @@ Time_entry::Time_entry(
 		task_uuid(taskUUID_),
 		start(start_),
 		stop(stop_),
-		deleted(deleted_),
 		state(state_),
 		changed(changed_)
 {
@@ -39,8 +37,24 @@ Time_entry::Time_entry(
 		task_uuid({} ),
 		start(start_ ),
 		stop(stop_ ),
-		deleted(false ),
 		state(STOPPED ),
+		changed(time(nullptr) )
+{
+}
+
+Time_entry::Time_entry(
+		Task_ID          task_ID_,
+		time_t           start_,
+		time_t           stop_,
+		Time_entry_state state_)
+		:
+		ID(0),
+		uuid(UUID() ),
+		task_ID(task_ID_ ),
+		task_uuid({} ),
+		start(start_ ),
+		stop(stop_ ),
+		state(state_ ),
 		changed(time(nullptr) )
 {
 }
@@ -62,7 +76,6 @@ Time_entry Time_entry::with_start(time_t start_) const
 				task_uuid,
 				start_,
 				stop,
-				deleted,
 				state,
 				time(nullptr));
 	}
@@ -83,7 +96,6 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 				task_uuid,
 				start,
 				stop_,
-				deleted,
 				state,
 				time(nullptr));
 	}
@@ -93,28 +105,6 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 bool Time_entry::running() const
 {
 	return state == RUNNING;
-}
-
-
-Time_entry Time_entry::with_deleted(bool state_) const
-{
-	if (deleted == state_)
-	{
-		return *this;
-	}
-	else
-	{
-		return Time_entry(
-				ID,
-				uuid,
-				task_ID,
-				task_uuid,
-				start,
-				stop,
-				state_,
-				state,
-				time(nullptr));
-	}
 }
 
 Time_entry Time_entry::with( Time_entry_state new_state) const
@@ -132,7 +122,6 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 				task_uuid,
 				start,
 				stop,
-				deleted,
 				new_state,
 				time(nullptr));
 	}
@@ -140,7 +129,7 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
-	return (op1.ID == op2.ID && op1.changed == op2.changed && op1.deleted == op2.deleted && op1.state == op2.state
+	return (op1.ID == op2.ID && op1.changed == op2.changed && op1.state == op2.state
 			&& op1.start == op2.start && op1.stop == op2.stop && op1.task_ID == op2.task_ID && op1.uuid == op2.uuid
 			&& op1.task_uuid == op2.task_uuid);
 }

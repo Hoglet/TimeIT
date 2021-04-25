@@ -8,62 +8,32 @@ using namespace std;
 using namespace libtimeit;
 
 
-//LCOV_EXCL_START
-void Time_keeper::on_signal_1_second()
-{
-	auto idle=idle_detector.idle();
-
-	if(idle != is_idle_)
-	{
-		is_idle_ = idle;
-		if(idle)
-		{
-			notify_idle_detected();
-		}
-		else
-		{
-			notify_activity_resumed();
-		}
-	}
-}
-//LCOV_EXCL_STOP
-
 Time_keeper::Time_keeper(
 		Database& database,
 		Timer& timer,
 		Notifier& notifier)
 		:
 		time_accessor( database ),
+		task_accessor( database ),
 		settings_accessor( database ),
 		Event_observer(notifier),
 		Timer_observer(timer ),
 		idle_detector(timer)
 
 {
+	int i = 4;
 	time_accessor.stop_all();
 	idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
-	auto idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
-	idle_detector.idle_timeout(idle_time);
-}
-
-Time_keeper::~Time_keeper()
-{
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.begin();
-	while (it != active_tasks.end())
-	{
-		stop(it->second.task_ID);
-		it = active_tasks.begin();
-	}
-	//settings_accessor.detach(this);
+	default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+	idle_detector.idle_timeout(default_idle_time);
 }
 
 void Time_keeper::on_settings_changed(string name)
 {
 	if ( name == "Gt")
 	{
-		auto idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
-		idle_detector.idle_timeout(idle_time);
+		default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+		idle_detector.idle_timeout(default_idle_time);
 	}
 	if ( name == "Gz")
 	{
@@ -73,84 +43,78 @@ void Time_keeper::on_settings_changed(string name)
 
 void Time_keeper::on_signal_10_seconds()
 {
-	if (enabled)
-	{
-		map<int64_t, Task_time>::iterator it;
-		if (idle_detector.minutes_idle() < idle_Gz)
-		{
-			//Only saving time when being certain that somebody is working
-			for (it = active_tasks.begin(); it != active_tasks.end(); ++it)
-			{
-				Task_time tt = it->second;
-				update_task(tt.task_ID);
-			}
-		}
-	}
+	the_method_that_do_stuff();
 }
 
-void Time_keeper::start(int64_t id)
-{
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.find(id);
-	if (it == active_tasks.end())
-	{
 
-		Task_time task{};
-		task.start = libtimeit::now();
-		task.stop = libtimeit::now();
-		task.time_ID = time_accessor.create(Time_entry(id, task.start, task.stop ) );
-		task.task_ID = id;
-		active_tasks[id] = task;
-		time_accessor.setRunning(task.time_ID, true);
-		notify_running_changed();
+void Time_keeper::start(Task_ID id)
+{
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
+	{
+		if( item.task_ID == id)
+		{
+			return; //Already running
+		}
 	}
+	auto now = libtimeit::now();
+	time_accessor.create(Time_entry( id, now, now, RUNNING ) );
+	notify_running_changed();
 }
 
 void Time_keeper::toggle(int64_t id)
 {
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.find(id);
-	if (it == active_tasks.end())
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
 	{
-		start(id);
-	}
-	else
-	{
-		stop(id);
-	}
-}
-
-void Time_keeper::stop(int64_t id)
-{
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.find(id);
-	if (it != active_tasks.end())
-	{
-		Task_time task = it->second;
-		active_tasks.erase(it);
-		auto result = time_accessor.by_ID(task.time_ID);
-		if(result.has_value())
+		if( item.task_ID == id)
 		{
-			auto original_entry = *result;
-			time_accessor.update( original_entry.with( Time_entry_state::STOPPED ));
-			time_accessor.setRunning(task.time_ID, false);
-			if (task.stop - task.start < MINUTE)
-			{
-				time_accessor.remove(task.time_ID);
-			}
+			stop_time(item.ID);
+			return;
 		}
-		notify_running_changed();
+	}
+	start(id);
+}
+
+void Time_keeper::stop_time(const Time_ID id)
+{
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		if( time_entry->stop -time_entry->start < MINUTE )
+		{
+			time_accessor.update( time_entry->with (DELETED));
+		}
+		else
+		{
+			time_accessor.update( time_entry->with(STOPPED));
+		}
+	}
+	notify_running_changed();
+}
+
+void Time_keeper::stop(Task_ID id)
+{
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
+	{
+		if( item.task_ID == id)
+		{
+			stop_time(item.ID);
+			return;
+		}
 	}
 }
 
-void Time_keeper::on_task_removed(int64_t id)
+void Time_keeper::on_task_removed(Task_ID id)
 {
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.find(id);
-	if (it != active_tasks.end())
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
 	{
-		active_tasks.erase(it);
-		notify_running_changed();
+		if( item.task_ID == id)
+		{
+			stop_time(item.ID);
+		}
 	}
 }
 void Time_keeper::on_complete_update()
@@ -158,54 +122,37 @@ void Time_keeper::on_complete_update()
 	//TODO Detect task removal during syncing
 }
 
-void Time_keeper::update_task(int64_t id)
-{
-	map<int64_t, Task_time>::iterator it;
-	it = active_tasks.find(id);
-	if (it != active_tasks.end())
-	{
-		it->second.stop = libtimeit::now();
-		Task_time task = it->second;
 
-		auto te = time_accessor.by_ID(task.time_ID);
-		if(te)
-		{
-			time_accessor.update(te->with_stop(task.stop));
-		}
-	}
-}
 
 bool Time_keeper::hasRunningTasks()
 {
-	return ( !active_tasks.empty() );
+	auto running_items = time_accessor.by_state(RUNNING);
+	return ( !running_items.empty() );
 }
 
 void Time_keeper::stop_all()
 {
-	map<int64_t, Task_time>::iterator it;
-	auto copy_of_active_tasks = active_tasks;
-	for (it = copy_of_active_tasks.begin(); it != copy_of_active_tasks.end(); ++it)
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
 	{
-		Task_time tt = it->second;
-		stop(tt.task_ID);
+		stop_time(item.ID);
 	}
 }
 
 void Time_keeper::stop_all_and_continue()
 {
-	map<int64_t, Task_time>::iterator it;
-	map<int64_t, Task_time> copy_of_active_tasks = active_tasks;
-	for (it = copy_of_active_tasks.begin(); it != copy_of_active_tasks.end(); ++it)
+	auto running_items = time_accessor.by_state(RUNNING);
+	for (auto item: running_items)
 	{
-		Task_time tt = it->second;
-		stop(tt.task_ID);
-		start(tt.task_ID);
+		stop_time(item.ID);
+		start(item.task_ID);
 	}
 }
 
-bool Time_keeper::is_idle() const
+[[nodiscard]] bool  Time_keeper::is_idle() const
 {
-	return is_idle_;
+	auto running_items = time_accessor.by_state(RUNNING);
+	return running_items.empty();
 }
 
 time_t Time_keeper::time_idle()
@@ -223,35 +170,24 @@ void Time_keeper::notify_running_changed()
 	}
 }
 
-void Time_keeper::notify_idle_detected()
+void Time_keeper::notify_idle_detected(Time_ID id)
 {
-	std::list<Time_keeper_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	for (auto observer: observers)
 	{
-		Time_keeper_observer* observer = *iter;
-		observer->on_idle_detected();
+		observer->on_idle_detected(id);
 	}
 }
 
 void Time_keeper::notify_activity_resumed()
 {
-	std::list<Time_keeper_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	for (auto observer : observers)
 	{
-		Time_keeper_observer* observer = *iter;
 		observer->on_activity_resumed();
 	}
 
 }
 
-void Time_keeper::enable(bool enable)
-{
-	enabled = enable;
-	if (enabled)
-	{
-		idle_detector.reset();
-	}
-}
+
 
 void Time_keeper::attach(Time_keeper_observer* observer)
 {
@@ -261,3 +197,64 @@ void Time_keeper::detach(Time_keeper_observer* observer)
 {
 	observers.remove(observer);
 }
+
+void Time_keeper::the_method_that_do_stuff()
+{
+	if ( user_is_active () )
+	{
+		update_running_entries();
+	}
+	else
+	{
+		check_if_tasks_should_be_stopped();
+	}
+}
+
+bool Time_keeper::user_is_active()
+{
+	return 	(idle_detector.minutes_idle() < idle_Gz);
+}
+
+void Time_keeper::update_running_entries()
+{
+	auto running = time_accessor.by_state(RUNNING);
+	for (auto time_entry: running)
+	{
+		auto updated_time_entry = time_entry.with_stop(libtimeit::now());
+		time_accessor.update( updated_time_entry );
+	}
+
+}
+
+void Time_keeper::check_if_tasks_should_be_stopped()
+{
+	auto time_inactive = idle_detector.time_idle();
+	list<Time_ID> times_to_stop {};
+	auto running_time_items = time_accessor.by_state(RUNNING);
+	for (auto time_item: running_time_items)
+	{
+		auto task = task_accessor.by_ID(time_item.task_ID);
+		auto idle_time = task->idle;
+		if(idle_time == 0)
+		{
+			idle_time = default_idle_time;
+		}
+		if( time_inactive > idle_time )
+		{
+			times_to_stop.emplace_back(time_item.ID );
+			if( ! task->quiet )
+			{
+				notify_idle_detected(time_item.ID );
+			}
+		}
+	}
+	for ( auto time_id: times_to_stop )
+	{
+		auto time_entry = time_accessor.by_ID(time_id);
+		if ( time_entry.has_value() && time_entry->state == RUNNING )
+		{
+			stop_time(time_id);
+		}
+	}
+}
+

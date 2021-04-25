@@ -1,11 +1,12 @@
-#ifndef AUTOTRACKER_H_
-#define AUTOTRACKER_H_
+#ifndef AUTO_TRACKER_H_
+#define AUTO_TRACKER_H_
 #include <iostream>
 #include <libtimeit/timer.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/autotrack_accessor.h>
 #include <libtimeit/logic/workspace.h>
+#include <climits>
 
 namespace libtimeit
 {
@@ -26,7 +27,7 @@ private:
 	//TimerObserver
 	void on_signal_1_second() override;
 
-	int old_workspace;
+	unsigned old_workspace {UINT_MAX};
 
 	Time_keeper        &time_keeper;
 
@@ -35,4 +36,4 @@ private:
 };
 
 }
-#endif /*AUTOTRACKER_H_*/
+#endif /*AUTO_TRACKER_H_*/

@@ -120,10 +120,10 @@ TEST( Json, simpleTimeTest )
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
-		bool expectedDeleted = false;
+		bool expectedState = STOPPED;
 		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "ID: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
-		ASSERT_EQ( expectedDeleted, item.deleted) << "Deleted: ";
+		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop) << "Stop: ";
 		ASSERT_EQ( expectedChange, item.changed) << "Expected change time: ";
@@ -148,10 +148,10 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
-		bool expectedDeleted = true;
+		auto expectedState = DELETED;
 		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "ID: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
-		ASSERT_EQ( expectedDeleted, item.deleted) << "Deleted: ";
+		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop) << "Stop: ";
 		ASSERT_EQ( expectedChange, item.changed) << "Expected change time: ";
@@ -186,7 +186,7 @@ TEST( Json, threeWayTimeTest )
 	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";
-	ASSERT_EQ(item1.deleted, item2.deleted) << "Deleted: ";
+	ASSERT_EQ(item1.state, item2.state) << "Deleted: ";
 	ASSERT_EQ(item1.changed, item2.changed) << "Change time: ";
 
 }
@@ -217,7 +217,7 @@ TEST( Json, threeWayTimeTest2 )
 	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";
-	ASSERT_EQ(item1.deleted, item2.deleted) << "Deleted: ";
+	ASSERT_EQ(item1.state, item2.state) << "Deleted: ";
 	ASSERT_EQ(item1.changed, item2.changed) << "Change time: ";
 
 }

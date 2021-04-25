@@ -89,7 +89,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 		ASSERT_EQ( 1363597429, item.start) << "TimeEntry start";
 		ASSERT_EQ( 1363597541, item.stop) << "TimeEntry stop";
 		ASSERT_EQ( 1376388171, item.changed) << "TimeEntry changed";
-		ASSERT_EQ( false, item.deleted) << "TimeEntry deleted";
+		ASSERT_EQ( STOPPED, item.state) << "TimeEntry deleted";
 	}
 
 	syncManager.reset();

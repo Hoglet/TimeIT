@@ -13,7 +13,7 @@ namespace Test
 class TKObserver: public Time_keeper_observer
 {
 public:
-	virtual void on_idle_detected()
+	virtual void on_idle_detected( Time_ID id)
 	{
 		idleDetected = true;
 	}
@@ -34,34 +34,34 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	TempDB db(notifier);
 	Timer timer;
 	Time_keeper timeKeeper(db, timer, notifier);
-	Task_accessor taskaccessor(db);
-	Time_accessor timeaccessor(db);
+	Task_accessor task_accessor(db);
+	Time_accessor time_accessor(db);
 
-	int64_t taskID = taskaccessor.create(Task("Test", 0));
+	int64_t taskID = task_accessor.create(Task("Test", 0));
 	TKObserver observer;
 	timeKeeper.attach(&observer);
 	observer.runningChanged = false;
-	vector<int64_t> runningTasks = timeaccessor.currently_running();
+	vector<int64_t> runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks before starting ";
 	timeKeeper.start(taskID);
-	runningTasks = timeaccessor.currently_running();
+	runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
 	timeKeeper.stop(taskID);
-	runningTasks = timeaccessor.currently_running();
+	runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after stopping ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
 	timeKeeper.toggle(taskID);
-	runningTasks = timeaccessor.currently_running();
+	runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after toggling ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	timeKeeper.toggle(taskID);
-	runningTasks = timeaccessor.currently_running();
+	runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after toggling ";
 
 	timeKeeper.detach(&observer);

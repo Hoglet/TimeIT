@@ -24,7 +24,7 @@ void Time_accessor::remove(int64_t id)
 	auto te = by_ID(id);
 	if(te)
 	{
-		update(te->with_deleted(true));
+		update(te->with(DELETED));
 	}
 }
 
@@ -35,7 +35,7 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 	statement.bind_value(1, id);
 
 	Query_result rows = statement.execute();
-	if (rows.size() > 0)
+	if ( rows.size() > 0)
 	{
 		vector<Data_cell> row = rows.at(0);
 		int     taskID   = row[0].integer();
@@ -61,7 +61,7 @@ optional<Time_entry> Time_accessor::by_ID(int64_t id)
 		if( uuid && taskUUID )
 		{
 
-			return Time_entry(id, *uuid, taskID, *taskUUID, start, stop, deleted, state, changed);
+			return Time_entry(id, *uuid, taskID, *taskUUID, start, stop, state, changed);
 		}
 	}
 	return {};
@@ -240,25 +240,10 @@ Time_list Time_accessor::time_list(int64_t taskId, time_t startTime, time_t stop
 
 		if (uuid && taskUUID)
 		{
-			resultList.push_back(Time_entry(id, *uuid, taskId, *taskUUID, start, stop, deleted, state, changed));
+			resultList.push_back(Time_entry(id, *uuid, taskId, *taskUUID, start, stop, state, changed));
 		}
 	}
 	return resultList;
-}
-
-void Time_accessor::setRunning(int64_t timeID, bool running)
-{
-	auto te = by_ID(timeID);
-	if(te)
-	{
-		int64_t taskID = te->task_ID;
-		stringstream statement;
-		statement << "UPDATE times SET running = " << (int) running;
-		statement << " WHERE id=" << timeID;
-
-		database.execute(statement.str());
-		database.send_notification(TASK_UPDATED, taskID);
-	}
 }
 
 Time_list Time_accessor::times_changed_since(time_t timestamp)
@@ -294,7 +279,7 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 
 		if(uuid && taskUUID)
 		{
-			Time_entry te(id, *uuid, taskID, *taskUUID, start, stop, deleted, state, changed);
+			Time_entry te(id, *uuid, taskID, *taskUUID, start, stop, state, changed);
 			result.push_back(te);
 		}
 	}
@@ -320,15 +305,26 @@ bool Time_accessor::update(Time_entry item )
 	auto existingItem = by_ID(id);
 	if (existingItem && item != *existingItem && item.changed >= existingItem->changed)
 	{
+		auto deleted = false;
+		auto running = false;
+		switch ( item.state )
+		{
+			case RUNNING:
+				running = true;
+				break;
+			case DELETED:
+				deleted = true;
+				break;
+		}
 		Statement statement_updateTime = database.prepare(
 				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=? WHERE id=?");
 		statement_updateTime.bind_value(1, item.uuid.c_str());
 		statement_updateTime.bind_value(2, item.task_ID);
 		statement_updateTime.bind_value(3, item.start);
 		statement_updateTime.bind_value(4, item.stop);
-		statement_updateTime.bind_value(5, item.running());
+		statement_updateTime.bind_value(5, running);
 		statement_updateTime.bind_value(6, item.changed);
-		statement_updateTime.bind_value(7, item.deleted);
+		statement_updateTime.bind_value(7, deleted);
 		statement_updateTime.bind_value(8, item.ID);
 
 		statement_updateTime.execute();
@@ -369,14 +365,26 @@ Duration Time_accessor::total_cumulative_time(int64_t taskID, time_t start, time
 
 Time_ID Time_accessor::create(Time_entry item)
 {
+	auto deleted = false;
+	auto running = false;
+	switch ( item.state )
+	{
+		case RUNNING:
+			running = true;
+			break;
+		case DELETED:
+			deleted = true;
+			break;
+	}
 	Statement statement_newEntry = database.prepare(
-			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted) VALUES (?,?,?,?,?,?)");
+			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted,running) VALUES (?,?,?,?,?,?,?)");
 	statement_newEntry.bind_value(1, item.uuid.c_str());
 	statement_newEntry.bind_value(2, item.task_ID);
 	statement_newEntry.bind_value(3, item.start);
 	statement_newEntry.bind_value(4, item.stop);
 	statement_newEntry.bind_value(5, item.changed);
-	statement_newEntry.bind_value(6, item.deleted);
+	statement_newEntry.bind_value(6, deleted);
+	statement_newEntry.bind_value(7, running);
 	statement_newEntry.execute();
 	Time_ID time_ID = database.ID_of_last_insert();
 
@@ -405,7 +413,7 @@ void Time_accessor::upgrade_to_DB5()
 		time_t  start  = row[2].integer();
 		time_t  stop   = row[3].integer();
 
-		Time_entry item(id, UUID(), taskID, {}, start, stop, false, STOPPED, now);
+		Time_entry item(id, UUID(), taskID, {}, start, stop, STOPPED, now);
 		create(item);
 	}
 	database.execute("DROP TABLE IF EXISTS times_backup");
@@ -502,6 +510,77 @@ Task_ID_list Time_accessor::active_tasks(time_t start, time_t stop)
 		resultList.push_back(id);
 	}
 	return resultList;
+}
+
+Time_list Time_accessor::by_state(Time_entry_state state) const
+{
+	Time_list time_list;
+
+	Statement statement = database.prepare( R"Query(
+		SELECT
+			ID,
+			taskID,
+			start,
+			stop,
+			running,
+			changed,
+			deleted,
+			uuid,
+			task_UUID
+		FROM
+			v_times
+		WHERE
+			running = ?
+		AND
+			deleted = ?;
+		)Query");
+	{
+		auto deleted {false};
+		auto running {false};
+		if ( state == RUNNING)
+		{
+			running = true;
+		}
+		if ( state == DELETED )
+		{
+			deleted = true;
+		}
+		statement.bind_value(1, running);
+		statement.bind_value(2, deleted);
+	}
+
+	Query_result rows = statement.execute();
+	if (rows.size() > 0)
+	{
+		vector<Data_cell> row = rows.at(0);
+		int id = row[0].integer();
+		int taskID = row[1].integer();
+		time_t start = row[2].integer();
+		time_t stop = row[3].integer();
+		bool running = row[4].boolean();
+		int64_t changed = row[5].integer();
+		bool deleted = row[6].boolean();
+		auto uuid = UUID::from_string(row[7].text());
+		auto taskUUID = UUID::from_string(row[8].text());
+
+		Time_entry_state state = STOPPED;
+		if (running)
+		{
+			state = RUNNING;
+		}
+		if (deleted)
+		{
+			state = DELETED;
+		}
+
+
+		if (uuid && taskUUID)
+		{
+
+			time_list.emplace_back( Time_entry(id, *uuid, taskID, *taskUUID, start, stop, state, changed));
+		}
+	}
+	return time_list;
 }
 
 }

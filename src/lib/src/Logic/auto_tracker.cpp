@@ -19,7 +19,6 @@ Auto_tracker::Auto_tracker(
 		auto_track_accessor(database_),
 		Timer_observer(timer_)
 {
-	old_workspace = -1;
 	check_for_changes(); //check if we should start anything;
 }
 
@@ -31,7 +30,7 @@ void Auto_tracker::on_signal_1_second()
 
 void Auto_tracker::check_for_changes()
 {
-	int new_workspace = workspace.active();
+	unsigned new_workspace = workspace.active();
 	if (new_workspace >= 0 && old_workspace != new_workspace)
 	{
 		do_task_switching(old_workspace, new_workspace);
@@ -41,7 +40,7 @@ void Auto_tracker::check_for_changes()
 
 bool contains(vector<Task_ID> vec, Task_ID item)
 {
-	return (find(vec.begin(), vec.end(), item) == vec.end());
+	return (find(vec.begin(), vec.end(), item) != vec.end());
 }
 
 void Auto_tracker::do_task_switching(int old_workspace, int new_workspace)

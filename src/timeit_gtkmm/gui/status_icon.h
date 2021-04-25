@@ -38,7 +38,7 @@ private:
 	void on_running_changed();
 	void on_activity_resumed()
 	{};
-	void on_idle_detected()
+	void on_idle_detected( Time_ID /*id*/)
 	{};
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();

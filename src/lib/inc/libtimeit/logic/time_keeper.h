@@ -22,7 +22,7 @@ class Time_keeper_observer
 {
 public:
 	virtual ~Time_keeper_observer() = default;
-	virtual void on_idle_detected() = 0;
+	virtual void on_idle_detected( Time_ID ) = 0;
 	virtual void on_activity_resumed() = 0;
 	virtual void on_running_changed() = 0;
 };
@@ -38,16 +38,13 @@ public:
 			Notifier& notifier
 			);
 
-	~Time_keeper() override;
+	~Time_keeper() = default;
 
 	void start(Task_ID id);
 	void stop(Task_ID id);
 	void toggle(Task_ID id);
 
 	bool hasRunningTasks();
-
-	//Enable (or disable) automatic time keeping.
-	void enable(bool);
 
 	//Stop all tasks without saving new time records
 	void stop_all();
@@ -64,41 +61,33 @@ public:
 	time_t               time_idle();
 
 	//TimerProxyObserver interface
-	void on_signal_1_second() override;
 	void on_signal_10_seconds() override;
 
 private:
+	void the_method_that_do_stuff();
 
 	void on_task_removed(Task_ID /*id*/) override;
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
-	void update_task(int64_t id);
-
-	bool enabled{true};
-	bool is_idle_{false};
-
-	struct Task_time
-	{
-		Task_ID task_ID;
-		Time_ID time_ID;
-		time_t  start;
-		time_t  stop; //Latest confirmed point in time
-	};
-	map<int64_t, Task_time> active_tasks;
-
 	int idle_Gz;
+	unsigned default_idle_time{0};
 
 	void notify_running_changed();
-	void notify_idle_detected();
+	void notify_idle_detected( Time_ID /*id*/);
 	void notify_activity_resumed();
 
 	list<Time_keeper_observer *> observers;
 
 	Time_accessor      time_accessor;
+	Task_accessor      task_accessor;
 	Settings_accessor  settings_accessor;
 
 	X11_idle_detector idle_detector;
+	bool user_is_active();
+	void update_running_entries();
+	void check_if_tasks_should_be_stopped();
+	void stop_time(const int64_t id);
 };
 }
 

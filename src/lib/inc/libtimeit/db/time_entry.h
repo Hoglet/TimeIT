@@ -20,12 +20,11 @@ enum Time_entry_state
 
 struct Time_entry
 {
-	const int64_t              ID;
+	const Time_ID              ID;
 	const class UUID           uuid;
-	const int64_t              task_ID;
+	const Task_ID              task_ID;
 	const time_t               start;
 	const time_t               stop;
-	const bool                 deleted;
 	const Time_entry_state     state;
 	const time_t               changed;
 	const optional<class UUID> task_uuid;
@@ -35,6 +34,12 @@ struct Time_entry
 			time_t  start_,
 			time_t  stop_
 			);
+	Time_entry(
+			Task_ID          task_ID_,
+			time_t           start_,
+			time_t           stop_,
+			Time_entry_state state_
+	);
 
 	Time_entry(
 			Time_ID          id_,
@@ -43,7 +48,6 @@ struct Time_entry
 			optional<UUID>   taskUUID_,
 			time_t           start_,
 			time_t           stop_,
-			bool             deleted_,
 			Time_entry_state state_,
 			time_t           changed_);
 
@@ -52,13 +56,10 @@ struct Time_entry
 
 	Time_entry with_start(time_t) const;
 	Time_entry with_stop(time_t) const;
-	Time_entry with_deleted(bool state_) const;
 	Time_entry with( Time_entry_state ) const;
 
 	friend bool operator==(const Time_entry &op1, const Time_entry &op2);
 	friend bool operator!=(const Time_entry &op1, const Time_entry &op2);
-
-
 };
 }
 #endif

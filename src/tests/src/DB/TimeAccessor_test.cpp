@@ -144,7 +144,7 @@ TEST(TimeAccessor, newItem)
 	Time_accessor timeAccessor(db);
 	Extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
-	Time_entry item1(0, UUID(), taskId, {}, 100, 200, false, STOPPED, 200);
+	Time_entry item1(0, UUID(), taskId, {}, 100, 200, STOPPED, 200);
 
 	int64_t timeEntryID = timeAccessor.create(item1);
 	auto item2 = timeAccessor.by_ID(timeEntryID);
@@ -153,7 +153,7 @@ TEST(TimeAccessor, newItem)
 	ASSERT_EQ(item1.task_ID, item2->task_ID) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2->start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
-	ASSERT_EQ(item1.deleted, item2->deleted) << "Deleted: ";
+	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";
 	ASSERT_EQ(item1.running(), item2->running()) << "Running: ";
 	ASSERT_EQ(item1.changed, item2->changed) << "Changed: ";
 
@@ -209,7 +209,7 @@ TEST(TimeAccessor, getActiveTasks)
 	Time_accessor timeAccessor (db);
 	Extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
-	Time_entry item(0, UUID(), taskId, {}, 100, 600, false, STOPPED, 200);
+	Time_entry item(0, UUID(), taskId, {}, 100, 600, STOPPED, 200);
 
 	timeAccessor.create(item);
 
