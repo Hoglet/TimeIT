@@ -12,10 +12,10 @@ using namespace std;
 
 enum Time_entry_state
 {
-	STOPPED,
-	RUNNING,
-	PAUSED,
-	DELETED
+	STOPPED = 0,
+	RUNNING = 1,
+	PAUSED  = 2,
+	DELETED = 3
 };
 
 struct Time_entry

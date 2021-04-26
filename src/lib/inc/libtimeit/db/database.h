@@ -26,15 +26,15 @@ public:
 	void enable_notifications(bool);
 	void send_notification(message_type type, int64_t taskId, string name = "");
 
-	Query_result execute(const string& statement);
-	Statement    prepare(string statement);
-	int64_t      ID_of_last_insert();
-	bool         table_exists(string name);
-	int          current_DB_version() const;
-	bool         column_exists( string_view string, string_view string_1);
+	Query_result        execute(const string& statement);
+	Statement           prepare(string statement);
+	int64_t             ID_of_last_insert();
+	bool                table_exists(string name);
+	[[nodiscard]] int   current_DB_version() const;
+	[[nodiscard]] bool  column_exists( string_view string, string_view string_1);
 protected:
-	Notifier& notifier;
-	SQLite3      db;
+	Notifier&  notifier;
+	SQLite3    db;
 
 	static void create_tables( list<Accessor*>& accessors );
 	void upgrade( list<Accessor*>&  accessors);

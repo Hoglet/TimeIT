@@ -212,7 +212,7 @@ int64_t Database::ID_of_last_insert()
 	return db.ID_of_last_insert();
 }
 
-bool Database::column_exists( string_view table, string_view  column)
+[[nodiscard]] bool Database::column_exists( string_view table, string_view  column)
 {
 	auto query = string_printf("SELECT %s FROM %s", column.data(), table.data() );
 	try
