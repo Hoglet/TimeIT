@@ -35,9 +35,9 @@ void  Auto_track_accessor::upgrade()
 
 }
 
-Task_ID_list Auto_track_accessor::task_IDs(int workspace)
+Task_id_list Auto_track_accessor::task_IDs(int workspace)
 {
-	Task_ID_list return_value;
+	Task_id_list return_value;
 	stringstream  statement;
 
 	statement << "SELECT taskID FROM autotrack where workspace =" << workspace;

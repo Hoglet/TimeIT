@@ -130,7 +130,7 @@ optional<Task> Task_accessor::by_ID(int64_t taskID)
 	return {};
 }
 
-optional<Task> Task_accessor::get_task_unlimited(Task_ID taskID)
+optional<Task> Task_accessor::get_task_unlimited(Task_id taskID)
 {
 	Statement statement_getCompleteTask = database.prepare(R"(
 		SELECT
@@ -222,10 +222,10 @@ vector<Task> Task_accessor::changed_since(time_t timestamp)
 	return retVal;
 }
 
-Task_ID Task_accessor::ID(UUID uuid)
+Task_id Task_accessor::ID(UUID uuid)
 {
 
-	Task_ID id = 0;
+	Task_id id = 0;
 	Statement statement_uuidToId = database.prepare("SELECT id FROM tasks WHERE uuid=?;");
 	statement_uuidToId.bind_value(1, uuid.c_str());
 	Query_result rows = statement_uuidToId.execute();
@@ -236,7 +236,7 @@ Task_ID Task_accessor::ID(UUID uuid)
 	return id;
 }
 
-optional<class UUID> Task_accessor::uuid(Task_ID id)
+optional<class UUID> Task_accessor::uuid(Task_id id)
 {
 	if(id)
 	{
@@ -331,7 +331,7 @@ bool Task_accessor::update(const Task &task)
 	return false;
 }
 
-Task_ID Task_accessor::create(const Task &task)
+Task_id Task_accessor::create(const Task &task)
 {
 	Statement statement_newTask = database.prepare(
 			R"Query(
@@ -356,13 +356,13 @@ Task_ID Task_accessor::create(const Task &task)
 	statement_newTask.bind_value(8, task.quiet);
 
 	statement_newTask.execute();
-	Task_ID id = database.ID_of_last_insert();
+	Task_id id = database.ID_of_last_insert();
 
 	database.send_notification(TASK_ADDED, id);
 	return id;
 }
 
-void Task_accessor::set_parent_id(Task_ID taskID, Task_ID parentID)
+void Task_accessor::set_parent_id(Task_id taskID, Task_id parentID)
 {
 	time_t now = time(nullptr);
 	stringstream statement;
@@ -452,7 +452,7 @@ void Task_accessor::upgrade()
 
 
 
-void Task_accessor::set_task_expanded(Task_ID taskID, bool expanded)
+void Task_accessor::set_task_expanded(Task_id taskID, bool expanded)
 {
 	auto statement = string_printf(
 			R"Query(

@@ -26,7 +26,7 @@ Task Task::with_name( string new_name) const
 
 }
 
-Task Task::with_parent(Task_ID new_parent_ID) const
+Task Task::with_parent(Task_id new_parent_ID) const
 {
 	if(parent_id == new_parent_ID)
 	{
@@ -45,7 +45,7 @@ Task Task::with_parent(Task_ID new_parent_ID) const
 			quiet);
 }
 
-Task::Task(string name_, Task_ID parent_ID_)
+Task::Task(string name_, Task_id parent_ID_)
 	:
 	Task(
 			name_,
@@ -63,16 +63,16 @@ Task::Task(string name_, Task_ID parent_ID_)
 }
 
 Task::Task(
-	string               name_,
-	Task_ID              parentID_,
-	class UUID           uuid_,
-	bool                 completed_,
-	Task_ID              ID_,
-	time_t               last_change_,
-	optional<class UUID> parent_uuid_,
-	bool                 deleted_,
-	unsigned             idle_,
-	bool                 quiet_)
+		string               name_,
+		Task_id              parentID_,
+		class UUID           uuid_,
+		bool                 completed_,
+		Task_id              ID_,
+		time_t               last_change_,
+		optional<class UUID> parent_uuid_,
+		bool                 deleted_,
+		unsigned             idle_,
+		bool                 quiet_)
 	:
 		name(name_),
 		parent_id(parentID_),

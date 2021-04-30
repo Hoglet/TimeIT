@@ -154,7 +154,6 @@ TEST(TimeAccessor, newItem)
 	ASSERT_EQ(item1.start, item2->start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";
-	ASSERT_EQ(item1.running(), item2->running()) << "Running: ";
 	ASSERT_EQ(item1.changed, item2->changed) << "Changed: ";
 
 	ASSERT_THROW(timeAccessor.create(item1), db_exception);

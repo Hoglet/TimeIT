@@ -134,14 +134,14 @@ void Details::on_menu_file_popup_remove()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry could be currently running
-				if (!time_entry.running())
-				{
-					m_timeAccessor.remove(selectedID);
-				}
-				else
+				if ( time_entry.state == RUNNING )
 				{
 					// if running then keep running, starting over with zero length
 					m_timeAccessor.update(time_entry.with_start(time_entry.stop));
+				}
+				else
+				{
+					m_timeAccessor.remove(selectedID);
 				}
 				auto row_data = create_row_data(m_startTime, m_stopTime);
 				populate( row_data );
@@ -449,7 +449,7 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		row_data.start        = time_entry.start;
 		prev_start            = row_data.start;
 		row_data.stop         = time_entry.stop;
-		row_data.running      = time_entry.running();
+		row_data.running      = time_entry.state == RUNNING;
 
 		cumulative_time_for_day += row_data.stop - row_data.start;
 		row_data.cumulative_time =  cumulative_time_for_day;

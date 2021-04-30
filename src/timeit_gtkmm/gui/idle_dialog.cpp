@@ -24,12 +24,11 @@ IdleDialog::IdleDialog(
 		Database& database)
 		:
 		Timer_observer(timer),
-		m_timer(timer),
-		taskAccessor(database)
+		taskAccessor(database ),
+		time_accessor( database )
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
-	m_idleStartTime = libtimeit::now();
 
 	set_deletable(false);
 	setText();
@@ -52,34 +51,19 @@ IdleDialog::IdleDialog(
 	set_keep_above(true);
 }
 
-void IdleDialog::attach(action_observer *observer)
+void IdleDialog::set_time_id(Time_id id)
 {
-	observers.push_back(observer);
-}
-void IdleDialog::detach(action_observer *observer)
-{
-	observers.remove(observer);
-}
-
-void IdleDialog::setIdleStartTime(time_t idleStartTime)
-{
-	m_idleStartTime = idleStartTime;
-}
-
-void IdleDialog::setActiveTaskList(vector<int64_t> activeTaskIDs)
-{
-	std::stringstream text;
-	int i = 0;
-	for (int64_t taskID : activeTaskIDs)
+	auto time_entry = time_accessor.by_ID(id);
+	if ( time_entry.has_value())
 	{
-		auto task = taskAccessor.by_ID(taskID);
-		if (i++ > 0)
+		m_idleStartTime = time_entry->stop;
+		auto task = taskAccessor.by_ID(time_entry->task_ID);
+		if(task.has_value())
 		{
-			text << ", ";
+			taskString = task->name;
+			time_entry_id = id;
 		}
-		text << task->name;
 	}
-	taskString = text.str();
 }
 
 void IdleDialog::on_signal_10_seconds()
@@ -107,8 +91,8 @@ void IdleDialog::setText()
 	if (taskString.size() > 0)
 	{
 		str << "\n\n";
-		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this txt it will be a list of tasks
-		str << ngettext("Task affected: ", "Tasks affected: ", taskString.size());
+		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this txt it will be the name of the task
+		str << _("Task affected: ");
 		str << taskString << std::endl;
 	}
 
@@ -117,28 +101,52 @@ void IdleDialog::setText()
 
 void IdleDialog::responseHandler(int result)
 {
-	std::list<action_observer*>::iterator iter;
-	std::list<action_observer*> observers = this->observers;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	switch (result)
 	{
-		action_observer *observer = *iter;
-		switch (result)
-		{
 		case (RESPONSE_REVERT):
-			observer->on_action_revertAndStop();
+			revert_and_stop(time_entry_id);
 			break;
 		case (RESPONSE_REVERTANDCONTINUE):
-			observer->on_action_revertAndContinue();
+			revert_and_continue(time_entry_id);
 			break;
 		case (RESPONSE_CONTINUE):
-			observer->on_action_continue();
+			action_continue(time_entry_id);
 			break;
 		default:
 			cout << "Unexpected button clicked." << std::endl;
 			break;
-		}
 	}
 	hide();
+}
+
+void IdleDialog::action_continue(Time_id id)
+{
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		time_accessor.update(time_entry->with(RUNNING).with_stop(libtimeit::now()));
+	}
+}
+
+void IdleDialog::revert_and_stop(Time_id id)
+{
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		time_accessor.update(time_entry->with(STOPPED));
+	}
+}
+
+void IdleDialog::revert_and_continue(Time_id id)
+{
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		auto now = libtimeit::now();
+		time_accessor.update(time_entry->with(STOPPED));
+		Time_entry new_time_entry(time_entry->task_ID, now, now, RUNNING);
+		time_accessor.create( new_time_entry );
+	}
 }
 
 }

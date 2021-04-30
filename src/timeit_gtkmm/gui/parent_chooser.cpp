@@ -43,7 +43,7 @@ ParentChooser::ParentChooser(Database &database) :
 
 }
 
-void ParentChooser::setID(Task_ID ID)
+void ParentChooser::setID(Task_id ID)
 {
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
@@ -54,7 +54,7 @@ void ParentChooser::setID(Task_ID ID)
 	}
 }
 
-void ParentChooser::setParentID(Task_ID parentID)
+void ParentChooser::setParentID(Task_id parentID)
 {
 	if (parentID >= 0)
 	{

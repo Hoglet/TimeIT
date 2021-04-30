@@ -38,15 +38,15 @@ void Auto_tracker::check_for_changes()
 	}
 }
 
-bool contains(vector<Task_ID> vec, Task_ID item)
+bool contains(vector<Task_id> vec, Task_id item)
 {
 	return (find(vec.begin(), vec.end(), item) != vec.end());
 }
 
 void Auto_tracker::do_task_switching(int old_workspace, int new_workspace)
 {
-	vector<Task_ID> tasks_to_stop  = auto_track_accessor.task_IDs(old_workspace);
-	vector<Task_ID> tasks_to_start = auto_track_accessor.task_IDs(new_workspace);
+	vector<Task_id> tasks_to_stop  = auto_track_accessor.task_IDs(old_workspace);
+	vector<Task_id> tasks_to_start = auto_track_accessor.task_IDs(new_workspace);
 	for (int64_t task_ID : tasks_to_stop)
 	{
 		if (!contains(tasks_to_start, task_ID))

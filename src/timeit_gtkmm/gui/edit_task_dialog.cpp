@@ -143,7 +143,7 @@ vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
 	return workspace_list;
 }
 
-void Edit_task_dialog::set_task_id(Task_ID ID)
+void Edit_task_dialog::set_task_id(Task_id ID)
 {
 	task_id = ID;
 	auto task = task_accessor.by_ID(task_id);
@@ -170,7 +170,7 @@ void Edit_task_dialog::set_task_id(Task_ID ID)
 	}
 }
 
-void Edit_task_dialog::set_parent(Task_ID ID)
+void Edit_task_dialog::set_parent(Task_id ID)
 {
 	parent_id = ID;
 	parent_chooser.setParentID(parent_id);

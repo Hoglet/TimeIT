@@ -15,7 +15,7 @@ using namespace libtimeit;
 using namespace std;
 
 Controller::Controller(
-		IGUIFactory &op_guiFactory,
+		GUIFactory  &op_guiFactory,
 		Time_keeper &op_timeKeeper,
 		Database    &database,
 		IpcServer   &ipc,
@@ -152,36 +152,21 @@ void Controller::on_action_remove_task()
 
 void Controller::on_activity_resumed()
 {
-	if( ! time_keeper.hasRunningTasks())
-	{
-		auto i=4;
-		//time_keeper.enable(false);
-		return;
-	}
-	bool quiet = settings_accessor.get_bool("Quiet", DEFAULT_QUIET_MODE);
-	if(quiet)
-	{
-		on_action_revertAndContinue();
-	}
-	else
-	{
-		idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(GUI::IDLE_DIALOG));
-		idle_dialog->attach(this);
-		idle_dialog->setIdleStartTime(idle_start_time);
-		vector<int64_t> task_ids = time_accessor.currently_running();
-		idle_dialog->setActiveTaskList(task_ids);
-		idle_dialog->show();
-	}
 	on_idleChanged();
 }
 
-void Controller::on_idle_detected( Time_ID id)
+void Controller::on_idle_detected(Time_id id)
 {
-	int i=4;
-	//time_keeper.enable(false);
-	time_t now = time(nullptr);
-	idle_start_time = now - time_keeper.time_idle();
 	on_idleChanged();
+
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		time_accessor.update(time_entry->with(PAUSED));
+		auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(GUI::IDLE_DIALOG));
+		idle_dialog->set_time_id(id);
+		idle_dialog->show();
+	}
 }
 
 void Controller::on_idleChanged()
@@ -192,36 +177,6 @@ void Controller::on_idleChanged()
 	details_dialog->on_runningTasksChanged();
 }
 
-void Controller::on_action_revertAndContinue()
-{
-	time_keeper.stop_all_and_continue();
-	//time_keeper.enable(true);
-	if (idle_dialog != nullptr)
-	{
-		idle_dialog->detach(this);
-		idle_dialog.reset();
-	}
-
-}
-void Controller::on_action_revertAndStop()
-{
-	time_keeper.stop_all();
-	//time_keeper.enable(true);
-	if (idle_dialog != nullptr)
-	{
-		idle_dialog->detach(this);
-		idle_dialog.reset();
-	}
-}
-void Controller::on_action_continue()
-{
-	//time_keeper.enable(true);
-	if (idle_dialog != nullptr)
-	{
-		idle_dialog->detach(this);
-		idle_dialog.reset();
-	}
-}
 void Controller::on_action_stopTimers()
 {
 	time_keeper.stop_all();
@@ -254,6 +209,16 @@ void Controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_
 		details_dialog->set(taskId, startTime, stopTime);
 		details_dialog->show();
 	}
+}
+
+void Controller::on_time_entry_changed(Time_id id)
+{
+	auto currently_running = time_accessor.currently_running();
+	if(currently_running != old_running)
+	{
+		on_running_changed();
+	}
+	old_running = currently_running;
 }
 
 //LCOV_EXCL_START

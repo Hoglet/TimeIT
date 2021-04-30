@@ -231,7 +231,7 @@ void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 		oldStartTime = te->start;
 		startTimeHour.set_sensitive(true);
 		startTimeMinute.set_sensitive(true);
-		if (te->running())
+		if (te->state == RUNNING)
 		{
 			stopTimeHour.set_sensitive(false);
 			stopTimeMinute.set_sensitive(false);

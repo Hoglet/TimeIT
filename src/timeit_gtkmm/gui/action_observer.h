@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef _IACTIONOBSERVER_H_
-#define _IACTIONOBSERVER_H_
+#ifndef _ACTION_OBSERVER_H_
+#define _ACTION_OBSERVER_H_
 
 class action_observer
 {
@@ -27,9 +27,6 @@ public:
 	virtual void on_action_showMainWindow() {};
 	virtual void on_action_stopTimers() {};
 	virtual void on_action_report_bug() {};
-	//Idle dialog:
-	virtual void on_action_revertAndStop() {};
-	virtual void on_action_revertAndContinue() {};
-	virtual void on_action_continue() {};
 };
+
 #endif

@@ -14,23 +14,22 @@
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include "action_observer.h"
-#include "IStatusIcon.h"
 
 namespace GUI
 {
 using namespace libtimeit;
 
-class StatusIcon: public Time_keeper_observer, public IStatusIcon, public Event_observer
+class StatusIcon: public Time_keeper_observer, public Event_observer
 {
 public:
 	virtual ~StatusIcon();
 	StatusIcon(Time_keeper&, Database&, Notifier& notifier);
-	virtual void show()
+	void show()
 	{
 	}
 	; //Shown directly on creation. Might change
-	virtual void attach(action_observer *observer);
-	virtual void detach(action_observer *observer);
+	void attach(action_observer *observer);
+	void detach(action_observer *observer);
 private:
 	void on_activate();
 	void setIcon();
@@ -38,7 +37,7 @@ private:
 	void on_running_changed();
 	void on_activity_resumed()
 	{};
-	void on_idle_detected( Time_ID /*id*/)
+	void on_idle_detected(Time_id /*id*/)
 	{};
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();

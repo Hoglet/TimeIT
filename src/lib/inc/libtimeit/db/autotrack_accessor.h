@@ -26,7 +26,7 @@ public:
 	Auto_track_accessor(Database& db);
 	~Auto_track_accessor() = default;
 
-	Task_ID_list     task_IDs(int workspace);
+	Task_id_list     task_IDs(int workspace);
 	vector<unsigned> workspaces(int64_t task_ID);
 	void             set_workspaces(int64_t task_ID, vector<unsigned> workspaces);
 protected:

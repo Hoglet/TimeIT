@@ -10,7 +10,6 @@
 
 #include <libtimeit/db/database.h>
 #include <libtimeit/timer.h>
-#include <IGUIFactory.h>
 
 namespace GUI
 {

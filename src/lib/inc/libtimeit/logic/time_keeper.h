@@ -22,7 +22,7 @@ class Time_keeper_observer
 {
 public:
 	virtual ~Time_keeper_observer() = default;
-	virtual void on_idle_detected( Time_ID ) = 0;
+	virtual void on_idle_detected(Time_id ) = 0;
 	virtual void on_activity_resumed() = 0;
 	virtual void on_running_changed() = 0;
 };
@@ -40,9 +40,9 @@ public:
 
 	~Time_keeper() = default;
 
-	void start(Task_ID id);
-	void stop(Task_ID id);
-	void toggle(Task_ID id);
+	void start(Task_id id);
+	void stop(Task_id id);
+	void toggle(Task_id id);
 
 	bool hasRunningTasks();
 
@@ -63,10 +63,13 @@ public:
 	//TimerProxyObserver interface
 	void on_signal_10_seconds() override;
 
+	//Time_observer
+	void on_time_entry_changed(Time_id id);
 private:
 	void the_method_that_do_stuff();
+	void check_for_status_change();
 
-	void on_task_removed(Task_ID /*id*/) override;
+	void on_task_removed(Task_id /*id*/) override;
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
@@ -74,7 +77,7 @@ private:
 	unsigned default_idle_time{0};
 
 	void notify_running_changed();
-	void notify_idle_detected( Time_ID /*id*/);
+	void notify_idle_detected(Time_id /*id*/);
 	void notify_activity_resumed();
 
 	list<Time_keeper_observer *> observers;
@@ -88,6 +91,8 @@ private:
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
 	void stop_time(const int64_t id);
+
+	vector<Task_id> old_running{};
 };
 }
 

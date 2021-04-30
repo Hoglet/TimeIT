@@ -76,13 +76,12 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 		retVal = aboutDialogInstance;
 		break;
 	case IDLE_DIALOG:
-		if (idleDialogInstance == 0)
 		{
 			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database));
-			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_idleDialog_hide));
-			idleDialogInstance = dialog;
+			retVal = dialog;
+			dialogs.push_back(retVal);
+			dialog->signal_hide().connect([this, dialog]() { this->on_dialog_hide(dialog); } );
 		}
-		retVal = idleDialogInstance;
 		break;
 	case DETAILS_DIALOG:
 		if (detailsDialogInstance == 0)
@@ -117,9 +116,9 @@ void GUIFactory::on_addTaskDialog_hide()
 	addTaskInstance.reset();
 }
 
-void GUIFactory::on_idleDialog_hide()
+void GUIFactory::on_dialog_hide(const WidgetPtr ptr)
 {
-	idleDialogInstance.reset();
+	dialogs.remove(ptr);
 }
 
 void GUIFactory::on_detailsDialog_hide()
@@ -143,15 +142,16 @@ void GUIFactory::on_preferenceDialog_hide()
 	preferenceDialogInstance.reset();
 }
 
-IStatusIcon& GUIFactory::getStatusIcon()
+StatusIcon& GUIFactory::getStatusIcon()
 {
-	static IStatusIcon *statusIcon = 0;
+	static StatusIcon *statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		statusIcon = (IStatusIcon*) (new StatusIcon(timeKeeper, database, notifier));
+		statusIcon = (StatusIcon*) (new StatusIcon(timeKeeper, database, notifier));
 	}
 	return *statusIcon;
 }
+
 WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 {
 	if (addTimeInstance == nullptr)
@@ -167,6 +167,7 @@ WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 	}
 	return addTimeInstance;
 }
+
 void GUIFactory::on_addTime_response(int)
 {
 	addTimeInstance->hide();

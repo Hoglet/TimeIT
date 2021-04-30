@@ -26,15 +26,15 @@ public:
 	vector<Task>   by_parent_ID(int64_t parent = 0);
 	vector<Task>   changed_since(time_t timestamp = 0);
 
-	Task_ID        create(const Task &task);
+	Task_id        create(const Task &task);
 	bool           update(const Task &task);
 	void           remove(int64_t taskID);
 
-	Task_ID  ID(UUID uuid);
+	Task_id  ID(UUID uuid);
 	void     enable_notifications(bool);
 
-	void     set_parent_id(Task_ID task_id, Task_ID parent_id);
-	void     set_task_expanded(Task_ID taskID, bool expanded);
+	void     set_parent_id(Task_id task_id, Task_id parent_id);
+	void     set_task_expanded(Task_id taskID, bool expanded);
 
 protected:
 	void      create_table()   override;
@@ -49,8 +49,8 @@ private:
 	void notify(const Task &old_task, const Task &new_task);
 	void _update(const Task &task);
 
-	optional<class UUID> uuid(Task_ID id);
-	optional<Task>       get_task_unlimited(Task_ID taskID);
+	optional<class UUID> uuid(Task_id id);
+	optional<Task>       get_task_unlimited(Task_id taskID);
 };
 
 }

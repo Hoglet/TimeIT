@@ -51,7 +51,7 @@ void Time_keeper::on_signal_10_seconds()
 }
 
 
-void Time_keeper::start(Task_ID id)
+void Time_keeper::start(Task_id id)
 {
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
@@ -80,7 +80,7 @@ void Time_keeper::toggle(int64_t id)
 	start(id);
 }
 
-void Time_keeper::stop_time(const Time_ID id)
+void Time_keeper::stop_time(const Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
@@ -97,7 +97,7 @@ void Time_keeper::stop_time(const Time_ID id)
 	notify_running_changed();
 }
 
-void Time_keeper::stop(Task_ID id)
+void Time_keeper::stop(Task_id id)
 {
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
@@ -110,7 +110,7 @@ void Time_keeper::stop(Task_ID id)
 	}
 }
 
-void Time_keeper::on_task_removed(Task_ID id)
+void Time_keeper::on_task_removed(Task_id id)
 {
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
@@ -174,7 +174,7 @@ void Time_keeper::notify_running_changed()
 	}
 }
 
-void Time_keeper::notify_idle_detected(Time_ID id)
+void Time_keeper::notify_idle_detected(Time_id id)
 {
 	for (auto observer: observers)
 	{
@@ -188,10 +188,7 @@ void Time_keeper::notify_activity_resumed()
 	{
 		observer->on_activity_resumed();
 	}
-
 }
-
-
 
 void Time_keeper::attach(Time_keeper_observer* observer)
 {
@@ -201,6 +198,21 @@ void Time_keeper::detach(Time_keeper_observer* observer)
 {
 	observers.remove(observer);
 }
+
+void Time_keeper::check_for_status_change()
+{
+	auto currently_running = time_accessor.currently_running();
+	if(currently_running != old_running)
+	{
+		notify_running_changed();
+	}
+	old_running = currently_running;
+}
+void Time_keeper::on_time_entry_changed(Time_id id)
+{
+	check_for_status_change();
+}
+
 
 void Time_keeper::the_method_that_do_stuff()
 {
@@ -233,7 +245,7 @@ void Time_keeper::update_running_entries()
 void Time_keeper::check_if_tasks_should_be_stopped()
 {
 	auto time_inactive = idle_detector.time_idle();
-	list<Time_ID> times_to_stop {};
+	list<Time_id> times_to_stop {};
 	auto running_time_items = time_accessor.by_state(RUNNING);
 	for (auto time_item: running_time_items)
 	{
@@ -243,7 +255,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 		{
 			idle_time = default_idle_time;
 		}
-		if( time_inactive > idle_time )
+		if( time_inactive > idle_time * MINUTE )
 		{
 			times_to_stop.emplace_back(time_item.ID );
 			if( ! task->quiet )

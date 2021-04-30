@@ -13,21 +13,12 @@
 #include <IWidget.h>
 #include <memory>
 #include <libtimeit/db/task_accessor.h>
+#include <libtimeit/db/time_accessor.h>
 
 namespace GUI
 {
 using namespace libtimeit;
 
-class IIdleDialog
-{
-public:
-	virtual ~IIdleDialog() {};
-	virtual void setIdleStartTime(time_t idleStartTime) = 0;
-	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs) = 0;
-	virtual void show() = 0;
-	virtual void attach(action_observer*) = 0;
-	virtual void detach(action_observer*) = 0;
-};
 
 enum IdleDialogResponse{
 	RESPONSE_REVERT=1,
@@ -35,36 +26,35 @@ enum IdleDialogResponse{
 	RESPONSE_CONTINUE=3
 } ;
 
-class IdleDialog : public Gtk::Dialog, public Timer_observer, public IIdleDialog, public IWidget
+class IdleDialog : public Gtk::Dialog, public Timer_observer, public IWidget
 {
 public:
 	IdleDialog(Timer& timer, Database& database);
-	virtual void setIdleStartTime(time_t idleStartTime);
-	virtual void setActiveTaskList(std::vector<int64_t> activeTaskIDs);
-	virtual ~IdleDialog() = default;
-	virtual void attach(action_observer*);
-	virtual void detach(action_observer*);
+	void set_time_id(Time_id id);
+	~IdleDialog() = default;
 	// IWidget interface
-	virtual void show();
-	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
-	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void show();
+	void hide() { Gtk::Dialog::hide(); }
+	void move(int x, int y) { Gtk::Dialog::move(x,y); };
+	bool is_visible() { return Gtk::Dialog::is_visible(); } ;
+	void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	virtual void on_signal_1_second() {};
-	virtual void on_signal_10_seconds();
+	void on_signal_10_seconds() override;
 	void setText();
-	Gtk::Label  text;
-	Gtk::Button revertButton;
-	Gtk::Button revertAndContinueButton;
-	Gtk::Button continueButton;
-	Timer& m_timer;
-	time_t m_idleStartTime;
-	std::string taskString;
+	Gtk::Label    text;
+	Gtk::Button   revertButton;
+	Gtk::Button   revertAndContinueButton;
+	Gtk::Button   continueButton;
+	string        taskString;
 	Task_accessor taskAccessor;
+	Time_accessor time_accessor;
+	Time_id       time_entry_id;
+	time_t        m_idleStartTime;
 
-	std::list<action_observer*> observers;
 	void responseHandler(int result);
+	void action_continue(Time_id id);
+	void revert_and_stop(Time_id id);
+	void revert_and_continue(Time_id id);
 };
 
 }

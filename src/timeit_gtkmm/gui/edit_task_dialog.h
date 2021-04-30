@@ -30,8 +30,8 @@ public:
 	void on_OK_button_clicked();
 	void on_cancel_button_clicked();
 	void on_data_changed();
-	void set_task_id(Task_ID ID);
-	void set_parent(Task_ID ID);
+	void set_task_id(Task_id ID);
+	void set_parent(Task_id ID);
 
 	// IWidget interface
 	void show() override;
@@ -72,8 +72,8 @@ private:
 	string        name;
 	unsigned      idle_time {0};
 	bool          quiet     {false};
-	Task_ID       task_id   {0};
-	Task_ID       parent_id {0};
+	Task_id       task_id   {0};
+	Task_id       parent_id {0};
 
 	vector<unsigned> workspaces;
 

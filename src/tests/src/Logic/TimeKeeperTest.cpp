@@ -13,7 +13,7 @@ namespace Test
 class TKObserver: public Time_keeper_observer
 {
 public:
-	virtual void on_idle_detected( Time_ID id)
+	virtual void on_idle_detected(Time_id id)
 	{
 		idleDetected = true;
 	}

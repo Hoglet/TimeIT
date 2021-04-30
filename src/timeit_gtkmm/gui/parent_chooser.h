@@ -25,8 +25,8 @@ public:
 	ParentChooser(Database& database);
 	virtual ~ParentChooser() = default;
 
-	void setID(Task_ID ID);
-	void setParentID(Task_ID parentID);
+	void setID(Task_id ID);
+	void setParentID(Task_id parentID);
 	int getParentID();
 private:
 	//Signal handlers:

@@ -8,7 +8,7 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 #include <action_observer.h>
-#include <IGUIFactory.h>
+#include <guid_factory.h>
 #include <idle_dialog.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
@@ -32,7 +32,7 @@ class Controller : // NOLINT(cppcoreguidelines-special-member-functions)
 {
 public:
 	Controller(
-			IGUIFactory &gui_factory,
+			GUIFactory &gui_factory,
 			Time_keeper &time_keeper,
 			Database    &database,
 			IpcServer   &ipc_server,
@@ -55,32 +55,30 @@ public:
 	void on_action_report_bug() override;
 
 	//SummaryObserver
-	void on_show_details_clicked(Task_ID task_id, time_t start, time_t stop) override;
-	void on_selection_changed(Task_ID id, time_t start, time_t stop) override;
+	void on_show_details_clicked(Task_id task_id, time_t start, time_t stop) override;
+	void on_selection_changed(Task_id id, time_t start, time_t stop) override;
 
 	//
-	void on_idle_detected( Time_ID id ) override;
+	void on_idle_detected(Time_id id ) override;
 	void on_idleChanged();
 	void on_activity_resumed() override;
+
+	void on_time_entry_changed(Time_id id) override;
 	void on_running_changed() override;
 	void on_action_toggleMainWindow() override;
 	void on_show_main_window() override;
-	void on_action_revertAndContinue() override;
-	void on_action_revertAndStop() override;
-	void on_action_continue() override;
 	void on_action_stopTimers() override;
 
 private:
-	IGUIFactory &gui_factory;
-	Time_keeper &time_keeper;
-	shared_ptr<IdleDialog> idle_dialog;
-	Time_accessor         time_accessor;
-	Settings_accessor     settings_accessor;
+	GUIFactory&         gui_factory;
+	Time_keeper&        time_keeper;
+	Time_accessor       time_accessor;
+	Settings_accessor   settings_accessor;
 
 	int main_window_x = 0;
 	int main_window_y = 0;
 	unsigned selected_task_id = 0;
-	long idle_start_time = 0;
+	vector<Time_id> old_running{};
 
 };
 }

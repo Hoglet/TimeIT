@@ -225,7 +225,7 @@ void Sync_manager::sync_times_to_database()
 			auto originalItem = time_accessor.by_ID(id);
 			if(originalItem)
 			{
-				running = originalItem->running();
+				running = originalItem->state == RUNNING;
 			}
 		}
 

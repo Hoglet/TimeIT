@@ -4,7 +4,7 @@
 namespace libtimeit
 {
 Time_entry::Time_entry(
-		Time_ID               id_,
+		Time_id               id_,
 		class UUID            uuid_,
 		int64_t               task_ID_,
 		optional<class UUID>  taskUUID_,
@@ -27,9 +27,9 @@ Time_entry::Time_entry(
 
 
 Time_entry::Time_entry(
-				Task_ID task_ID_,
-				time_t  start_,
-				time_t  stop_)
+		Task_id task_ID_,
+		time_t  start_,
+		time_t  stop_)
 			:
 		ID(0),
 		uuid(UUID() ),
@@ -43,7 +43,7 @@ Time_entry::Time_entry(
 }
 
 Time_entry::Time_entry(
-		Task_ID          task_ID_,
+		Task_id          task_ID_,
 		time_t           start_,
 		time_t           stop_,
 		Time_entry_state state_)
@@ -101,11 +101,6 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 	}
 }
 
-
-bool Time_entry::running() const
-{
-	return state == RUNNING;
-}
 
 Time_entry Time_entry::with( Time_entry_state new_state) const
 {

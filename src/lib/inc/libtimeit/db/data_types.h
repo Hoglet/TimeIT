@@ -10,14 +10,14 @@ namespace libtimeit
 {
 using namespace std;
 
-class Time_entry;
+struct Time_entry;
 
-typedef vector<Time_entry> Time_list;
-typedef int64_t            Task_ID;
-typedef int64_t            Time_ID;
-typedef vector<Task_ID>    Task_ID_list;
+using Time_list    = vector<Time_entry>;
+using Task_id      = int64_t;
+using Time_id      = int64_t;
+using Task_id_list = vector<Task_id>;
 
-typedef int64_t            Duration;      //Duration in seconds
+using Duration = int;      //Duration in seconds
 
 }
 
