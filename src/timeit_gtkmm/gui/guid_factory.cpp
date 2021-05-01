@@ -77,7 +77,7 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 		break;
 	case IDLE_DIALOG:
 		{
-			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database));
+			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database, timeKeeper));
 			retVal = dialog;
 			dialogs.push_back(retVal);
 			dialog->signal_hide().connect([this, dialog]() { this->on_dialog_hide(dialog); } );

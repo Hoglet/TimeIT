@@ -21,11 +21,13 @@ using namespace libtimeit;
 
 IdleDialog::IdleDialog(
 		Timer& timer,
-		Database& database)
+		Database& database,
+		Time_keeper& time_keeper_)
 		:
 		Timer_observer(timer),
 		taskAccessor(database ),
-		time_accessor( database )
+		time_accessor( database ),
+		time_keeper(time_keeper_)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
@@ -130,11 +132,7 @@ void IdleDialog::action_continue(Time_id id)
 
 void IdleDialog::revert_and_stop(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
-	if(time_entry.has_value())
-	{
-		time_accessor.update(time_entry->with(STOPPED));
-	}
+	time_keeper.stop_time(id);
 }
 
 void IdleDialog::revert_and_continue(Time_id id)
@@ -142,10 +140,8 @@ void IdleDialog::revert_and_continue(Time_id id)
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
 	{
-		auto now = libtimeit::now();
-		time_accessor.update(time_entry->with(STOPPED));
-		Time_entry new_time_entry(time_entry->task_ID, now, now, RUNNING);
-		time_accessor.create( new_time_entry );
+		time_keeper.stop_time(id);
+		time_keeper.start(time_entry->task_ID);
 	}
 }
 

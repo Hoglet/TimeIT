@@ -61,6 +61,7 @@ public:
 
 	//Time_observer
 	void on_time_entry_changed(Time_id id) override;
+	void stop_time(Time_id id);
 private:
 	void check_for_status_change();
 
@@ -84,7 +85,6 @@ private:
 	X11_idle_detector idle_detector;
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
-	void stop_time(Time_id id);
 
 	vector<Task_id> old_running{};
 };

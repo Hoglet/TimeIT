@@ -14,6 +14,7 @@
 #include <memory>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
+#include <libtimeit/logic/time_keeper.h>
 
 namespace GUI
 {
@@ -29,7 +30,7 @@ enum IdleDialogResponse{
 class IdleDialog : public Gtk::Dialog, public Timer_observer, public IWidget
 {
 public:
-	IdleDialog(Timer& timer, Database& database);
+	IdleDialog(Timer& timer, Database& database, Time_keeper& time_keeper);
 	void set_time_id(Time_id id);
 	~IdleDialog() = default;
 	// IWidget interface
@@ -48,6 +49,8 @@ private:
 	string        taskString;
 	Task_accessor taskAccessor;
 	Time_accessor time_accessor;
+	Time_keeper&  time_keeper;
+
 	Time_id       time_entry_id;
 	time_t        m_idleStartTime;
 
