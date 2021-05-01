@@ -61,7 +61,6 @@ public:
 	//
 	void on_idle_detected(Time_id id ) override;
 	void on_idleChanged();
-	void on_activity_resumed() override;
 
 	void on_time_entry_changed(Time_id id) override;
 	void on_running_changed() override;

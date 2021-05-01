@@ -21,9 +21,7 @@ using namespace std;
 class Time_keeper_observer
 {
 public:
-	virtual ~Time_keeper_observer() = default;
 	virtual void on_idle_detected(Time_id ) = 0;
-	virtual void on_activity_resumed() = 0;
 	virtual void on_running_changed() = 0;
 };
 
@@ -38,33 +36,31 @@ public:
 			Notifier& notifier
 			);
 
-	~Time_keeper() = default;
 
 	void start(Task_id id);
 	void stop(Task_id id);
 	void toggle(Task_id id);
 
 	bool hasRunningTasks();
+	bool user_is_active();
 
 	//Stop all tasks without saving new time records
 	void stop_all();
 
 	//Stop all tasks, without saving new time records, and then start them again
-	void stop_all_and_continue();
 
 	//
 	void attach(Time_keeper_observer *);
 	void detach(Time_keeper_observer *);
 
 	//
-	[[nodiscard]] bool   is_idle() const;
-	time_t               time_idle();
-
+	[[nodiscard]] bool   tasks_are_running() const;
+	[[nodiscard]] bool   is_idle();
 	//TimerProxyObserver interface
 	void on_signal_10_seconds() override;
 
 	//Time_observer
-	void on_time_entry_changed(Time_id id);
+	void on_time_entry_changed(Time_id id) override;
 private:
 	void check_for_status_change();
 
@@ -86,10 +82,9 @@ private:
 	Settings_accessor  settings_accessor;
 
 	X11_idle_detector idle_detector;
-	bool user_is_active();
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
-	void stop_time(const int64_t id);
+	void stop_time(Time_id id);
 
 	vector<Task_id> old_running{};
 };

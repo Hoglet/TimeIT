@@ -12,12 +12,13 @@ using namespace std;
 
 Auto_tracker::Auto_tracker(
 		Time_keeper &time_keeper_,
-		Database   &database_,
-		Timer       &timer_)
+		Database   &database,
+		Timer       &timer)
 		:
 		time_keeper(time_keeper_),
-		auto_track_accessor(database_),
-		Timer_observer(timer_)
+		auto_track_accessor(database),
+		task_accessor( database ),
+		Timer_observer(timer)
 {
 	check_for_changes(); //check if we should start anything;
 }
@@ -36,6 +37,20 @@ void Auto_tracker::check_for_changes()
 		do_task_switching(old_workspace, new_workspace);
 		old_workspace = new_workspace;
 	}
+
+	auto user_is_active = time_keeper.user_is_active();
+	if( user_is_active && old_user_is_active != user_is_active )
+	{
+		for(auto task_id : auto_track_accessor.task_IDs(new_workspace))
+		{
+			auto task = task_accessor.by_ID(task_id);
+			if(task.has_value() && task->quiet)
+			{
+				time_keeper.start(task_id);
+			}
+		}
+	}
+	old_user_is_active = user_is_active;
 }
 
 bool contains(vector<Task_id> vec, Task_id item)

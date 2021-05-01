@@ -147,25 +147,15 @@ void Time_keeper::stop_all()
 	}
 }
 
-void Time_keeper::stop_all_and_continue()
-{
-	auto running_items = time_accessor.by_state(RUNNING);
-	for (auto item: running_items)
-	{
-		stop_time(item.ID);
-		start(item.task_ID);
-	}
-}
 
-[[nodiscard]] bool  Time_keeper::is_idle() const
+[[nodiscard]] bool  Time_keeper::tasks_are_running() const
 {
 	auto running_items = time_accessor.by_state(RUNNING);
 	return running_items.empty();
 }
-
-time_t Time_keeper::time_idle()
+[[nodiscard]] bool   Time_keeper::is_idle()
 {
-	return idle_detector.time_idle();
+	return idle_detector.time_idle() > 10;
 }
 
 void Time_keeper::notify_running_changed()
@@ -180,17 +170,9 @@ void Time_keeper::notify_running_changed()
 
 void Time_keeper::notify_idle_detected(Time_id id)
 {
-	for (auto observer: observers)
+	for (auto* observer: observers)
 	{
 		observer->on_idle_detected(id);
-	}
-}
-
-void Time_keeper::notify_activity_resumed()
-{
-	for (auto observer : observers)
-	{
-		observer->on_activity_resumed();
 	}
 }
 
@@ -221,7 +203,7 @@ void Time_keeper::on_time_entry_changed(Time_id id)
 
 bool Time_keeper::user_is_active()
 {
-	return 	(idle_detector.minutes_idle() < idle_Gz);
+	return 	(idle_detector.time_idle() < 10);
 }
 
 void Time_keeper::update_running_entries()

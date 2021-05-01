@@ -213,7 +213,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 	row[columns.col_id] = taskID;
 	if (task.running)
 	{
-		if (!m_timeKeeper.is_idle())
+		if (!m_timeKeeper.tasks_are_running())
 		{
 			row[columns.col_pixbuf] = runningIcon;
 		}

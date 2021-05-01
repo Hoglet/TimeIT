@@ -291,7 +291,7 @@ void DetailsDialog::on_runningTasksChanged()
 	}
 	if (runningThisTaskID)
 	{
-		if (!m_timeKeeper.is_idle())
+		if (!m_timeKeeper.tasks_are_running())
 		{
 			runningImage.set(runningIcon);
 		}

@@ -32,7 +32,9 @@ private:
 	Time_keeper        &time_keeper;
 
 	Auto_track_accessor  auto_track_accessor;
-	Workspace           workspace;
+	Task_accessor        task_accessor;
+	Workspace            workspace;
+	bool                 old_user_is_active{false};
 };
 
 }

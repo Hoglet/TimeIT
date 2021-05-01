@@ -150,11 +150,6 @@ void Controller::on_action_remove_task()
 	//ENHANCEMENT Move code from main window (or?)
 }
 
-void Controller::on_activity_resumed()
-{
-	on_idleChanged();
-}
-
 void Controller::on_idle_detected(Time_id id)
 {
 	on_idleChanged();
