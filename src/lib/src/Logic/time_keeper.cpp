@@ -47,7 +47,11 @@ void Time_keeper::on_settings_changed(string name)
 
 void Time_keeper::on_signal_10_seconds()
 {
-	the_method_that_do_stuff();
+	check_if_tasks_should_be_stopped();
+	if ( user_is_active () )
+	{
+		update_running_entries();
+	}
 }
 
 
@@ -214,17 +218,6 @@ void Time_keeper::on_time_entry_changed(Time_id id)
 }
 
 
-void Time_keeper::the_method_that_do_stuff()
-{
-	if ( user_is_active () )
-	{
-		update_running_entries();
-	}
-	else
-	{
-		check_if_tasks_should_be_stopped();
-	}
-}
 
 bool Time_keeper::user_is_active()
 {
@@ -244,7 +237,7 @@ void Time_keeper::update_running_entries()
 
 void Time_keeper::check_if_tasks_should_be_stopped()
 {
-	auto time_inactive = idle_detector.time_idle();
+	auto now = libtimeit::now();
 	list<Time_id> times_to_stop {};
 	auto running_time_items = time_accessor.by_state(RUNNING);
 	for (auto time_item: running_time_items)
@@ -255,6 +248,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 		{
 			idle_time = default_idle_time;
 		}
+		auto time_inactive = now - time_item.stop;
 		if( time_inactive > idle_time * MINUTE )
 		{
 			times_to_stop.emplace_back(time_item.ID );

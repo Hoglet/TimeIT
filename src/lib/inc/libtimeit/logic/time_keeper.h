@@ -66,7 +66,6 @@ public:
 	//Time_observer
 	void on_time_entry_changed(Time_id id);
 private:
-	void the_method_that_do_stuff();
 	void check_for_status_change();
 
 	void on_task_removed(Task_id /*id*/) override;
