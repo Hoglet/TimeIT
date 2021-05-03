@@ -21,12 +21,6 @@ Time_keeper::Time_keeper(
 		idle_detector(timer)
 
 {
-	int i = 4;
-	auto running = time_accessor.by_state( RUNNING );
-	for ( auto item: running )
-	{
-		time_accessor.update( item.with( STOPPED ));
-	}
 	idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 	default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
 	idle_detector.idle_timeout(default_idle_time);
@@ -65,6 +59,7 @@ void Time_keeper::start(Task_id id)
 			return; //Already running
 		}
 	}
+
 	auto now = libtimeit::now();
 	time_accessor.create(Time_entry( id, now, now, RUNNING ) );
 	notify_running_changed();

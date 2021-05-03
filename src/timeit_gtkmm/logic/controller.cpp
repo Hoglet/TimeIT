@@ -48,6 +48,11 @@ void Controller::start()
 		main_window->attach(this);
 		main_window->show();
 	}
+	for( auto time_entry: time_accessor.by_state(PAUSED))
+	{
+		show_idle_dialog(time_entry.ID);
+	}
+
 }
 
 //LCOV_EXCL_START
@@ -158,9 +163,7 @@ void Controller::on_idle_detected(Time_id id)
 	if(time_entry.has_value())
 	{
 		time_accessor.update(time_entry->with(PAUSED));
-		auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(GUI::IDLE_DIALOG));
-		idle_dialog->set_time_id(id);
-		idle_dialog->show();
+		show_idle_dialog(id);
 	}
 }
 
@@ -226,6 +229,13 @@ void Controller::on_running_changed()
 }
 void Controller::on_selection_changed(int64_t /*task_id*/, time_t /*start*/, time_t /*stop*/)
 {
+}
+
+void Controller::show_idle_dialog(const Time_id id)
+{
+	auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(GUI::IDLE_DIALOG));
+	idle_dialog->set_time_id(id);
+	idle_dialog->show();
 }
 
 //LCOV_EXCL_STOP

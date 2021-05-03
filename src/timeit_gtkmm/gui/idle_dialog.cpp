@@ -132,7 +132,11 @@ void IdleDialog::action_continue(Time_id id)
 
 void IdleDialog::revert_and_stop(Time_id id)
 {
-	time_keeper.stop_time(id);
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		time_keeper.stop(time_entry->task_ID);
+	}
 }
 
 void IdleDialog::revert_and_continue(Time_id id)

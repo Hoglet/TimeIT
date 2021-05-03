@@ -79,6 +79,7 @@ private:
 	unsigned selected_task_id = 0;
 	vector<Time_id> old_running{};
 
+	void show_idle_dialog(const Time_id id);
 };
 }
 #endif /* CONTROLLER_H_ */
