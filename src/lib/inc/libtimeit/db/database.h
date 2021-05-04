@@ -17,7 +17,14 @@ class Database
 {
 public:
 	Database(const string& dbname, Notifier& publisher);
-	virtual ~Database();
+	Database() = delete;
+	Database(const Database&) = delete;
+	Database(const Database&&) = delete;
+	~Database() = default;
+	void operator=(const Database&) = delete;
+	void operator=(const Database&&) = delete;
+
+
 
 	void begin_transaction();
 	void try_rollback();
@@ -33,17 +40,14 @@ public:
 	[[nodiscard]] int   current_DB_version() const;
 	[[nodiscard]] bool  column_exists( string_view string, string_view string_1);
 protected:
-	Notifier&  notifier;
-	SQLite3    db;
-
 	static void create_tables( list<Accessor*>& accessors );
 	void upgrade( list<Accessor*>&  accessors);
 	static void drop_views( list<Accessor*>& accessors );
 	static void create_views( list<Accessor*>& accessors );
 private:
-	Database(const Database&);
-	void operator=(const Database&);
-	int db_version{0};
+	int        db_version{0};
+	Notifier&  notifier;
+	SQLite3    db;
 
 	void find_db_version();
 };

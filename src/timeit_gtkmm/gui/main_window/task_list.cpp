@@ -227,7 +227,7 @@ void TaskList::assignValuesToRow(TreeModel::Row &row, const Extended_task &task)
 		row[columns.col_pixbuf] = blankIcon;
 	}
 	row[columns.col_name] = task.name;
-	time_t totalTime = task.total_time();
+	time_t totalTime = task.total_time;
 	if (totalTime > 0)
 	{
 		row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);

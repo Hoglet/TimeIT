@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <utility>
 #include <libtimeit/db/uuid.h>
 
 namespace libtimeit
@@ -20,38 +21,25 @@ bool rangeTestG4(const char &c)
 bool is_valid_uuid(const string &uuid)
 {
 
-	if (36 != uuid.length())
+	if (36 != uuid.length()) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 
 	//"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
-	for (int position = 0; position < 8; position++)
+	for (int position = 0; position < 8; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
 			return false;
 		}
 	}
-	if ('-' != uuid[8])
+	if ('-' != uuid[8])  // NOLINT
 	{
 		return false;
 	}
 
-	for (int position = 9; position < 13; position++)
-	{
-		if (isxdigit(uuid[position]) == false)
-		{
-			return false;
-		}
-	}
-
-	if ('-' != uuid[13])
-	{
-		return false;
-	}
-
-	for (int position = 14; position < 18; position++)
+	for (int position = 9; position < 13; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -59,31 +47,44 @@ bool is_valid_uuid(const string &uuid)
 		}
 	}
 
-	if ('4' != uuid[14])
+	if ('-' != uuid[13])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 
-	if ('-' != uuid[18])
-	{
-		return false;
-	}
-	for (int position = 19; position < 23; position++)
+	for (int position = 14; position < 18; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
 			return false;
 		}
 	}
-	if (false == rangeTestG4(uuid[19]))
+
+	if ('4' != uuid[14])// NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
-	if ('-' != uuid[23])
+
+	if ('-' != uuid[18]) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
-	for (int position = 24; position < 36; position++)
+	for (int position = 19; position < 23; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	{
+		if (isxdigit(uuid[position]) == false)
+		{
+			return false;
+		}
+	}
+	if (false == rangeTestG4(uuid[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	{
+		return false;
+	}
+	if ('-' != uuid[23])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	{
+		return false;
+	}
+	for (int position = 24; position < 36; position++) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		if (isxdigit(uuid[position]) == false)
 		{
@@ -104,32 +105,32 @@ optional<UUID> UUID::from_string(string uuid)
 
 int random4hex()
 {
-	return (rand() % (0xFF + 1)) + (rand() % (0xFF + 1));
+	return (rand() % (0xFF + 1)) + (rand() % (0xFF + 1)); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 int randomBetween8and11()
 {
-	return (rand() % 4) + 8;
+	return (rand() % 4) + 8;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 UUID::UUID()
 {
-	stringstream uuidSStream;
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << "-";
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << "-4";
-	uuidSStream << hex << setfill('0') << setw(3) << random4hex();
-	uuidSStream << "-";
-	uuidSStream << hex << randomBetween8and11();
-	uuidSStream << hex << setfill('0') << setw(3) << random4hex();
-	uuidSStream << "-";
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
-	uuidSStream << hex << setfill('0') << setw(4) << random4hex();
+	stringstream uuid_string_stream;
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << "-";
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << "-4";
+	uuid_string_stream << hex << setfill('0') << setw(3) << random4hex();
+	uuid_string_stream << "-";
+	uuid_string_stream << hex << randomBetween8and11();
+	uuid_string_stream << hex << setfill('0') << setw(3) << random4hex();
+	uuid_string_stream << "-";
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
 
-	uuid = uuidSStream.str();
+	uuid = uuid_string_stream.str();
 }
 
 bool UUID::operator==(const UUID &rhs) const
@@ -147,9 +148,8 @@ const char *UUID::c_str() const
 	return uuid.c_str();
 }
 
-UUID::UUID(string basic_string)
+UUID::UUID(string basic_string) : uuid(std::move(basic_string))
 {
-	uuid = basic_string;
 }
 
 }

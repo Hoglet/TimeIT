@@ -7,23 +7,14 @@
 
 #include <libtimeit/exceptions/general_exception.h>
 
-General_exception::General_exception()
+General_exception::General_exception(const char* op1) : message(op1)
 {
-	message = 0;
 }
 
-void General_exception::setMessage(const char* op1)
-{
-	message = op1;
-}
 
-const char* General_exception::what() const throw()
+const char* General_exception::what() const noexcept
 {
 	return message;
 }
 
 
-General_exception::~General_exception() throw()
-{
-
-}

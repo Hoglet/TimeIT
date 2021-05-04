@@ -9,7 +9,7 @@ Checks: '
   '
 CheckOptions:
   - key: readability-function-cognitive-complexity.Threshold
-    value: 10
+    value: 19
   - key: modernize-loop-convert.MinConfidence
     value: safe
   - key: readability-identifier-naming.VariableCase

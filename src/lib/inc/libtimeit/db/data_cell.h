@@ -11,19 +11,18 @@ using namespace std;
 struct Data_cell
 {
 public:
-	Data_cell();
+	Data_cell() = default;
 	Data_cell(int);
 	Data_cell(const char*);
-	virtual ~Data_cell();
 
-	bool     has_value() const;
-	int64_t  integer() const;
-	string   text();
-	bool     boolean() const;
-protected:
-	int      type;
-	string   txt;
-	int64_t  value;
+	[[nodiscard]] bool     has_value() const;
+	[[nodiscard]] int64_t  integer()   const;
+	[[nodiscard]] string   text()      const;
+	[[nodiscard]] bool     boolean()   const;
+private:
+	const int      type{5};
+	const string   txt;
+	const int64_t  value{0};
 };
 
 }

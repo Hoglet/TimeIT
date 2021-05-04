@@ -1,5 +1,5 @@
 /*
- * OSabstraction.h
+ * OS_abstraction.h
  *
  *  Created on: 2008-jul-07
  *      Author: hoglet

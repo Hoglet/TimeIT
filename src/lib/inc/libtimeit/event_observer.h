@@ -1,5 +1,5 @@
-#ifndef TIMEIT_EVENTOBSERVER_H_
-#define TIMEIT_EVENTOBSERVER_H_
+#ifndef TIMEIT_EVENT_OBSERVER_H_
+#define TIMEIT_EVENT_OBSERVER_H_
 
 #include <cstdint>
 #include <string>
@@ -22,9 +22,12 @@ class Event_observer
 public:
 	Event_observer(Notifier&);
 	virtual ~Event_observer();
+	Event_observer(const Event_observer&) = delete;
+	Event_observer(Event_observer&&) = delete;
+	Event_observer& operator=(const Event_observer&) = delete;
+	Event_observer& operator=(Event_observer&&) = delete;
 
-
-	virtual void on_message(EventType type, const string headline, const string message) const {};
+	virtual void on_message(EventType type, string headline, string message) const {};
 
 	virtual void on_parent_changed(Task_id id )    {}; // Parent of task changed
 	virtual void on_task_added(Task_id id )        {};
@@ -41,4 +44,4 @@ private:
 };
 
 }
-#endif // TIMEIT_EVENTOBSERVER_H_
+#endif // TIMEIT_EVENT_OBSERVER_H_

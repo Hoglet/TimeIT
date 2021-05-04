@@ -3,6 +3,8 @@
 //
 #include <libtimeit/sync/HTTP_response.h>
 
+#include <utility>
+
 namespace libtimeit
 {
 
@@ -16,11 +18,11 @@ HTTP_response::HTTP_response(
 			int    http_code_,
 			string error_message_
 		) :
-		url(url_),
-		response(response_),
-		status_OK(status_OK_),
+		url(std::move(url_)),
+		response(std::move(response_)),
+		status_ok(status_OK_),
 		http_code(http_code_),
-		error_message(error_message_)
+		error_message(std::move(error_message_))
 {
 }
 

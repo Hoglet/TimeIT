@@ -1,5 +1,5 @@
 /*
- * Autotrack_accessor.cpp
+ * Auto_track_accessor.cpp
  *
  *  Created on: 2008-jun-25
  *      Author: hoglet
@@ -35,7 +35,7 @@ void  Auto_track_accessor::upgrade()
 
 }
 
-Task_id_list Auto_track_accessor::task_IDs(int workspace)
+Task_id_list Auto_track_accessor::task_ids(unsigned workspace)
 {
 	Task_id_list return_value;
 	stringstream  statement;
@@ -56,16 +56,16 @@ Task_id_list Auto_track_accessor::task_IDs(int workspace)
 
 vector<unsigned> Auto_track_accessor::workspaces(int64_t taskID)
 {
-	vector<unsigned> retVal;
+	vector<unsigned> return_value;
 	stringstream     statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
 	Query_result rows = database.execute(statement.str());
 	for (auto row : rows)
 	{
-		int workspace = (int)row[0].integer();
-		retVal.push_back(workspace);
+		auto workspace = (unsigned)row[0].integer();
+		return_value.push_back(workspace);
 	}
-	return retVal;
+	return return_value;
 }
 
 void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<unsigned> workspaces)

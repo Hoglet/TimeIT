@@ -20,9 +20,9 @@ enum Time_entry_state
 
 struct Time_entry
 {
-	const Time_id              ID;
+	const Time_id              id;
 	const class UUID           uuid;
-	const Task_id              task_ID;
+	const Task_id              task_id;
 	const time_t               start;
 	const time_t               stop;
 	const Time_entry_state     state;
@@ -30,26 +30,26 @@ struct Time_entry
 	const optional<class UUID> task_uuid;
 
 	Time_entry(
-			Task_id task_ID_,
-			time_t  start_,
-			time_t  stop_
+			Task_id          task_id,
+			time_t           start,
+			time_t           stop
 			);
 	Time_entry(
-			Task_id          task_ID_,
-			time_t           start_,
-			time_t           stop_,
-			Time_entry_state state_
+			Task_id          task_id,
+			time_t           start,
+			time_t           stop,
+			Time_entry_state state
 	);
 
 	Time_entry(
-			Time_id          id_,
-			UUID             uuid_,
-			Task_id          task_ID_,
-			optional<UUID>   taskUUID_,
-			time_t           start_,
-			time_t           stop_,
-			Time_entry_state state_,
-			time_t           changed_);
+			Time_id          id,
+			UUID             uuid,
+			Task_id          task_id,
+			optional<UUID>   task_uuid,
+			time_t           start,
+			time_t           stop,
+			Time_entry_state state,
+			time_t           changed);
 
 	[[nodiscard]] Time_entry with_start(time_t) const;
 	[[nodiscard]] Time_entry with_stop(time_t) const;

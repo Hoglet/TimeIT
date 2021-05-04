@@ -84,7 +84,7 @@ TEST( TimeKeeper, update )
 	timeKeeper.start(taskID);
 
 	vector<Time_entry> entries = time_accessor.time_list(taskID, 0, now + 1000);
-	int64_t teID = entries.at(0).ID;
+	int64_t teID = entries.at(0).id;
 	auto te = time_accessor.by_ID(teID);
 	time_accessor.update(te->with_start(0).with_start(10));
 

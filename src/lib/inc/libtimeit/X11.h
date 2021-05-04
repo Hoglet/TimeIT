@@ -19,6 +19,11 @@ class X11
 {
 public:
 	X11();
+	X11(const X11&) = delete;
+	X11(X11&&) = delete;
+	X11& operator=(X11&&) = delete;
+	X11& operator=(const X11&) = delete;
+
 	virtual ~X11();
 	long            get_cardinal(const char *prop_name, int index) noexcept(false);
 	vector<string>  get_strings(const char *prop_name)             noexcept(false);
@@ -26,8 +31,7 @@ public:
 	int             viewport_height();
 private:
 	Display          *display;
-	Window            rootWindow;
-	General_exception e;
+	Window            root_window;
 };
 
 }

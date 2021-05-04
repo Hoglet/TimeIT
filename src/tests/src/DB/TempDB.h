@@ -20,8 +20,6 @@ class TempDB : public libtimeit::Database
 {
 public:
 	TempDB(Notifier &notifier);
-	virtual ~TempDB();
-	void execute(string statement);
 };
 
 }

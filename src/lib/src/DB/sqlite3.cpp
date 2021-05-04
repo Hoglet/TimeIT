@@ -1,7 +1,7 @@
 
 #include <sstream>
 #include <string>
-#include <string.h>
+#include <cstring>
 #include <libtimeit/db/sqlite3.h>
 
 using namespace std;
@@ -11,6 +11,12 @@ namespace libtimeit
 SQLite3::SQLite3(string dbname)
 {
 	init(dbname);
+}
+SQLite3::SQLite3(SQLite3&& other):
+	db(other.db),
+	in_transaction(other.in_transaction)
+{
+	other.db=nullptr;
 }
 
 SQLite3::~SQLite3()
@@ -24,7 +30,7 @@ void SQLite3::init(string dbname)
 	int rc = sqlite3_open(dbname.c_str(), &db);
 	if ( rc != SQLITE_OK )
 	{
-		auto* message = sqlite3_errmsg(db);
+		const auto* message = sqlite3_errmsg(db);
 		sqlite3_close(db);
 		throw db_exception(message, rc);
 	}
@@ -37,8 +43,8 @@ int64_t SQLite3::ID_of_last_insert()
 
 Statement SQLite3::prepare(const string& query)
 {
-	sqlite3_stmt* stmt;
-	int rc = sqlite3_prepare_v2(db, query.c_str(), strlen(query.c_str()), &stmt, nullptr);
+	sqlite3_stmt* stmt{nullptr};
+	int rc = sqlite3_prepare_v2(db, query.c_str(), (int)strlen(query.c_str()), &stmt, nullptr);
 	if (rc != SQLITE_OK)
 	{
 		std::stringstream message;
@@ -70,12 +76,15 @@ void SQLite3::begin_transaction()
 
 void SQLite3::end_transaction()
 {
-	if (in_transaction == false)
+	if (in_transaction )
+	{
+		execute("COMMIT");
+		in_transaction = false;
+	}
+	else
 	{
 		throw db_exception("No transaction in progress");
 	}
-	execute("COMMIT");
-	in_transaction = false;
 }
 void SQLite3::try_rollback()
 {
@@ -91,26 +100,35 @@ string SQLite3::last_error_message()
 	return sqlite3_errmsg(db);
 }
 
+Statement::Statement(Statement&& other):
+		db(other.db),
+		stmt(other.stmt),
+        number_of_columns(other.number_of_columns)
+{
+	other.stmt=nullptr;
+}
 
 Statement::~Statement()
 {
 	sqlite3_finalize(stmt);
 }
 
-Statement::Statement(sqlite3_stmt* op_stmt, SQLite3& op_db): db(op_db)
+Statement::Statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
+	db(op_db),
+	stmt(op_stmt),
+	number_of_columns(sqlite3_column_count(stmt))
 {
-	stmt = op_stmt;
-	number_of_columns = sqlite3_column_count(stmt);
+
 }
 
 void Statement::bind_value(int index, int64_t value)
 {
-	sqlite3_bind_int(stmt, index, value);
+	sqlite3_bind_int(stmt, index, (int)value);
 }
 
 void Statement::bind_value(int index, const std::string& text)
 {
-	sqlite3_bind_text(stmt, index, text.c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(stmt, index, text.c_str(), -1, SQLITE_TRANSIENT); // NOLINT
 }
 
 void Statement::bind_null_value(int index)
@@ -129,7 +147,7 @@ Query_result Statement::execute()
 		{
 			break;
 		}
-		else if (rc == SQLITE_ROW)
+		if (rc == SQLITE_ROW)
 		{
 			vector<Data_cell> row;
 			for (int c = 0; c < number_of_columns; c++)
@@ -137,18 +155,15 @@ Query_result Statement::execute()
 				int type = sqlite3_column_type(stmt, c);
 				if (type == SQLITE_INTEGER)
 				{
-					Data_cell icell(sqlite3_column_int(stmt, c));
-					row.push_back(icell);
+					row.emplace_back(sqlite3_column_int(stmt, c));
 				}
 				else if (type == SQLITE_TEXT)
 				{
-					Data_cell tcell((const char*) sqlite3_column_text(stmt, c));
-					row.push_back(tcell);
+					row.emplace_back((const char*) sqlite3_column_text(stmt, c)); // NOLINT
 				}
 				else if (type == SQLITE_NULL)
 				{
-					Data_cell tcell;
-					row.push_back(tcell);
+					row.emplace_back();
 				}
 				else
 				{

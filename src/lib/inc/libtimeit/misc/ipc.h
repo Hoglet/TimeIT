@@ -17,10 +17,9 @@ using namespace std;
 class Ipc
 {
 public:
-	Ipc();
-	virtual ~Ipc();
+	Ipc() = default;
 protected:
-	string prepareSocketDir();
+	static string prepareSocketDir();
 };
 
 } /* namespace libtimeit */

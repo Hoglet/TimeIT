@@ -22,7 +22,6 @@ class Extended_task_accessor : public virtual Task_accessor
 public:
 	friend class Time_accessor;
 	Extended_task_accessor(Database& database);
-	virtual ~Extended_task_accessor();
 
 	optional<Extended_task> by_ID(int64_t taskID, time_t start = 0, time_t stop = 0);
 	vector<Extended_task>   by_parent_ID(int64_t parentID = 0, time_t start = 0, time_t stop = 0);

@@ -23,18 +23,17 @@ class Settings_accessor : public Accessor
 	friend class Database;
 public:
 	Settings_accessor(Database& database);
-	virtual ~Settings_accessor();
 
 	optional<int>   value(string name);
 
-	int    get_int(string name, int default_value);
-	bool   set_int(string name, int value);
+	int64_t   get_int(string name, int64_t default_value);
+	bool      set_int(string name, int64_t default_value);
 
-	bool   get_bool(string name, bool default_value);
-	bool   set_bool(string name, bool value) ;
+	bool      get_bool(string name, bool default_value);
+	bool      set_bool(string name, bool value) ;
 
-	string get_string(string name, string default_value);
-	bool   set_string(string name, string value);
+	string    get_string(string name, string default_value);
+	bool      set_string(string name, string value);
 protected:
 	void      create_table()   override;
 	void      drop_views()     override {};

@@ -21,7 +21,6 @@ struct asyncHTTPResponse
 class INetwork
 {
 public:
-	virtual ~INetwork() = default;
 	virtual shared_ptr<asyncHTTPResponse>
 	request(
 			string url,
@@ -36,13 +35,18 @@ class Network : public INetwork
 {
 public:
 	Network();
+	Network( const Network& ) = delete;
+	Network( Network&& )      = delete;
+	Network& operator=( const Network& ) = delete;
+	Network& operator=(  Network&& ) = delete;
+
 	virtual ~Network();
-	virtual shared_ptr<asyncHTTPResponse> request(
+	shared_ptr<asyncHTTPResponse> request(
 			string url,
 			string data,
 			string username,
 			string password,
-			bool ignore_certificate_errors);
+			bool ignore_certificate_errors) override;
 private:
 };
 //LCOV_EXCL_STOP

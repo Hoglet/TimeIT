@@ -10,7 +10,7 @@ Extended_task::Extended_task(
 		int           time,
 		bool          expanded,
 		bool          running,
-		int           op_total_time)
+		int           total_time_)
 		:
 		Task(
 				name,
@@ -24,16 +24,11 @@ Extended_task::Extended_task(
 				0,
 				false
 				),
-		total_time_(op_total_time),
+		total_time(total_time_),
 		expanded(expanded),
 		running(running),
 		time(time)
 {
-}
-
-int Extended_task::total_time() const
-{
-	return total_time_;
 }
 
 }

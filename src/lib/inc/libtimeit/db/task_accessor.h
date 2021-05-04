@@ -20,7 +20,6 @@ class Task_accessor: public Accessor
 
 public:
 	Task_accessor(Database& database);
-	~Task_accessor() = default;
 
 	optional<Task> by_ID(int64_t taskID);
 	vector<Task>   by_parent_ID(int64_t parent = 0);
@@ -43,7 +42,7 @@ protected:
 	void      upgrade()        override;
 	void      upgrade_to_DB5();
 
-	Database& database;
+	Database& database; // NOLINT
 
 private:
 	void notify(const Task &old_task, const Task &new_task);

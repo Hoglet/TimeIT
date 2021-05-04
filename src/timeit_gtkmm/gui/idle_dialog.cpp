@@ -59,7 +59,7 @@ void IdleDialog::set_time_id(Time_id id)
 	if ( time_entry.has_value())
 	{
 		m_idleStartTime = time_entry->stop;
-		auto task = taskAccessor.by_ID(time_entry->task_ID);
+		auto task = taskAccessor.by_ID(time_entry->task_id);
 		if(task.has_value())
 		{
 			taskString = task->name;
@@ -135,7 +135,7 @@ void IdleDialog::revert_and_stop(Time_id id)
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
 	{
-		time_keeper.stop(time_entry->task_ID);
+		time_keeper.stop(time_entry->task_id);
 	}
 }
 
@@ -145,7 +145,7 @@ void IdleDialog::revert_and_continue(Time_id id)
 	if(time_entry.has_value())
 	{
 		time_keeper.stop_time(id);
-		time_keeper.start(time_entry->task_ID);
+		time_keeper.start(time_entry->task_id);
 	}
 }
 

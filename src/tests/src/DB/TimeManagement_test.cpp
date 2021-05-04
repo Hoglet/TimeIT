@@ -28,7 +28,7 @@ TEST(TimeManagement, tasksTimeIs100)
 TEST(TimeManagement, tasksTotalTimeIs150)
 {
 	Extended_task task = getTask();
-	ASSERT_EQ(150, task.total_time());
+	ASSERT_EQ(150, task.total_time);
 }
 
 TEST(TimeManagement, staggerTest1RecordedTimePassesEnd)
@@ -46,13 +46,13 @@ TEST(TimeManagement, staggerTest2RecordedTimeStartsBeforeStart)
 TEST(TimeManagement, staggerTest3RecordedTotalTimePassesEnd)
 {
 	Extended_task task = getTask(0, 150);
-	ASSERT_EQ(50, task.total_time());
+	ASSERT_EQ(50, task.total_time);
 }
 
 TEST(TimeManagement, staggerTest3RecordedTotalTimeStartsBeforeStart)
 {
 	Extended_task task = getTask(150, 300);
-	ASSERT_EQ(100, task.total_time());
+	ASSERT_EQ(100, task.total_time);
 }
 
 }

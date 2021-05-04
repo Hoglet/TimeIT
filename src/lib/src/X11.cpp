@@ -9,7 +9,6 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#include <X11/cursorfont.h>
 
 namespace libtimeit
 {
@@ -18,8 +17,8 @@ namespace libtimeit
 //LCOV_EXCL_START
 X11::X11()
 {
-	display = XOpenDisplay(NULL);
-	rootWindow = DefaultRootWindow(display);
+	display = XOpenDisplay(nullptr);
+	root_window = DefaultRootWindow(display);
 
 }
 
@@ -47,7 +46,7 @@ long X11::get_cardinal(const char *name, int offset) noexcept(false)
 	Atom property_type = XA_CARDINAL;
 
 	Atom returned_type;
-	int  returned_Format;
+	int  returned_format;
 	unsigned long number_of_items;
 	unsigned long bytes_after_return;
 	unsigned char *returned_data;
@@ -55,10 +54,10 @@ long X11::get_cardinal(const char *name, int offset) noexcept(false)
 	long return_value;
 
 	if (XGetWindowProperty(
-			display, rootWindow, property_name, offset, 1, False, property_type, &returned_type,
-			&returned_Format, &number_of_items, &bytes_after_return, &returned_data) == Success)
+			display, root_window, property_name, offset, 1, False, property_type, &returned_type,
+			&returned_format, &number_of_items, &bytes_after_return, &returned_data) == Success)
 	{
-		if (returned_Format == 32 && returned_type == property_type && number_of_items > 0)
+		if (returned_format == 32 && returned_type == property_type && number_of_items > 0) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		{
 			return_value = ((long *) returned_data)[0];
 			XFree(returned_data);
@@ -66,14 +65,13 @@ long X11::get_cardinal(const char *name, int offset) noexcept(false)
 		else
 		{
 			XFree(returned_data);
-			e.setMessage("get_cardinal failed: Unexpected data");
-			throw e;
+			throw General_exception("get_cardinal failed: Unexpected data");
+
 		}
 	}
 	else
 	{
-		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
-		throw e;
+		throw General_exception("get_cardinal failed: XGetWindowProperty failed");
 	}
 	return return_value;
 }
@@ -91,8 +89,8 @@ vector<string> X11::get_strings(const char *name) noexcept(false)
 	vector<string> return_values;
 
 	if (XGetWindowProperty(
-			display, rootWindow, property_name, 0, 1024, False, property_type, &returned_type,
-			&returned_format, &number_of_items, &bytes_after_return, &returned_data) == Success)
+			display, root_window, property_name, 0, 1024, False, property_type, &returned_type,
+			&returned_format, &number_of_items, &bytes_after_return, &returned_data) == Success) // NOLINT(cppcoreguidelines-avoid-magic-numbers)
 	{
 
 		if (returned_type == property_type && number_of_items > 0)
@@ -109,14 +107,12 @@ vector<string> X11::get_strings(const char *name) noexcept(false)
 		else
 		{
 			XFree(returned_data);
-			e.setMessage("get_strings failed: Unexpected data");
-			throw e;
+			throw General_exception("get_strings failed: Unexpected data");
 		}
 	}
 	else
 	{
-		e.setMessage("get_cardinal failed: XGetWindowProperty failed");
-		throw e;
+		throw General_exception("get_cardinal failed: XGetWindowProperty failed");
 	}
 	return return_values;
 }

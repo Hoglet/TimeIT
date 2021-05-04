@@ -1,17 +1,11 @@
-/*
- * Workspace.cpp
- *
- *  Created on: 2008-aug-15
- *      Author: hoglet
- */
-
 #include "libtimeit/logic/workspace.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 namespace libtimeit
 {
-
+using namespace  std;
 //LCOV_EXCL_START
 Workspace::Workspace()
 {
@@ -25,9 +19,7 @@ Workspace::Workspace()
 	}
 }
 
-Workspace::~Workspace()
-{
-}
+
 
 Layout Workspace::layout()
 {
@@ -37,19 +29,17 @@ Layout Workspace::layout()
 	try
 	{
 		is_virtual = false;
-		desktop_width = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 0);
-		desktop_height = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 1);
+		auto desktop_width = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 0);
+		auto desktop_height = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 1);
 		viewport_width = x11.viewport_width();
 		viewport_height = x11.viewport_height();
-		number_of_workspaces = x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0);
-		columns = 1;
-		rows = number_of_workspaces;
+		number_of_workspaces = (unsigned)x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0);
 
 		if (supports_layout && number_of_workspaces > 1)
 		{
 
 			/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
-			columns = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
+			columns = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
 			if (columns == 0)
 			{
 				rows = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
@@ -65,7 +55,6 @@ Layout Workspace::layout()
 			rows = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
 			if (rows == 0)
 			{
-				int columns = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
 				if (columns != 0)
 				{
 					rows = (number_of_workspaces + 1) / columns;
@@ -96,15 +85,15 @@ Layout Workspace::layout()
 
 unsigned Workspace::active()
 {
-	unsigned active = 0;
+	long active = 0;
 	auto layout = this->layout();
 	if (layout.number_of_workspaces != x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0))
 	{
-		int x = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 0);
-		int y = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 1);
+		auto x = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 0);
+		auto y = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 1);
 
-		int current_column = x / viewport_width + 1;
-		int current_row = y / viewport_height + 1;
+		auto current_column = x / viewport_width + 1;
+		auto current_row = y / viewport_height + 1;
 		active = current_column * current_row - 1;
 	}
 	else
@@ -118,7 +107,7 @@ unsigned Workspace::active()
 			cerr << e.what();
 		}
 	}
-	return active;
+	return (unsigned)max(active,0L);
 }
 
 string Workspace::name(unsigned workspace_nr)
@@ -127,21 +116,21 @@ string Workspace::name(unsigned workspace_nr)
 	{
 		workspace_nr = 0;
 	}
-	string retVal;
+	string return_value;
 	try
 	{
 		vector<string> names = x11.get_strings("_NET_DESKTOP_NAMES");
 
 		if ((int) names.size() > workspace_nr)
 		{
-			retVal = names.at(workspace_nr);
+			return_value = names.at(workspace_nr);
 		}
 	}
 	catch (const General_exception &e)
 	{
 		cerr << e.what();
 	}
-	return retVal;
+	return return_value;
 }
 
 }

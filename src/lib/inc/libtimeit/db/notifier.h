@@ -27,14 +27,11 @@ struct Notification_message
 class Notifier
 {
 	friend class Event_observer;
-
 public:
-	Notifier();
-	virtual ~Notifier();
-	void send_notification(message_type type, int64_t item_id, string name = "");
-	void enabled(bool);
-	void send(EventType type, string headline, string message);
-	int size();
+	void          send_notification(message_type type, int64_t item_id, string name = "");
+	void          enabled(bool);
+	void          send(EventType type, string headline, string message);
+	unsigned long size();
 protected:
 	void attach(Event_observer*);
 	void detach(Event_observer*);

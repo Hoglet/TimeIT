@@ -1,5 +1,6 @@
 
 #include <stdexcept>
+#include <utility>
 #include <libtimeit/db/task.h>
 
 namespace libtimeit
@@ -74,13 +75,13 @@ Task::Task(
 		unsigned             idle_,
 		bool                 quiet_)
 	:
-		name(name_),
+		name(move(name_)),
 		parent_id(parentID_),
-		uuid(uuid_),
+		uuid(move(uuid_)),
 		completed(completed_),
 		id(ID_),
 		last_changed(last_change_),
-		parent_uuid(parent_uuid_),
+		parent_uuid(move(parent_uuid_)),
 		deleted(deleted_),
 		idle(idle_),
 		quiet(quiet_)

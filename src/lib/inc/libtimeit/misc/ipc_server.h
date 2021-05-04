@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef SRC_MISC_IPCSERVER_H_
-#define SRC_MISC_IPCSERVER_H_
+#ifndef SRC_MISC_IPC_SERVER_H_
+#define SRC_MISC_IPC_SERVER_H_
 
 #include <string>
 #include <memory>
@@ -24,9 +24,14 @@ class IpcServer: public Ipc, public Timer_observer
 {
 public:
 	IpcServer(string socketName, Timer&);
-	virtual ~IpcServer();
+	IpcServer(const IpcServer& ) = delete;
+	IpcServer(IpcServer&& ) = delete;
+	IpcServer& operator=(const IpcServer& ) = delete;
+	IpcServer& operator=( IpcServer&& ) = delete;
+
+	~IpcServer() override;
 	void poll();
-	virtual void on_signal_1_second();
+	void on_signal_1_second() override;
 	void attach(Event_observer*);
 	void detach(Event_observer*);
 	private:
@@ -39,4 +44,4 @@ public:
 } /* namespace libtimeit */
 
 
-#endif /* SRC_MISC_IPCSERVER_H_ */
+#endif /* SRC_MISC_IPC_SERVER_H_ */

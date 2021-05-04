@@ -24,7 +24,6 @@ class Time_accessor: public Accessor
 	friend Database;
 public:
 	Time_accessor(Database& database);
-	~Time_accessor() = default;
 
 	Time_id                 create(Time_entry item);
 	optional<Time_entry>    by_ID(Time_id id);

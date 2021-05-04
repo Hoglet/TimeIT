@@ -14,7 +14,6 @@ using namespace std;
 Network::Network()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
-
 }
 
 Network::~Network()

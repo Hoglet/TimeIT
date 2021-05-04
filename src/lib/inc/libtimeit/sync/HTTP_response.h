@@ -16,7 +16,7 @@ struct HTTP_response
 {
 	const string url;
 	const string response;
-	const bool   status_OK;
+	const bool   status_ok;
 	const int    http_code;
 	const string error_message;
 

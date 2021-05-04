@@ -36,9 +36,9 @@ TEST (AutotrackAccessor, getTaskIDs)
 
 	workspaces.push_back(1);
 	autotrackAccessor.set_workspaces(taskID, workspaces);
-	vector<int64_t> result = autotrackAccessor.task_IDs(0);
+	vector<int64_t> result = autotrackAccessor.task_ids(0);
 	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 0 ";
-	result = autotrackAccessor.task_IDs(1);
+	result = autotrackAccessor.task_ids(1);
 	ASSERT_EQ(1, result.size()) << "Number of ids on workspace 1 ";
 
 	stringstream statement;
@@ -47,7 +47,7 @@ TEST (AutotrackAccessor, getTaskIDs)
 	statement << " WHERE id = " << taskID;
 	tempdb.execute(statement.str());
 
-	result = autotrackAccessor.task_IDs(1);
+	result = autotrackAccessor.task_ids(1);
 	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 1 when task is deleted ";
 }
 

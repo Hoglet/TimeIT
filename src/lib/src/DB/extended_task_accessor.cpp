@@ -13,21 +13,13 @@ Extended_task_accessor::Extended_task_accessor(Database& database )
 {
 }
 
-Extended_task_accessor::~Extended_task_accessor()
-{
-}
+
 
 
 vector<Extended_task> Extended_task_accessor::by_parent_ID(int64_t parentID, time_t start,
 														   time_t stop)
 {
 	vector<Extended_task> tasks = _getExtendedTasks(0, parentID, false, start, stop);
-	for (unsigned int i = 0; i < tasks.size(); i++)
-	{
-		Extended_task& task = tasks.at(i);
-		int totalTime = time_accessor.total_cumulative_time(task.id, start, stop);
-		task.total_time_=totalTime;
-	}
 	return tasks;
 }
 
@@ -35,19 +27,19 @@ vector<Extended_task> Extended_task_accessor::by_parent_ID(int64_t parentID, tim
 Duration Extended_task_accessor::getTotalChildTime(int64_t id, time_t start, time_t stop)
 {
 	auto tasks = _getExtendedTasks(0, id, false, start, stop);
-	int totalTime = 0;
+	int total_time = 0;
 	for (auto task : tasks)
 	{
-		totalTime += task.time;
-		totalTime += getTotalChildTime(task.id, start, stop);
+		total_time += task.time;
+		total_time += getTotalChildTime(task.id, start, stop);
 	}
-	return totalTime;
+	return total_time;
 }
 
 vector<Extended_task> Extended_task_accessor::_getExtendedTasks(int64_t taskID, int64_t parentID,
 																bool onlyRunning, time_t start, time_t stop)
 {
-	vector<Extended_task> retVal;
+	vector<Extended_task> return_value;
 	stringstream statement;
 
 	statement << "SELECT id, parent, name, expanded, running "
@@ -88,10 +80,15 @@ vector<Extended_task> Extended_task_accessor::_getExtendedTasks(int64_t taskID, 
 		bool expanded = row[3].boolean();
 		bool running = row[4].boolean();
 		int time = time_accessor.duration_time(id, start, stop);
-		Extended_task task(id, parent, name, time, expanded, running);
-		retVal.push_back(task);
+		int total_time = time;
+		if(id>0)
+		{
+			total_time = time_accessor.total_cumulative_time(id, start, stop);
+		}
+		Extended_task task(id, parent, name, time, expanded, running, total_time);
+		return_value.push_back(task);
 	}
-	return retVal;
+	return return_value;
 }
 
 optional<Extended_task> Extended_task_accessor::by_ID(int64_t taskID, time_t start, time_t stop)
@@ -99,11 +96,7 @@ optional<Extended_task> Extended_task_accessor::by_ID(int64_t taskID, time_t sta
 	vector<Extended_task> tasks = _getExtendedTasks(taskID, 0, false, start, stop);
 	if (tasks.size() == 1)
 	{
-		Extended_task& task = tasks.at(0);
-		int totalTime = task.time;
-		totalTime += getTotalChildTime(taskID, start, stop);
-		task.total_time_=totalTime;
-		return task;
+		return tasks.at(0);
 	}
 	return {};
 }

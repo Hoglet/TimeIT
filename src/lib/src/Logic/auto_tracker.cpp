@@ -41,7 +41,7 @@ void Auto_tracker::check_for_changes()
 	auto user_is_active = time_keeper.user_is_active();
 	if( user_is_active && old_user_is_active != user_is_active )
 	{
-		for(auto task_id : auto_track_accessor.task_IDs(new_workspace))
+		for(auto task_id : auto_track_accessor.task_ids(new_workspace))
 		{
 			auto task = task_accessor.by_ID(task_id);
 			if(task.has_value() && task->quiet)
@@ -58,22 +58,22 @@ bool contains(vector<Task_id> vec, Task_id item)
 	return (find(vec.begin(), vec.end(), item) != vec.end());
 }
 
-void Auto_tracker::do_task_switching(int old_workspace, int new_workspace)
+void Auto_tracker::do_task_switching(unsigned old_workspace, unsigned new_workspace)
 {
-	vector<Task_id> tasks_to_stop  = auto_track_accessor.task_IDs(old_workspace);
-	vector<Task_id> tasks_to_start = auto_track_accessor.task_IDs(new_workspace);
-	for (int64_t task_ID : tasks_to_stop)
+	vector<Task_id> tasks_to_stop  = auto_track_accessor.task_ids(old_workspace);
+	vector<Task_id> tasks_to_start = auto_track_accessor.task_ids(new_workspace);
+	for (auto task_id : tasks_to_stop)
 	{
-		if (!contains(tasks_to_start, task_ID))
+		if (!contains(tasks_to_start, task_id))
 		{
-			time_keeper.stop(task_ID);
+			time_keeper.stop(task_id);
 		}
 	}
-	for (auto task_ID : tasks_to_start)
+	for (auto task_id : tasks_to_start)
 	{
 		try
 		{
-			time_keeper.start(task_ID);
+			time_keeper.start(task_id);
 		}
 		catch (...)
 		{

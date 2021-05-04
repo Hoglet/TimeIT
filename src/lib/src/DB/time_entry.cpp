@@ -1,5 +1,6 @@
 
 #include <libtimeit/db/time_entry.h>
+#include <utility>
 
 namespace libtimeit
 {
@@ -13,10 +14,10 @@ Time_entry::Time_entry(
 		Time_entry_state      state_,
 		time_t                changed_)
 		:
-		ID(id_),
-		uuid(uuid_),
-		task_ID(task_ID_),
-		task_uuid(taskUUID_),
+		id(id_),
+		uuid(move(move(uuid_))),
+		task_id(task_ID_),
+		task_uuid(move(move(taskUUID_))),
 		start(start_),
 		stop(stop_),
 		state(state_),
@@ -31,9 +32,9 @@ Time_entry::Time_entry(
 		time_t  start_,
 		time_t  stop_)
 			:
-		ID(0),
+		id(0),
 		uuid(UUID() ),
-		task_ID(task_ID_ ),
+		task_id(task_ID_ ),
 		task_uuid({} ),
 		start(start_ ),
 		stop(stop_ ),
@@ -48,9 +49,9 @@ Time_entry::Time_entry(
 		time_t           stop_,
 		Time_entry_state state_)
 		:
-		ID(0),
+		id(0),
 		uuid(UUID() ),
-		task_ID(task_ID_ ),
+		task_id(task_ID_ ),
 		task_uuid({} ),
 		start(start_ ),
 		stop(stop_ ),
@@ -67,18 +68,15 @@ Time_entry Time_entry::with_start(time_t start_) const
 	{
 		return *this;
 	}
-	else
-	{
-		return Time_entry(
-				ID,
-				uuid,
-				task_ID,
-				task_uuid,
-				start_,
-				stop,
-				state,
-				time(nullptr));
-	}
+	return Time_entry(
+			id,
+			uuid,
+			task_id,
+			task_uuid,
+			start_,
+			stop,
+			state,
+			time(nullptr));
 }
 
 Time_entry Time_entry::with_stop(time_t stop_) const
@@ -87,18 +85,15 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 	{
 		return *this;
 	}
-	else
-	{
-		return Time_entry(
-				ID,
-				uuid,
-				task_ID,
-				task_uuid,
-				start,
-				stop_,
-				state,
-				time(nullptr));
-	}
+	return Time_entry(
+			id,
+			uuid,
+			task_id,
+			task_uuid,
+			start,
+			stop_,
+			state,
+			time(nullptr));
 }
 
 
@@ -108,24 +103,21 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 	{
 		return *this;
 	}
-	else
-	{
-		return Time_entry(
-				ID,
-				uuid,
-				task_ID,
-				task_uuid,
-				start,
-				stop,
-				new_state,
-				time(nullptr));
-	}
+	return Time_entry(
+			id,
+			uuid,
+			task_id,
+			task_uuid,
+			start,
+			stop,
+			new_state,
+			time(nullptr));
 }
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
-	return (op1.ID == op2.ID && op1.changed == op2.changed && op1.state == op2.state
-			&& op1.start == op2.start && op1.stop == op2.stop && op1.task_ID == op2.task_ID && op1.uuid == op2.uuid
+	return (op1.id == op2.id && op1.changed == op2.changed && op1.state == op2.state
+			&& op1.start == op2.start && op1.stop == op2.stop && op1.task_id == op2.task_id && op1.uuid == op2.uuid
 			&& op1.task_uuid == op2.task_uuid);
 }
 

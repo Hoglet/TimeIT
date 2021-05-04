@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <utility>
 #include <libtimeit/exceptions/db_exception.h>
 
 namespace libtimeit
@@ -7,18 +8,13 @@ namespace libtimeit
 
 using namespace std;
 
-db_exception::db_exception(string message, int return_code)
-{
-	this->message     = message;
-	this->return_code = return_code;
-}
-
-db_exception::~db_exception() throw()
+db_exception::db_exception(string message_, int return_code_):
+	message(move(message_)),
+	return_code(return_code_)
 {
 }
 
-
-const char *db_exception::what() const throw()
+const char *db_exception::what() const noexcept
 {
 	stringstream str;
 	str << rc_to_string() << " " << message.c_str() << endl;

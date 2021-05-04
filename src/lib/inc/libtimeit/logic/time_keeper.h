@@ -55,7 +55,7 @@ public:
 
 	//
 	[[nodiscard]] bool   tasks_are_running() const;
-	[[nodiscard]] bool   is_idle();
+	[[maybe_unused]] [[nodiscard]] bool   is_idle();
 	//TimerProxyObserver interface
 	void on_signal_10_seconds() override;
 
@@ -69,12 +69,11 @@ private:
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
-	int idle_Gz;
+	int idle_gz;
 	unsigned default_idle_time{0};
 
 	void notify_running_changed();
 	void notify_idle_detected(Time_id /*id*/);
-	void notify_activity_resumed();
 
 	list<Time_keeper_observer *> observers;
 

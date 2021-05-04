@@ -15,21 +15,21 @@ namespace libtimeit
 
 static const int RW_RW_RW = 0666;
 
-Application_lock::Application_lock(string lock_base)
+Application_lock::Application_lock(string lock_base) : locked(false)
 {
-	locked = false;
-	string fileName = lock_base + ".lock";
+
+	string file_name = lock_base + ".lock";
 	//
-	struct flock fl;
+	struct flock fl{};
 
 	fl.l_type = F_WRLCK;
 	fl.l_whence = SEEK_SET;
 	fl.l_start = 0;
 	fl.l_len = 1;
 
-	if ((fd_lock = open(fileName.c_str(), O_WRONLY | O_CREAT, RW_RW_RW)) != -1)
+	if ((fd_lock = open(file_name.c_str(), O_WRONLY | O_CREAT, RW_RW_RW)) != -1) // NOLINT
 	{
-		if (fcntl(fd_lock, F_SETLK, &fl) != -1)
+		if (fcntl(fd_lock, F_SETLK, &fl) != -1) // NOLINT
 		{
 			locked = true;
 		}

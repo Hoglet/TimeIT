@@ -6,54 +6,36 @@ namespace libtimeit
 
 using namespace std;
 
-constexpr auto DATACELL_INTEGER = 1;
-constexpr auto DATACELL_FLOAT = 2;
-constexpr auto DATACELL_TEXT = 3;
-constexpr auto DATACELL_BLOB = 4;
-constexpr auto DATACELL_NULL = 5;
-constexpr auto DATACELL_BOOL = 6;
+const auto DATA_CELL_INTEGER = 1;
+const auto DATA_CELL_TEXT    = 3;
+const auto DATA_CELL_NULL    = 5;
 
 
-Data_cell::Data_cell()
+Data_cell::Data_cell(int op_value) : value(op_value), type(DATA_CELL_INTEGER)
 {
-	value = 0;
-	type = DATACELL_NULL;
 }
 
-Data_cell::Data_cell(int op_value)
-{
-	value = op_value;
-	type = DATACELL_INTEGER;
-}
-
-Data_cell::Data_cell(const char *op_text) : txt(op_text)
-{
-	type = DATACELL_TEXT;
-	value = 0;
-}
-
-
-Data_cell::~Data_cell()
+Data_cell::Data_cell(const char *op_text) : txt(op_text), type(DATA_CELL_TEXT)
 {
 }
 
 bool Data_cell::has_value() const
 {
-	return (type != DATACELL_NULL);
+	return (type != DATA_CELL_NULL);
 }
 
 int64_t Data_cell::integer() const
 {
-	if (type != DATACELL_INTEGER)
+	if (type != DATA_CELL_INTEGER)
 	{
 		throw db_exception("Wrong datatype on column");
 	}
 	return value;
 }
 
-string Data_cell::text()
+string Data_cell::text() const
 {
-	if (type != DATACELL_TEXT)
+	if (type != DATA_CELL_TEXT)
 	{
 
 		throw db_exception("Wrong datatype on column");
@@ -63,7 +45,7 @@ string Data_cell::text()
 
 bool Data_cell::boolean() const
 {
-	if (type != DATACELL_INTEGER)
+	if (type != DATA_CELL_INTEGER)
 	{
 		throw db_exception("Wrong datatype on column");
 	}

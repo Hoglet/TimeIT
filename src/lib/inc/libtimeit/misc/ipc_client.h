@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef SRC_MISC_IPCCLIENT_H_
-#define SRC_MISC_IPCCLIENT_H_
+#ifndef SRC_MISC_IPC_CLIENT_H_
+#define SRC_MISC_IPC_CLIENT_H_
 
 #include <string>
 #include <memory>
@@ -21,13 +21,12 @@ namespace libtimeit
 class IpcClient: public Ipc
 {
 public:
-	IpcClient(std::string socketName);
-	virtual ~IpcClient();
+	IpcClient(string socketName);
 	void window2front();
 private:
-	std::string socketName;
+	string socketName;
 };
 
 } /* namespace libtimeit */
 
-#endif /* SRC_MISC_IPCCLIENT_H_ */
+#endif /* SRC_MISC_IPC_CLIENT_H_ */

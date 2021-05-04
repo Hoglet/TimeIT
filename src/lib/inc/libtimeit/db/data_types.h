@@ -1,10 +1,7 @@
-//
-// Created by hoglet on 29/03/2021.
-//
-
 #ifndef TIMEIT_DATA_TYPES_H
 #define TIMEIT_DATA_TYPES_H
 #include <vector>
+#include <cstdint>
 
 namespace libtimeit
 {

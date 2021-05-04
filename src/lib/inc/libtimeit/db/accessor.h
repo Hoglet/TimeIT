@@ -16,4 +16,4 @@ public:
 	virtual void upgrade()        = 0;
 };
 }
-#endif //TIMEIT_ACESSOR_H
+#endif //TIMEIT_ACCESSOR_H

@@ -9,7 +9,7 @@ namespace libtimeit
 
 void init()
 {
-	srand( now() );
+	srand( (unsigned int)now() );
 }
 
 }

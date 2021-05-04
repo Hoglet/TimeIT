@@ -18,10 +18,9 @@ public:
 
 	bool operator==(const UUID &rhs) const;
 	bool operator!=(const UUID &rhs) const;
-	const char *c_str() const;
+	[[nodiscard]] const char *c_str() const;
 private:
 	string uuid;
-	void operator=(const UUID &);
 	UUID(string basic_string);
 };
 

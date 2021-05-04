@@ -6,8 +6,6 @@
  */
 
 #include "libtimeit/db/notifier.h"
-#include "libtimeit/utils.h"
-#include <iostream>
 
 namespace libtimeit
 {
@@ -15,25 +13,16 @@ using namespace std;
 
 
 
-Notifier::Notifier()
-{
-}
-
-Notifier::~Notifier()
-{
-
-}
-
 void Notifier::attach(Event_observer* observer)
 {
-	if (observer)
+	if (observer != nullptr)
 	{
 		observers.push_back(observer);
 	}
 }
 void Notifier::detach(Event_observer* observer)
 {
-	if (observer)
+	if (observer != nullptr)
 	{
 		observers.remove(observer);
 	}
@@ -138,7 +127,7 @@ void Notifier::send_notification(message_type type, int64_t ID, string name)
 	}
 }
 
-int Notifier::size()
+unsigned long Notifier::size()
 {
 	return observers.size();
 }

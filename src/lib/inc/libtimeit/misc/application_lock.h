@@ -22,7 +22,12 @@ public:
 	 *  .lock to lockBase and lock the resulting file.
 	 */
 	explicit Application_lock(string lock_base);
-	bool lock_acquired() const;
+	Application_lock(const Application_lock&) = delete;
+	Application_lock(const Application_lock&&) = delete;
+	Application_lock& operator=(const Application_lock&) = delete;
+	Application_lock& operator=(Application_lock&&) = delete;
+
+	[[nodiscard]] bool lock_acquired() const;
 private:
 	int  fd_lock;
 	bool locked;

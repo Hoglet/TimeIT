@@ -6,7 +6,6 @@
  */
 
 #include "libtimeit/misc/ipc.h"
-#include <sys/un.h>
 #include <iostream>
 #include <sys/stat.h>
 
@@ -15,34 +14,25 @@ namespace libtimeit
 
 using namespace std;
 
-Ipc::Ipc()
-{
-	// Nothing to do
-}
-
-Ipc::~Ipc()
-{
-	// Nothing to do
-}
 
 std::string Ipc::prepareSocketDir()
 {
-	string runtimeDir;
-	char *s = getenv("XDG_RUNTIME_DIR");
-	if (s != NULL)
+	string runtime_dir;
+	char *s = getenv("XDG_RUNTIME_DIR");   // NOLINT
+	if (s != nullptr)
 	{
-		runtimeDir = s;
+		runtime_dir = s;
 	}
 	else
 	{
 		std::cerr << "XDG_RUNTIME_DIR is not defined, fallback to /tmp\n";
-		runtimeDir = "/tmp";
+		runtime_dir = "/tmp";
 	}
-	runtimeDir = runtimeDir + "/timeit/";
+	runtime_dir = runtime_dir + "/timeit/";
 
-	mkdir(runtimeDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir(runtime_dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-	return runtimeDir;
+	return runtime_dir;
 }
 
 } /* namespace Utils */

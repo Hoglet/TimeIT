@@ -19,10 +19,10 @@ namespace test
 void createVersion4db(const char *dbname)
 {
 	unlink(dbname);
-	shared_ptr<SQLite3> db = shared_ptr<SQLite3>(new SQLite3(dbname));
+	SQLite3 db(dbname);
 
 	//Create necessary tables
-	db->execute(
+	db.execute(
 			"CREATE TABLE IF NOT EXISTS tasks "
 			"(id          INTEGER PRIMARY KEY,"
 			" name        VARCHAR,"
@@ -30,24 +30,24 @@ void createVersion4db(const char *dbname)
 			" running     BOOL DEFAULT false,"
 			" expanded    BOOL DEFAULT false,"
 			" deleted     BOOL DEFAULT false)");
-	db->execute(
+	db.execute(
 			"CREATE TABLE IF NOT EXISTS times "
 			"(id          INTEGER PRIMARY KEY,"
 			" taskID      INTEGER,"
 			" start       INTEGER,"
 			" stop        INTEGER,"
 			" running     BOOL    DEFAULT false) ");
-	db->execute(
+	db.execute(
 			"CREATE TABLE IF NOT EXISTS autotrack "
 			"(taskID      INTEGER,"
 			" workspace   INTEGER)");
-	db->execute(
+	db.execute(
 			"CREATE TABLE IF NOT EXISTS parameters "
 			"(id          VARCHAR PRIMARY KEY,"
 			" string      VARCHAR,"
 			" value       INTEGER,"
 			" boolean     BOOL) ");
-	db->execute(
+	db.execute(
 			"CREATE TABLE IF NOT EXISTS settings"
 			"(name        VARCHAR PRIMARY KEY,"
 			" intValue    INTEGER,"
@@ -57,10 +57,10 @@ void createVersion4db(const char *dbname)
 	const int expectedDBVersion = 4;
 	stringstream statement;
 	statement << "INSERT INTO parameters (id, value) VALUES ( \"dbversion\"," << expectedDBVersion << " )";
-	db->execute(statement.str());
-	db->execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (1,'Test',0,0,1);");
-	db->execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (2,'Sub task',1,1,0);");
-	db->execute("INSERT INTO times (id,taskID,start,stop,running) VALUES (1,2,10,100,0);");
+	db.execute(statement.str());
+	db.execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (1,'Test',0,0,1);");
+	db.execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (2,'Sub task',1,1,0);");
+	db.execute("INSERT INTO times (id,taskID,start,stop,running) VALUES (1,2,10,100,0);");
 }
 
 void openAndCloseDB()
@@ -102,8 +102,8 @@ TEST( database, testUpgrade )
 	vector<Time_entry> times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
 	Time_entry te = times.at(0);
-	ASSERT_EQ( 1, te.ID) << "Time id ";
-	ASSERT_EQ( 2, te.task_ID) << "Time taskID ";
+	ASSERT_EQ( 1, te.id) << "Time id ";
+	ASSERT_EQ( 2, te.task_id) << "Time taskID ";
 	ASSERT_EQ( 10, te.start) << "Time start ";
 	ASSERT_EQ( 100, te.stop) << "Time stop ";
 
@@ -114,12 +114,11 @@ TEST( database, testDatacell )
 {
 	std::string data("Text");
 	Data_cell dc1(data.c_str());
-	Data_cell dc2("");
+	Data_cell dc2(dc1);
 
-	dc2 = dc1;
 	ASSERT_EQ( data, dc2.text());
-	ASSERT_THROW(dc2.integer(), db_exception);
-	ASSERT_THROW(dc2.boolean(), db_exception);
+	ASSERT_THROW((void) dc2.integer(), db_exception);
+	ASSERT_THROW((void) dc2.boolean(), db_exception);
 
 	Data_cell dci(1);
 	ASSERT_EQ(1, dci.integer());

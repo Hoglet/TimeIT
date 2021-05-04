@@ -45,7 +45,7 @@ TEST( Timer, test10SecondsTicks) /* NOLINT */
 	ASSERT_EQ(0,test.tenSeconds);
 	timer.on_signal_1_second();
 	ASSERT_EQ(0,test.tenSeconds);
-	for(int i=0;i<8;i++)
+	for(int i=0;i<9;i++)
 	{
 		timer.on_signal_1_second();
 	}

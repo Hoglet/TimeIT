@@ -23,7 +23,7 @@ public:
 
 private:
 	void check_for_changes();
-	void do_task_switching(int old_workspace, int new_workspace);
+	void do_task_switching(unsigned old_workspace, unsigned new_workspace);
 	//TimerObserver
 	void on_signal_1_second() override;
 

@@ -32,25 +32,25 @@ time_t beginning_of_year( time_t raw_time);
 time_t end_of_year( time_t raw_time);
 
 int    days_in_month( time_t raw_time);
-bool   is_on_different_days(time_t one, const time_t other);
+bool   is_on_different_days(time_t one, time_t other);
 
 string day_of_week_abbreviation( time_t raw_time);
 
 string seconds_2_hhmm(int64_t s);
-string date_string(time_t timestamp);
+string date_string(time_t time_stamp);
 string time_span_string(time_t from, time_t to);
 string duration_string(time_t from, time_t to);
 string idling_string(time_t to, time_t next);
 
-uint64_t milliseconds_since_epoch();
+[[maybe_unused]] uint64_t milliseconds_since_epoch();
 
 template<typename ... Args>
 string string_printf(const string &fmt, Args ... vs)
 {
-	size_t size = snprintf(nullptr, 0, fmt.c_str(), vs...) + 1;
-	char temp_buffer[size];
+	auto size = (int)snprintf(nullptr, 0, fmt.c_str(), vs...) + 1;
+	char temp_buffer[size];  // NOLINT
 	snprintf(temp_buffer, size, fmt.c_str(), vs...);
-	return string(temp_buffer);
+	return string((const char *)temp_buffer);
 }
 }
 ;

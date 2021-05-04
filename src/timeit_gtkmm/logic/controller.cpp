@@ -50,7 +50,7 @@ void Controller::start()
 	}
 	for( auto time_entry: time_accessor.by_state(PAUSED))
 	{
-		show_idle_dialog(time_entry.ID);
+		show_idle_dialog(time_entry.id);
 	}
 
 }

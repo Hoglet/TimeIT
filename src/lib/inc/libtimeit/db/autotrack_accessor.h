@@ -1,5 +1,5 @@
 /*
- * Autotrack_accessor.h
+ * Auto_track_accessor.h
  *
  *  Created on: 2008-jun-25
  *      Author: hoglet
@@ -24,9 +24,8 @@ class Auto_track_accessor: public Accessor
 	friend class Database;
 public:
 	Auto_track_accessor(Database& db);
-	~Auto_track_accessor() = default;
 
-	Task_id_list     task_IDs(int workspace);
+	Task_id_list     task_ids(unsigned workspace);
 	vector<unsigned> workspaces(int64_t task_ID);
 	void             set_workspaces(int64_t task_ID, vector<unsigned> workspaces);
 protected:

@@ -7,7 +7,7 @@
 #include <vector>
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/query_result.h>
-#include <stdint.h>
+#include <cstdint>
 #include <memory>
 
 namespace libtimeit
@@ -20,6 +20,11 @@ class Statement
 {
 public:
 	Statement(sqlite3_stmt* stmt, SQLite3& db);
+	Statement(const Statement&) = delete;
+	Statement(Statement&&);
+	Statement& operator=(const Statement&) = delete;
+	Statement& operator=(Statement&&) = delete;
+
 	~Statement();
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
@@ -35,6 +40,13 @@ class SQLite3
 {
 public:
 	SQLite3(string database_name);
+	SQLite3() = delete;
+	SQLite3(const SQLite3&) = delete;
+	void operator=(const SQLite3&) = delete;
+	SQLite3(SQLite3&&);
+	SQLite3& operator=(SQLite3&&) = delete;
+
+
 	virtual ~SQLite3();
 	Query_result execute(const string& statement);
 	int64_t      ID_of_last_insert();
@@ -46,9 +58,6 @@ public:
 protected:
 	void         init(string database_name);
 private:
-	SQLite3() {};
-	SQLite3(const SQLite3&);
-	void operator=(const SQLite3&);
 
 	sqlite3*  db             {nullptr};
 	bool      in_transaction {false};

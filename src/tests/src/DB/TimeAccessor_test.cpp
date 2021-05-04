@@ -131,7 +131,7 @@ TEST(TimeAccessor, testGetByID)
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	int64_t timeEntryID = timeAccessor.create( Time_entry(taskId, 10, 100) );
 	auto te = timeAccessor.by_ID(timeEntryID);
-	ASSERT_EQ(taskId, te->task_ID) << "Check task ID";
+	ASSERT_EQ(taskId, te->task_id) << "Check task ID";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
 
@@ -150,7 +150,7 @@ TEST(TimeAccessor, newItem)
 	auto item2 = timeAccessor.by_ID(timeEntryID);
 
 	ASSERT_EQ(item1.uuid, item2->uuid) << "UUID: ";
-	ASSERT_EQ(item1.task_ID, item2->task_ID) << "Task_ID: ";
+	ASSERT_EQ(item1.task_id, item2->task_id) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2->start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";

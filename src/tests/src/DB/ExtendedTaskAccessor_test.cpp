@@ -24,11 +24,11 @@ TEST(ExtendedTaskAccessor, by_ID)
 
 	auto task = taskAccessor.by_ID(taskId);
 	ASSERT_EQ("Test", task->name);
-	ASSERT_EQ(2000, task->total_time());
+	ASSERT_EQ(2000, task->total_time);
 
 	auto task2 = taskAccessor.by_ID(taskId2);
 	ASSERT_EQ("Test2", task2->name);
-	ASSERT_EQ(1000, task2->total_time());
+	ASSERT_EQ(1000, task2->total_time);
 }
 
 TEST(ExtendedTaskAccessor, by_parent_ID)
@@ -53,7 +53,7 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 	tasks = taskAccessor.by_parent_ID();
 	Extended_task &task = tasks.at(0);
 	ASSERT_EQ("Test", task.name);
-	ASSERT_EQ(1000, task.total_time());
+	ASSERT_EQ(1000, task.total_time);
 }
 
 TEST(ExtendedTaskAccessor, testTotalTime)
@@ -68,7 +68,7 @@ TEST(ExtendedTaskAccessor, testTotalTime)
 	timeAccessor.create( Time_entry( taskId2, 0, 1000 ));
 
 	auto task = taskAccessor.by_ID(taskId);
-	ASSERT_EQ(1000, task->total_time());
+	ASSERT_EQ(1000, task->total_time);
 }
 
 TEST(ExtendedTaskAccessor, setExpandedTasks)
@@ -96,21 +96,21 @@ TEST(ExtendedTaskAccessor, testTimeReporting)
 
 	auto tasks = taskAccessor.by_parent_ID(parentId);
 	Extended_task task = tasks.at(0);
-	int result = task.total_time();
+	int result = task.total_time;
 	ASSERT_EQ(1000, result);
 
 	auto task2 = taskAccessor.by_ID(taskId);
-	result = task2->total_time();
+	result = task2->total_time;
 	ASSERT_EQ(1000, result);
 
 	tasks = taskAccessor.by_parent_ID(0, 0, 0);
 	auto task3 = tasks.at(0);
-	result = task.total_time();
+	result = task.total_time;
 	ASSERT_EQ(1000, result);
 
 	tasks = taskAccessor.by_parent_ID(parentId, 0, 0);
 	auto task4 = tasks.at(0);
-	result = task4.total_time();
+	result = task4.total_time;
 	ASSERT_EQ(1000, result);
 
 }

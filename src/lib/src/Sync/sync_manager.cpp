@@ -70,7 +70,7 @@ void Sync_manager::on_signal_1_second()
 			if (request_is_done() )
 			{
 				auto response = outstandingRequest->futureResponse.get();
-				if (response.status_OK && response.http_code == HTTP_OK)
+				if (response.status_ok && response.http_code == HTTP_OK)
 				{
 					state = following_state;
 				}
@@ -114,37 +114,37 @@ bool Sync_manager::request_is_done()
 }
 
 
-time_t Sync_manager::get_next_sync(time_t referencePoint )
+time_t Sync_manager::get_next_sync(time_t reference_point )
 {
 
-	int syncInterval = settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
-	int secondBetweenSyncs = syncInterval * MINUTE;
-	return referencePoint + secondBetweenSyncs;
+	auto sync_interval = settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	auto second_between_syncs = sync_interval * MINUTE;
+	return reference_point + second_between_syncs;
 }
 
 bool Sync_manager::is_active()
 {
-	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	string base_url = settings_accessor.get_string("URL", DEFAULT_URL);
 	string username = settings_accessor.get_string("Username", DEFAULT_USER);
-	return (baseUrl.length() > 0 && username.length() > 0);
+	return (base_url.length() > 0 && username.length() > 0);
 }
 void Sync_manager::sync_tasks_to_database()
 {
 	auto result = outstandingRequest->futureResponse.get();
 	vector<Task> tasks = to_tasks(result.response);
 
-	vector<Task> tasksToUpdate;
+	vector<Task> tasks_to_update;
 	for (Task task : tasks)
 	{
 		int64_t id = task_accessor.ID(task.uuid);
-		auto parentUUID = task.parent_uuid;
+		auto parent_uuid = task.parent_uuid;
 		bool completed = task.completed;
 		int64_t parent = 0;
-		time_t lastChanged = task.last_changed;
+		time_t last_changed = task.last_changed;
 		string name  = task.name;
 		auto uuid    = task.uuid;
 		bool deleted = task.deleted;
-		int  idle    = task.idle;
+		auto idle    = task.idle;
 		bool quiet   = task.quiet;
 
 		auto  original_task = task_accessor.by_ID(id);
@@ -154,48 +154,48 @@ void Sync_manager::sync_tasks_to_database()
 			idle  = original_task->idle;
 			quiet = original_task->quiet;
 		}
-		if (parentUUID)
+		if (parent_uuid)
 		{
-			parent = task_accessor.ID(*parentUUID);
+			parent = task_accessor.ID(*parent_uuid);
 			if (parent == 0)
 			{
-				tasksToUpdate.push_back(task);
+				tasks_to_update.push_back(task);
 				continue;
 			}
 		}
-		Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted, idle, quiet);
+		Task temp_task(name, parent, uuid, completed, id, last_changed, parent_uuid, deleted, idle, quiet);
 		if (id > 0)
 		{
-			task_accessor.update(tempTask);
+			task_accessor.update(temp_task);
 		}
 		else
 		{
-			task_accessor.create(tempTask);
+			task_accessor.create(temp_task);
 		}
 	}
 //Update tasks that had missing parent earlier
-	for (Task task : tasksToUpdate)
+	for (Task task : tasks_to_update)
 	{
-		auto parentUUID = task.parent_uuid;
-		if (parentUUID)
+		auto parent_uuid = task.parent_uuid;
+		if (parent_uuid)
 		{
 			int64_t id         = task_accessor.ID(task.uuid);
-			int64_t parent     = task_accessor.ID(*parentUUID);
+			int64_t parent     = task_accessor.ID(*parent_uuid);
 			bool    completed  = task.completed;
-			time_t lastChanged = task.last_changed;
+			time_t last_changed = task.last_changed;
 			string name        = task.name;
 			auto   uuid        = task.uuid;
 			bool   deleted     = task.deleted;
-			int    idle        = task.idle;
+			auto   idle        = task.idle;
 			bool   quiet       = task.quiet;
-			Task tempTask(name, parent, uuid, completed, id, lastChanged, parentUUID, deleted, idle, quiet );
+			Task temp_task(name, parent, uuid, completed, id, last_changed, parent_uuid, deleted, idle, quiet );
 			if (id > 0)
 			{
-				task_accessor.update(tempTask);
+				task_accessor.update(temp_task);
 			}
 			else
 			{
-				task_accessor.create(tempTask);
+				task_accessor.create(temp_task);
 			}
 		}
 	}
@@ -204,15 +204,15 @@ void Sync_manager::sync_tasks_to_database()
 
 void Sync_manager::sync_times_to_database()
 {
-	auto resultA = outstandingRequest->futureResponse.get();
-	Time_list times = to_times(resultA.response);
+	auto result = outstandingRequest->futureResponse.get();
+	Time_list times = to_times(result.response);
 
 	task_accessor.enable_notifications(false);
 
 	for (auto item : times)
 	{
-		auto taskUUID = item.task_uuid;
-		int64_t taskID = task_accessor.ID(*taskUUID);
+		auto task_uuid = item.task_uuid;
+		auto task_id = task_accessor.ID(*task_uuid);
 		auto uuid = item.uuid;
 		auto id = time_accessor.uuid_to_id(uuid);
 		time_t changed = item.changed;
@@ -222,24 +222,24 @@ void Sync_manager::sync_times_to_database()
 		bool running = false;
 		if (id > 0)
 		{
-			auto originalItem = time_accessor.by_ID(id);
-			if(originalItem)
+			auto original_item = time_accessor.by_ID(id);
+			if(original_item)
 			{
-				running = originalItem->state == RUNNING;
+				running = original_item->state == RUNNING;
 			}
 		}
 
-		Time_entry_state state_ = STOPPED;
+		Time_entry_state item_state = STOPPED;
 		if ( running )
 		{
-			state_ = RUNNING;
+			item_state = RUNNING;
 		}
 		if ( deleted )
 		{
-			state_ = DELETED;
+			item_state = DELETED;
 		}
 
-		Time_entry te(id, uuid, taskID, taskUUID, start, stop, state_, changed);
+		Time_entry te(id, uuid, task_id, task_uuid, start, stop, item_state, changed);
 		if (id > 0)
 		{
 			time_accessor.update(te);
@@ -255,33 +255,33 @@ void Sync_manager::sync_times_to_database()
 shared_ptr <asyncHTTPResponse> Sync_manager::request_tasks(time_t sincePointInTime)
 {
 	vector<Task> tasks = task_accessor.changed_since(sincePointInTime);
-	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	string base_url = settings_accessor.get_string("URL", DEFAULT_URL);
 	string username = settings_accessor.get_string("Username", DEFAULT_USER);
 	string password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
-	string url = baseUrl + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	string jsonString = to_json(tasks, username);
-	return network.request(url, jsonString, username, password, ignoreCertError);
+	string url = base_url + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
+	bool ignore_cert_error = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	string json_string = to_json(tasks, username);
+	return network.request(url, json_string, username, password, ignore_cert_error);
 }
 
 shared_ptr <asyncHTTPResponse> Sync_manager::request_times(time_t sincePointInTime)
 {
 	Time_list times = time_accessor.times_changed_since(sincePointInTime);
-	std::string jsonString = to_json(times);
-	string baseUrl = settings_accessor.get_string("URL", DEFAULT_URL);
+	std::string json_string = to_json(times);
+	string base_url = settings_accessor.get_string("URL", DEFAULT_URL);
 	string username = settings_accessor.get_string("Username", DEFAULT_USER);
 	string password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
-	string url = baseUrl + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
-	bool ignoreCertError = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	string url = base_url + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
+	bool ignore_cert_error = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
-	return network.request(url, jsonString, username, password, ignoreCertError);
+	return network.request(url, json_string, username, password, ignore_cert_error);
 }
 
 
 void Sync_manager::manage_network_problems()
 {
 	auto result = outstandingRequest->futureResponse.get();
-	if ( !result.status_OK || result.http_code != HTTP_OK)
+	if (!result.status_ok || result.http_code != HTTP_OK)
 	{
 		std::stringstream text;
 		// %s is replaced with the URI on which the connection failed

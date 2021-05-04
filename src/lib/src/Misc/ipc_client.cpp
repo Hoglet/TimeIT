@@ -8,7 +8,7 @@
 #include "libtimeit/misc/ipc_client.h"
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <iostream>
 #include <fcntl.h>
@@ -23,16 +23,13 @@ IpcClient::IpcClient(string name)
 
 }
 
-IpcClient::~IpcClient()
-{
-}
 
 void IpcClient::window2front()
 {
-	struct sockaddr_un server;
+	struct sockaddr_un server{};
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-	int flags = fcntl(sock, F_GETFL);
-	fcntl(sock, F_SETFL, flags | O_NONBLOCK);
+	int flags = fcntl(sock, F_GETFL);                        // NOLINT
+	fcntl(sock, F_SETFL, flags | O_NONBLOCK);                // NOLINT
 
 	if (sock < 0)
 	{
@@ -49,8 +46,8 @@ void IpcClient::window2front()
 		}
 		else
 		{
-			const char *DATA = "{ \"command\": \"SHOW_APPLICATION\" }";
-			if (write(sock, DATA, sizeof(DATA)) < 0)
+			const char *data = R"({ "command": "SHOW_APPLICATION" })";
+			if (write(sock, data, sizeof(data)) < 0)
 			{
 				perror("writing on stream socket");
 			}

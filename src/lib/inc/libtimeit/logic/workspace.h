@@ -27,7 +27,6 @@ class Workspace
 {
 public:
 	Workspace();
-	virtual ~Workspace();
 
 	unsigned active();
 	string name(unsigned workspace_nr);
@@ -39,10 +38,8 @@ private:
 	bool supports_layout = true;
 	bool is_virtual;
 
-	int  desktop_width;
-	int  desktop_height;
-	int  viewport_width;
-	int  viewport_height;
+	long  viewport_width;
+	long  viewport_height;
 	X11  x11;
 
 };

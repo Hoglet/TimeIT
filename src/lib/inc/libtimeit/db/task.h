@@ -41,8 +41,6 @@ struct [[nodiscard]]  Task
 			unsigned       idle_,
 			bool           quiet_);
 
-	virtual ~Task() = default;
-
 	Task       with_name(string /*new_name*/)     const;
 	Task       with_parent(Task_id /*id*/)        const;
 	Task       with_completed(bool /*completed*/) const;

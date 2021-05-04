@@ -21,9 +21,8 @@ Time_keeper::Time_keeper(
 		idle_detector(timer)
 
 {
-	idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
+	idle_gz = (int)settings_accessor.get_int("Gz", DEFAULT_GZ);
 	default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
-	idle_detector.idle_timeout(default_idle_time);
 }
 
 void Time_keeper::on_settings_changed(string name)
@@ -31,11 +30,10 @@ void Time_keeper::on_settings_changed(string name)
 	if ( name == "Gt")
 	{
 		default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
-		idle_detector.idle_timeout(default_idle_time);
 	}
 	if ( name == "Gz")
 	{
-		idle_Gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
+		idle_gz = (int)settings_accessor.get_int("Gz", DEFAULT_GZ);
 	}
 }
 
@@ -54,7 +52,7 @@ void Time_keeper::start(Task_id id)
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
 	{
-		if( item.task_ID == id)
+		if(item.task_id == id)
 		{
 			return; //Already running
 		}
@@ -70,21 +68,21 @@ void Time_keeper::toggle(int64_t id)
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
 	{
-		if( item.task_ID == id)
+		if(item.task_id == id)
 		{
-			stop_time(item.ID);
+			stop_time(item.id);
 			return;
 		}
 	}
 	start(id);
 }
 
-void Time_keeper::stop_time(const Time_id id)
+void Time_keeper::stop_time(Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
 	{
-		if( time_entry->stop -time_entry->start < MINUTE )
+		if( time_entry->stop -time_entry->start < idle_gz )
 		{
 			time_accessor.update( time_entry->with (DELETED));
 		}
@@ -101,9 +99,9 @@ void Time_keeper::stop(Task_id id)
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
 	{
-		if( item.task_ID == id)
+		if(item.task_id == id)
 		{
-			stop_time(item.ID);
+			stop_time(item.id);
 			return;
 		}
 	}
@@ -114,9 +112,9 @@ void Time_keeper::on_task_removed(Task_id id)
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
 	{
-		if( item.task_ID == id)
+		if(item.task_id == id)
 		{
-			stop_time(item.ID);
+			stop_time(item.id);
 		}
 	}
 }
@@ -138,7 +136,7 @@ void Time_keeper::stop_all()
 	auto running_items = time_accessor.by_state(RUNNING);
 	for (auto item: running_items)
 	{
-		stop_time(item.ID);
+		stop_time(item.id);
 	}
 }
 
@@ -148,9 +146,10 @@ void Time_keeper::stop_all()
 	auto running_items = time_accessor.by_state(RUNNING);
 	return running_items.empty();
 }
-[[nodiscard]] bool   Time_keeper::is_idle()
+
+[[maybe_unused]] [[nodiscard]] bool   Time_keeper::is_idle()
 {
-	return idle_detector.time_idle() > 10;
+	return idle_detector.time_idle() > 10; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void Time_keeper::notify_running_changed()
@@ -189,7 +188,7 @@ void Time_keeper::check_for_status_change()
 	}
 	old_running = currently_running;
 }
-void Time_keeper::on_time_entry_changed(Time_id id)
+void Time_keeper::on_time_entry_changed(Time_id /*id*/)
 {
 	check_for_status_change();
 }
@@ -198,7 +197,7 @@ void Time_keeper::on_time_entry_changed(Time_id id)
 
 bool Time_keeper::user_is_active()
 {
-	return 	(idle_detector.time_idle() < 10);
+	return 	(idle_detector.time_idle() < 10);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void Time_keeper::update_running_entries()
@@ -219,7 +218,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 	auto running_time_items = time_accessor.by_state(RUNNING);
 	for (auto time_item: running_time_items)
 	{
-		auto task = task_accessor.by_ID(time_item.task_ID);
+		auto task = task_accessor.by_ID(time_item.task_id);
 		auto idle_time = task->idle;
 		if(idle_time == 0)
 		{
@@ -228,10 +227,10 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 		auto time_inactive = now - time_item.stop;
 		if( time_inactive > idle_time * MINUTE )
 		{
-			times_to_stop.emplace_back(time_item.ID );
+			times_to_stop.emplace_back(time_item.id );
 			if( ! task->quiet )
 			{
-				notify_idle_detected(time_item.ID );
+				notify_idle_detected(time_item.id );
 			}
 		}
 	}

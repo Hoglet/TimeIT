@@ -16,6 +16,10 @@ class HTTP_request
 {
 public:
 	HTTP_request();
+	HTTP_request( const HTTP_request& ) = delete;
+	HTTP_request( HTTP_request&& ) = delete;
+	HTTP_request& operator=( const HTTP_request& ) = delete;
+	HTTP_request& operator=( HTTP_request&& ) = delete;
 	~HTTP_request();
 	void ignore_cert_errors(bool ignore);
 	HTTP_response PUT(

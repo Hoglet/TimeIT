@@ -1,5 +1,5 @@
-#ifndef SYNCMANAGER_H_
-#define SYNCMANAGER_H_
+#ifndef SYNC_MANAGER_H_
+#define SYNC_MANAGER_H_
 
 #include <memory>
 #include <libtimeit/db/database.h>
@@ -32,15 +32,14 @@ public:
 			INetwork& network,
 			Notifier& notifier,
 			Timer&    timer);
-	virtual ~Sync_manager() = default;
 
 	Sync_state status();
-	void on_signal_1_second();
+	void on_signal_1_second() override;
 
 	void reset();
 private:
 	bool    is_active();
-	time_t  get_next_sync(time_t referencePoint);
+	time_t  get_next_sync(time_t reference_point);
 	bool    request_is_done();
 	void    sync_times_to_database();
 	void    sync_tasks_to_database();
@@ -65,4 +64,4 @@ private:
 	time_t     current_sync{0};
 };
 }
-#endif /* SYNCMANAGER_H_ */
+#endif /* SYNC_MANAGER_H_ */

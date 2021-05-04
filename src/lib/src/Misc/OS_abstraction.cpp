@@ -1,5 +1,5 @@
 /*
- * OSabstraction.cpp
+ * OS_abstraction.cpp
  *
  *  Created on: 2008-jul-07
  *      Author: hoglet
@@ -10,8 +10,7 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <sstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -21,9 +20,9 @@ namespace libtimeit
 //LCOV_EXCL_START
 void make_directory(string path)
 {
-	stringstream mkdirCommand;
-	mkdirCommand << "mkdir -p \"" << path << "\"";
-	system(mkdirCommand.str().c_str());
+	stringstream mkdir_command;
+	mkdir_command << "mkdir -p \"" << path << "\"";
+	system(mkdir_command.str().c_str());
 }
 //LCOV_EXCL_STOP
 
@@ -33,39 +32,21 @@ void unlink(string filename)
 }
 
 // Code converted from http://www.techbytes.ca/techbyte103.html
-bool file_exists(std::string filename)
+bool file_exists(string filename)
 {
-	struct stat stFileInfo;
-	bool retVal;
-	int intStat;
+	struct stat st_file_info{};
 
 	// Attempt to get the file attributes
-	intStat = stat(filename.c_str(), &stFileInfo);
-	if (intStat == 0)
-	{
-		// We were able to get the file attributes
-		// so the file obviously exists.
-		retVal = true;
-	}
-	else
-	{
-		// We were not able to get the file attributes.
-		// This may mean that we don't have permission to
-		// access the folder which contains this file. If you
-		// need to do that level of checking, lookup the
-		// return values of stat which will give you
-		// more details on why stat failed.
-		retVal = false;
-	}
+	int int_stat = stat(filename.c_str(), &st_file_info);
 
-	return retVal;
+	return (int_stat == 0);
 }
 
 //LCOV_EXCL_START
 
-void show_URL(std::string url)
+void show_URL(string url)
 {
-	std::stringstream command;
+	stringstream command;
 	command << "xdg-open " << url << endl;
 	system(command.str().c_str());
 }
