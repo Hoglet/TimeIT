@@ -12,7 +12,7 @@
 
 using namespace libtimeit;
 
-namespace GUI
+namespace gui
 {
 
 AddTime::AddTime(

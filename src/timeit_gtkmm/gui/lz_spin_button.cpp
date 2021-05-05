@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace GUI
+namespace gui
 {
 using namespace std;
 

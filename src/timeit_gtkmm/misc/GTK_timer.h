@@ -6,7 +6,7 @@
 #define TIMEIT_GTK_TIMER_H
 #include <libtimeit/timer.h>
 
-namespace GUI
+namespace gui
 {
 using sigc::connection;
 using sigc::mem_fun;

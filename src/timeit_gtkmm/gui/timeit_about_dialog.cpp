@@ -10,7 +10,7 @@
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 #include <libtimeit/version.h>
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 

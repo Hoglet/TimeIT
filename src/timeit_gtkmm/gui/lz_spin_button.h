@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 
-namespace GUI
+namespace gui
 {
 
 class LZSpinButton : public Gtk::SpinButton

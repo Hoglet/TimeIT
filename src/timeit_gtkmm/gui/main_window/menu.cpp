@@ -8,7 +8,7 @@
 #include "menu.h"
 #include <glibmm/i18n.h>
 
-namespace GUI
+namespace gui
 {
 
 Menu::Menu()

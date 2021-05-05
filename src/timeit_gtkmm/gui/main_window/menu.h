@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include <action_observer.h>
 
-namespace GUI
+namespace gui
 {
 
 using namespace std;

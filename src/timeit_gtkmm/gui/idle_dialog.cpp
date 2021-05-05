@@ -13,7 +13,7 @@
 #include "libtimeit/timer.h"
 #include <libtimeit/utils.h>
 
-namespace GUI
+namespace gui
 {
 
 using namespace::std;

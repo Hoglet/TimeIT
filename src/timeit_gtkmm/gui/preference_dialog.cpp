@@ -10,7 +10,7 @@
 #include <iostream>
 #include <libtimeit/db/default_values.h>
 
-namespace GUI
+namespace gui
 {
 
 PreferenceDialog::PreferenceDialog(Database &database) :

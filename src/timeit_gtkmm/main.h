@@ -11,7 +11,7 @@
 #include <libtimeit/db/database.h>
 #include <libtimeit/timer.h>
 
-namespace GUI
+namespace gui
 {
 
 class Main

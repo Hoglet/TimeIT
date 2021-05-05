@@ -7,7 +7,7 @@
 
 #include "calendar.h"
 
-namespace GUI
+namespace gui
 {
 
 Calendar::Calendar()

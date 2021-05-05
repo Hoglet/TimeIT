@@ -15,7 +15,7 @@
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include <IWidget.h>
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 

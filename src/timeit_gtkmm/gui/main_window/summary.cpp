@@ -7,7 +7,7 @@ using namespace Gtk;
 using namespace Glib;
 using namespace libtimeit;
 
-namespace GUI
+namespace gui
 {
 using namespace std;
 using namespace libtimeit;

@@ -15,7 +15,7 @@
 #include <libtimeit/db/time_accessor.h>
 #include "action_observer.h"
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 

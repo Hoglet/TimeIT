@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include <IWidget.h>
 
-namespace GUI
+namespace gui
 {
 class TimeItAboutDialog : public Gtk::AboutDialog, public IWidget
 {

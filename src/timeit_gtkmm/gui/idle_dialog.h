@@ -16,7 +16,7 @@
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/logic/time_keeper.h>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 

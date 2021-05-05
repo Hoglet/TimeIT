@@ -11,7 +11,7 @@
 #include <gtkmm.h>
 #include <list>
 #include "action_observer.h"
-namespace GUI
+namespace gui
 {
 
 class Toolbar : public Gtk::Toolbar

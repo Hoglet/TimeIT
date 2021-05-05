@@ -6,11 +6,11 @@
 #include <iostream>
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
-#include <guid_factory.h>
+#include <gui_factory.h>
 #include <main_window/main_window.h>
 
 
-using namespace GUI;
+using namespace gui;
 using namespace libtimeit;
 using namespace std;
 
@@ -201,7 +201,7 @@ void Controller::on_action_preferences()
 void Controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime)
 {
 	shared_ptr<DetailsDialog> details_dialog = dynamic_pointer_cast<DetailsDialog>(
-			gui_factory.getWidget(GUI::DETAILS_DIALOG));
+			gui_factory.getWidget(gui::DETAILS_DIALOG));
 	if (details_dialog)
 	{
 		details_dialog->set(taskId, startTime, stopTime);
@@ -233,7 +233,7 @@ void Controller::on_selection_changed(int64_t /*task_id*/, time_t /*start*/, tim
 
 void Controller::show_idle_dialog(const Time_id id)
 {
-	auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(GUI::IDLE_DIALOG));
+	auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(gui::IDLE_DIALOG));
 	idle_dialog->set_time_id(id);
 	idle_dialog->show();
 }

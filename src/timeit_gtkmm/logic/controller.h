@@ -8,7 +8,7 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 #include <action_observer.h>
-#include <guid_factory.h>
+#include <gui_factory.h>
 #include <idle_dialog.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
@@ -18,7 +18,7 @@
 #include <libtimeit/misc/ipc_server.h>
 #include <libtimeit/event_observer.h>
 
-namespace GUI
+namespace gui
 {
 
 using namespace std;

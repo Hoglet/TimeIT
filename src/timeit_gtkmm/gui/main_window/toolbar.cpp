@@ -7,7 +7,7 @@
 
 #include "toolbar.h"
 
-namespace GUI
+namespace gui
 {
 
 Toolbar::Toolbar() :

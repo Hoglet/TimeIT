@@ -14,7 +14,7 @@
 using namespace libtimeit;
 using namespace std;
 
-namespace GUI
+namespace gui
 {
 std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier)
 {

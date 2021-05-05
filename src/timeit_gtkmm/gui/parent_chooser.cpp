@@ -11,7 +11,7 @@
 using namespace libtimeit;
 using namespace std;
 
-namespace GUI
+namespace gui
 {
 
 using namespace std;

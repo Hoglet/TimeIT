@@ -27,7 +27,7 @@
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 

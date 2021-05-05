@@ -34,7 +34,7 @@
 using namespace Gtk;
 using namespace libtimeit;
 
-namespace GUI
+namespace gui
 {
 
 MainWindow::~MainWindow()

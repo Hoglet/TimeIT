@@ -14,7 +14,7 @@
 #include <glibmm.h>
 #include <glibmm/i18n.h>
 
-#include <guid_factory.h>
+#include <gui_factory.h>
 #include <controller.h>
 #include <MessageCenter.h>
 #include <GTK_timer.h>
@@ -29,7 +29,7 @@
 #include <libtimeit/OS_abstraction.h>
 #include <libtimeit/sync/sync_manager.h>
 
-namespace GUI
+namespace gui
 {
 
 using namespace std;
@@ -155,6 +155,6 @@ int Main::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
-	GUI::Main program(argc, argv);
+	gui::Main program(argc, argv);
 	return program.run(argc, argv);
 }

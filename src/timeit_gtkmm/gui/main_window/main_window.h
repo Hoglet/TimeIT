@@ -33,7 +33,7 @@
 #include "toolbar.h"
 #include "calendar.h"
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;

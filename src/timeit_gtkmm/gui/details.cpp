@@ -17,7 +17,7 @@ using namespace Gtk;
 using namespace std;
 using namespace libtimeit;
 
-namespace GUI
+namespace gui
 {
 
 Details::Details(

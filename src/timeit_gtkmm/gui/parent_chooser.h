@@ -14,7 +14,7 @@
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/task_accessor.h>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;

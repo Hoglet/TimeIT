@@ -3,7 +3,7 @@
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;

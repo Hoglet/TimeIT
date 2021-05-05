@@ -11,7 +11,7 @@
 #include <glibmm/i18n.h>
 #include <iomanip>
 
-namespace GUI
+namespace gui
 {
 using namespace std;
 using namespace libtimeit;

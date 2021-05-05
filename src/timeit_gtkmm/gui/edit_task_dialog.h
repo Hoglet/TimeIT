@@ -14,7 +14,7 @@
 #include <libtimeit/db/database.h>
 #include <glibmm/i18n.h>
 
-namespace GUI
+namespace gui
 {
 using namespace std;
 using namespace libtimeit;

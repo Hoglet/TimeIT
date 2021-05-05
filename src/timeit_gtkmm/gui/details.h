@@ -19,7 +19,7 @@
 
 #include <vector>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;

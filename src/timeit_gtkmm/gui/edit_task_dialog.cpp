@@ -5,7 +5,7 @@
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
 
-namespace GUI
+namespace gui
 {
 static const int BORDER_WIDTH = 5;
 static const int PADDING = 3;

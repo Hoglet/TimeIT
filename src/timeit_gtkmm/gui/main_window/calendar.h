@@ -12,7 +12,7 @@
 #include <list>
 #include "ICalendar.h"
 
-namespace GUI
+namespace gui
 {
 
 class Calendar : public Gtk::Calendar, public ICalendar

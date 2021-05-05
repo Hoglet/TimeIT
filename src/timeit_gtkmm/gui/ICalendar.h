@@ -8,7 +8,7 @@
 #ifndef ICALENDAR_H_
 #define ICALENDAR_H_
 
-namespace GUI
+namespace gui
 {
 
 class CalendarObserver

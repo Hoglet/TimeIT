@@ -19,7 +19,7 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;
