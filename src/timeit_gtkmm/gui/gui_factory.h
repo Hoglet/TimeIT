@@ -15,7 +15,7 @@
 #include "IWidget.h"
 #include "status_icon.h"
 
-namespace GUI
+namespace gui
 {
 using namespace libtimeit;
 using namespace std;
