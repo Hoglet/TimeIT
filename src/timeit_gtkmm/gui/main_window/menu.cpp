@@ -53,9 +53,6 @@ Menu::Menu()
 	setTaskIsSelected(false);
 }
 
-Menu::~Menu()
-{
-}
 
 void Menu::setTaskIsSelected(bool show)
 {

@@ -27,10 +27,6 @@ using namespace std;
 class DetailsObserver
 {
 public:
-	virtual ~DetailsObserver()
-	{
-	}
-	;
 	virtual void on_selected_changed() = 0;
 	virtual void on_edit_details(int64_t) = 0;
 };
@@ -58,23 +54,22 @@ class Details: public Gtk::TreeView, public Event_observer
 {
 public:
 	Details(Database &database, Notifier& notifier);
-	~Details() = default;
 	void set(int64_t ID, time_t startTime, time_t stopTime);
-	bool on_button_press_event(GdkEventButton *event);
+	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
 	void on_menu_file_popup_merge();
 	void on_menu_file_popup_split();
 	//EventObserver interface
-	virtual void on_task_added(int64_t)
+	void on_task_added(int64_t) override
 	{
 	}
 	;
-	virtual void on_task_updated(int64_t);
-	virtual void on_task_removed(int64_t);
-	virtual void on_complete_update();
-	virtual void on_task_name_changed(int64_t);
-	virtual void on_time_entry_changed(int64_t);
+	void on_task_updated(int64_t) override;
+	void on_task_removed(int64_t) override;
+	void on_complete_update() override;
+	void on_task_name_changed(int64_t) override;
+	void on_time_entry_changed(int64_t) override;
 	//
 	int64_t getSelectedID();
 	std::vector<int64_t> getSelectedAndNextID();

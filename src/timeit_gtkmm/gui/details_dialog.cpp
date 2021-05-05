@@ -1,10 +1,3 @@
-/*
- * DetailsDialog.cpp
- *
- *  Created on: 2008-aug-21
- *      Author: hoglet
- */
-
 #include "details_dialog.h"
 #include "libtimeit/utils.h"
 #include <ctime>
@@ -16,6 +9,9 @@ using namespace std;
 
 namespace gui
 {
+
+static const int COMPLETE_DAY = 86403;
+
 std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier)
 {
 	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper, notifier));
@@ -326,11 +322,12 @@ void DetailsDialog::on_task_name_updated(int64_t task_id)
 	}
 }
 
+
 void DetailsDialog::on_task_total_time_updated(int64_t task_id)
 {
 	if (task_id == m_taskID)
 	{
-		if (difftime(rangeStop, rangeStart) > 86403)
+		if (difftime(rangeStop, rangeStart) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
 			auto task = m_taskAccessor.by_ID(m_taskID);

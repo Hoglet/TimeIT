@@ -39,7 +39,6 @@ class GUIFactory
 {
 public:
 	GUIFactory(Time_keeper&, Database &database, Timer& timer, Notifier& notifier);
-	virtual ~GUIFactory();
 	virtual WidgetPtr getWidget(EWidget);
 	virtual StatusIcon& getStatusIcon();
 	virtual WidgetPtr getAddTime(int64_t taskID);

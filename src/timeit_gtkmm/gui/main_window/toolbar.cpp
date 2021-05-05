@@ -32,9 +32,6 @@ Toolbar::Toolbar() :
 	setTaskIsSelected(false);
 }
 
-Toolbar::~Toolbar()
-{
-}
 void Toolbar::setTaskIsSelected(bool sensitive)
 {
 	m_startButton.set_sensitive(sensitive);

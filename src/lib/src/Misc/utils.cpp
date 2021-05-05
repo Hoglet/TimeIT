@@ -267,7 +267,7 @@ string duration_string( time_t from, time_t to)
 	struct tm from_time = *localtime(&from);
 	struct tm to_time = *localtime(&to);
 	bool across_days = from_time.tm_year != to_time.tm_year || from_time.tm_mon != to_time.tm_mon || from_time.tm_mday != to_time.tm_mday;
-	return_value << (across_days ? " " : "\u2003") << "= " << seconds_2_hhmm(difftime(to, from)) << (across_days ? "" : "\u2003");
+	return_value << (across_days ? " " : "\u2003") << "= " << seconds_2_hhmm((int64_t)difftime(to, from)) << (across_days ? "" : "\u2003");
 	return return_value.str();
 }
 

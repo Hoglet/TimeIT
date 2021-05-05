@@ -76,10 +76,6 @@ Main::Main(int argc, char *argv[])
 
 }
 
-Main::~Main()
-{
-}
-
 void Main::printHelp()
 {
 	// Command line help, line1.

@@ -21,6 +21,10 @@ public:
 				mem_fun(this, &Timer::on_signal_1_second),
 				1);
 	}
+	GTK_timer(const GTK_timer&) = delete;
+	GTK_timer( GTK_timer&& ) = delete;
+	GTK_timer& operator=( const GTK_timer& ) = delete;
+	GTK_timer& operator=( GTK_timer&& ) = delete;
 	~GTK_timer()
 	{
 		conn.disconnect();

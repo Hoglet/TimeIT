@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef STATUSICON_H_
-#define STATUSICON_H_
+#ifndef STATUS_ICON_H_
+#define STATUS_ICON_H_
 
 #include <gtkmm.h>
 
@@ -24,6 +24,11 @@ class StatusIcon: public Time_keeper_observer, public Event_observer
 public:
 	virtual ~StatusIcon();
 	StatusIcon(Time_keeper&, Database&, Notifier& notifier);
+	StatusIcon(const StatusIcon&) = delete;
+	StatusIcon(StatusIcon&&) = delete;
+	StatusIcon& operator=(const StatusIcon&) = delete;
+	StatusIcon& operator=( StatusIcon&& ) = delete;
+
 	void show()
 	{
 	}
@@ -34,10 +39,8 @@ private:
 	void on_activate();
 	void setIcon();
 	void setTooltip();
-	void on_running_changed();
-	void on_activity_resumed()
-	{};
-	void on_idle_detected(Time_id /*id*/)
+	void on_running_changed() override;
+	void on_idle_detected(Time_id /*id*/) override
 	{};
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggleMainWindow();
@@ -55,19 +58,19 @@ private:
 	void toggleTask(int64_t id);
 	std::string completeTaskPath(int64_t id);
 
-	virtual void on_task_added(int64_t)
+	void on_task_added(int64_t) override
 	{
 	}
 	;
-	virtual void on_task_updated(int64_t);
-	virtual void on_task_name_changed(int64_t);
-	virtual void on_task_time_changed(int64_t);
+	void on_task_updated(int64_t) override;
+	void on_task_name_changed(int64_t) override;
+	void on_task_time_changed(int64_t) override;
 
-	virtual void on_task_removed(int64_t)
+	void on_task_removed(int64_t) override
 	{
 	}
 	;
-	virtual void on_complete_update();
+	void on_complete_update() override;
 	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;
 	Glib::RefPtr<Gdk::Pixbuf> m_runningIcon;
@@ -84,4 +87,4 @@ private:
 };
 
 }
-#endif /* STATUSICON_H_ */
+#endif /* STATUS_ICON_H_ */

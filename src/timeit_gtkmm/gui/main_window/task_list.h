@@ -1,24 +1,5 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
- * TimeIT
- * Copyright (C) Kent Asplund 2008 <hoglet@solit.se>
- *
- * TimeIT is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * TimeIT is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#ifndef _TASK_LIST_HPP_
-#define _TASK_LIST_HPP_
+#ifndef TASK_LIST_HPP_
+#define TASK_LIST_HPP_
 
 #include <gtkmm.h>
 #include <libtimeit/db/extended_task.h>
@@ -35,6 +16,10 @@ class TaskList: public Gtk::TreeView, public Event_observer
 {
 public:
 	TaskList(Database &database, Time_keeper &time_keeper, Notifier &notifier);
+	TaskList( const TaskList& )            = delete;
+	TaskList( TaskList&& )                 = delete;
+	TaskList& operator=( const TaskList& ) = delete;
+	TaskList& operator=( TaskList&& )      = delete;
 	virtual ~TaskList();
 	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
 	int64_t getSelectedID();
@@ -93,4 +78,4 @@ private:
 	Time_keeper& m_timeKeeper;
 };
 }
-#endif // _TASK_LIST_HPP_
+#endif // TASK_LIST_HPP_

@@ -16,9 +16,7 @@ namespace gui
 class LZSpinButton : public Gtk::SpinButton
 {
 public:
-	LZSpinButton();
-	virtual ~LZSpinButton();
-	virtual bool on_output();
+	virtual bool on_output() override;
 };
 
 }

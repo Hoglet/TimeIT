@@ -18,7 +18,6 @@ class Toolbar : public Gtk::Toolbar
 {
 public:
 	Toolbar();
-	virtual ~Toolbar();
 	void attach(action_observer*);
 	void detach(action_observer*);
 	void setTaskIsSelected(bool);

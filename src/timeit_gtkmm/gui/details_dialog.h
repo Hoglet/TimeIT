@@ -31,17 +31,21 @@ class DetailsDialog:
 {
 public:
 	static std::shared_ptr<DetailsDialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
+	DetailsDialog(const DetailsDialog&) = delete;
+	DetailsDialog( DetailsDialog&&) = delete;
+	DetailsDialog& operator=(const DetailsDialog&) = delete;
+	DetailsDialog& operator=(DetailsDialog&&) = delete;
 	virtual ~DetailsDialog() ;
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
 
 	// IWidget interface
-	virtual void show() { Gtk::Dialog::show(); }
-	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
-	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void show() override { Gtk::Dialog::show(); }
+	void hide() override { Gtk::Dialog::hide(); }
+	void move(int x, int y) override { Gtk::Dialog::move(x,y); };
+	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
+	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 
 	void on_runningTasksChanged();
 	void on_task_name_updated(int64_t task_id);
@@ -51,16 +55,16 @@ private:
 	DetailsDialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
 
 	//SummaryObserver
-	virtual void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime);
-	virtual void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) {};
+	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;
+	void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) override {};
 
 	//DetailsObserver
-	void on_selected_changed();
-	void on_edit_details(int64_t timeEntryID);
+	void on_selected_changed() override;
+	void on_edit_details(int64_t timeEntryID) override;
 
 	//EventObserver
-	virtual void on_task_time_changed(int64_t task_ID);
-	virtual void on_task_name_changed(int64_t task_ID);
+	void on_task_time_changed(int64_t task_ID) override;
+	void on_task_name_changed(int64_t task_ID) override;
 
 	void setValues();
 	void on_OKButton_clicked();

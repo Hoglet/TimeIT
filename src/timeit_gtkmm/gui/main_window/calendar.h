@@ -19,10 +19,9 @@ class Calendar : public Gtk::Calendar, public ICalendar
 {
 public:
 	Calendar();
-	virtual ~Calendar();
-	virtual void attach(CalendarObserver* observer);
-	virtual void detach(CalendarObserver* observer);
-	virtual void get_date(unsigned int& year, unsigned int& month, unsigned int& day) const;
+	void attach(CalendarObserver* observer) override;
+	void detach(CalendarObserver* observer) override;
+	void get_date(unsigned int& year, unsigned int& month, unsigned int& day) const override;
 private:
 	void notify();
 	std::list<CalendarObserver*> observers;

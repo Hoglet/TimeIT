@@ -13,15 +13,6 @@ namespace gui
 {
 using namespace std;
 
-LZSpinButton::LZSpinButton()
-{
-	//Nothing needed
-}
-
-LZSpinButton::~LZSpinButton()
-{
-	//Nothing needed
-}
 
 bool LZSpinButton::on_output()
 {

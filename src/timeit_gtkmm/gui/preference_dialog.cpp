@@ -113,10 +113,6 @@ PreferenceDialog::PreferenceDialog(Database &database) :
 	set_values();
 }
 
-PreferenceDialog::~PreferenceDialog()
-{
-
-}
 
 void PreferenceDialog::set_values()
 {

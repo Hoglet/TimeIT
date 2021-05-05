@@ -28,14 +28,13 @@ class PreferenceDialog: public Gtk::Dialog, public IWidget
 {
 public:
 	PreferenceDialog(Database& database);
-	virtual ~PreferenceDialog();
 
 	// IWidget interface
-	virtual void show() { Gtk::Dialog::show(); }
-	virtual void hide() { Gtk::Dialog::hide(); }
-	virtual void move(int x, int y) { Gtk::Dialog::move(x,y); };
-	virtual bool is_visible() { return Gtk::Dialog::is_visible(); } ;
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void show() override { Gtk::Dialog::show(); }
+	void hide() override { Gtk::Dialog::hide(); }
+	void move(int x, int y) override { Gtk::Dialog::move(x,y); };
+	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
+	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
 	void on_CancelButton_clicked();
 	void on_OKButton_clicked();

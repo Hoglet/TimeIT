@@ -14,8 +14,8 @@ using namespace libtimeit;
 
 SummaryObserver::SummaryObserver()
 {
-	unsubscription_allowed = true;
 }
+
 SummaryObserver::~SummaryObserver()
 {
 	unsubscription_allowed = false;

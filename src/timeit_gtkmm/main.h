@@ -18,7 +18,6 @@ class Main
 {
 public:
 	Main(int argc, char *argv[]);
-	virtual ~Main();
 	void printHelp();
 	int run(int argc, char *argv[]);
 private:

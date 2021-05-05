@@ -21,10 +21,6 @@ Calendar::Calendar()
 	signal_prev_year().connect(sigc::mem_fun(this, &Calendar::notify));
 }
 
-Calendar::~Calendar()
-{
-}
-
 void Calendar::get_date(unsigned int& year, unsigned int& month, unsigned int& day) const
 {
 	Gtk::Calendar::get_date(year, month, day);

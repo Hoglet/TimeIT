@@ -34,9 +34,6 @@ MessageCenter::MessageCenter()
 	signal_message.connect(sigc::mem_fun(*this, &MessageCenter::manageMessages));
 }
 
-MessageCenter::~MessageCenter()
-{
-}
 
 
 void MessageCenter::manageMessages()

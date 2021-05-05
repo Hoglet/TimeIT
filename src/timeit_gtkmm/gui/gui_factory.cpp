@@ -31,11 +31,6 @@ GUIFactory::GUIFactory(
 
 }
 
-GUIFactory::~GUIFactory()
-{
-
-}
-
 void GUIFactory::quit()
 {
 	Gtk::Main::quit();

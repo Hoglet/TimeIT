@@ -23,10 +23,7 @@ class Edit_task_dialog: public Gtk::Dialog, public IWidget
 {
 public:
 	Edit_task_dialog(Database& database);
-	Edit_task_dialog(Edit_task_dialog const&) = delete;
-	Edit_task_dialog& operator = (Edit_task_dialog const&) = delete;
-	Edit_task_dialog(Edit_task_dialog&&) = delete;
-	Edit_task_dialog& operator=(Edit_task_dialog&&) = delete;
+
 	void on_OK_button_clicked();
 	void on_cancel_button_clicked();
 	void on_data_changed();

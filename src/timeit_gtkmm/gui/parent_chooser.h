@@ -23,7 +23,6 @@ class ParentChooser: public Gtk::ComboBox
 {
 public:
 	ParentChooser(Database& database);
-	virtual ~ParentChooser() = default;
 
 	void setID(Task_id ID);
 	void setParentID(Task_id parentID);

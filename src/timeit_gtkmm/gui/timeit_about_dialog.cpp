@@ -14,9 +14,6 @@ namespace gui
 {
 using namespace libtimeit;
 
-TimeItAboutDialog::~TimeItAboutDialog()
-{
-}
 void TimeItAboutDialog::on_link_clicked(AboutDialog &about_dialog, const Glib::ustring &link)
 {
 	show_URL(link);

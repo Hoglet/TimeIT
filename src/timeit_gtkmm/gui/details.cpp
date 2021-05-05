@@ -442,7 +442,7 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 	for (; iter != time_list.end(); )
 	{
 		auto time_entry = *iter;
-		Row_data row_data;
+		Row_data row_data{};
 
 		row_data.time_ID      = time_entry.id;
 		row_data.prev_start   = prev_start;

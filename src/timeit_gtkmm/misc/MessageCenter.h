@@ -31,7 +31,6 @@ class MessageCenter
 {
 public:
 	MessageCenter();
-	virtual ~MessageCenter();
 	void sendMessage(Message message);
 private:
 	void manageMessages();

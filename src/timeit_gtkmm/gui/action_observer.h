@@ -5,13 +5,12 @@
  *      Author: hoglet
  */
 
-#ifndef _ACTION_OBSERVER_H_
-#define _ACTION_OBSERVER_H_
+#ifndef ACTION_OBSERVER_H_
+#define ACTION_OBSERVER_H_
 
 class action_observer
 {
 public:
-	virtual ~action_observer(){};
 	virtual void on_action_task_selection_changed(int selectedTaskID)=0;
 	virtual void on_action_add_task()=0;
 	virtual void on_action_remove_task()=0;

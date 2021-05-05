@@ -32,7 +32,6 @@ class IdleDialog : public Gtk::Dialog, public Timer_observer, public IWidget
 public:
 	IdleDialog(Timer& timer, Database& database, Time_keeper& time_keeper);
 	void set_time_id(Time_id id);
-	~IdleDialog() = default;
 	// IWidget interface
 	void show();
 	void hide() { Gtk::Dialog::hide(); }

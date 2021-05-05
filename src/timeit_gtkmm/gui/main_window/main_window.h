@@ -1,24 +1,5 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
- * TimeIT
- * Copyright (C) Kent Asplund 2008 <hoglet@solit.se>
- *
- * TimeIT is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * TimeIT is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#ifndef _MAIN_WINDOW_HPP_
-#define _MAIN_WINDOW_HPP_
+#ifndef MAIN_WINDOW_HPP_
+#define MAIN_WINDOW_HPP_
 
 #include <gtkmm.h>
 #include <IWidget.h>
@@ -46,26 +27,26 @@ public:
 
 
 	// IWidget interface
-	virtual void show()
+	void show() override
 	{
 		Gtk::Window::deiconify();
 		Gtk::Window::show();
 	}
-	virtual void hide()
+	void hide() override
 	{
 		Gtk::Window::hide();
 	}
-	virtual bool is_visible()
+	bool is_visible() override
 	{
 		return Gtk::Window::is_visible();
 	}
 	;
-	virtual void move(int x, int y)
+	void move(int x, int y) override
 	{
 		Gtk::Window::move(x, y);
 	}
 	;
-	virtual void get_position(int &Window_x, int &Window_y)
+	void get_position(int &Window_x, int &Window_y) override
 	{
 		Gtk::Window::get_position(Window_x, Window_y);
 	}
@@ -73,8 +54,8 @@ public:
 
 	virtual void attach(SummaryObserver* observer);
 	virtual void detach(SummaryObserver* observer);
-	virtual void attach(action_observer*);
-	virtual void detach(action_observer*);
+	void attach(action_observer*) override;
+	void detach(action_observer*) override;
 
 	virtual ICalendar& getCalendar();
 

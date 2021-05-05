@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef SUMMARYVIEWS_H_
-#define SUMMARYVIEWS_H_
+#ifndef SUMMARY_VIEWS_H_
+#define SUMMARY_VIEWS_H_
 
 #include <gtkmm.h>
 #include "summary.h"
@@ -24,12 +24,7 @@ public:
 		Summary( database, notifier)
 	{
 		init();
-	}
-	;
-	virtual ~DaySummary()
-	{
-	}
-	;
+	};
 private:
 	virtual void calculateTimeSpan()
 	{
@@ -45,12 +40,7 @@ public:
 		Summary( database, notifier)
 	{
 		init();
-	}
-	;
-	virtual ~WeekSummary()
-	{
-	}
-	;
+	};
 private:
 	virtual void calculateTimeSpan()
 	{
@@ -66,12 +56,7 @@ public:
 		Summary( database, notifier)
 	{
 		init();
-	}
-	;
-	virtual ~MonthSummary()
-	{
-	}
-	;
+	};
 private:
 	virtual void calculateTimeSpan()
 	{
@@ -87,12 +72,7 @@ public:
 		Summary( database, notifier)
 	{
 		init();
-	}
-	;
-	virtual ~YearSummary()
-	{
-	}
-	;
+	};
 private:
 	virtual void calculateTimeSpan()
 	{
@@ -102,4 +82,4 @@ private:
 };
 
 }
-#endif /* DAYSUMMARY_H_ */
+#endif /* SUMMARY_VIEWS_H_ */

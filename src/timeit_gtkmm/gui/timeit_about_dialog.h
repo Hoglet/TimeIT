@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef ABOUTDIALOG_H_
-#define ABOUTDIALOG_H_
+#ifndef ABOUT_DIALOG_H_
+#define ABOUT_DIALOG_H_
 
 #include <gtkmm.h>
 #include <IWidget.h>
@@ -17,7 +17,6 @@ class TimeItAboutDialog : public Gtk::AboutDialog, public IWidget
 {
 public:
 	TimeItAboutDialog();
-	virtual ~TimeItAboutDialog();
 
 	// IWidget interface
 	virtual void show() { Gtk::AboutDialog::show(); }
@@ -30,4 +29,4 @@ private:
 };
 
 }
-#endif /* ABOUTDIALOG_H_ */
+#endif /* ABOUT_DIALOG_H_ */

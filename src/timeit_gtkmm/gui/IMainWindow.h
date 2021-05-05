@@ -12,7 +12,6 @@
 class IMainWindow
 {
 public:
-	virtual ~IMainWindow() {};
 	virtual gui::ICalendar& getCalendar() = 0;
 };
 #endif /* IMAINWINDOW_H_ */

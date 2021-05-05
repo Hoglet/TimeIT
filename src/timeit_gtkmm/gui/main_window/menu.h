@@ -20,7 +20,6 @@ class Menu: public Gtk::MenuBar
 {
 public:
 	Menu();
-	virtual ~Menu();
 	void attach(action_observer*);
 	void detach(action_observer*);
 	void setTaskIsSelected(bool);
