@@ -22,12 +22,7 @@ using namespace libtimeit;
 class StatusIcon: public Time_keeper_observer, public Event_observer
 {
 public:
-	virtual ~StatusIcon();
 	StatusIcon(Time_keeper&, Database&, Notifier& notifier);
-	StatusIcon(const StatusIcon&) = delete;
-	StatusIcon(StatusIcon&&) = delete;
-	StatusIcon& operator=(const StatusIcon&) = delete;
-	StatusIcon& operator=( StatusIcon&& ) = delete;
 
 	void show()
 	{

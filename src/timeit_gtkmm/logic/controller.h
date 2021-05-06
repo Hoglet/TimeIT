@@ -1,10 +1,3 @@
-/*
- * Controller.h
- *
- *  Created on: Mar 12, 2009
- *      Author: hoglet
- */
-
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 #include <action_observer.h>
@@ -37,7 +30,7 @@ public:
 			Database    &database,
 			IpcServer   &ipc_server,
 			Notifier    &notifier);
-	virtual ~Controller();
+	~Controller() override;
 	void start();
 
 	//Action observers
@@ -79,7 +72,7 @@ private:
 	unsigned selected_task_id = 0;
 	vector<Time_id> old_running{};
 
-	void show_idle_dialog(const Time_id id);
+	void show_idle_dialog(Time_id id);
 };
 }
 #endif /* CONTROLLER_H_ */

@@ -7,6 +7,15 @@
 using namespace std;
 using namespace libtimeit;
 
+Time_keeper_observer::Time_keeper_observer(Time_keeper& tk):time_keeper(tk)
+{
+	tk.attach(this);
+}
+
+Time_keeper_observer::~Time_keeper_observer()
+{
+	time_keeper.attach(this);
+}
 
 Time_keeper::Time_keeper(
 		Database& database,

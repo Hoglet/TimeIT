@@ -284,10 +284,10 @@ void Task_accessor::_update(const Task &task)
 		statement_update_task.bind_null_value(index++);
 	}
 	statement_update_task.bind_value(index++, task.last_changed);
-	statement_update_task.bind_value(index++, task.deleted);
-	statement_update_task.bind_value(index++, task.completed);
+	statement_update_task.bind_value(index++, (int64_t)task.deleted);
+	statement_update_task.bind_value(index++, (int64_t)task.completed);
 	statement_update_task.bind_value(index++, task.idle);
-	statement_update_task.bind_value(index++, task.quiet);
+	statement_update_task.bind_value(index++, (int64_t)task.quiet);
 	statement_update_task.bind_value(index,   task.id);
 
 	statement_update_task.execute();
@@ -357,10 +357,10 @@ Task_id Task_accessor::create(const Task &task)
 	}
 	statement_new_task.bind_value(index++, task.last_changed);
 	statement_new_task.bind_value(index++, task.uuid.c_str());
-	statement_new_task.bind_value(index++, task.completed);
-	statement_new_task.bind_value(index++, task.deleted);
-	statement_new_task.bind_value(index++, task.idle);
-	statement_new_task.bind_value(index, task.quiet);
+	statement_new_task.bind_value(index++, (int64_t)task.completed);
+	statement_new_task.bind_value(index++, (int64_t)task.deleted);
+	statement_new_task.bind_value(index++,          task.idle);
+	statement_new_task.bind_value(index,   (int64_t)task.quiet);
 
 	statement_new_task.execute();
 	Task_id id = database.ID_of_last_insert();

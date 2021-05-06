@@ -13,6 +13,7 @@ namespace Test
 class TKObserver: public Time_keeper_observer
 {
 public:
+	TKObserver(Time_keeper& tk): Time_keeper_observer(tk) {};
 	virtual void on_idle_detected(Time_id id)
 	{
 		idleDetected = true;
@@ -38,8 +39,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	Time_accessor time_accessor(db);
 
 	int64_t taskID = task_accessor.create(Task("Test", 0));
-	TKObserver observer;
-	timeKeeper.attach(&observer);
+	TKObserver observer(timeKeeper);
 	observer.runningChanged = false;
 	vector<int64_t> runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks before starting ";
@@ -64,7 +64,6 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after toggling ";
 
-	timeKeeper.detach(&observer);
 }
 
 TEST( TimeKeeper, update )
@@ -78,8 +77,7 @@ TEST( TimeKeeper, update )
 
 	time_t now = time(nullptr);
 	int64_t taskID = task_accessor.create(Task("Test", 0));
-	TKObserver observer;
-	timeKeeper.attach(&observer);
+	TKObserver observer(timeKeeper);
 
 	timeKeeper.start(taskID);
 
@@ -93,7 +91,6 @@ TEST( TimeKeeper, update )
 	auto changedItem = time_accessor.by_ID(teID);
 	ASSERT_TRUE( 100 < changedItem->stop) << "Stop should be higher than 100 ";
 
-	timeKeeper.detach(&observer);
 }
 
 TEST( TimeKeeper, Stop_all)
@@ -106,8 +103,7 @@ TEST( TimeKeeper, Stop_all)
 	Time_accessor time_accessor(db);
 
 	int64_t taskID = task_accessor.create(Task("Test", 0));
-	TKObserver observer;
-	time_keeper.attach(&observer);
+	TKObserver observer(time_keeper);
 
 	time_keeper.start(taskID);
 	observer.runningChanged = false;
@@ -115,7 +111,6 @@ TEST( TimeKeeper, Stop_all)
 	vector<int64_t> runningTasks = time_accessor.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_TRUE( observer.runningChanged) << "Notification supplied ";
-	time_keeper.detach(&observer);
 }
 
 

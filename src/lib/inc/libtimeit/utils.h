@@ -47,9 +47,9 @@ string idling_string(time_t to, time_t next);
 template<typename ... Args>
 string string_printf(const string &fmt, Args ... vs)
 {
-	auto size = (int)snprintf(nullptr, 0, fmt.c_str(), vs...) + 1;
-	char temp_buffer[size];  // NOLINT
-	snprintf(temp_buffer, size, fmt.c_str(), vs...);
+	auto size = (size_t)(snprintf(nullptr, 0, fmt.c_str(), vs...) + 1); // NOLINT
+	char temp_buffer[size +1];  // NOLINT
+	snprintf(temp_buffer, size, fmt.c_str(), vs...); // NOLINT
 	return string((const char *)temp_buffer);
 }
 }

@@ -36,10 +36,10 @@ public:
 private:
 
 	bool supports_layout = true;
-	bool is_virtual;
+	bool is_virtual{false};
 
-	long  viewport_width;
-	long  viewport_height;
+	long  viewport_width  = 0;
+	long  viewport_height = 0;
 	X11  x11;
 
 };

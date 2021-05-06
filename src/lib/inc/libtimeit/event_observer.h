@@ -11,8 +11,8 @@ using namespace std;
 
 enum class EventType
 {
-	ERROR_MESSAGE,
-	INFO_MESSAGE
+	ERROR_MESSAGE
+	//INFO_MESSAGE
 };
 
 class Notifier;

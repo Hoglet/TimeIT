@@ -21,6 +21,7 @@ StatusIcon::StatusIcon(
 		Database &database,
 		Notifier& notifier)
 		:
+		Time_keeper_observer(time_keeper),
 		Event_observer(notifier),
 		m_timeKeeper(time_keeper),
 		m_taskaccessor(database),
@@ -42,17 +43,10 @@ StatusIcon::StatusIcon(
 
 	Gtk::Window::set_default_icon(m_defaultIcon);
 
-	m_timeKeeper.attach(this);
-
 	populateContextMenu();
 	setTooltip();
 	m_statusIcon->signal_activate().connect(sigc::mem_fun(this, &StatusIcon::on_activate));
 	m_statusIcon->signal_popup_menu().connect(sigc::mem_fun(this, &StatusIcon::on_popup_menu));
-}
-
-StatusIcon::~StatusIcon()
-{
-	m_timeKeeper.detach(this);
 }
 
 void StatusIcon::populateContextMenu()

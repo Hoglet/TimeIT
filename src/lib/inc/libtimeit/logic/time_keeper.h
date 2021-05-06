@@ -17,18 +17,29 @@ static const int MINUTE = 60;
 namespace libtimeit
 {
 using namespace std;
+class Time_keeper;
 
 class Time_keeper_observer
 {
 public:
+	Time_keeper_observer(Time_keeper& /*time_keeper*/);
+	Time_keeper_observer( const Time_keeper_observer& ) = delete;
+	Time_keeper_observer( Time_keeper_observer&& )      = delete;
+	Time_keeper_observer& operator=( const Time_keeper_observer& ) = delete;
+	Time_keeper_observer& operator=( Time_keeper_observer&& )      = delete;
+	~Time_keeper_observer();
+
 	virtual void on_idle_detected(Time_id ) = 0;
 	virtual void on_running_changed() = 0;
+private:
+	Time_keeper& time_keeper;
 };
 
 class Time_keeper :
 		public Timer_observer,
 		public Event_observer
 {
+	friend class Time_keeper_observer;
 public:
 	Time_keeper(
 			Database& database,
@@ -49,9 +60,6 @@ public:
 
 	//Stop all tasks, without saving new time records, and then start them again
 
-	//
-	void attach(Time_keeper_observer *);
-	void detach(Time_keeper_observer *);
 
 	//
 	[[nodiscard]] bool   tasks_are_running() const;
@@ -63,6 +71,10 @@ public:
 	void on_time_entry_changed(Time_id id) override;
 	void stop_time(Time_id id);
 private:
+	//
+	void attach(Time_keeper_observer *);
+	void detach(Time_keeper_observer *);
+
 	void check_for_status_change();
 
 	void on_task_removed(Task_id /*id*/) override;

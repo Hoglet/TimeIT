@@ -38,8 +38,9 @@ void IpcClient::window2front()
 	else
 	{
 		server.sun_family = AF_UNIX;
-		strcpy(server.sun_path, socketName.c_str());
-		if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0)
+
+		strncpy(server.sun_path, socketName.c_str(),  sizeof(server.sun_path));    // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+		if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 		{
 			close(sock);
 			perror("connecting stream socket");
@@ -47,7 +48,7 @@ void IpcClient::window2front()
 		else
 		{
 			const char *data = R"({ "command": "SHOW_APPLICATION" })";
-			if (write(sock, data, sizeof(data)) < 0)
+			if (write(sock, data, strlen(data)) < 0)
 			{
 				perror("writing on stream socket");
 			}

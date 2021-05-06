@@ -4,20 +4,19 @@
  *  Created on: 2008-aug-27
  *      Author: hoglet
  */
-
-#include "libtimeit/logic/X11_idle_detector.h"
-#include <iostream>
-#include <libtimeit/timer.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/scrnsaver.h>
+#include <libtimeit/logic/X11_idle_detector.h>
+#include <iostream>
+#include <libtimeit/timer.h>
 #include <memory>
 #include <libtimeit/utils.h>
 
 namespace libtimeit
 {
 constexpr const auto MINUTE=60;
-Display* display = nullptr;
-XScreenSaverInfo* x_info = nullptr;
+Display*         display = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+XScreenSaverInfo* x_info = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 using namespace std;
 
@@ -47,11 +46,11 @@ X11_idle_detector::X11_idle_detector(Timer &timer) : Timer_observer(timer)
 
 X11_idle_detector::~X11_idle_detector()
 {
-	if (x_info)
+	if (x_info != nullptr)
 	{
 		XFree(x_info);
 	}
-	if (display)
+	if (display != nullptr)
 	{
 		XCloseDisplay(display);
 	}
@@ -75,7 +74,7 @@ void X11_idle_detector::poll_status()
 	}
 
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), x_info);
-	idle_seconds = (x_info->idle / 1000); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	idle_seconds = (time_t)(x_info->idle / 1000); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 
 	if (idle_seconds < 20) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{

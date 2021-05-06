@@ -21,6 +21,7 @@ Controller::Controller(
 		IpcServer   &ipc,
 		Notifier    &notifier)
 		:
+		Time_keeper_observer(op_timeKeeper),
 		Event_observer( notifier ),
 		gui_factory(op_guiFactory),
 		time_keeper(op_timeKeeper),
@@ -28,14 +29,12 @@ Controller::Controller(
 		settings_accessor(database)
 
 {
-	time_keeper.attach(this);
 	ipc.attach(this);
 }
 
 Controller::~Controller()
 {
 	gui_factory.getWidget(MAIN_WINDOW)->detach(this);
-	time_keeper.detach(this);
 }
 
 void Controller::start()
@@ -231,7 +230,7 @@ void Controller::on_selection_changed(int64_t /*task_id*/, time_t /*start*/, tim
 {
 }
 
-void Controller::show_idle_dialog(const Time_id id)
+void Controller::show_idle_dialog(Time_id id)
 {
 	auto idle_dialog = dynamic_pointer_cast<IdleDialog>(gui_factory.getWidget(gui::IDLE_DIALOG));
 	idle_dialog->set_time_id(id);

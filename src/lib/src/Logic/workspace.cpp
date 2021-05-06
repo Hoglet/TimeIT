@@ -42,7 +42,7 @@ Layout Workspace::layout()
 			columns = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
 			if (columns == 0)
 			{
-				rows = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
+				rows = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
 				if (rows != 0)
 				{
 					columns = (number_of_workspaces + 1) / rows;
@@ -52,7 +52,7 @@ Layout Workspace::layout()
 					columns = 1;
 				}
 			}
-			rows = x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
+			rows = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
 			if (rows == 0)
 			{
 				if (columns != 0)
@@ -67,8 +67,8 @@ Layout Workspace::layout()
 		}
 		else
 		{
-			columns = desktop_width / viewport_width;
-			rows = desktop_height / viewport_height;
+			columns = (unsigned)(desktop_width / viewport_width);
+			rows    = (unsigned)(desktop_height / viewport_height);
 			number_of_workspaces = columns * rows;
 			if (number_of_workspaces > 1)
 			{

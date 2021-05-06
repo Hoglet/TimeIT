@@ -195,7 +195,7 @@ string day_of_week_abbreviation( time_t raw_time)
 	struct tm *time_info = localtime(&raw_time);
 	array<char,15> abbreviation{};              // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	int length = (int)strftime(abbreviation.data(), abbreviation.size(), "%a", time_info);
-	return length ? abbreviation.data() : "☼";
+	return length>0 ? abbreviation.data() : "☼";
 }
 
 string seconds_2_hhmm(int64_t s)
@@ -204,9 +204,17 @@ string seconds_2_hhmm(int64_t s)
 	auto hours = s / (60 * 60);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	s -= hours * (60 * 60);      // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	auto minutes = s / 60;      // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	return_value << (hours < 10 ? "\u2007" : "")  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-		<< hours << " h "
-		<< (minutes < 10 ? hours ? "0" : "\u2007" : "") << minutes << " m"; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if( hours < 10 )            // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	{
+		return_value << "\u2007";
+	}
+	return_value << hours << " h ";
+	if (minutes < 10) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	{
+		return_value <<  "\u2007";
+	}
+	return_value << minutes << " m";
+
 	return return_value.str();
 }
 
@@ -249,25 +257,30 @@ string time_span_string( time_t from, time_t to)
 	stringstream return_value;
 	struct tm from_time = *localtime(&from);
 	struct tm to_time = *localtime(&to);
-	bool across_days = from_time.tm_year != to_time.tm_year || from_time.tm_mon != to_time.tm_mon || from_time.tm_mday != to_time.tm_mday;
-	return_value << (across_days ? " " : "\u2003")
-				 << setfill('0') << setw(2) << from_time.tm_hour << ":" << setfill('0') << setw(2) << from_time.tm_min;
-	return_value << " → ";
-	if (across_days)
+	return_value << "\u2003"
+	             << setfill('0') << setw(2) << from_time.tm_hour
+	             << ":"
+	             << setfill('0') << setw(2) << from_time.tm_min
+	             << " → ";
+	if (is_on_different_days(from,to))
 	{
-		return_value << (to_time.tm_year + 1900) << "-" << setfill('0') << setw(2) << to_time.tm_mon + 1 << "-" << setfill('0') << setw(2) << to_time.tm_mday << " "; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		return_value << (to_time.tm_year + 1900)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		             << "-"
+		             << setfill('0') << setw(2) << to_time.tm_mon + 1
+		             << "-"
+		             << setfill('0') << setw(2) << to_time.tm_mday << " ";
 	}
-	return_value << setfill('0') << setw(2) << to_time.tm_hour << ":" << setfill('0') << setw(2) << to_time.tm_min;
+	return_value << setfill('0') << setw(2) << to_time.tm_hour
+	             << ":"
+	             << setfill('0') << setw(2) << to_time.tm_min;
 	return return_value.str();
 }
 
 string duration_string( time_t from, time_t to)
 {
 	stringstream return_value;
-	struct tm from_time = *localtime(&from);
-	struct tm to_time = *localtime(&to);
-	bool across_days = from_time.tm_year != to_time.tm_year || from_time.tm_mon != to_time.tm_mon || from_time.tm_mday != to_time.tm_mday;
-	return_value << (across_days ? " " : "\u2003") << "= " << seconds_2_hhmm((int64_t)difftime(to, from)) << (across_days ? "" : "\u2003");
+	return_value <<" = " << seconds_2_hhmm((int64_t)difftime(to, from))
+	             <<" ";
 	return return_value.str();
 }
 

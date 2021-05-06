@@ -18,7 +18,7 @@ bool rangeTestG4(const char &c)
 	return  (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B');
 }
 
-bool is_valid_uuid(const string &uuid)
+bool is_valid_uuid(const string &uuid) // NOLINT(readability-function-cognitive-complexity)
 {
 
 	if (36 != uuid.length()) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
@@ -29,7 +29,7 @@ bool is_valid_uuid(const string &uuid)
 	//"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 	for (int position = 0; position < 8; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == false)
+		if (isxdigit(uuid[position]) == 0)
 		{
 			return false;
 		}
@@ -41,7 +41,7 @@ bool is_valid_uuid(const string &uuid)
 
 	for (int position = 9; position < 13; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == false)
+		if (isxdigit(uuid[position]) == 0)
 		{
 			return false;
 		}
@@ -54,7 +54,7 @@ bool is_valid_uuid(const string &uuid)
 
 	for (int position = 14; position < 18; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == false)
+		if (libtimeit::isxdigit(uuid[position]) == 0)
 		{
 			return false;
 		}
@@ -71,12 +71,12 @@ bool is_valid_uuid(const string &uuid)
 	}
 	for (int position = 19; position < 23; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == false)
+		if (libtimeit::isxdigit(uuid[position]) == 0)
 		{
 			return false;
 		}
 	}
-	if (false == rangeTestG4(uuid[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( ! rangeTestG4(uuid[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
@@ -86,7 +86,7 @@ bool is_valid_uuid(const string &uuid)
 	}
 	for (int position = 24; position < 36; position++) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == false)
+		if (libtimeit::isxdigit(uuid[position]) == 0)
 		{
 			return false;
 		}

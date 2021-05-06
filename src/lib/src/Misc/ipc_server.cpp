@@ -36,7 +36,7 @@ IpcServer::IpcServer(string name, Timer& timer) : Timer_observer(timer)
 	else
 	{
 		server.sun_family = AF_UNIX;
-		strcpy(server.sun_path, socketName.c_str());
+		strncpy(server.sun_path, socketName.c_str(),sizeof(server.sun_path)); // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 		if (bind(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)))   // NOLINT
 		{
 			if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT
@@ -61,7 +61,7 @@ IpcServer::~IpcServer()
 void IpcServer::poll()
 {
 	constexpr auto BUFFER_SIZE=1024;
-	char buf[BUFFER_SIZE];
+	char buf[BUFFER_SIZE]; // NOLINT(modernize-avoid-c-arrays)
 	int msg_socket = accept(sock, nullptr, nullptr);
 	if (msg_socket == -1)
 	{
@@ -72,11 +72,11 @@ void IpcServer::poll()
 	}
 	else
 	{
-		ssize_t rval=0;
+		ssize_t rval; // NOLINT
 		do
 		{
-			bzero(buf, sizeof(buf));
-			if ((rval = read(msg_socket, buf, BUFFER_SIZE)) < 0)
+			memset(buf, '\0', sizeof(buf));   // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+			if ((rval = read(msg_socket, buf, BUFFER_SIZE)) < 0) // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 			{
 				perror("reading stream message");
 			}
