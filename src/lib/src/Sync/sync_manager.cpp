@@ -1,7 +1,7 @@
 #include <libtimeit/sync/sync_manager.h>
 
 #include <libtimeit/utils.h>
-#include <libtimeit/sync/json.h>
+#include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/default_values.h>
 #include <sstream>
 #include <libintl.h>

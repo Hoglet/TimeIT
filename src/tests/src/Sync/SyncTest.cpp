@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "libtimeit/sync/network.h"
-#include "libtimeit/sync/json.h"
+#include "libtimeit/sync/json_converter.h"
 #include "../Mock/MockNetwork.h"
 #include "libtimeit/timer.h"
 #include "libtimeit/sync/sync_manager.h"

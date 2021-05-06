@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <libtimeit/sync/json.h>
+#include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/task.h>
 #include <jansson.h>
 

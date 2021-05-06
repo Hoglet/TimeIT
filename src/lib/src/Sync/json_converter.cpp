@@ -1,7 +1,7 @@
 
 #include <string>
 #include <jansson.h>
-#include <libtimeit/sync/json.h>
+#include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/task.h>
 #include <libtimeit/exceptions/general_exception.h>
 
