@@ -3,7 +3,7 @@
 
 #include <gtkmm.h>
 #include <IWidget.h>
-#include <IMainWindow.h>
+#include <main_window/main_window.h>
 #include "task_list.h"
 #include <libtimeit/db/extended_task.h>
 #include <libtimeit/db/settings_accessor.h>
@@ -19,7 +19,7 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class MainWindow: public Gtk::Window, public action_observer, public IWidget, public IMainWindow
+class MainWindow: public Gtk::Window, public action_observer, public IWidget
 {
 public:
 	virtual ~MainWindow();
@@ -57,7 +57,7 @@ public:
 	void attach(action_observer*) override;
 	void detach(action_observer*) override;
 
-	virtual ICalendar& getCalendar();
+	Calendar& getCalendar();
 
 	virtual void on_show();
 	void on_runningTasksChanged();

@@ -20,14 +20,12 @@
 #include "main_window.h"
 #include "task_list.h"
 #include <gtkmm.h>
-#include "edit_task_dialog.h"
 #include <iostream>
 #include <libtimeit/utils.h>
 #include <libtimeit/OS_abstraction.h>
 #include <vector>
 #include <glibmm/i18n.h>
 #include "summary.h"
-#include "details_dialog.h"
 #include <libtimeit/db/default_values.h>
 #include <glibmm.h>
 
@@ -80,7 +78,7 @@ void MainWindow::save_size()
 	settingsAccessor.set_int("main_window_height", get_height());
 }
 
-ICalendar& MainWindow::getCalendar()
+Calendar& MainWindow::getCalendar()
 {
 	return calendar;
 }

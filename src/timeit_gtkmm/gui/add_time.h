@@ -10,7 +10,7 @@
 
 #include <gtkmm.h>
 #include "lz_spin_button.h"
-#include "ICalendar.h"
+#include <main_window/calendar.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
@@ -22,7 +22,7 @@ using namespace libtimeit;
 class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, ICalendar& calendar, Database& database);
+	AddTime(int64_t taskId, Calendar& calendar, Database& database);
 	AddTime(const AddTime&)             = delete;
 	AddTime( AddTime&&)                 = delete;
 	AddTime& operator=(const AddTime& ) = delete;
@@ -61,7 +61,7 @@ private:
 	LZSpinButton day;
 //	Gtk::Button CancelButton;
 	Gtk::Button* OKButton;
-	ICalendar& calendar;
+	Calendar& calendar;
 
 	int64_t taskID;
 	Time_accessor m_timeAccessor;

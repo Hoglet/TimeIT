@@ -17,7 +17,7 @@ namespace gui
 
 AddTime::AddTime(
 		int64_t    op_taskID,
-		ICalendar& op_calendar,
+		Calendar& op_calendar,
 		Database& database)
 		:
 		yearLabel(_("Year")),

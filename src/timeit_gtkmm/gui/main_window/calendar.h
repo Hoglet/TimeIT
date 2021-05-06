@@ -10,18 +10,22 @@
 
 #include <gtkmm.h>
 #include <list>
-#include "ICalendar.h"
 
 namespace gui
 {
 
-class Calendar : public Gtk::Calendar, public ICalendar
+class CalendarObserver
+{
+public:
+	virtual void on_date_changed() = 0;
+};
+
+class Calendar : public Gtk::Calendar
 {
 public:
 	Calendar();
-	void attach(CalendarObserver* observer) override;
-	void detach(CalendarObserver* observer) override;
-	void get_date(unsigned int& year, unsigned int& month, unsigned int& day) const override;
+	void attach(CalendarObserver* observer);
+	void detach(CalendarObserver* observer);
 private:
 	void notify();
 	std::list<CalendarObserver*> observers;
