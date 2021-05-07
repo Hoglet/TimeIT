@@ -148,6 +148,11 @@ const char *UUID::c_str() const
 	return uuid.c_str();
 }
 
+string UUID::to_string() const
+{
+	return uuid;
+}
+
 UUID::UUID(string basic_string) : uuid(std::move(basic_string))
 {
 }

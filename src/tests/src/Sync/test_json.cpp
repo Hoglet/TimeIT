@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/task.h>
-#include <jansson.h>
+#include <libtimeit/sync/json.h>
 
 using namespace libtimeit;
 
@@ -261,5 +261,21 @@ TEST( Json, testTaskStringGenerationTest )
 	ASSERT_EQ( false, json_is_true(j_deleted)) << "Deleted is incorrect";
 	ASSERT_STREQ( "tester", json_string_value(json_object_get(j_owner, "username"))) << "Owner id is incorrect";
 }
+
+TEST( Json, Faulty_input)
+{
+	string json_string =
+				   R"(
+	[{
+		"id": "01bd0176-00ed-4135-b181-014101790130",
+				"task":
+		{
+			"id" : "00e1010f-00f2-40df-90b3-00f900ab009e"
+		},	"taskID": "00e1010f-00f2-40df-90b3-00f900ab009e",
+				"start": 1363339855,
+		)";
+	Json test = Json::from_json_string(json_string);
+}
+
 
 

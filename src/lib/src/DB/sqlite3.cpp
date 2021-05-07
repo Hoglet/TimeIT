@@ -13,10 +13,9 @@ SQLite3::SQLite3(string dbname)
 	init(dbname);
 }
 SQLite3::SQLite3(SQLite3&& other):
-	db(other.db),
+	db(std::move(other.db)),
 	in_transaction(other.in_transaction)
 {
-	other.db=nullptr;
 }
 
 SQLite3::~SQLite3()
@@ -102,10 +101,9 @@ string SQLite3::last_error_message()
 
 Statement::Statement(Statement&& other):
 		db(other.db),
-		stmt(other.stmt),
+		stmt(std::move(other.stmt)),
         number_of_columns(other.number_of_columns)
 {
-	other.stmt=nullptr;
 }
 
 Statement::~Statement()
