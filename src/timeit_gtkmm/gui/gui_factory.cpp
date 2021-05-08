@@ -2,7 +2,7 @@
 #include "main_window/main_window.h"
 #include "timeit_about_dialog.h"
 #include "edit_task_dialog.h"
-#include "add_time.h"
+#include "edit_time.h"
 #include "idle_dialog.h"
 #include "status_icon.h"
 #include "details_dialog.h"

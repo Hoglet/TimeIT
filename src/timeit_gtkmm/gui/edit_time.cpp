@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "add_time.h"
+#include "edit_time.h"
 #include <libtimeit/utils.h>
 #include <ctime>
 #include <glibmm/i18n.h>
