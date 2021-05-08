@@ -42,57 +42,73 @@ void Notifier::send_message(Notification_message message)
 	switch(message.type)
 	{
 		case TASK_UPDATED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_task_updated(message.ID);
-			}
+			this->notify_all( [message](Event_observer* observer)
+							  {
+								  observer->on_task_updated(message.ID);
+							  }
+							  );
 			break;
 		case  TASK_NAME_CHANGED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_task_name_changed(message.ID);
-			}
+			this->notify_all( [message](Event_observer* observer)
+								{
+									observer->on_task_name_changed(message.ID);
+								}
+							);
 			break;
 		case TASK_TIME_CHANGED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_task_time_changed(message.ID);
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_task_time_changed(message.ID);
+					}
+					);
 			break;
 		case TASK_ADDED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_task_added(message.ID);
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_task_added(message.ID);
+					}
+					);
 			break;
 		case TASK_REMOVED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_task_removed(message.ID);
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_task_removed(message.ID);
+					}
+			);
 			break;
 		case TASK_PARENT_CHANGED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_parent_changed(message.ID);
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_parent_changed(message.ID);
+					}
+			);
 		case COMPLETE_UPDATE:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_complete_update();
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_complete_update();
+					}
+			);
 			break;
 		case SETTINGS_CHANGED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_settings_changed( message.name );
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_settings_changed( message.name );
+					}
+			);
 			break;
 		case TIME_ENTRY_CHANGED:
-			for (Event_observer *observer : observers)
-			{
-				observer->on_time_entry_changed( message.ID );
-			}
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_time_entry_changed( message.ID );
+					}
+			);
 			break;
 		default:
 			throw ("Unknown message type");
@@ -131,4 +147,13 @@ unsigned long Notifier::size()
 {
 	return observers.size();
 }
+
+void Notifier::notify_all(function<void(Event_observer*)> function)
+{
+	for (Event_observer *observer : observers)
+	{
+		function(observer);
+	}
+}
+
 }

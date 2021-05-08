@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <list>
 #include <string>
+#include <functional>
 #include <libtimeit/event_observer.h>
 #include <libtimeit/db/message_type.h>
 
@@ -42,6 +43,8 @@ private:
 	bool missed_notification = false;
 
 	list<Event_observer*> observers = {};
+
+	void notify_all(function<void(Event_observer*)>);
 };
 
 }

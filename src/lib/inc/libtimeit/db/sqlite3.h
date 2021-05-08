@@ -29,11 +29,14 @@ public:
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
 	void bind_null_value(int index);
+
 	Query_result execute();
 private:
 	SQLite3&      db;
 	sqlite3_stmt* stmt;
 	int           number_of_columns;
+
+	vector<Data_cell> get_row();
 };
 
 class SQLite3

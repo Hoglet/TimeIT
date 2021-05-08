@@ -147,30 +147,7 @@ Query_result Statement::execute()
 		}
 		if (rc == SQLITE_ROW)
 		{
-			vector<Data_cell> row;
-			for (int c = 0; c < number_of_columns; c++)
-			{
-				int type = sqlite3_column_type(stmt, c);
-				if (type == SQLITE_INTEGER)
-				{
-					row.emplace_back(sqlite3_column_int(stmt, c));
-				}
-				else if (type == SQLITE_TEXT)
-				{
-					row.emplace_back((const char*) sqlite3_column_text(stmt, c)); // NOLINT
-				}
-				else if (type == SQLITE_NULL)
-				{
-					row.emplace_back();
-				}
-				else
-				{
-					//LCOV_EXCL_START
-					db.try_rollback();
-					throw db_exception("Unmanaged data type");
-					//LCOV_EXCL_STOP
-				}
-			}
+			vector<Data_cell> row = get_row();
 			rows.push_back(row);
 		}
 		else
@@ -186,6 +163,35 @@ Query_result Statement::execute()
 	}
 	sqlite3_reset(stmt);
 	return rows;
+}
+
+vector<Data_cell> Statement::get_row()
+{
+	vector<Data_cell> row;
+	for (int c = 0; c < number_of_columns; c++)
+	{
+		int type = sqlite3_column_type(stmt, c);
+		if (type == SQLITE_INTEGER)
+		{
+			row.emplace_back(sqlite3_column_int(stmt, c));
+		}
+		else if (type == SQLITE_TEXT)
+		{
+			row.emplace_back((const char*) sqlite3_column_text(stmt, c)); // NOLINT
+		}
+		else if (type == SQLITE_NULL)
+		{
+			row.emplace_back();
+		}
+		else
+		{
+			//LCOV_EXCL_START
+			db.try_rollback();
+			throw db_exception("Unmanaged data type");
+			//LCOV_EXCL_STOP
+		}
+	}
+	return row;
 }
 
 }
