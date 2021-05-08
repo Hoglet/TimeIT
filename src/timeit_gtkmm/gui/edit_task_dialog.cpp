@@ -7,8 +7,10 @@
 
 namespace gui
 {
-static const int BORDER_WIDTH = 5;
-static const int PADDING = 3;
+static const int BORDER_WIDTH            = 5;
+static const int PADDING                 = 3;
+static const int MAX_IDLE_TIME           = 500;
+static const int IDLE_TIME_PAGING_LENGTH = 10;
 
 using namespace libtimeit;
 using namespace std;
@@ -65,6 +67,10 @@ void Edit_task_dialog::create_layout()
 	idle_label.set_tooltip_text(_("This is the time of inaction necessary to trigger the end of a time span"));
 	idle_time_entry.set_tooltip_text(_("This is the time of inaction necessary to trigger an end of a time span"));
 	idle_time_entry.set_max_length(4);
+	idle_time_entry.set_range(1, MAX_IDLE_TIME);
+	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
+	idle_time = settings_accessor.get_int("Gt", DEFAULT_GT );
+	idle_time_entry.set_value( idle_time );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
 
@@ -143,6 +149,7 @@ vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
 	return workspace_list;
 }
 
+
 void Edit_task_dialog::set_task_id(Task_id ID)
 {
 	task_id = ID;
@@ -163,8 +170,7 @@ void Edit_task_dialog::set_task_id(Task_id ID)
 		{
 			idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
 		}
-		idle_time_entry.set_range(1,500);
-		idle_time_entry.set_increments(1,10);
+
 		idle_time_entry.set_value( idle_time);
 		quiet_button.set_active( quiet);
 	}

@@ -186,7 +186,7 @@ void Controller::on_action_task_selection_changed(int selected_task_ID)
 
 void Controller::on_action_add_task()
 {
-	 WidgetPtr add_task_dialog = gui_factory.getWidget(ADD_TASK_DIALOG);
+	WidgetPtr add_task_dialog = gui_factory.getWidget(ADD_TASK_DIALOG);
 	dynamic_pointer_cast<Edit_task_dialog>(add_task_dialog)->set_parent(selected_task_id);
 	add_task_dialog->show();
 }
