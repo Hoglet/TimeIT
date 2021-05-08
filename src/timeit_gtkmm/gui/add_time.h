@@ -19,15 +19,18 @@ namespace gui
 {
 using namespace libtimeit;
 
-class AddTime: public Gtk::Dialog, public CalendarObserver, public IWidget
+/*
+ * Edit and add times
+ */
+class Edit_time: public Gtk::Dialog, public CalendarObserver, public IWidget
 {
 public:
-	AddTime(int64_t taskId, Calendar& calendar, Database& database);
-	AddTime(const AddTime&)             = delete;
-	AddTime( AddTime&&)                 = delete;
-	AddTime& operator=(const AddTime& ) = delete;
-	AddTime& operator=( AddTime&& )     = delete;
-	virtual ~AddTime();
+	Edit_time(int64_t taskId, Calendar& calendar, Database& database);
+	Edit_time(const Edit_time&)             = delete;
+	Edit_time(Edit_time&&)                 = delete;
+	Edit_time& operator=(const Edit_time& ) = delete;
+	Edit_time& operator=(Edit_time&& )     = delete;
+	~Edit_time() override;
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }
 	void hide() override { Gtk::Dialog::hide(); }
@@ -43,29 +46,31 @@ private:
 	Gtk::HBox  hbox;
 	Gtk::HSeparator hseparator;
 
-	Gtk::Label yearLabel;
-	Gtk::Label monthLabel;
-	Gtk::Label dayLabel;
-	Gtk::Label taskNameLabel;
-	Gtk::Label taskName;
+	Gtk::Label year_label;
+	Gtk::Label month_label;
+	Gtk::Label day_label;
+	Gtk::Label task_name_label;
+	Gtk::Label task_name;
 
-	Gtk::Label startTimeLabel;
-	Gtk::Label stopTimeLabel;
-	Gtk::Label startColonLabel, toLabel, stopColonLabel;
-	LZSpinButton startTimeHour;
-	LZSpinButton startTimeMinute;
-	LZSpinButton stopTimeHour;
-	LZSpinButton stopTimeMinute;
+	Gtk::Label start_time_label;
+	Gtk::Label stop_time_label;
+	Gtk::Label start_colon_label;
+	Gtk::Label to_label;
+	Gtk::Label stop_colon_label;
+
+	LZSpinButton start_time_hour;
+	LZSpinButton start_time_minute;
+	LZSpinButton stop_time_hour;
+	LZSpinButton stop_time_minute;
 	LZSpinButton year;
 	LZSpinButton month;
 	LZSpinButton day;
-//	Gtk::Button CancelButton;
-	Gtk::Button* OKButton;
+	Gtk::Button* ok_button;
 	Calendar& calendar;
 
-	int64_t taskID;
-	Time_accessor m_timeAccessor;
-	Task_accessor m_taskAccessor;
+	int64_t task_id;
+	Time_accessor time_accessor;
+	Task_accessor task_accessor;
 };
 }
 

@@ -156,7 +156,7 @@ WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 			getWidget(MAIN_WINDOW);
 		}
 		Calendar &calendar = std::dynamic_pointer_cast<MainWindow>(mainWindow)->getCalendar();
-		shared_ptr<AddTime> addTime(new AddTime(taskID, calendar, database));
+		shared_ptr<Edit_time> addTime(new Edit_time(taskID, calendar, database));
 		addTime->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_addTime_response));
 		addTimeInstance = addTime;
 	}

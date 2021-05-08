@@ -7,7 +7,7 @@
 
 #include "add_time.h"
 #include <libtimeit/utils.h>
-#include <time.h>
+#include <ctime>
 #include <glibmm/i18n.h>
 
 using namespace libtimeit;
@@ -15,58 +15,58 @@ using namespace libtimeit;
 namespace gui
 {
 
-AddTime::AddTime(
+Edit_time::Edit_time(
 		int64_t    op_taskID,
 		Calendar& op_calendar,
 		Database& database)
 		:
-		yearLabel(_("Year")),
-		monthLabel(_("Month")),
-		dayLabel(_("Day")),
-		taskNameLabel(_("Adding time to:")),
-		startTimeLabel(_("Start time")),
-		stopTimeLabel(_("Stop time")),
-		startColonLabel(":"), toLabel("→"),
-		stopColonLabel(":"),
-		calendar(op_calendar), taskID(op_taskID),
-		m_timeAccessor(database),
-		m_taskAccessor(database)
+		year_label(_("Year")),
+		month_label(_("Month")),
+		day_label(_("Day")),
+		task_name_label(_("Adding time to:")),
+		start_time_label(_("Start time")),
+		stop_time_label(_("Stop time")),
+		start_colon_label(":"), to_label("→"),
+		stop_colon_label(":"),
+		calendar(op_calendar), task_id(op_taskID),
+		time_accessor(database),
+		task_accessor(database)
 {
 	set_deletable(false);
 
-	auto task = m_taskAccessor.by_ID(taskID);
+	auto task = task_accessor.by_ID(task_id);
 	if (task.has_value())
 	{
-		taskName.set_text(task->name);
+		task_name.set_text(task->name);
 	}
-	startTimeHour.set_range(0, 23);
-	startTimeMinute.set_range(0, 59);
-	stopTimeHour.set_range(0, 23);
-	stopTimeMinute.set_range(0, 59);
+	start_time_hour.set_range(0, 23);
+	start_time_minute.set_range(0, 59);
+	stop_time_hour.set_range(0, 23);
+	stop_time_minute.set_range(0, 59);
 	year.set_range(2000, 2050);
 	month.set_range(1, 12);
 	day.set_range(1, 31);
 	year.set_increments(1, 1);
 	month.set_increments(1, 1);
 	day.set_increments(1, 1);
-	startTimeHour.set_increments(1, 1);
-	startTimeMinute.set_increments(1, 1);
-	stopTimeHour.set_increments(1, 1);
-	stopTimeMinute.set_increments(1, 1);
+	start_time_hour.set_increments(1, 1);
+	start_time_minute.set_increments(1, 1);
+	stop_time_hour.set_increments(1, 1);
+	stop_time_minute.set_increments(1, 1);
 
 	time_t now = libtimeit::now();
-	struct tm *timeInfo = localtime(&now);
-	startTimeHour.set_value(timeInfo->tm_hour);
-	stopTimeHour.set_value(timeInfo->tm_hour);
-	startTimeMinute.set_value(timeInfo->tm_min);
-	stopTimeMinute.set_value(timeInfo->tm_min);
+	struct tm *time_info = localtime(&now);
+	start_time_hour.set_value(time_info->tm_hour);
+	stop_time_hour.set_value(time_info->tm_hour);
+	start_time_minute.set_value(time_info->tm_min);
+	stop_time_minute.set_value(time_info->tm_min);
 
 	calendar.attach(this);
-	startTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &AddTime::on_change));
-	startTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &AddTime::on_change));
-	stopTimeHour.signal_value_changed().connect(sigc::mem_fun(this, &AddTime::on_change));
-	stopTimeMinute.signal_value_changed().connect(sigc::mem_fun(this, &AddTime::on_change));
-	month.signal_value_changed().connect(sigc::mem_fun(this, &AddTime::on_month_changed));
+	start_time_hour.signal_value_changed().connect(sigc::mem_fun(this, &Edit_time::on_change));
+	start_time_minute.signal_value_changed().connect(sigc::mem_fun(this, &Edit_time::on_change));
+	stop_time_hour.signal_value_changed().connect(sigc::mem_fun(this, &Edit_time::on_change));
+	stop_time_minute.signal_value_changed().connect(sigc::mem_fun(this, &Edit_time::on_change));
+	month.signal_value_changed().connect(sigc::mem_fun(this, &Edit_time::on_month_changed));
 
 	on_date_changed();
 	//Layout
@@ -74,44 +74,44 @@ AddTime::AddTime(
 	get_vbox()->set_spacing(2);
 	get_vbox()->pack_start(hbox);
 	{
-		hbox.pack_start(taskNameLabel);
-		hbox.pack_start(taskName);
+		hbox.pack_start(task_name_label);
+		hbox.pack_start(task_name);
 		hbox.set_spacing(2);
 	}
 	get_vbox()->pack_start(hseparator);
 	get_vbox()->pack_start(table, Gtk::PACK_SHRINK, 3);
 	{
- 		table.attach(yearLabel, 0, 2, 0, 1);
-		table.attach(monthLabel, 2, 4, 0, 1);
-		table.attach(dayLabel, 4, 7, 0, 1);
+ 		table.attach(year_label, 0, 2, 0, 1);
+		table.attach(month_label, 2, 4, 0, 1);
+		table.attach(day_label, 4, 7, 0, 1);
  		table.attach(year, 0, 2, 1, 2);
 		table.attach(month, 2, 4, 1, 2);
 		table.attach(day, 4, 7, 1, 2);
-		table.attach(startTimeLabel, 0, 3, 2, 3);
-		table.attach(stopTimeLabel, 4, 7, 2, 3);
- 		table.attach(startTimeHour, 0, 1, 3, 4);
-		table.attach(startColonLabel, 1, 2, 3, 4);
-		table.attach(startTimeMinute, 2, 3, 3, 4);
-		table.attach(toLabel, 3, 4, 3, 4);
-		table.attach(stopTimeHour, 4, 5, 3, 4);
-		table.attach(stopColonLabel, 5, 6, 3, 4);
-		table.attach(stopTimeMinute, 6, 7, 3, 4);
+		table.attach(start_time_label, 0, 3, 2, 3);
+		table.attach(stop_time_label, 4, 7, 2, 3);
+ 		table.attach(start_time_hour, 0, 1, 3, 4);
+		table.attach(start_colon_label, 1, 2, 3, 4);
+		table.attach(start_time_minute, 2, 3, 3, 4);
+		table.attach(to_label, 3, 4, 3, 4);
+		table.attach(stop_time_hour, 4, 5, 3, 4);
+		table.attach(stop_colon_label, 5, 6, 3, 4);
+		table.attach(stop_time_minute, 6, 7, 3, 4);
 	}
 
 	add_button(Gtk::StockID("gtk-cancel"), Gtk::RESPONSE_CANCEL);
-	OKButton = add_button(Gtk::StockID("gtk-apply"), Gtk::RESPONSE_OK);
-	OKButton->set_sensitive(false);
+	ok_button = add_button(Gtk::StockID("gtk-apply"), Gtk::RESPONSE_OK);
+	ok_button->set_sensitive(false);
 	show_all_children();
 
 
 }
 
-AddTime::~AddTime()
+Edit_time::~Edit_time()
 {
 	calendar.detach(this);
 }
 
-void AddTime::on_response(int response_id)
+void Edit_time::on_response(int response_id)
 {
 	if (response_id == Gtk::RESPONSE_OK)
 	{
@@ -119,55 +119,55 @@ void AddTime::on_response(int response_id)
 		auto m = month.get_value_as_int() - 1;
 		auto d = day.get_value_as_int();
 
-		int startH = startTimeHour.get_value_as_int();
-		int startM = startTimeMinute.get_value_as_int();
-		int stopH = stopTimeHour.get_value_as_int();
-		int stopM = stopTimeMinute.get_value_as_int();
+		int start_h = start_time_hour.get_value_as_int();
+		int start_m = start_time_minute.get_value_as_int();
+		int stop_h = stop_time_hour.get_value_as_int();
+		int stop_m = stop_time_minute.get_value_as_int();
 
-		time_t startTime = libtimeit::to_time(y, m, d, startH, startM);
-		time_t stopTime = libtimeit::to_time(y, m, d, stopH, stopM);
-		m_timeAccessor.create( Time_entry(taskID, startTime, stopTime) );
+		time_t start_time = libtimeit::to_time(y, m, d, start_h, start_m);
+		time_t stop_time = libtimeit::to_time(y, m, d, stop_h, stop_m);
+		time_accessor.create(Time_entry(task_id, start_time, stop_time) );
 	}
 }
 
-void AddTime::on_date_changed()
+void Edit_time::on_date_changed()
 {
-	guint l_year;
-	guint l_month;
-	guint l_day;
-	calendar.get_date(l_year, l_month, l_day);
+	guint year_{0};
+	guint month_{0};
+	guint day_{0};
+	calendar.get_date(year_, month_, day_);
 
-	year.set_value(l_year);
-	month.set_value(l_month + 1);
-	day.set_value(l_day);
+	year.set_value(year_);
+	month.set_value(month_ + 1);
+	day.set_value(day_);
 }
 
-void AddTime::on_change()
+void Edit_time::on_change()
 {
-	int startH = startTimeHour.get_value_as_int();
-	int stopH = stopTimeHour.get_value_as_int();
-	int startM = startTimeMinute.get_value_as_int();
-	int stopM = stopTimeMinute.get_value_as_int();
-	if (stopH > startH || (stopH == startH && stopM > startM))
+	int start_h = start_time_hour.get_value_as_int();
+	int stop_h = stop_time_hour.get_value_as_int();
+	int start_m = start_time_minute.get_value_as_int();
+	int stop_m = stop_time_minute.get_value_as_int();
+	if (stop_h > start_h || (stop_h == start_h && stop_m > start_m))
 	{
-		OKButton->set_sensitive(true);
+		ok_button->set_sensitive(true);
 	}
 	else
 	{
-		OKButton->set_sensitive(false);
+		ok_button->set_sensitive(false);
 	}
 }
 
-void AddTime::on_month_changed()
+void Edit_time::on_month_changed()
 {
 
 	auto y = year.get_value_as_int();
 	auto m = month.get_value_as_int() - 1;
 
 	//Avoiding problems with daylight saving time by checking second day of month
-	time_t activeDay = libtimeit::to_time(y, m, 2);
-	int maxDay = libtimeit::days_in_month(activeDay);
-	day.set_range(1, maxDay);
+	time_t active_day = libtimeit::to_time(y, m, 2);
+	int max_day = libtimeit::days_in_month(active_day);
+	day.set_range(1, max_day);
 }
 
 }
