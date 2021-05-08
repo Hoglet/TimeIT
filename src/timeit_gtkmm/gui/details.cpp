@@ -10,7 +10,6 @@
 #include <libtimeit/utils.h>
 #include <glibmm/i18n.h>
 #include <optional>
-#include <vector>
 #include <libtimeit/db/default_values.h>
 
 using namespace Gtk;
@@ -25,43 +24,42 @@ Details::Details(
 		Notifier& notifier)
 		:
 		Event_observer(notifier),
-		m_timeAccessor(database),
-		m_settingsAccessor(database)
+		time_accessor(database),
+		settings_accessor(database)
 
 
 {
-	m_startTime = 0;
-	m_stopTime = 0;
-	m_taskID = 0;
-	m_treeModel = ListStore::create(m_columns);
-	set_model(m_treeModel);
+	start_time = 0;
+	stop_time = 0;
+	task_id = 0;
+	tree_model = ListStore::create(columns);
+	set_model(tree_model);
 
-	m_morningColumnN = append_column(_(" Day"), m_columns.m_col_morning) - 1;
-	get_column(m_morningColumnN)->set_visible(false);
-	append_column(_(" Date"), m_columns.m_col_date);
-	append_column(_(" Time span"), m_columns.m_col_time);
-	append_column(_(" Duration"), m_columns.m_col_time_amount);
-	append_column("  ∑  ",m_columns.m_col_day_total);
-	append_column(_(" Idle time"), m_columns.m_col_idle);
+	append_column(_(" Day"), columns.col_morning);
+	append_column(_(" Date"), columns.col_date);
+	append_column(_(" Time span"), columns.col_time);
+	append_column(_(" Duration"), columns.col_time_amount);
+	append_column("  ∑  ", columns.col_day_total);
+	append_column(_(" Idle time"), columns.col_idle);
 
 	set_headers_visible(true);
 	//Fill the popup menu:
 	{
-		Gtk::Menu::MenuList &menulist = m_Menu_Popup.items();
+		Gtk::Menu::MenuList &menulist = menu_popup.items();
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &Details::on_menu_file_popup_edit)));
 
 		Gtk::Menu_Helpers::MenuElem merge_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &Details::on_menu_file_popup_merge));
-		m_merge_menu_item = merge_menu_elem.get_child();
+		merge_menu_item = merge_menu_elem.get_child();
 		menulist.push_back(merge_menu_elem);
 
 		Gtk::Menu_Helpers::MenuElem split_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Split"), sigc::mem_fun(*this, &Details::on_menu_file_popup_split));
-		m_split_menu_item = split_menu_elem.get_child();
+		split_menu_item = split_menu_elem.get_child();
 		menulist.push_back(split_menu_elem);
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
-	m_Menu_Popup.accelerate(*this);
+	menu_popup.accelerate(*this);
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Details::on_selection_changed));
 
 }
@@ -76,7 +74,7 @@ int64_t Details::getSelectedID()
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		retVal = row[m_columns.m_col_id];
+		retVal = row[columns.col_id];
 	}
 	return retVal;
 }
@@ -90,13 +88,13 @@ vector<int64_t> Details::getSelectedAndNextID()
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		retVal[0] = row[m_columns.m_col_id];
+		retVal[0] = row[columns.col_id];
 		//std::cout << "one row" << std::endl;
 		++iter;
 		if (iter) // if there is a next row
 		{
 			TreeModel::Row nextRow = *iter;
-			retVal[1] = nextRow[m_columns.m_col_id];
+			retVal[1] = nextRow[columns.col_id];
 			//std::cout << "two rows" << std::endl;
 		}
 	}
@@ -108,12 +106,12 @@ void Details::on_menu_file_popup_remove()
 	int64_t selectedID = getSelectedID();
 	if (selectedID > 0)
 	{
-		optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selectedID);
+		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selectedID);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
-			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
+			int idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
+			int idleGz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 			int64_t minutesToLose = difftime(time_entry.stop, time_entry.start) / 60;
 			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
 			std::string secondaryText =
@@ -137,13 +135,13 @@ void Details::on_menu_file_popup_remove()
 				if ( time_entry.state == RUNNING )
 				{
 					// if running then keep running, starting over with zero length
-					m_timeAccessor.update(time_entry.with_start(time_entry.stop));
+					time_accessor.update(time_entry.with_start(time_entry.stop));
 				}
 				else
 				{
-					m_timeAccessor.remove(selectedID);
+					time_accessor.remove(selectedID);
 				}
-				auto row_data = create_row_data(m_startTime, m_stopTime);
+				auto row_data = create_row_data(start_time, stop_time);
 				populate( row_data );
 				//DetailsDialog::instance().show();
 				break;
@@ -169,14 +167,14 @@ void Details::on_menu_file_popup_merge()
 	vector<int64_t> selectedIDs = getSelectedAndNextID();
 	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
 	{
-		optional<Time_entry> optional_time_entry_0 = m_timeAccessor.by_ID(selectedIDs[0]);
-		optional<Time_entry> optional_time_entry_1 = m_timeAccessor.by_ID(selectedIDs[1]);
+		optional<Time_entry> optional_time_entry_0 = time_accessor.by_ID(selectedIDs[0]);
+		optional<Time_entry> optional_time_entry_1 = time_accessor.by_ID(selectedIDs[1]);
 		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
 			Time_entry time_entry_0 = optional_time_entry_0.value();
 			Time_entry time_entry_1 = optional_time_entry_1.value();
-			int idleGt = m_settingsAccessor.get_int("Gt", DEFAULT_GT);
-			int idleGz = m_settingsAccessor.get_int("Gz", DEFAULT_GZ);
+			int idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
+			int idleGz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 
 			int64_t minutesToGain = difftime(time_entry_1.start, time_entry_0.stop) / 60;
 
@@ -201,9 +199,9 @@ void Details::on_menu_file_popup_merge()
 			{
 				// coded considering time_entry_1 could be currently running
 				time_t new_start = time_entry_0.start;
-				m_timeAccessor.remove(time_entry_0.id);
-				m_timeAccessor.update( time_entry_1.with_start(new_start) );
-				auto row_data = create_row_data(m_startTime, m_stopTime);
+				time_accessor.remove(time_entry_0.id);
+				time_accessor.update(time_entry_1.with_start(new_start) );
+				auto row_data = create_row_data(start_time, stop_time);
 				populate( row_data );
 				break;
 			}
@@ -231,7 +229,7 @@ void Details::on_menu_file_popup_split()
 	int64_t selected_id = getSelectedID();
 	if (selected_id > 0)
 	{
-		optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selected_id);
+		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
@@ -262,9 +260,9 @@ void Details::on_menu_file_popup_split()
 					split_stop_time = (start_time + (stop_time - start_time) / 2 - 1);
 					split_start_time = split_stop_time + 2;
 				}
-				m_timeAccessor.update( time_entry.with_start(split_start_time).with_stop(stop_time) );
-				m_timeAccessor.create( Time_entry(task_id, start_time, split_stop_time) );
-				auto row_data = create_row_data(m_startTime, m_stopTime);
+				time_accessor.update(time_entry.with_start(split_start_time).with_stop(stop_time) );
+				time_accessor.create(Time_entry(task_id, start_time, split_stop_time) );
+				auto row_data = create_row_data(start_time, stop_time);
 				populate( row_data );
 			}
 			else
@@ -289,29 +287,29 @@ bool Details::on_button_press_event(GdkEventButton *event)
 		int64_t next_id = selected_ids[1];
 		if (selected_id > 0)
 		{
-			optional<Time_entry> optional_time_entry = m_timeAccessor.by_ID(selected_id);
-			optional<Time_entry> optional_next_time_entry = m_timeAccessor.by_ID(next_id);
+			optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
+			optional<Time_entry> optional_next_time_entry = time_accessor.by_ID(next_id);
 			if (optional_time_entry)
 			{
 				if (offer_to_merge(optional_time_entry, optional_next_time_entry))
 				{
-					m_merge_menu_item->set_sensitive(true);
+					merge_menu_item->set_sensitive(true);
 				}
 				else
 				{
-					m_merge_menu_item->set_sensitive(false);
+					merge_menu_item->set_sensitive(false);
 				}
 
 				if (offer_to_split(optional_time_entry.value()))
 				{
-					m_split_menu_item->set_sensitive(true);
+					split_menu_item->set_sensitive(true);
 				}
 				else
 				{
-					m_split_menu_item->set_sensitive(false);
+					split_menu_item->set_sensitive(false);
 				}
 
-				m_Menu_Popup.popup(event->button, event->time);
+				menu_popup.popup(event->button, event->time);
 			}
 		}
 	}
@@ -321,11 +319,11 @@ bool Details::on_button_press_event(GdkEventButton *event)
 
 optional<Gtk::TreeModel::Row> Details::findRow(int id)
 {
-	TreeModel::Children children = m_treeModel->children();
+	TreeModel::Children children = tree_model->children();
 	TreeIter iter;
 	for (iter = children.begin(); iter != children.end(); iter++)
 	{
-		if (((*iter)[m_columns.m_col_id] == id))
+		if (((*iter)[columns.col_id] == id))
 		{
 			return *iter;
 		}
@@ -334,13 +332,13 @@ optional<Gtk::TreeModel::Row> Details::findRow(int id)
 }
 void Details::on_task_updated(int64_t)
 {
-	auto row_data = create_row_data(m_startTime, m_stopTime);
+	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
 void Details::on_task_name_changed(int64_t)
 {
-	auto row_data = create_row_data(m_startTime, m_stopTime);
+	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
@@ -349,7 +347,7 @@ void Details::on_time_entry_changed(int64_t ID)
 	auto row = findRow(ID);
 	if ( row.has_value() )
 	{
-		auto time_entry = m_timeAccessor.by_ID(ID);
+		auto time_entry = time_accessor.by_ID(ID);
 		if(time_entry.has_value())
 		{
 			auto day = time_entry->start;
@@ -361,42 +359,39 @@ void Details::on_time_entry_changed(int64_t ID)
 	}
 	else
 	{
-		auto row_data = create_row_data(m_startTime, m_stopTime);
+		auto row_data = create_row_data(start_time, stop_time);
 		populate( row_data );
 	}
 }
 
 void Details::on_task_removed(int64_t)
 {
-	auto row_data = create_row_data(m_startTime, m_stopTime);
+	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
 void Details::on_complete_update()
 {
-	auto row_data = create_row_data(m_startTime, m_stopTime);
+	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
 void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 {
-	bool acrossDays = is_on_different_days(startTime, stopTime);
 	if (ID > 0)
 	{
-		m_taskID = ID;
-		m_startTime = startTime;
-		m_stopTime = stopTime;
-		get_column(m_morningColumnN)->set_visible(acrossDays);
-
-		auto row_data = create_row_data(m_startTime, m_stopTime);
+		task_id = ID;
+		start_time = startTime;
+		stop_time = stopTime;
+		auto row_data = create_row_data(start_time, stop_time);
 		populate( row_data );
 	}
 	else
 	{
-		m_taskID = 0;
-		m_startTime = 0;
-		m_stopTime = 0;
-		m_treeModel->clear();
+		task_id = 0;
+		start_time = 0;
+		stop_time = 0;
+		tree_model->clear();
 	}
 }
 
@@ -406,35 +401,35 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 
 void Details::update_row(TreeModel::Row& row, Row_data row_data )
 {
-	row[m_columns.m_col_id]          = row_data.time_ID;
-	row[m_columns.m_col_morning]     = row_data.first_in_day ? day_of_week_abbreviation(row_data.start) : "";
-	row[m_columns.m_col_date]        = row_data.first_in_day ? date_string(row_data.start) : "";
-	row[m_columns.m_col_time]        = time_span_string(row_data.start, row_data.stop);
-	row[m_columns.m_col_time_amount] = duration_string(row_data.start, row_data.stop);
+	row[columns.col_id]          = row_data.time_ID;
+	row[columns.col_morning]     = row_data.first_in_day ? day_of_week_abbreviation(row_data.start) : "";
+	row[columns.col_date]        = row_data.first_in_day ? date_string(row_data.start) : "";
+	row[columns.col_time]        = time_span_string(row_data.start, row_data.stop);
+	row[columns.col_time_amount] = duration_string(row_data.start, row_data.stop);
 	if(row_data.running)
 	{
-		row[m_columns.m_col_idle] = string("\u2003⌚");
+		row[columns.col_idle] = string("\u2003⌚");
 	}
 	else if( row_data.next_start >= row_data.stop)
 	{
-		row[m_columns.m_col_idle] = string("\u2003") + idling_string(row_data.stop, row_data.next_start);
+		row[columns.col_idle] = string("\u2003") + idling_string(row_data.stop, row_data.next_start);
 	}
 	else
 	{
-		row[m_columns.m_col_idle] = string("\u2003") + "⇣";
+		row[columns.col_idle] = string("\u2003") + "⇣";
 	}
 	if(row_data.last_in_day)
 	{
 		auto seconds_today = row_data.cumulative_time;
-		row[m_columns.m_col_day_total] = "\u2003" + string(is_on_different_days(row_data.start, row_data.stop) ? "≠" : "≈")
-										 + seconds_2_hhmm(seconds_today) + " ";
+		row[columns.col_day_total] = "\u2003" + string(is_on_different_days(row_data.start, row_data.stop) ? "≠" : "≈")
+									 + seconds_2_hhmm(seconds_today) + " ";
 	}
 }
 
 
 list<Row_data> Details::create_row_data(time_t start, time_t stop)
 {
-	Time_list time_list = m_timeAccessor.time_list(m_taskID, start, stop);
+	Time_list time_list = time_accessor.time_list(task_id, start, stop);
 	time_t prev_start   = 0;
 	auto iter = time_list.begin();
 	list<Row_data> data_rows = {};
@@ -479,11 +474,11 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 
 void Details::populate(list<Row_data> data_rows)
 {
-	m_treeModel->clear();
+	tree_model->clear();
 
 	for (auto row_data: data_rows )
 	{
-		auto treeIter = m_treeModel->append();
+		auto treeIter = tree_model->append();
 		TreeModel::Row row = *treeIter;
 
 		update_row(row, row_data );

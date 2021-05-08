@@ -9,7 +9,7 @@
 #define DETAILS_H_
 
 #include <gtkmm.h>
-#include <signal.h>
+#include <csignal>
 
 #include "main_window/summary.h"
 
@@ -61,15 +61,11 @@ public:
 	void on_menu_file_popup_merge();
 	void on_menu_file_popup_split();
 	//EventObserver interface
-	void on_task_added(int64_t) override
-	{
-	}
-	;
-	void on_task_updated(int64_t) override;
-	void on_task_removed(int64_t) override;
+	void on_task_updated(Task_id task_id) override;
+	void on_task_removed(Task_id task_id) override;
 	void on_complete_update() override;
-	void on_task_name_changed(int64_t) override;
-	void on_time_entry_changed(int64_t) override;
+	void on_task_name_changed(Task_id task_id) override;
+	void on_time_entry_changed(Time_id time_id) override;
 	//
 	int64_t getSelectedID();
 	std::vector<int64_t> getSelectedAndNextID();
@@ -86,42 +82,41 @@ private:
 	void           populate(list<Row_data> data_rows);
 	void           update(list<Row_data> data_rows);
 
-	Glib::RefPtr<Gtk::ListStore> m_treeModel;
+	Glib::RefPtr<Gtk::ListStore> tree_model;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:
 		ModelColumns()
 		{
 
-			add(m_col_id);
-			add(m_col_date);
-			add(m_col_time);
-			add(m_col_time_amount);
-			add(m_col_day_total);
-			add(m_col_idle);
-			add(m_col_morning);
+			add(col_id);
+			add(col_date);
+			add(col_time);
+			add(col_time_amount);
+			add(col_day_total);
+			add(col_idle);
+			add(col_morning);
 		}
 		;
-		Gtk::TreeModelColumn<int> m_col_id;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_date;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_time;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_time_amount;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_day_total;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_idle;
-		Gtk::TreeModelColumn<Glib::ustring> m_col_morning;
+		Gtk::TreeModelColumn<int> col_id;
+		Gtk::TreeModelColumn<Glib::ustring> col_date;
+		Gtk::TreeModelColumn<Glib::ustring> col_time;
+		Gtk::TreeModelColumn<Glib::ustring> col_time_amount;
+		Gtk::TreeModelColumn<Glib::ustring> col_day_total;
+		Gtk::TreeModelColumn<Glib::ustring> col_idle;
+		Gtk::TreeModelColumn<Glib::ustring> col_morning;
 	};
-	ModelColumns m_columns;
-	int m_morningColumnN;
-	int64_t m_taskID;
+	ModelColumns columns;
+	int64_t      task_id;
 
-	time_t m_startTime;
-	time_t m_stopTime;
-	Gtk::Menu m_Menu_Popup;
-	Glib::RefPtr<Gtk::MenuItem> m_merge_menu_item;
-	Glib::RefPtr<Gtk::MenuItem> m_split_menu_item;
+	time_t start_time;
+	time_t stop_time;
+	Gtk::Menu                   menu_popup;
+	Glib::RefPtr<Gtk::MenuItem> merge_menu_item;
+	Glib::RefPtr<Gtk::MenuItem> split_menu_item;
 	std::list<DetailsObserver*> observers;
-	Time_accessor     m_timeAccessor;
-	Settings_accessor m_settingsAccessor;
+	Time_accessor               time_accessor;
+	Settings_accessor           settings_accessor;
 };
 }
 
