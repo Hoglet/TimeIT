@@ -69,10 +69,6 @@ protected:
 
 	//SummaryObserver
 	virtual void on_selection_changed();
-	virtual void on_showDetailsClicked(ISummary *summary, int64_t taskId, time_t startTime, time_t stopTime)
-	{
-	}
-	;
 
 	//
 	void connectSignals();
@@ -91,7 +87,7 @@ protected:
 	void populate();
 	void empty();
 	virtual void calculateTimeSpan();
-	Gtk::TreeModel::iterator findRow(int id);
+	Gtk::TreeModel::iterator findRow(Task_id id);
 	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
 	void assignValuesToRow(Gtk::TreeModel::Row &row, Task& task, time_t totalTime);
 

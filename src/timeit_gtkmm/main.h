@@ -18,11 +18,11 @@ class Main
 {
 public:
 	Main(int argc, char *argv[]);
-	void printHelp();
+	void print_help();
 	int run(int argc, char *argv[]);
 private:
-	std::string dbName;
-	std::string socketName = "timeit.socket";
+	std::string db_name;
+	std::string socket_name = "timeit.socket";
 };
 
 }

@@ -19,7 +19,7 @@ SummaryObserver::SummaryObserver()
 SummaryObserver::~SummaryObserver()
 {
 	unsubscription_allowed = false;
-	list<ISummary*>::iterator iter = subjects.begin();
+	auto iter = subjects.begin();
 	while (iter != subjects.end())
 	{
 		ISummary *subject = *iter;
@@ -120,9 +120,9 @@ void Summary::detach(SummaryObserver *observer)
 int64_t Summary::getSelectedID()
 {
 	int retVal = 0;
-	RefPtr<TreeSelection> refTreeSelection = get_selection();
+	RefPtr<TreeSelection> ref_TreeSelection = get_selection();
 	TreeModel::iterator iter;
-	iter = refTreeSelection->get_selected();
+	iter = ref_TreeSelection->get_selected();
 	if (iter) //If anything is selected
 	{
 		TreeModel::Row row;
@@ -131,9 +131,9 @@ int64_t Summary::getSelectedID()
 	}
 	return retVal;
 }
-void Summary::setReferences(Gtk::Calendar &calendar)
+void Summary::setReferences(Gtk::Calendar &calendar_)
 {
-	this->calendar = &calendar;
+	calendar = &calendar_;
 	connectSignals();
 	on_dateChanged();
 }
@@ -152,7 +152,7 @@ void Summary::calculateTimeSpan()
 {
 }
 
-void Summary::on_task_updated(int64_t taskID)
+void Summary::on_task_updated(Task_id taskID)
 {
 	if (isVisible())
 	{
@@ -321,7 +321,7 @@ void Summary::assignValuesToRow(TreeModel::Row &row, Task& task, time_t totalTim
 	row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);
 }
 
-Gtk::TreeModel::iterator Summary::findRow(int id)
+Gtk::TreeModel::iterator Summary::findRow(Task_id id)
 {
 	TreeModel::Children children = treeModel->children();
 	return subSearch(id, children);

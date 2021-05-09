@@ -10,7 +10,7 @@
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #endif
-#include <signal.h>
+#include <csignal>
 #include <glibmm.h>
 #include <glibmm/i18n.h>
 
@@ -21,7 +21,6 @@
 
 #include <libtimeit.h>
 #include <libtimeit/logic/auto_tracker.h>
-#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/misc/application_lock.h>
 #include <libtimeit/misc/ipc_server.h>
@@ -48,35 +47,35 @@ Main::Main(int argc, char *argv[])
 {
 	signal(SIGINT, &sighandler);
 
-	string dbPath = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
-	make_directory(dbPath);
+	string db_path = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
+	make_directory(db_path);
 
-	dbName = Glib::build_filename(dbPath, "TimeIt.db");
+	db_name = Glib::build_filename(db_path, "TimeIt.db");
 
 	for (int i = 0; i < argc; i++)
 	{
 		string argument = argv[i];
 		if (argument == "--help" || argument == "-?")
 		{
-			printHelp();
+			print_help();
 		}
 		if (argument.substr(0, 5) == "--db=")
 		{
 			string filename = argument.substr(5, argument.length() - 5);
 			if (filename.length() > 0)
 			{
-				dbName = filename;
-				string tmp = dbName;
+				db_name = filename;
+				string tmp = db_name;
 				replace(tmp.begin(), tmp.end(), ' ', '.');
 				replace(tmp.begin(), tmp.end(), '/', '_');
-				socketName = tmp + ".socket";
+				socket_name = tmp + ".socket";
 			}
 		}
 	}
 
 }
 
-void Main::printHelp()
+void Main::print_help()
 {
 	// Command line help, line1.
 	cout << _("Usage:") << endl;
@@ -99,7 +98,7 @@ int Main::run(int argc, char *argv[])
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 		textdomain(GETTEXT_PACKAGE);
 
-		Application_lock lock(dbName);
+		Application_lock lock(db_name);
 		if (lock.lock_acquired())
 		{
 
@@ -109,17 +108,17 @@ int Main::run(int argc, char *argv[])
 			Notifier notifier;
 
 			//Create a database object
-			Database database(dbName, notifier);
+			Database database(db_name, notifier);
 
 			//Initiate all logic
-			Utils::MessageCenter messageCenter();
+			Utils::MessageCenter message_center;
 
 			GTK_timer timer;
 
 
 			Network network;
 			Sync_manager syncManager(database, network, notifier, timer);
-			IpcServer ipcServer(socketName, timer);
+			IpcServer ipcServer(socket_name, timer);
 
 			Time_keeper  time_keeper(database, timer, notifier);
 			Auto_tracker autotracker(time_keeper, database, timer);
@@ -129,12 +128,12 @@ int Main::run(int argc, char *argv[])
 			controller.start();
 
 			//Then start message loop
-			application.run();
+			Gtk::Main::run();
 
 		}
 		else
 		{
-			IpcClient ipcClient(socketName);
+			IpcClient ipcClient(socket_name);
 			ipcClient.window2front();
 		}
 	}

@@ -34,7 +34,7 @@ public:
 
 struct Row_data
 {
-	int64_t time_ID;
+	Time_id time_id;
 	time_t  prev_start;
 	time_t  start;
 	time_t  stop;
@@ -42,7 +42,7 @@ struct Row_data
 	bool    first_in_day;
 	bool    last_in_day;
 	bool    running ;
-	int     cumulative_time;
+	time_t  cumulative_time;
 };
 
 
@@ -54,7 +54,7 @@ class Details: public Gtk::TreeView, public Event_observer
 {
 public:
 	Details(Database &database, Notifier& notifier);
-	void set(int64_t ID, time_t startTime, time_t stopTime);
+	void set(Task_id id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
@@ -65,18 +65,18 @@ public:
 	void on_task_removed(Task_id task_id) override;
 	void on_complete_update() override;
 	void on_task_name_changed(Task_id task_id) override;
-	void on_time_entry_changed(Time_id time_id) override;
+	void on_time_entry_changed(Time_id id) override;
 	//
-	int64_t getSelectedID();
-	std::vector<int64_t> getSelectedAndNextID();
+	Time_id get_selected_id();
+	vector<Time_id> get_selected_and_next_id();
 	//
 	void attach(DetailsObserver*);
 	void detach(DetailsObserver*);
 private:
 	void on_selection_changed();
-	void update_row(Gtk::TreeModel::Row& row, Row_data );
+	void update_row(Gtk::TreeModel::Row& row, Row_data ) const;
 
-	optional<Gtk::TreeModel::Row> findRow(int id);
+	optional<Gtk::TreeModel::Row> find_row(Time_id id);
 
 	list<Row_data> create_row_data(time_t start, time_t stop);
 	void           populate(list<Row_data> data_rows);
@@ -98,7 +98,7 @@ private:
 			add(col_morning);
 		}
 		;
-		Gtk::TreeModelColumn<int> col_id;
+		Gtk::TreeModelColumn<Time_id>       col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_date;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;
 		Gtk::TreeModelColumn<Glib::ustring> col_time_amount;
@@ -107,10 +107,10 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_morning;
 	};
 	ModelColumns columns;
-	int64_t      task_id;
+	Task_id      task_id {0};
 
-	time_t start_time;
-	time_t stop_time;
+	time_t start_time {0};
+	time_t stop_time  {0};
 	Gtk::Menu                   menu_popup;
 	Glib::RefPtr<Gtk::MenuItem> merge_menu_item;
 	Glib::RefPtr<Gtk::MenuItem> split_menu_item;

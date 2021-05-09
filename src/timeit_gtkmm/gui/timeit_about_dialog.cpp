@@ -37,7 +37,7 @@ TimeItAboutDialog::TimeItAboutDialog()
 	set_logo(Gdk::Pixbuf::create_from_file(iconPath, 200, 200));
 
 	set_url_hook(sigc::mem_fun(this, &TimeItAboutDialog::on_link_clicked));
-	set_website("http://hoglet.github.io/TimeIT/");
+	set_website("https://hoglet.github.io/TimeIT/");
 	set_website_label(_("TimeIT website"));
 
 	std::list < Glib::ustring > list_authors;

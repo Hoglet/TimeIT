@@ -142,7 +142,7 @@ StatusIcon& GUIFactory::getStatusIcon()
 	static StatusIcon *statusIcon = 0;
 	if (statusIcon == 0)
 	{
-		statusIcon = (StatusIcon*) (new StatusIcon(timeKeeper, database, notifier));
+		statusIcon =  (new StatusIcon(timeKeeper, database, notifier));
 	}
 	return *statusIcon;
 }
@@ -155,7 +155,7 @@ WidgetPtr GUIFactory::getAddTime(int64_t taskID)
 		{
 			getWidget(MAIN_WINDOW);
 		}
-		Calendar &calendar = std::dynamic_pointer_cast<MainWindow>(mainWindow)->getCalendar();
+		Calendar &calendar = std::dynamic_pointer_cast<MainWindow>(mainWindow)->get_calendar();
 		shared_ptr<Edit_time> addTime(new Edit_time(taskID, calendar, database));
 		addTime->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_addTime_response));
 		addTimeInstance = addTime;

@@ -1,22 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
-/*
- * TimeIT
- * Copyright (C) Kent Asplund 2008 <hoglet@solit.se>
- *
- * TimeIT is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * TimeIT is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "main_window.h"
 #include "task_list.h"
 #include <gtkmm.h>
@@ -37,48 +18,51 @@ namespace gui
 
 MainWindow::~MainWindow()
 {
-	emptyContainers();
+	empty_containers();
 	detach(this);
 }
+
+static const int DEFAULT_WINDOW_WIDTH = 550;
+static const int DEFAULT_WINDOW_HEIGHT = 550;
 
 MainWindow::MainWindow(
 		Database &database,
 		Time_keeper &timeKeeper,
 		Notifier& notifier)
 		:
-		taskList(database, timeKeeper, notifier),
-		daySummary(database, notifier),
-		weekSummary(database, notifier),
-		monthSummary(database, notifier),
-		yearSummary(database, notifier),
-		labelDay(
+		task_list(database, timeKeeper, notifier),
+		day_summary(database, notifier),
+		week_summary(database, notifier),
+		month_summary(database, notifier),
+		year_summary(database, notifier),
+		label_day(
 				_("Day")),
-				labelWeek(_("Week")),
-				labelMonth(_("Month")),
-				labelYear(_("Year")),
-				timeAccessor(database),
-				taskAccessor(database),
-				settingsAccessor(database)
+		label_week(_("Week")),
+		label_month(_("Month")),
+		label_year(_("Year")),
+		time_accessor(database),
+		task_accessor(database),
+		settings_accessor(database)
 {
-	createLayout();
-	relateWidgets();
+	create_layout();
+	relate_widgets();
 	attach(this);
 	show_all_children();
-	on_runningTasksChanged();
+	on_running_tasks_changed();
 
-	auto width = settingsAccessor.get_int("main_window_width", 550);
-	auto height = settingsAccessor.get_int("main_window_height", 550);
+	auto width = (int)settings_accessor.get_int("main_window_width", DEFAULT_WINDOW_WIDTH);
+	auto height = (int)settings_accessor.get_int("main_window_height", DEFAULT_WINDOW_HEIGHT);
 	set_default_size( width, height);
 	signal_hide().connect(sigc::mem_fun(this, &MainWindow::save_size));
 }
 
 void MainWindow::save_size()
 {
-	settingsAccessor.set_int("main_window_width", get_width());
-	settingsAccessor.set_int("main_window_height", get_height());
+	settings_accessor.set_int("main_window_width", get_width());
+	settings_accessor.set_int("main_window_height", get_height());
 }
 
-Calendar& MainWindow::getCalendar()
+Calendar& MainWindow::get_calendar()
 {
 	return calendar;
 }
@@ -107,35 +91,35 @@ void MainWindow::detach(SummaryObserver *observer)
 void MainWindow::attach(action_observer *observer)
 {
 	detach(observer); //To avoid duplicates
-	taskList.attach(observer);
+	task_list.attach(observer);
 	toolbar.attach(observer);
 	menubar.attach(observer);
-	SummaryObserver *sObserver = dynamic_cast<SummaryObserver*>(observer);
-	if (sObserver)
+	auto *s_observer = dynamic_cast<SummaryObserver*>(observer);
+	if (s_observer != nullptr)
 	{
-		attach(sObserver);
+		attach(s_observer);
 	}
 }
 
 void MainWindow::detach(action_observer *observer)
 {
-	taskList.detach(observer);
+	task_list.detach(observer);
 	toolbar.detach(observer);
 	menubar.detach(observer);
-	SummaryObserver *sObserver = dynamic_cast<SummaryObserver*>(observer);
-	if (sObserver)
+	auto *s_observer = dynamic_cast<SummaryObserver*>(observer);
+	if (s_observer != nullptr)
 	{
-		detach(sObserver);
+		detach(s_observer);
 	}
 }
 
-void MainWindow::relateWidgets()
+void MainWindow::relate_widgets()
 {
 	//Give widgets references to other widgets they need too communicate with
-	summaries.push_back(&daySummary);
-	summaries.push_back(&weekSummary);
-	summaries.push_back(&monthSummary);
-	summaries.push_back(&yearSummary);
+	summaries.push_back(&day_summary);
+	summaries.push_back(&week_summary);
+	summaries.push_back(&month_summary);
+	summaries.push_back(&year_summary);
 
 	vector<Summary*>::iterator iter;
 	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
@@ -145,42 +129,42 @@ void MainWindow::relateWidgets()
 	}
 }
 
-void MainWindow::createLayout()
+void MainWindow::create_layout()
 {
 	//First setting parameters on widgets
 
-	TaskListContainer.set_size_request(270, 230);
-	TaskListContainer.set_flags(Gtk::CAN_FOCUS);
-	TaskListContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	TaskListContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	task_list_container.set_size_request(270, 230);
+	task_list_container.set_flags(Gtk::CAN_FOCUS);
+	task_list_container.set_shadow_type(Gtk::SHADOW_NONE);
+	task_list_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 	calendar.set_flags(Gtk::CAN_FOCUS);
 	calendar.display_options(
 			Gtk::CALENDAR_SHOW_HEADING | Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
-	DaySummaryContainer.set_flags(Gtk::CAN_FOCUS);
-	DaySummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	DaySummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	WeekSummaryContainer.set_flags(Gtk::CAN_FOCUS);
-	WeekSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	WeekSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	MonthSummaryContainer.set_flags(Gtk::CAN_FOCUS);
-	MonthSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	MonthSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	YearSummaryContainer.set_flags(Gtk::CAN_FOCUS);
-	YearSummaryContainer.set_shadow_type(Gtk::SHADOW_NONE);
-	YearSummaryContainer.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	day_summary_container.set_flags(Gtk::CAN_FOCUS);
+	day_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
+	day_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	week_summary_container.set_flags(Gtk::CAN_FOCUS);
+	week_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
+	week_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	month_summary_container.set_flags(Gtk::CAN_FOCUS);
+	month_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
+	month_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	year_summary_container.set_flags(Gtk::CAN_FOCUS);
+	year_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
+	year_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-	hPaned.set_flags(Gtk::CAN_FOCUS);
-	summaryTabs.set_flags(Gtk::CAN_FOCUS);
-	summaryTabs.set_size_request(250, 150);
+	h_paned.set_flags(Gtk::CAN_FOCUS);
+	summary_tabs.set_flags(Gtk::CAN_FOCUS);
+	summary_tabs.set_size_request(250, 150);
 	//Then the actual layout
-	doLayout();
+	do_layout();
 
 	show_all_children();
 	grab_focus();
 }
 
 using namespace Glib::Container_Helpers;
-void MainWindow::removeChildren(Container &container)
+void MainWindow::remove_children(Container &container)
 {
 	Glib::ListHandle<Gtk::Widget*> listh = container.get_children();
 	for (auto iter = listh.begin(); iter != listh.end(); ++iter)
@@ -190,68 +174,68 @@ void MainWindow::removeChildren(Container &container)
 	}
 }
 
-void MainWindow::emptyContainers()
+void MainWindow::empty_containers()
 {
-	removeChildren(*this);
-	removeChildren(hPaned);
-	removeChildren(mainVBox);
-	removeChildren(TaskListContainer);
-	removeChildren(secondaryVBox);
-	removeChildren(DaySummaryContainer);
-	removeChildren(WeekSummaryContainer);
-	removeChildren(MonthSummaryContainer);
-	removeChildren(YearSummaryContainer);
-	removeChildren(summaryTabs);
+	remove_children(*this);
+	remove_children(h_paned);
+	remove_children(main_v_box);
+	remove_children(task_list_container);
+	remove_children(secondary_v_box);
+	remove_children(day_summary_container);
+	remove_children(week_summary_container);
+	remove_children(month_summary_container);
+	remove_children(year_summary_container);
+	remove_children(summary_tabs);
 }
 
 void MainWindow::on_settings_changed(string name)
 {
 	if (name == "CompactLayout")
 	{
-		doLayout();
+		do_layout();
 	}
 }
-void MainWindow::doLayout()
+void MainWindow::do_layout()
 {
-	if (settingsAccessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT))
+	if (settings_accessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT))
 	{
-		emptyContainers();
-		defaultLayout();
+		empty_containers();
+		default_layout();
 	}
 	else
 	{
-		emptyContainers();
-		classicLayout();
+		empty_containers();
+		classic_layout();
 	}
 }
 
-void MainWindow::defaultLayout()
+void MainWindow::default_layout()
 {
-	add(hPaned);
+	add(h_paned);
 	{
-		hPaned.pack1(mainVBox);
+		h_paned.pack1(main_v_box);
 		{
-			mainVBox.pack_start(menubar, Gtk::PACK_SHRINK, 0);
-			mainVBox.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
-			mainVBox.pack_start(TaskListContainer); // Gtk::AttachOptions(0));
+			main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
+			main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
+			main_v_box.pack_start(task_list_container); // Gtk::AttachOptions(0));
 
 			{
-				TaskListContainer.add(taskList);
+				task_list_container.add(task_list);
 			}
 		}
-		hPaned.pack2(secondaryVBox, Gtk::EXPAND | Gtk::SHRINK);
+		h_paned.pack2(secondary_v_box, Gtk::EXPAND | Gtk::SHRINK);
 		{
-			secondaryVBox.pack_start(calendar, Gtk::PACK_SHRINK, 0);
-			secondaryVBox.pack_start(summaryTabs);
+			secondary_v_box.pack_start(calendar, Gtk::PACK_SHRINK, 0);
+			secondary_v_box.pack_start(summary_tabs);
 			{
-				DaySummaryContainer.add(daySummary);
-				WeekSummaryContainer.add(weekSummary);
-				MonthSummaryContainer.add(monthSummary);
-				YearSummaryContainer.add(yearSummary);
-				summaryTabs.append_page(DaySummaryContainer, labelDay);
-				summaryTabs.append_page(WeekSummaryContainer, labelWeek);
-				summaryTabs.append_page(MonthSummaryContainer, labelMonth);
-				summaryTabs.append_page(YearSummaryContainer, labelYear);
+				day_summary_container.add(day_summary);
+				week_summary_container.add(week_summary);
+				month_summary_container.add(month_summary);
+				year_summary_container.add(year_summary);
+				summary_tabs.append_page(day_summary_container, label_day);
+				summary_tabs.append_page(week_summary_container, label_week);
+				summary_tabs.append_page(month_summary_container, label_month);
+				summary_tabs.append_page(year_summary_container, label_year);
 
 			}
 		}
@@ -261,70 +245,69 @@ void MainWindow::defaultLayout()
 
 }
 
-void MainWindow::classicLayout()
+void MainWindow::classic_layout()
 {
-	add(mainVBox);
+	add(main_v_box);
 	{
-		mainVBox.pack_start(menubar, Gtk::PACK_SHRINK, 0);
-		mainVBox.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
-		mainVBox.pack_start(hPaned);
+		main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
+		main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
+		main_v_box.pack_start(h_paned);
 		{
-			hPaned.pack1(TaskListContainer, Gtk::EXPAND | Gtk::SHRINK); // Gtk::AttachOptions(0));
+			h_paned.pack1(task_list_container, Gtk::EXPAND | Gtk::SHRINK); // Gtk::AttachOptions(0));
 
 			{
-				TaskListContainer.add(taskList);
+				task_list_container.add(task_list);
 			}
-			hPaned.pack2(secondaryVBox);
+			h_paned.pack2(secondary_v_box);
 			{
-				secondaryVBox.pack_start(calendar, Gtk::PACK_SHRINK, 0);
-				secondaryVBox.pack_start(summaryTabs);
+				secondary_v_box.pack_start(calendar, Gtk::PACK_SHRINK, 0);
+				secondary_v_box.pack_start(summary_tabs);
 				{
-					DaySummaryContainer.add(daySummary);
-					WeekSummaryContainer.add(weekSummary);
-					MonthSummaryContainer.add(monthSummary);
-					YearSummaryContainer.add(yearSummary);
-					summaryTabs.append_page(DaySummaryContainer, labelDay);
-					summaryTabs.append_page(WeekSummaryContainer, labelWeek);
-					summaryTabs.append_page(MonthSummaryContainer, labelMonth);
-					summaryTabs.append_page(YearSummaryContainer, labelYear);
+					day_summary_container.add(day_summary);
+					week_summary_container.add(week_summary);
+					month_summary_container.add(month_summary);
+					year_summary_container.add(year_summary);
+					summary_tabs.append_page(day_summary_container, label_day);
+					summary_tabs.append_page(week_summary_container, label_week);
+					summary_tabs.append_page(month_summary_container, label_month);
+					summary_tabs.append_page(year_summary_container, label_year);
 				}
 			}
 
 		}
-		mainVBox.pack_start(statusbar, Gtk::PACK_SHRINK, 0);
+		main_v_box.pack_start(statusbar, Gtk::PACK_SHRINK, 0);
 	}
 }
 
 // also displays whether idle
-void MainWindow::on_runningTasksChanged()
+void MainWindow::on_running_tasks_changed()
 {
-	std::vector<int64_t> taskIDs = timeAccessor.currently_running();
-	if (taskIDs.size() > 0)
-	{
-		set_title("TimeIT ⌚");
-	}
-	else
+	auto running_tasks = time_accessor.currently_running();
+	if (running_tasks.empty() )
 	{
 		set_title("TimeIT");
 	}
-	taskList.on_complete_update();
+	else
+	{
+		set_title("TimeIT ⌚");
+	}
+	task_list.on_complete_update();
 }
 
 void MainWindow::on_show()
 {
 	Gtk::Window::on_show();
 	Gtk::Window::deiconify();
-	setCalendar();
+	set_calendar();
 }
 
-void MainWindow::setCalendar()
+void MainWindow::set_calendar()
 {
-	struct tm *timeInfo;
 	time_t now = libtimeit::now();
-	timeInfo = localtime(&now);
-	int month = timeInfo->tm_mon;
-	int year = timeInfo->tm_year + 1900;
-	int day = timeInfo->tm_mday;
+	struct tm *time_info = localtime(&now);
+	int month = time_info->tm_mon;
+	int year  = time_info->tm_year + 1900;
+	int day   = time_info->tm_mday;
 	calendar.select_month(month, year);
 	calendar.select_day(day);
 }
@@ -337,7 +320,7 @@ void MainWindow::on_action_task_selection_changed(int selectedTaskID)
 
 void MainWindow::on_action_remove_task()
 {
-	int selectedTaskID = taskList.getSelectedID();
+	auto selected_task_id = task_list.getSelectedID();
 	//Confirm dialog when removing task, headline!
 	const char *headline = _("Are you sure you want to delete this task?");
 	Gtk::MessageDialog dialog(*this, headline, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_OK_CANCEL);
@@ -352,7 +335,7 @@ void MainWindow::on_action_remove_task()
 	{
 	case (Gtk::RESPONSE_OK):
 		//Remove task
-		taskAccessor.remove(selectedTaskID);
+		task_accessor.remove(selected_task_id);
 		break;
 	case (Gtk::RESPONSE_CANCEL):
 		break;

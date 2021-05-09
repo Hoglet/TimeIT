@@ -33,11 +33,11 @@ public:
 	IdleDialog(Timer& timer, Database& database, Time_keeper& time_keeper);
 	void set_time_id(Time_id id);
 	// IWidget interface
-	void show();
-	void hide() { Gtk::Dialog::hide(); }
-	void move(int x, int y) { Gtk::Dialog::move(x,y); };
-	bool is_visible() { return Gtk::Dialog::is_visible(); } ;
-	void get_position(int& Window_x, int& Window_y) { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void show() override;
+	void hide() override { Gtk::Dialog::hide(); }
+	void move(int x, int y) override { Gtk::Dialog::move(x,y); } ;
+	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
+	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
 	void on_signal_10_seconds() override;
 	void setText();

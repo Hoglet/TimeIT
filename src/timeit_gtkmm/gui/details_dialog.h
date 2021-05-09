@@ -35,7 +35,7 @@ public:
 	DetailsDialog( DetailsDialog&&) = delete;
 	DetailsDialog& operator=(const DetailsDialog&) = delete;
 	DetailsDialog& operator=(DetailsDialog&&) = delete;
-	virtual ~DetailsDialog() ;
+	~DetailsDialog() override ;
 	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
@@ -75,7 +75,7 @@ private:
 	Gtk::Table table1;
 	Gtk::Label taskName;
 	Gtk::Image runningImage;
-	Details detailList;
+	Details    detailList;
 	Gtk::Label taskTotalTime;
 	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
@@ -94,12 +94,12 @@ private:
 //	static DetailsDialog* instance;
 	time_t  oldStartTime;
 	time_t  oldStopTime;
-	time_t  startTime;
-	time_t  stopTime;
-	time_t  rangeStart;
-	time_t  rangeStop;
-	int64_t m_taskID;
-	int64_t m_timeEntryID;
+	time_t  start_time{0};
+	time_t  stop_time{0};
+	time_t  range_start;
+	time_t  range_stop;
+	int64_t task_id;
+	int64_t time_entry_id;
 	Time_accessor          m_timeAccessor;
 	Extended_task_accessor m_taskAccessor;
 	Settings_accessor      settings_accessor;

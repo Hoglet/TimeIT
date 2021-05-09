@@ -14,8 +14,8 @@ static const int COMPLETE_DAY = 86403;
 
 std::shared_ptr<DetailsDialog> DetailsDialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier)
 {
-	shared_ptr<DetailsDialog> retVal(new DetailsDialog(database, timeKeeper, notifier));
-	return retVal;
+	shared_ptr<DetailsDialog> return_value(new DetailsDialog(database, timeKeeper, notifier));
+	return return_value;
 }
 
 DetailsDialog::DetailsDialog(
@@ -24,11 +24,11 @@ DetailsDialog::DetailsDialog(
 		Notifier    &notifier)
 		:
 		Event_observer(notifier),
-		table1(14, 1),
+		table1(14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		taskName(""),
 		detailList(database, notifier),
 		taskTotalTime(""),
-		table2(7, 4),
+		table2(7, 4), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		startTimeLabel(_("Start time")),
 		stopTimeLabel(_("Stop time")),
 		startColonLabel(":"),
@@ -49,17 +49,17 @@ DetailsDialog::DetailsDialog(
 	runningIdleIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
 	blankIcon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
 
-	startTimeHour.set_range(0, 23);
-	startTimeMinute.set_range(0, 59);
-	stopTimeHour.set_range(0, 23);
-	stopTimeMinute.set_range(0, 59);
+	startTimeHour.set_range(0, 23);      // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	startTimeMinute.set_range(0, 59);    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	stopTimeHour.set_range(0, 23);       // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	stopTimeMinute.set_range(0, 59);     // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	startTimeHour.set_increments(1, 1);
 	startTimeMinute.set_increments(1, 1);
 	stopTimeHour.set_increments(1, 1);
 	stopTimeMinute.set_increments(1, 1);
 
-	auto width = settings_accessor.get_int("details_dialog_width", 550);
-	auto height = settings_accessor.get_int("details_dialog_height", 700);
+	auto width = (int)settings_accessor.get_int("details_dialog_width", 550);
+	auto height = (int)settings_accessor.get_int("details_dialog_height", 700);
 	set_default_size( width, height);
 
 
@@ -67,9 +67,9 @@ DetailsDialog::DetailsDialog(
 
 	scrolledWindow.set_size_request(400, 600);
 
-	startTime = 0;
+	start_time = 0;
 	oldStartTime = 1;
-	stopTime = 0;
+	stop_time = 0;
 	oldStopTime = 1;
 
 	taskName.set_alignment(0.0, 0.5);
@@ -129,25 +129,25 @@ DetailsDialog::~DetailsDialog()
 
 void DetailsDialog::on_OKButton_clicked()
 {
-	if (startTime != oldStartTime)
+	if (start_time != oldStartTime)
 	{
-		auto te = m_timeAccessor.by_ID(m_timeEntryID);
+		auto te = m_timeAccessor.by_ID(time_entry_id);
 		if(te)
 		{
-			m_timeAccessor.update(te->with_start(startTime));
+			m_timeAccessor.update(te->with_start(start_time));
 		}
 	}
 	if (stopTimeHour.sensitive())
 	{
-		auto te = m_timeAccessor.by_ID(m_timeEntryID);
+		auto te = m_timeAccessor.by_ID(time_entry_id);
 		if(te)
 		{
-			m_timeAccessor.update(te->with_stop(stopTime));
+			m_timeAccessor.update(te->with_stop(stop_time));
 		}
 	}
-	detailList.set(m_taskID, rangeStart, rangeStop);
-	oldStartTime = startTime;
-	oldStopTime = stopTime;
+	detailList.set(task_id, range_start, range_stop);
+	oldStartTime = start_time;
+	oldStopTime = stop_time;
 	checkForChanges();
 }
 void DetailsDialog::on_CancelButton_clicked()
@@ -157,20 +157,20 @@ void DetailsDialog::on_CancelButton_clicked()
 
 void DetailsDialog::on_change()
 {
-	struct tm startTimeInfo = *localtime(&oldStartTime);
-	struct tm stopTimeInfo = *localtime(&oldStopTime);
-	startTimeInfo.tm_hour = startTimeHour.get_value_as_int();
-	startTimeInfo.tm_min = startTimeMinute.get_value_as_int();
-	stopTimeInfo.tm_hour = stopTimeHour.get_value_as_int();
-	stopTimeInfo.tm_min = stopTimeMinute.get_value_as_int();
-	startTime = mktime(&startTimeInfo);
-	stopTime = mktime(&stopTimeInfo);
+	struct tm start_time_info = *localtime(&oldStartTime);
+	struct tm stop_time_info = *localtime(&oldStopTime);
+	start_time_info.tm_hour = startTimeHour.get_value_as_int();
+	start_time_info.tm_min = startTimeMinute.get_value_as_int();
+	stop_time_info.tm_hour = stopTimeHour.get_value_as_int();
+	stop_time_info.tm_min = stopTimeMinute.get_value_as_int();
+	start_time = mktime(&start_time_info);
+	stop_time = mktime(&stop_time_info);
 	checkForChanges();
 }
 
 void DetailsDialog::on_selected_changed()
 {
-	setTimeEntryID(detailList.getSelectedID());
+	setTimeEntryID(detailList.get_selected_id());
 }
 
 void DetailsDialog::setValues()
@@ -206,15 +206,15 @@ void DetailsDialog::on_task_name_changed(int64_t task_ID)
 
 void DetailsDialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 {
-	m_timeEntryID = 0;
-	m_taskID = taskID;
-	rangeStart = startTime;
-	rangeStop = stopTime;
+	time_entry_id = 0;
+	task_id = taskID;
+	range_start = startTime;
+	range_stop = stopTime;
 
 	on_task_name_updated(taskID);
 	on_task_total_time_updated(taskID);
 
-	detailList.set(taskID, rangeStart, rangeStop);
+	detailList.set(taskID, range_start, range_stop);
 	checkForChanges();
 	on_runningTasksChanged();
 }
@@ -238,7 +238,7 @@ void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 			stopTimeMinute.set_sensitive(true);
 			oldStopTime = te->stop;
 		}
-		m_timeEntryID = timeEntryID;
+		time_entry_id = timeEntryID;
 		setValues();
 	}
 	else
@@ -252,7 +252,7 @@ void DetailsDialog::setTimeEntryID(int64_t timeEntryID)
 
 void DetailsDialog::checkForChanges()
 {
-	if (m_timeEntryID > 0 && (oldStartTime != startTime || oldStopTime != stopTime))
+	if (time_entry_id > 0 && (oldStartTime != start_time || oldStopTime != stop_time))
 	{
 		OKButton.set_sensitive(true);
 		CancelButton.set_sensitive(true);
@@ -267,25 +267,25 @@ void DetailsDialog::checkForChanges()
 // also displays whether idle
 void DetailsDialog::on_runningTasksChanged()
 {
-	std::vector<int64_t> taskIDs = m_timeAccessor.currently_running();
-	bool runningThisTaskID = false;
-	if (taskIDs.size() > 0)
+	auto running_tasks = m_timeAccessor.currently_running();
+	bool running_this_task_id = false;
+	if (running_tasks.empty())
+	{
+		set_title("TimeIT");
+	}
+	else
 	{
 		set_title("TimeIT ⌚");
-		for (auto taskID : taskIDs)
+		for (auto task_id_ : running_tasks)
 		{
-			if (taskID == m_taskID)
+			if (task_id == task_id_)
 			{
-				runningThisTaskID = true;
+				running_this_task_id = true;
 				break;
 			}
 		}
 	}
-	else
-	{
-		set_title("TimeIT");
-	}
-	if (runningThisTaskID)
+	if (running_this_task_id)
 	{
 		if (!m_timeKeeper.tasks_are_running())
 		{
@@ -302,11 +302,11 @@ void DetailsDialog::on_runningTasksChanged()
 	}
 }
 
-void DetailsDialog::on_task_name_updated(int64_t task_id)
+void DetailsDialog::on_task_name_updated(int64_t id)
 {
-	if (task_id == m_taskID)
+	if (task_id == id)
 	{
-		auto task = m_taskAccessor.by_ID(m_taskID);
+		auto task = m_taskAccessor.by_ID(task_id);
 		if (task.has_value())
 		{
 			taskName.set_text(task->name);
@@ -323,17 +323,17 @@ void DetailsDialog::on_task_name_updated(int64_t task_id)
 }
 
 
-void DetailsDialog::on_task_total_time_updated(int64_t task_id)
+void DetailsDialog::on_task_total_time_updated(int64_t id)
 {
-	if (task_id == m_taskID)
+	if (task_id == id)
 	{
-		if (difftime(rangeStop, rangeStart) > COMPLETE_DAY)
+		if (difftime(range_stop, range_start) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto task = m_taskAccessor.by_ID(m_taskID);
+			auto task = m_taskAccessor.by_ID(task_id);
 			if (task.has_value())
 			{
-				time_t total_time = m_timeAccessor.total_cumulative_time(m_taskID, rangeStart, rangeStop);
+				time_t total_time = m_timeAccessor.total_cumulative_time(task_id, range_start, range_stop);
 				taskTotalTime.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else

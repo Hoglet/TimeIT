@@ -8,7 +8,6 @@
 #include "idle_dialog.h"
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <glibmm/i18n.h>
 #include "libtimeit/timer.h"
 #include <libtimeit/utils.h>

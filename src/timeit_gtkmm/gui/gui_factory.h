@@ -60,7 +60,7 @@ private:
 	void on_addTaskDialog_hide();
 	void on_aboutDialog_response(int);
 	void on_editTask_hide();
-	void on_dialog_hide(const WidgetPtr ptr);
+	void on_dialog_hide(WidgetPtr pointer);
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 

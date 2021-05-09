@@ -22,7 +22,7 @@ using namespace std;
 class MainWindow: public Gtk::Window, public action_observer, public IWidget
 {
 public:
-	virtual ~MainWindow();
+	~MainWindow() override;
 	MainWindow(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
 
 
@@ -54,27 +54,18 @@ public:
 
 	virtual void attach(SummaryObserver* observer);
 	virtual void detach(SummaryObserver* observer);
-	void attach(action_observer*) override;
-	void detach(action_observer*) override;
+	void attach(action_observer* /*observer*/) override;
+	void detach(action_observer* /*observer*/) override;
 
-	Calendar& getCalendar();
+	Calendar& get_calendar();
 
-	virtual void on_show();
-	void on_runningTasksChanged();
+	void on_show() override;
+	void on_running_tasks_changed();
 
 private:
 	//Action observer
-	virtual void on_action_task_selection_changed(int selectedTaskID);
-	virtual void on_action_remove_task();
-	virtual void on_action_start_task() {};
-	virtual void on_action_stop_task() {};
-	virtual void on_action_edit_task() {};
-	virtual void on_action_add_task() {};
-	virtual void on_action_add_time() {};
-	virtual void on_action_about() {};
-	virtual void on_action_help() {};
-	virtual void on_action_quit() {};
-	virtual void on_action_preferences() {};
+	void on_action_task_selection_changed(int selectedTaskID) override;
+	void on_action_remove_task() override;
 
 	virtual void on_settings_changed(string name);
 
@@ -82,50 +73,48 @@ private:
 //	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) {};
 //	virtual void on_showDetailsClicked(ISummary* summary, int64_t taskId, time_t startTime, time_t stopTime);
 	//
-	void createLayout();
-	void relateWidgets();
-	void setCalendar();
+	void create_layout();
+	void relate_widgets();
+	void set_calendar();
 
-	void defaultLayout();
-	void classicLayout();
+	void default_layout();
+	void classic_layout();
 	void save_size();
 
-	void removeChildren(Container& container);
-	void emptyContainers();
-	void doLayout();
+	static void remove_children(Container& container);
+	void empty_containers();
+	void do_layout();
 
-	TaskList       taskList;
-	DaySummary    daySummary;
-	WeekSummary    weekSummary;
-	MonthSummary   monthSummary;
-	YearSummary    yearSummary;
+	TaskList       task_list;
+	DaySummary     day_summary;
+	WeekSummary    week_summary;
+	MonthSummary   month_summary;
+	YearSummary    year_summary;
 	Calendar       calendar;
-	Gtk::Notebook  summaryTabs;
+	Gtk::Notebook  summary_tabs;
 
-	Menu menubar;
+	Menu    menubar;
 	Toolbar toolbar;
 
-	Gtk::HBox  hbox1;
-	Gtk::ScrolledWindow  TaskListContainer;
-	Gtk::ScrolledWindow  DaySummaryContainer;
-	Gtk::Label  labelDay;
-	Gtk::ScrolledWindow  WeekSummaryContainer;
-	Gtk::Label  labelWeek;
-	Gtk::ScrolledWindow  MonthSummaryContainer;
-	Gtk::Label  labelMonth;
-	Gtk::ScrolledWindow  YearSummaryContainer;
-	Gtk::Label  labelYear;
+	Gtk::ScrolledWindow  task_list_container;
+	Gtk::ScrolledWindow  day_summary_container;
+	Gtk::Label           label_day;
+	Gtk::ScrolledWindow  week_summary_container;
+	Gtk::Label           label_week;
+	Gtk::ScrolledWindow  month_summary_container;
+	Gtk::Label           label_month;
+	Gtk::ScrolledWindow  year_summary_container;
+	Gtk::Label           label_year;
 
-	Gtk::VBox  secondaryVBox; //on right side
-	Gtk::HPaned  hPaned;
+	Gtk::VBox      secondary_v_box; //on right side
+	Gtk::HPaned    h_paned;
 	Gtk::Statusbar statusbar;
-	Gtk::VBox  mainVBox;
-	Gtk::HBox  mainHBox;
+	Gtk::VBox      main_v_box;
 
-	Time_accessor         timeAccessor;
-	Extended_task_accessor taskAccessor;
-	Settings_accessor     settingsAccessor;
-	vector<Summary*> summaries;
+	Time_accessor          time_accessor;
+	Extended_task_accessor task_accessor;
+	Settings_accessor      settings_accessor;
+	vector<Summary*>       summaries;
 };
 }
 #endif // _MAIN_WINDOW_HPP_

@@ -19,6 +19,8 @@ using namespace libtimeit;
 namespace gui
 {
 
+static const int SECONDS_PER_MINUTE = 60;
+
 Details::Details(
 		Database& database,
 		Notifier& notifier)
@@ -29,9 +31,6 @@ Details::Details(
 
 
 {
-	start_time = 0;
-	stop_time = 0;
-	task_id = 0;
 	tree_model = ListStore::create(columns);
 	set_model(tree_model);
 
@@ -65,64 +64,65 @@ Details::Details(
 }
 
 
-int64_t Details::getSelectedID()
+Time_id Details::get_selected_id()
 {
-	int retVal = 0;
-	Glib::RefPtr<TreeSelection> refTreeSelection = get_selection();
+	Time_id return_value = 0;
+	Glib::RefPtr<TreeSelection> ref_tree_selection = get_selection();
 	TreeModel::iterator iter;
-	iter = refTreeSelection->get_selected();
+	iter = ref_tree_selection->get_selected();
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		retVal = row[columns.col_id];
+		return_value = row[columns.col_id];
 	}
-	return retVal;
+	return return_value;
 }
 
-vector<int64_t> Details::getSelectedAndNextID()
+vector<Time_id> Details::get_selected_and_next_id()
 {
-	vector<int64_t> retVal(2, 0);
-	Glib::RefPtr<TreeSelection> refTreeSelection = get_selection();
+	vector<Time_id> return_value(2, 0);
+	Glib::RefPtr<TreeSelection> ref_tree_selection = get_selection();
 	TreeModel::iterator iter;
-	iter = refTreeSelection->get_selected();
+	iter = ref_tree_selection->get_selected();
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		retVal[0] = row[columns.col_id];
+		return_value[0] = row[columns.col_id];
 		//std::cout << "one row" << std::endl;
 		++iter;
 		if (iter) // if there is a next row
 		{
-			TreeModel::Row nextRow = *iter;
-			retVal[1] = nextRow[columns.col_id];
+			TreeModel::Row next_row = *iter;
+			return_value[1] = next_row[columns.col_id];
 			//std::cout << "two rows" << std::endl;
 		}
 	}
-	return retVal;
+	return return_value;
 }
+
 
 void Details::on_menu_file_popup_remove()
 {
-	int64_t selectedID = getSelectedID();
-	if (selectedID > 0)
+	Time_id selected_id = get_selected_id();
+	if (selected_id > 0)
 	{
-		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selectedID);
+		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
-			int idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
-			int idleGz = settings_accessor.get_int("Gz", DEFAULT_GZ);
-			int64_t minutesToLose = difftime(time_entry.stop, time_entry.start) / 60;
-			std::string minutesString = string_printf("<span color='red'>%d</span>", minutesToLose);
-			std::string secondaryText =
-				minutesToLose > idleGt || minutesToLose > idleGz || minutesToLose < 0 ?
-				string_printf(
-					_("Removing will lose %s minutes.\n\nRemoving will be permanent."),
-					minutesString.c_str()) :
-				_("Gone, gone will not come again...");
+			auto idle_gt = settings_accessor.get_int("Gt", DEFAULT_GT);
+			auto idle_gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
+			int64_t minutes_to_lose = (int64_t)difftime(time_entry.stop, time_entry.start) / SECONDS_PER_MINUTE;
+			std::string minutes_string = string_printf("<span color='red'>%d</span>", minutes_to_lose);
+			std::string secondary_text =
+					minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0 ?
+					string_printf(
+							_("Removing will lose %s minutes.\n\nRemoving will be permanent."),
+							minutes_string.c_str()) :
+					_("Gone, gone will not come again...");
 
 			Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-			dialog.set_secondary_text(secondaryText, true);
+			dialog.set_secondary_text(secondary_text, true);
 
 			int result = dialog.run();
 
@@ -139,7 +139,7 @@ void Details::on_menu_file_popup_remove()
 				}
 				else
 				{
-					time_accessor.remove(selectedID);
+					time_accessor.remove(selected_id);
 				}
 				auto row_data = create_row_data(start_time, stop_time);
 				populate( row_data );
@@ -147,8 +147,7 @@ void Details::on_menu_file_popup_remove()
 				break;
 			}
 			case (Gtk::RESPONSE_CANCEL):
-				//std::cout << "Cancel clicked." << std::endl;
-				break;
+				[[fallthrough]];
 			default:
 				//std::cout << "Unexpected button clicked." << std::endl;
 				break;
@@ -164,31 +163,31 @@ bool offer_to_merge(optional<Time_entry> &optional_time_entry, optional<Time_ent
 
 void Details::on_menu_file_popup_merge()
 {
-	vector<int64_t> selectedIDs = getSelectedAndNextID();
-	if (selectedIDs[0] > 0 && selectedIDs[1] > 0)
+	vector<Time_id> selected_id_list = get_selected_and_next_id();
+	if (selected_id_list[0] > 0 && selected_id_list[1] > 0)
 	{
-		optional<Time_entry> optional_time_entry_0 = time_accessor.by_ID(selectedIDs[0]);
-		optional<Time_entry> optional_time_entry_1 = time_accessor.by_ID(selectedIDs[1]);
+		optional<Time_entry> optional_time_entry_0 = time_accessor.by_ID(selected_id_list[0]);
+		optional<Time_entry> optional_time_entry_1 = time_accessor.by_ID(selected_id_list[1]);
 		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
 			Time_entry time_entry_0 = optional_time_entry_0.value();
 			Time_entry time_entry_1 = optional_time_entry_1.value();
-			int idleGt = settings_accessor.get_int("Gt", DEFAULT_GT);
-			int idleGz = settings_accessor.get_int("Gz", DEFAULT_GZ);
+			auto idle_gt = settings_accessor.get_int("Gt", DEFAULT_GT);
+			auto idle_gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 
-			int64_t minutesToGain = difftime(time_entry_1.start, time_entry_0.stop) / 60;
+			auto minutes_to_gain = (int)difftime(time_entry_1.start, time_entry_0.stop) / SECONDS_PER_MINUTE;
 
-			std::string minutesString = string_printf(
-				minutesToGain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutesToGain);
-			std::string secondaryText =
-				minutesToGain > idleGt || minutesToGain > idleGz || minutesToGain < 0 ?
-				string_printf(
-					_("Merging will add %s minutes.\n\nMerging with the next row will be permanent."),
-					minutesString.c_str()) :
-				_("Merging with the next row will be permanent.");
+			std::string minutes_string = string_printf(
+					minutes_to_gain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutes_to_gain);
+			std::string secondary_text =
+					minutes_to_gain > idle_gt || minutes_to_gain > idle_gz || minutes_to_gain < 0 ?
+					string_printf(
+							_("Merging will add %s minutes.\n\nMerging with the next row will be permanent."),
+							minutes_string.c_str()) :
+					_("Merging with the next row will be permanent.");
 
 			Gtk::MessageDialog dialog(_("Do you really want to merge?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-			dialog.set_secondary_text(secondaryText, true);
+			dialog.set_secondary_text(secondary_text, true);
 
 			int dialog_result = dialog.run();
 
@@ -206,7 +205,7 @@ void Details::on_menu_file_popup_merge()
 				break;
 			}
 			case (Gtk::RESPONSE_CANCEL):
-				break;
+				[[fallthrough]];
 			default:
 				break;
 			}
@@ -218,51 +217,45 @@ bool offer_to_split(Time_entry &time_entry)
 {
 	time_t start_time = time_entry.start;
 	time_t stop_time = time_entry.stop;
-	int64_t seconds_to_split = difftime(stop_time, start_time);
+	auto seconds_to_split = (long)difftime(stop_time, start_time);
 	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
-	return across_days || seconds_to_split > 120;
+	return across_days || seconds_to_split > 120; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void Details::on_menu_file_popup_split()
 {
-	int64_t selected_id = getSelectedID();
+	int64_t selected_id = get_selected_id();
 	if (selected_id > 0)
 	{
 		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
-			time_t start_time = time_entry.start;
-			time_t stop_time = time_entry.stop;
-			bool across_days = is_on_different_days(start_time, stop_time);
+			time_t start = time_entry.start;
+			time_t stop = time_entry.stop;
+			bool across_days = is_on_different_days(start, stop);
 
 			// coded considering time_entry could be currently running
 
 			if (offer_to_split(time_entry))
 			{
-				int64_t task_id = time_entry.task_id;
-				time_t split_stop_time;
-				time_t split_start_time;
+				time_t split_stop_time  = (start + (stop - start) / 2 - 1);
+				time_t split_start_time = split_stop_time + 2;
 				if (across_days)
 				{
 					// use sufficient margins to stay clear of leap seconds
-					struct tm first_day = *localtime(&start_time);
-					first_day.tm_hour = 23;
-					first_day.tm_min = 59;
-					first_day.tm_sec = 57;
+					struct tm first_day = *localtime(&start);
+					first_day.tm_hour = 23;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+					first_day.tm_min = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+					first_day.tm_sec = 57;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 					split_stop_time = mktime(&first_day);
-					split_start_time = split_stop_time + 6;
+					split_start_time = split_stop_time + 6; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 				}
-				else
-				{
-					// if on same day then halfway
-					split_stop_time = (start_time + (stop_time - start_time) / 2 - 1);
-					split_start_time = split_stop_time + 2;
-				}
-				time_accessor.update(time_entry.with_start(split_start_time).with_stop(stop_time) );
-				time_accessor.create(Time_entry(task_id, start_time, split_stop_time) );
-				auto row_data = create_row_data(start_time, stop_time);
+
+				time_accessor.update(time_entry.with_start(split_start_time).with_stop(stop) );
+				time_accessor.create(Time_entry(time_entry.task_id, start, split_stop_time) );
+				auto row_data = create_row_data(start, stop);
 				populate( row_data );
 			}
 			else
@@ -282,7 +275,7 @@ bool Details::on_button_press_event(GdkEventButton *event)
 	//Then do our custom stuff:
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		vector<int64_t> selected_ids = getSelectedAndNextID();
+		vector<int64_t> selected_ids = get_selected_and_next_id();
 		int64_t selected_id = selected_ids[0];
 		int64_t next_id = selected_ids[1];
 		if (selected_id > 0)
@@ -317,7 +310,7 @@ bool Details::on_button_press_event(GdkEventButton *event)
 	return return_value;
 }
 
-optional<Gtk::TreeModel::Row> Details::findRow(int id)
+optional<Gtk::TreeModel::Row> Details::find_row(Time_id id)
 {
 	TreeModel::Children children = tree_model->children();
 	TreeIter iter;
@@ -330,30 +323,30 @@ optional<Gtk::TreeModel::Row> Details::findRow(int id)
 	}
 	return {};
 }
-void Details::on_task_updated(int64_t)
+void Details::on_task_updated(Task_id /*id*/)
 {
 	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
-void Details::on_task_name_changed(int64_t)
+void Details::on_task_name_changed(Task_id /*id*/)
 {
 	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
 }
 
-void Details::on_time_entry_changed(int64_t ID)
+void Details::on_time_entry_changed(Time_id id)
 {
-	auto row = findRow(ID);
+	auto row = find_row(id);
 	if ( row.has_value() )
 	{
-		auto time_entry = time_accessor.by_ID(ID);
+		auto time_entry = time_accessor.by_ID(id);
 		if(time_entry.has_value())
 		{
 			auto day = time_entry->start;
-			auto start_time = beginning_of_day(day);
-			auto stop_time = end_of_day(day);
-			auto row_data = create_row_data( start_time, stop_time);
+			auto start = beginning_of_day(day);
+			auto stop = end_of_day(day);
+			auto row_data = create_row_data( start, stop);
 			update(row_data);
 		}
 	}
@@ -364,7 +357,7 @@ void Details::on_time_entry_changed(int64_t ID)
 	}
 }
 
-void Details::on_task_removed(int64_t)
+void Details::on_task_removed(Task_id /*id*/)
 {
 	auto row_data = create_row_data(start_time, stop_time);
 	populate( row_data );
@@ -376,13 +369,13 @@ void Details::on_complete_update()
 	populate( row_data );
 }
 
-void Details::set(int64_t ID, time_t startTime, time_t stopTime)
+void Details::set(int64_t ID, time_t start, time_t stop)
 {
 	if (ID > 0)
 	{
 		task_id = ID;
-		start_time = startTime;
-		stop_time = stopTime;
+		start_time = start;
+		stop_time = stop;
 		auto row_data = create_row_data(start_time, stop_time);
 		populate( row_data );
 	}
@@ -399,9 +392,9 @@ void Details::set(int64_t ID, time_t startTime, time_t stopTime)
 
 
 
-void Details::update_row(TreeModel::Row& row, Row_data row_data )
+void Details::update_row(TreeModel::Row& row, Row_data row_data ) const
 {
-	row[columns.col_id]          = row_data.time_ID;
+	row[columns.col_id]          = row_data.time_id;
 	row[columns.col_morning]     = row_data.first_in_day ? day_of_week_abbreviation(row_data.start) : "";
 	row[columns.col_date]        = row_data.first_in_day ? date_string(row_data.start) : "";
 	row[columns.col_time]        = time_span_string(row_data.start, row_data.stop);
@@ -421,8 +414,14 @@ void Details::update_row(TreeModel::Row& row, Row_data row_data )
 	if(row_data.last_in_day)
 	{
 		auto seconds_today = row_data.cumulative_time;
-		row[columns.col_day_total] = "\u2003" + string(is_on_different_days(row_data.start, row_data.stop) ? "≠" : "≈")
-									 + seconds_2_hhmm(seconds_today) + " ";
+		if (is_on_different_days(row_data.start, row_data.stop))
+		{
+			row[columns.col_day_total] = string_printf("\u2003≠%s ", seconds_2_hhmm(seconds_today).c_str() );
+		}
+		else
+		{
+			row[columns.col_day_total] = string_printf("\u2003≈ ", seconds_2_hhmm(seconds_today).c_str());
+		}
 	}
 }
 
@@ -433,13 +432,13 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 	time_t prev_start   = 0;
 	auto iter = time_list.begin();
 	list<Row_data> data_rows = {};
-	int cumulative_time_for_day = 0;
+	time_t cumulative_time_for_day = 0;
 	for (; iter != time_list.end(); )
 	{
 		auto time_entry = *iter;
 		Row_data row_data{};
 
-		row_data.time_ID      = time_entry.id;
+		row_data.time_id      = time_entry.id;
 		row_data.prev_start   = prev_start;
 		row_data.start        = time_entry.start;
 		prev_start            = row_data.start;
@@ -478,8 +477,8 @@ void Details::populate(list<Row_data> data_rows)
 
 	for (auto row_data: data_rows )
 	{
-		auto treeIter = tree_model->append();
-		TreeModel::Row row = *treeIter;
+		auto tree_iter = tree_model->append();
+		TreeModel::Row row = *tree_iter;
 
 		update_row(row, row_data );
 
@@ -492,7 +491,7 @@ void Details::update(list<Row_data> data_rows)
 	for (auto row_data: data_rows )
 	{
 		//auto treeIter = m_treeModel->append();
-		auto row = findRow(row_data.time_ID);
+		auto row = find_row(row_data.time_id);
 		if ( row.has_value() )
 		{
 			update_row(*row, row_data);
@@ -509,14 +508,14 @@ void Details::update(list<Row_data> data_rows)
 
 void Details::on_menu_file_popup_edit()
 {
-	int64_t selectedID = getSelectedID();
-	if (selectedID > 0)
+	int64_t selected_id = get_selected_id();
+	if (selected_id > 0)
 	{
 		std::list<DetailsObserver*>::iterator iter;
 		for (iter = observers.begin(); iter != observers.end(); ++iter)
 		{
 			DetailsObserver *observer = *iter;
-			observer->on_edit_details(selectedID);
+			observer->on_edit_details(selected_id);
 			//m_detailsDialog.setTimeEntryID(selectedID);
 		}
 	}

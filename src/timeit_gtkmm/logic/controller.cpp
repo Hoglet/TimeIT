@@ -169,7 +169,7 @@ void Controller::on_idle_detected(Time_id id)
 void Controller::on_idleChanged()
 {
 	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(gui_factory.getWidget(MAIN_WINDOW));
-	main_window->on_runningTasksChanged();
+	main_window->on_running_tasks_changed();
 	shared_ptr<DetailsDialog> details_dialog = dynamic_pointer_cast<DetailsDialog>(gui_factory.getWidget(DETAILS_DIALOG));
 	details_dialog->on_runningTasksChanged();
 }
@@ -208,7 +208,7 @@ void Controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_
 	}
 }
 
-void Controller::on_time_entry_changed(Time_id id)
+void Controller::on_time_entry_changed(Time_id /*id*/)
 {
 	auto currently_running = time_accessor.currently_running();
 	if(currently_running != old_running)
@@ -222,7 +222,7 @@ void Controller::on_time_entry_changed(Time_id id)
 void Controller::on_running_changed()
 {
 	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(gui_factory.getWidget(MAIN_WINDOW));
-	main_window->on_runningTasksChanged();
+	main_window->on_running_tasks_changed();
 	shared_ptr<DetailsDialog> details_dialog = dynamic_pointer_cast<DetailsDialog>(gui_factory.getWidget(DETAILS_DIALOG));
 	details_dialog->on_runningTasksChanged();
 }

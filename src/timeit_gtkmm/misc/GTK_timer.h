@@ -25,12 +25,9 @@ public:
 	GTK_timer( GTK_timer&& ) = delete;
 	GTK_timer& operator=( const GTK_timer& ) = delete;
 	GTK_timer& operator=( GTK_timer&& ) = delete;
-	~GTK_timer()
-	{
-		conn.disconnect();
-	}
+
 private:
-	connection conn;
+	connection conn{};
 };
 
 }
