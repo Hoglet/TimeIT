@@ -1,12 +1,5 @@
-/*
- * EditTimeEntry.h
- *
- *  Created on: 2008-aug-21
- *      Author: hoglet
- */
-
-#ifndef DETAILSDIALOG_H_
-#define DETAILSDIALOG_H_
+#ifndef DETAILS_DIALOG_H_
+#define DETAILS_DIALOG_H_
 
 #include <gtkmm.h>
 #include "lz_spin_button.h"
@@ -25,18 +18,16 @@ using namespace libtimeit;
 class DetailsDialog:
 		public Gtk::Dialog,
 		public SummaryObserver,
-		public DetailsObserver,
 		public Event_observer,
 		public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
+	static std::shared_ptr<DetailsDialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier, GUIFactory  &gui_factory);
 	DetailsDialog(const DetailsDialog&) = delete;
 	DetailsDialog( DetailsDialog&&) = delete;
 	DetailsDialog& operator=(const DetailsDialog&) = delete;
 	DetailsDialog& operator=(DetailsDialog&&) = delete;
 	~DetailsDialog() override ;
-	void setTimeEntryID(int64_t id);
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
 
@@ -52,25 +43,16 @@ public:
 	void on_task_total_time_updated(int64_t task_id);
 
 private:
-	DetailsDialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
+	DetailsDialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier, GUIFactory  &gui_factory);
 
 	//SummaryObserver
 	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;
 	void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) override {};
 
-	//DetailsObserver
-	void on_selected_changed() override;
-	void on_edit_details(int64_t timeEntryID) override;
-
 	//EventObserver
 	void on_task_time_changed(int64_t task_ID) override;
 	void on_task_name_changed(int64_t task_ID) override;
 
-	void setValues();
-	void on_OKButton_clicked();
-	void on_CancelButton_clicked();
-	void on_change();
-	void checkForChanges();
 
 	Gtk::Table table1;
 	Gtk::Label taskName;
@@ -81,21 +63,9 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
 	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
 	Gtk::Table table2;
-	Gtk::Label startTimeLabel;
-	Gtk::Label stopTimeLabel;
-	Gtk::Label startColonLabel, toLabel, stopColonLabel;
 	Gtk::ScrolledWindow scrolledWindow;
-	LZSpinButton startTimeHour;
-	LZSpinButton startTimeMinute;
-	LZSpinButton stopTimeHour;
-	LZSpinButton stopTimeMinute;
-	Gtk::Button CancelButton;
-	Gtk::Button OKButton;
-//	static DetailsDialog* instance;
-	time_t  oldStartTime;
-	time_t  oldStopTime;
-	time_t  start_time{0};
-	time_t  stop_time{0};
+
+
 	time_t  range_start;
 	time_t  range_stop;
 	int64_t task_id;
@@ -107,4 +77,4 @@ private:
 };
 }
 
-#endif /* DETAILSDIALOG_H_ */
+#endif /* DETAILS_DIALOG_H_ */

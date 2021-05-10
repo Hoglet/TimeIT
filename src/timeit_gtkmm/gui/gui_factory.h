@@ -41,8 +41,8 @@ public:
 	GUIFactory(Time_keeper&, Database &database, Timer& timer, Notifier& notifier);
 	virtual WidgetPtr getWidget(EWidget);
 	virtual StatusIcon& getStatusIcon();
-	virtual WidgetPtr getAddTime(int64_t taskID);
 
+	void manage_lifespan(shared_ptr<Gtk::Dialog> dialog);
 	void quit();
 private:
 	WidgetPtr addTimeInstance;
@@ -60,7 +60,8 @@ private:
 	void on_addTaskDialog_hide();
 	void on_aboutDialog_response(int);
 	void on_editTask_hide();
-	void on_dialog_hide(WidgetPtr pointer);
+	void on_dialog_response(shared_ptr <Gtk::Dialog> dialog);
+	void on_dialog_hide(shared_ptr<Gtk::Dialog> dialog);
 	void on_detailsDialog_hide();
 	void on_preferenceDialog_hide();
 
@@ -69,7 +70,7 @@ private:
 	Database& database;
 	Timer& timer;
 	Notifier& notifier;
-	list<WidgetPtr> dialogs;
+	list<shared_ptr<Gtk::Dialog>> dialogs;
 };
 }
 #endif /* GUI_FACTORY_H_ */

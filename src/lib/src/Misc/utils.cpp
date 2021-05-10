@@ -168,12 +168,14 @@ int days_in_month( time_t raw_time)
 	return time_info->tm_mday;
 }
 
+static const int YEAR_ZERO = 1900;
+
 time_t to_time(int year, int month, int day, int hour, int min, int sec)
 {
 	time_t raw_time = 0;
 	time(&raw_time);
 	struct tm*	time_info = localtime(&raw_time);
-	time_info->tm_year = year - 1900;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info->tm_year = year - YEAR_ZERO;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	time_info->tm_mon = month;
 	time_info->tm_mday = day;
 	time_info->tm_hour = hour;
@@ -244,11 +246,11 @@ string date_string(time_t time_stamp)
 {
 	struct tm day = *localtime(&time_stamp);
 	stringstream date_string;
-	date_string << (day.tm_year + 1900)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	date_string << (day.tm_year + YEAR_ZERO)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		<< "-"
-		<< setfill('0') << setw(2) << day.tm_mon + 1
-		<< "-"
-		<< setfill('0') << setw(2) << day.tm_mday;
+				<< setfill('0') << setw(2) << day.tm_mon + 1
+				<< "-"
+				<< setfill('0') << setw(2) << day.tm_mday;
 	return date_string.str();
 }
 
@@ -264,11 +266,11 @@ string time_span_string( time_t from, time_t to)
 	             << " → ";
 	if (is_on_different_days(from,to))
 	{
-		return_value << (to_time.tm_year + 1900)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		return_value << (to_time.tm_year + YEAR_ZERO)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		             << "-"
-		             << setfill('0') << setw(2) << to_time.tm_mon + 1
-		             << "-"
-		             << setfill('0') << setw(2) << to_time.tm_mday << " ";
+					 << setfill('0') << setw(2) << to_time.tm_mon + 1
+					 << "-"
+					 << setfill('0') << setw(2) << to_time.tm_mday << " ";
 	}
 	return_value << setfill('0') << setw(2) << to_time.tm_hour
 	             << ":"

@@ -11,6 +11,7 @@
 #include <glibmm/i18n.h>
 #include <optional>
 #include <libtimeit/db/default_values.h>
+#include <edit_time.h>
 
 using namespace Gtk;
 using namespace std;
@@ -22,14 +23,15 @@ namespace gui
 static const int SECONDS_PER_MINUTE = 60;
 
 Details::Details(
-		Database& database,
-		Notifier& notifier)
+		Database& database_,
+		Notifier& notifier,
+		GUIFactory&  gui_factory_)
 		:
 		Event_observer(notifier),
-		time_accessor(database),
-		settings_accessor(database)
-
-
+		time_accessor(database_),
+		settings_accessor(database_),
+		gui_factory(gui_factory_),
+		database(database_)
 {
 	tree_model = ListStore::create(columns);
 	set_model(tree_model);
@@ -306,6 +308,11 @@ bool Details::on_button_press_event(GdkEventButton *event)
 			}
 		}
 	}
+	else if (event->type == GDK_2BUTTON_PRESS)
+	{
+		edit_time_entry(get_selected_id());
+		return_value = true;
+	}
 
 	return return_value;
 }
@@ -508,16 +515,10 @@ void Details::update(list<Row_data> data_rows)
 
 void Details::on_menu_file_popup_edit()
 {
-	int64_t selected_id = get_selected_id();
+	auto selected_id = get_selected_id();
 	if (selected_id > 0)
 	{
-		std::list<DetailsObserver*>::iterator iter;
-		for (iter = observers.begin(); iter != observers.end(); ++iter)
-		{
-			DetailsObserver *observer = *iter;
-			observer->on_edit_details(selected_id);
-			//m_detailsDialog.setTimeEntryID(selectedID);
-		}
+		edit_time_entry(selected_id);
 	}
 }
 
@@ -538,6 +539,21 @@ void Details::attach(DetailsObserver *observer)
 void Details::detach(DetailsObserver *observer)
 {
 	observers.remove(observer);
+}
+
+void Details::edit_time_entry(Time_id id)
+{
+	if(id==0)
+	{
+		return;
+	}
+	auto time_entry = time_accessor.by_ID(id);
+	if(time_entry.has_value())
+	{
+		auto dialog = make_shared<gui::Edit_time>(*time_entry, database);
+		gui_factory.manage_lifespan(dialog);
+		dialog->show();
+	}
 }
 
 }

@@ -72,16 +72,15 @@ WidgetPtr GUIFactory::getWidget(EWidget widget)
 		break;
 	case IDLE_DIALOG:
 		{
-			shared_ptr<IdleDialog> dialog(new IdleDialog(timer, database, timeKeeper));
+			auto dialog = make_shared<IdleDialog>(timer, database, timeKeeper);
+			manage_lifespan(dialog);
 			retVal = dialog;
-			dialogs.push_back(retVal);
-			dialog->signal_hide().connect([this, dialog]() { this->on_dialog_hide(dialog); } );
 		}
 		break;
 	case DETAILS_DIALOG:
 		if (detailsDialogInstance == 0)
 		{
-			shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database, timeKeeper, notifier);
+			shared_ptr<DetailsDialog> dialog = DetailsDialog::create(database, timeKeeper, notifier, *this);
 			dialog->signal_hide().connect(sigc::mem_fun(this, &GUIFactory::on_detailsDialog_hide));
 			detailsDialogInstance = dialog;
 		}
@@ -111,9 +110,9 @@ void GUIFactory::on_addTaskDialog_hide()
 	addTaskInstance.reset();
 }
 
-void GUIFactory::on_dialog_hide(const WidgetPtr ptr)
+void GUIFactory::on_dialog_hide(shared_ptr<Gtk::Dialog> dialog)
 {
-	dialogs.remove(ptr);
+	dialogs.remove(dialog);
 }
 
 void GUIFactory::on_detailsDialog_hide()
@@ -147,26 +146,26 @@ StatusIcon& GUIFactory::getStatusIcon()
 	return *statusIcon;
 }
 
-WidgetPtr GUIFactory::getAddTime(int64_t taskID)
+
+
+
+void GUIFactory::manage_lifespan(shared_ptr<Gtk::Dialog> dialog)
 {
-	if (addTimeInstance == nullptr)
-	{
-		if (mainWindow == 0)
-		{
-			getWidget(MAIN_WINDOW);
-		}
-		Calendar &calendar = std::dynamic_pointer_cast<MainWindow>(mainWindow)->get_calendar();
-		shared_ptr<Edit_time> addTime(new Edit_time(taskID, calendar, database));
-		addTime->signal_response().connect(sigc::mem_fun(this, &GUIFactory::on_addTime_response));
-		addTimeInstance = addTime;
-	}
-	return addTimeInstance;
+	dialog->signal_hide().connect([this, dialog]() { this->on_dialog_hide(dialog); } );
+	dialog->signal_response().connect([this, dialog](int) { this->on_dialog_response(dialog); });
+	dialogs.push_back(dialog);
 }
+
 
 void GUIFactory::on_addTime_response(int)
 {
 	addTimeInstance->hide();
 	addTimeInstance.reset();
+}
+
+void GUIFactory::on_dialog_response(shared_ptr<Gtk::Dialog> dialog)
+{
+	dialog->hide();
 }
 
 }

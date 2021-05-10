@@ -8,6 +8,7 @@
 #include <libtimeit/db/default_values.h>
 #include <gui_factory.h>
 #include <main_window/main_window.h>
+#include <edit_time.h>
 
 
 using namespace gui;
@@ -17,7 +18,7 @@ using namespace std;
 Controller::Controller(
 		GUIFactory  &op_guiFactory,
 		Time_keeper &op_timeKeeper,
-		Database    &database,
+		Database    &database_,
 		IpcServer   &ipc,
 		Notifier    &notifier)
 		:
@@ -25,8 +26,9 @@ Controller::Controller(
 		Event_observer( notifier ),
 		gui_factory(op_guiFactory),
 		time_keeper(op_timeKeeper),
-		time_accessor(database),
-		settings_accessor(database)
+		time_accessor(database_),
+		settings_accessor(database_),
+		database(database_)
 
 {
 	ipc.attach(this);
@@ -145,7 +147,11 @@ void Controller::on_action_add_time()
 {
 	if (selected_task_id > 0)
 	{
-		gui_factory.getAddTime(selected_task_id)->show();
+		auto now = libtimeit::now();
+		Time_entry time_entry(selected_task_id, now, now);
+		auto dialog = make_shared<gui::Edit_time>(time_entry, database);
+		gui_factory.manage_lifespan(dialog);
+		dialog->show();
 	}
 }
 

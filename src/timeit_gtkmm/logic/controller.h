@@ -66,6 +66,7 @@ private:
 	Time_keeper&        time_keeper;
 	Time_accessor       time_accessor;
 	Settings_accessor   settings_accessor;
+	Database&           database;
 
 	int main_window_x = 0;
 	int main_window_y = 0;

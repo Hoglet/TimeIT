@@ -22,15 +22,16 @@ using namespace libtimeit;
 /*
  * Edit and add times
  */
-class Edit_time: public Gtk::Dialog, public CalendarObserver, public IWidget
+class Edit_time: public Gtk::Dialog, public IWidget
 {
 public:
-	Edit_time(int64_t taskId, Calendar& calendar, Database& database);
+	Edit_time(Time_entry time_entry, Database& database);
 	Edit_time(const Edit_time&)             = delete;
 	Edit_time(Edit_time&&)                 = delete;
 	Edit_time& operator=(const Edit_time& ) = delete;
 	Edit_time& operator=(Edit_time&& )     = delete;
-	~Edit_time() override;
+	~Edit_time() = default;
+
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }
 	void hide() override { Gtk::Dialog::hide(); }
@@ -38,10 +39,11 @@ public:
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	void on_date_changed() override;
-	void on_month_changed();
+	void connect_signals(vector<Gtk::SpinButton*> widgets);
+	void set_values( );
 	void on_change();
 	void on_response(int response_id) override;
+
 	Gtk::Table table;
 	Gtk::HBox  hbox;
 	Gtk::HSeparator hseparator;
@@ -66,9 +68,8 @@ private:
 	LZSpinButton month;
 	LZSpinButton day;
 	Gtk::Button* ok_button;
-	Calendar& calendar;
 
-	int64_t task_id;
+	Time_entry    time_entry;
 	Time_accessor time_accessor;
 	Task_accessor task_accessor;
 };
