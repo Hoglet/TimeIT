@@ -26,10 +26,10 @@ public:
 		init();
 	};
 private:
-	virtual void calculateTimeSpan()
+	void calculate_time_span() override
 	{
-		startTime = libtimeit::beginning_of_day(activeDay);
-		stopTime = libtimeit::end_of_day(activeDay);
+		start_time = libtimeit::beginning_of_day(active_day);
+		stop_time = libtimeit::end_of_day(active_day);
 	}
 };
 
@@ -42,10 +42,10 @@ public:
 		init();
 	};
 private:
-	virtual void calculateTimeSpan()
+	void calculate_time_span() override
 	{
-		startTime = libtimeit::beginning_of_week(activeDay);
-		stopTime = libtimeit::end_of_week(activeDay);
+		start_time = libtimeit::beginning_of_week(active_day);
+		stop_time = libtimeit::end_of_week(active_day);
 	}
 };
 
@@ -58,10 +58,10 @@ public:
 		init();
 	};
 private:
-	virtual void calculateTimeSpan()
+	void calculate_time_span() override
 	{
-		startTime = libtimeit::beginning_of_month(activeDay);
-		stopTime = libtimeit::end_of_month(activeDay);
+		start_time = libtimeit::beginning_of_month(active_day);
+		stop_time = libtimeit::end_of_month(active_day);
 	}
 };
 
@@ -74,10 +74,10 @@ public:
 		init();
 	};
 private:
-	virtual void calculateTimeSpan()
+	void calculate_time_span() override
 	{
-		startTime = libtimeit::beginning_of_year(activeDay);
-		stopTime = libtimeit::end_of_year(activeDay);
+		start_time = libtimeit::beginning_of_year(active_day);
+		stop_time = libtimeit::end_of_year(active_day);
 	}
 };
 

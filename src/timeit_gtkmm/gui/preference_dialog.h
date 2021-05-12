@@ -1,12 +1,5 @@
-/*
- * PreferenceWindow.h
- *
- *  Created on: Jul 21, 2009
- *      Author: hoglet
- */
-
-#ifndef PREFERENCEWINDOW_H_
-#define PREFERENCEWINDOW_H_
+#ifndef PREFERENCE_WINDOW_H_
+#define PREFERENCE_WINDOW_H_
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/checkbutton.h>
@@ -24,10 +17,10 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class PreferenceDialog: public Gtk::Dialog, public IWidget
+class Preference_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	PreferenceDialog(Database& database);
+	Preference_dialog(Database& database);
 
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }
@@ -36,65 +29,63 @@ public:
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
-	void on_CancelButton_clicked();
-	void on_OKButton_clicked();
+	void on_cancel_button_clicked();
+	void on_ok_button_clicked();
 
-	Gtk::Table TimeConstantTable;
-	Gtk::Table ServerTable;
+	Gtk::Table time_constant_table;
+	Gtk::Table server_table;
 
-	Gtk::CheckButton CompactLayoutButton;
-	Gtk::CheckButton StartMinimizedButton;
-	Gtk::Label	GzLabel;
-	Gtk::Label	GtLabel;
-	Gtk::SpinButton	GzEntry;
-	Gtk::SpinButton	GtEntry;
+	Gtk::CheckButton compact_layout_button;
+	Gtk::CheckButton start_minimized_button;
+	Gtk::Label	gz_label;
+	Gtk::Label	gt_label;
+	Gtk::SpinButton	gz_entry;
+	Gtk::SpinButton	gt_entry;
 
-	Gtk::Label UrlLabel;
-	Gtk::Label UserLabel;
-	Gtk::Label PasswordLabel;
-	Gtk::Entry UrlEntry;
-	Gtk::Entry UserEntry;
-	Gtk::Entry PasswordEntry;
-	Gtk::Label ServerLabel;
-	Gtk::Frame SyncServerFrame;
-	Gtk::Button CancelButton;
-	Gtk::Button OKButton;
-	Gtk::Label  IgnoreCertErrorLabel;
-	Gtk::CheckButton IgnoreCertErrorButton;
-	Gtk::Label SyncIntervalLabel;
-	Gtk::SpinButton SyncIntervalEntry;
+	Gtk::Label url_label;
+	Gtk::Label user_label;
+	Gtk::Label password_label;
+	Gtk::Entry url_entry;
+	Gtk::Entry user_entry;
+	Gtk::Entry password_entry;
+	Gtk::Label server_label;
+	Gtk::Frame sync_server_frame;
+	Gtk::Button cancel_button;
+	Gtk::Button ok_button;
+	Gtk::Label  ignore_cert_error_label;
+	Gtk::CheckButton ignore_cert_error_button;
+	Gtk::Label sync_interval_label;
+	Gtk::SpinButton sync_interval_entry;
 
 	void get_values();
 	void set_values();
-	int		gz;
-	int		gt;
-	bool	compactLayout;
-	bool	startMinimized;
-	bool	quietMode;
-	int		oldGz;
-	int 	oldGt;
-	bool	oldCompactLayout;
-	bool 	oldStartMinimized;
-	bool	oldQuietMode;
-	string  oldURL;
-	string  oldUser;
-	string  oldPassword;
-	string  URL;
-	string  User;
-	string  Password;
-	bool	oldIgnoreCertErr;
-	bool	ignoreCertErr;
-	int		oldSyncInterval;
-	int		syncInterval;
+	unsigned gz{0} ;
+	unsigned gt{0};
+	bool	 compact_layout{true};
+	bool	 start_minimized{false};
+	unsigned old_gz{0};
+	unsigned old_gt{0};
+	bool	 old_compact_layout{true};
+	bool 	 old_start_minimized{false};
+	string   old_url;
+	string   old_user;
+	string   old_password;
+	string   url;
+	string   user;
+	string   password;
+	bool	 old_ignore_cert_err{0};
+	bool	 ignore_cert_err{false};
+	int		 old_sync_interval{0};
+	int		 sync_interval{0};
 
 	void on_data_changed();
 	bool on_focus_changed(GdkEventFocus*);
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	Settings_accessor settingsAccessor;
+	Settings_accessor settings_accessor;
 };
 
 }
 
-#endif /* PREFERENCEWINDOW_H_ */
+#endif /* PREFERENCE_WINDOW_H_ */

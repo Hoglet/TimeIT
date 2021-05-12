@@ -53,7 +53,7 @@ struct Row_data
 class Details: public Gtk::TreeView, public Event_observer
 {
 public:
-	Details(Database &database, Notifier& notifier, GUIFactory&  gui_factory);
+	Details(Database &database, Notifier& notifier, Window_manager&  gui_factory);
 	void set(Task_id id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
@@ -70,6 +70,7 @@ public:
 	Time_id get_selected_id();
 	vector<Time_id> get_selected_and_next_id();
 	//
+
 	void attach(DetailsObserver*);
 	void detach(DetailsObserver*);
 private:
@@ -117,7 +118,7 @@ private:
 	std::list<DetailsObserver*> observers;
 	Time_accessor               time_accessor;
 	Settings_accessor           settings_accessor;
-	GUIFactory&                 gui_factory;
+	Window_manager&                 gui_factory;
 	Database&                   database;
 	void edit_time_entry(Time_id i);
 };

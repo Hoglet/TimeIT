@@ -19,27 +19,26 @@ namespace gui
 {
 using namespace libtimeit;
 
-class StatusIcon: public Time_keeper_observer, public Event_observer
+class Status_icon: public Time_keeper_observer, public Event_observer
 {
 public:
-	StatusIcon(Time_keeper&, Database&, Notifier& notifier);
+	Status_icon(Time_keeper&, Database&, Notifier& notifier);
 
 	void show()
 	{
 	}
 	; //Shown directly on creation. Might change
-	void attach(action_observer *observer);
-	void detach(action_observer *observer);
+	void attach(Action_observer *observer);
+	void detach(Action_observer *observer);
 private:
 	void on_activate();
-	void setIcon();
-	void setTooltip();
+	void set_icon();
+	void set_tooltip();
 	void on_running_changed() override;
-	void on_idle_detected(Time_id /*id*/) override
-	{};
+
 	void on_popup_menu(guint button, guint32 activate_time);
-	void toggleMainWindow();
-	void on_menu_file_popup_quit();
+	void toggle_main_window();
+	static void on_menu_file_popup_quit();
 	void on_menu_file_popup_open();
 	void on_menu_stop_all_timers();
 	void on_menu_about();
@@ -49,35 +48,28 @@ private:
 	void on_menu_toggle_task3();
 	void on_menu_toggle_task4();
 	void on_menu_toggle_task5();
-	void populateContextMenu();
-	void toggleTask(int64_t id);
-	std::string completeTaskPath(int64_t id);
+	void populate_context_menu();
+	void toggle_task(int64_t id);
+	string complete_task_path(int64_t id);
 
-	void on_task_added(int64_t) override
-	{
-	}
-	;
-	void on_task_updated(int64_t) override;
-	void on_task_name_changed(int64_t) override;
-	void on_task_time_changed(int64_t) override;
+	void on_task_updated(Task_id id) override;
+	void on_task_name_changed(Task_id id) override;
+	void on_task_time_changed(Task_id id) override;
 
-	void on_task_removed(int64_t) override
-	{
-	}
-	;
 	void on_complete_update() override;
-	Glib::RefPtr<Gtk::StatusIcon> m_statusIcon;
-	Glib::RefPtr<Gdk::Pixbuf> m_defaultIcon;
-	Glib::RefPtr<Gdk::Pixbuf> m_runningIcon;
-	Glib::RefPtr<Gdk::Pixbuf> idleIconSmall;
-	Glib::RefPtr<Gdk::Pixbuf> runningIconSmall;
+	Glib::RefPtr<Gtk::StatusIcon> status_icon;
+	Glib::RefPtr<Gdk::Pixbuf> default_icon;
+	Glib::RefPtr<Gdk::Pixbuf> running_icon;
+	Glib::RefPtr<Gdk::Pixbuf> idle_icon_small;
+	Glib::RefPtr<Gdk::Pixbuf> running_icon_small;
 
-	Gtk::Menu m_Menu_Popup;
-	Time_keeper& m_timeKeeper;
-	Task_accessor m_taskaccessor;
-	Time_accessor m_timeaccessor;
-	std::list<action_observer*> observers;
-	std::vector<int64_t> latestTasks;
+	Gtk::Menu menu_popup;
+	Time_keeper&  m_time_keeper;
+	Task_accessor task_accessor;
+	Time_accessor time_accessor;
+
+	std::list<Action_observer*> observers;
+	std::vector<Task_id> latest_tasks;
 
 };
 

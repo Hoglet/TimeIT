@@ -33,15 +33,19 @@ TimeItAboutDialog::TimeItAboutDialog()
 	//This is the licence txt
 	set_license(_("This program is licenced under GNU General Public Licence (GPL) version 2."));
 
-	std::string iconPath = Glib::build_filename(libtimeit::image_path(), "icon.svg" );
-	set_logo(Gdk::Pixbuf::create_from_file(iconPath, 200, 200));
+	std::string icon_path = Glib::build_filename(libtimeit::image_path(), "icon.svg" );
+	set_logo(Gdk::Pixbuf::create_from_file(icon_path, 200, 200));
 
-	set_url_hook(sigc::mem_fun(this, &TimeItAboutDialog::on_link_clicked));
+	set_url_hook(
+			[](AboutDialog &dialog, const Glib::ustring& link)
+			{
+				TimeItAboutDialog::on_link_clicked(dialog, link);
+			});
 	set_website("https://hoglet.github.io/TimeIT/");
 	set_website_label(_("TimeIT website"));
 
 	std::list < Glib::ustring > list_authors;
-	list_authors.push_back("Kent Asplund");
+	list_authors.emplace_back("Kent Asplund");
 	set_copyright("Kent Asplund");
 	set_authors (list_authors);
 	/* This is where you add your name so you will be credited as translator */

@@ -31,7 +31,7 @@ Edit_task_dialog::Edit_task_dialog(Database &database) :
 	workspace_label.set_text(text);
 
 	create_layout();
-	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_OK_button_clicked));
+	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_ok_button_clicked));
 	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_cancel_button_clicked));
 	task_name_entry.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
 	parent_chooser.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
@@ -69,7 +69,7 @@ void Edit_task_dialog::create_layout()
 	idle_time_entry.set_max_length(4);
 	idle_time_entry.set_range(1, MAX_IDLE_TIME);
 	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
-	idle_time = settings_accessor.get_int("Gt", DEFAULT_GT );
+	idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT );
 	idle_time_entry.set_value( idle_time );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
@@ -163,7 +163,7 @@ void Edit_task_dialog::set_task_id(Task_id ID)
 		set_ticked_workspaces(workspace_list);
 		ok_button.set_sensitive(false);
 		workspaces = workspace_list;
-		parent_chooser.setID(ID);
+		parent_chooser.set_id(ID);
 		idle_time = task->idle;
 		quiet = task->quiet;
 		if(idle_time==0)
@@ -179,7 +179,7 @@ void Edit_task_dialog::set_task_id(Task_id ID)
 void Edit_task_dialog::set_parent(Task_id ID)
 {
 	parent_id = ID;
-	parent_chooser.setParentID(parent_id);
+	parent_chooser.set_parent(parent_id);
 }
 
 void Edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
@@ -206,13 +206,13 @@ void Edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
 	}
 
 }
-void Edit_task_dialog::on_OK_button_clicked()
+void Edit_task_dialog::on_ok_button_clicked()
 {
 
 	stringstream check_button_name;
 	auto workspace_list = get_ticked_workspaces();
 	auto new_name = task_name_entry.get_text();
-	parent_id = parent_chooser.getParentID();
+	parent_id = parent_chooser.get_parent_id();
 
 	if (task_id < 1)
 	{
@@ -258,7 +258,7 @@ void Edit_task_dialog::check_for_changes()
 	if (
 			name != entry_name ||
 			ticked_workspaces != workspaces ||
-			parent_chooser.getParentID() != parent_id ||
+					parent_chooser.get_parent_id() != parent_id ||
 			entry_idle != idle_time ||
 			quiet_button.get_active() != quiet
 			)

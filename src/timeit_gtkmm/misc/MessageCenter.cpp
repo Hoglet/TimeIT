@@ -1,67 +1,57 @@
 #include "MessageCenter.h"
+
+#include <utility>
 #include "libtimeit/utils.h"
 #include "libnotify/notify.h"
 
-namespace Utils
+namespace gui
+{
+using namespace std;
+
+Message::Message(MessageType type_, string header_, string message_) : type(type_), header(std::move(header_)), message(std::move(message_))
 {
 
-Message::Message(MessageType op_type, std::string op_header, std::string op_message)
-{
-	type = op_type;
-	header = op_header;
-	message = op_message;
-}
-
-std::string Message::getHeader()
-{
-	return header;
-}
-
-std::string Message::getMessage()
-{
-	return message;
-}
-
-MessageType Message::getType()
-{
-	return type;
 }
 
 
-MessageCenter::MessageCenter()
+Message_center::Message_center(): receiving_thread(Glib::Thread::self())
 {
-	receiving_thread = Glib::Thread::self();
-	signal_message.connect(sigc::mem_fun(*this, &MessageCenter::manageMessages));
+	signal_message.connect(
+			[this]()
+			{
+				this->manage_messages();
+			}
+			);
 }
 
 
 
-void MessageCenter::manageMessages()
+void Message_center::manage_messages()
 {
-	while (!messageQue.empty())
+	while (!message_que.empty())
 	{
 		Glib::Mutex::Lock lock(mutex);
-		Message message = messageQue.back();
-		messageQue.pop_back();
+		Message message = message_que.back();
+		message_que.pop_back();
 		lock.release();
 
 		notify_init("Hello world!");
-		NotifyNotification* Hello = notify_notification_new(message.getHeader().c_str(), message.getMessage().c_str(),
-				"dialog-information");
-		notify_notification_show(Hello, NULL);
-		g_object_unref(G_OBJECT(Hello));
+		auto* p_notification = notify_notification_new(message.header.c_str(), message.message.c_str(),
+													   "dialog-information");
+		notify_notification_show(p_notification, nullptr);
+		g_object_unref(G_OBJECT(p_notification)); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 		notify_uninit();
 	}
 }
 
-void MessageCenter::sendMessage(Message message)
+void Message_center::send_message(Message message)
 {
 	Glib::Mutex::Lock lock(mutex);
-	messageQue.push_front(message);
+	message_que.push_front(message);
 	lock.release();
 	if (Glib::Thread::self() == receiving_thread)
 	{
-		manageMessages();
+		manage_messages();
 	}
 	else
 	{

@@ -25,7 +25,7 @@ static const int SECONDS_PER_MINUTE = 60;
 Details::Details(
 		Database& database_,
 		Notifier& notifier,
-		GUIFactory&  gui_factory_)
+		Window_manager&  gui_factory_)
 		:
 		Event_observer(notifier),
 		time_accessor(database_),

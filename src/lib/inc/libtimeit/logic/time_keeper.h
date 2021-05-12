@@ -29,8 +29,8 @@ public:
 	Time_keeper_observer& operator=( Time_keeper_observer&& )      = delete;
 	~Time_keeper_observer();
 
-	virtual void on_idle_detected(Time_id ) = 0;
-	virtual void on_running_changed() = 0;
+	virtual void on_idle_detected(Time_id ) {};
+	virtual void on_running_changed()       {};
 private:
 	Time_keeper& time_keeper;
 };

@@ -15,19 +15,19 @@ namespace gui
 using namespace libtimeit;
 
 
-class DetailsDialog:
+class Details_dialog:
 		public Gtk::Dialog,
-		public SummaryObserver,
+		public Summary_observer,
 		public Event_observer,
 		public IWidget
 {
 public:
-	static std::shared_ptr<DetailsDialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier, GUIFactory  &gui_factory);
-	DetailsDialog(const DetailsDialog&) = delete;
-	DetailsDialog( DetailsDialog&&) = delete;
-	DetailsDialog& operator=(const DetailsDialog&) = delete;
-	DetailsDialog& operator=(DetailsDialog&&) = delete;
-	~DetailsDialog() override ;
+	static std::shared_ptr<Details_dialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier, Window_manager  &gui_factory);
+	Details_dialog(const Details_dialog&) = delete;
+	Details_dialog(Details_dialog&&) = delete;
+	Details_dialog& operator=(const Details_dialog&) = delete;
+	Details_dialog& operator=(Details_dialog&&) = delete;
+	~Details_dialog() override ;
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
 
@@ -38,12 +38,12 @@ public:
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 
-	void on_runningTasksChanged();
+	void on_running_tasks_changed();
 	void on_task_name_updated(int64_t task_id);
 	void on_task_total_time_updated(int64_t task_id);
 
 private:
-	DetailsDialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier, GUIFactory  &gui_factory);
+	Details_dialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier, Window_manager  &gui_factory);
 
 	//SummaryObserver
 	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;
@@ -55,25 +55,25 @@ private:
 
 
 	Gtk::Table table1;
-	Gtk::Label taskName;
-	Gtk::Image runningImage;
-	Details    detailList;
-	Gtk::Label taskTotalTime;
-	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
-	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
-	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
+	Gtk::Label task_name;
+	Gtk::Image running_image;
+	Details    detail_list;
+	Gtk::Label task_total_time;
+	Glib::RefPtr<Gdk::Pixbuf> running_icon;
+	Glib::RefPtr<Gdk::Pixbuf> running_idle_icon;
+	Glib::RefPtr<Gdk::Pixbuf> blank_icon;
 	Gtk::Table table2;
-	Gtk::ScrolledWindow scrolledWindow;
+	Gtk::ScrolledWindow scrolled_window;
 
 
-	time_t  range_start;
-	time_t  range_stop;
-	int64_t task_id;
-	int64_t time_entry_id;
-	Time_accessor          m_timeAccessor;
-	Extended_task_accessor m_taskAccessor;
+	time_t  range_start   {0};
+	time_t  range_stop    {0};
+	int64_t task_id       {0};
+	int64_t time_entry_id {0};
+	Time_accessor          time_accessor;
+	Extended_task_accessor task_accessor;
 	Settings_accessor      settings_accessor;
-	Time_keeper&           m_timeKeeper;
+	Time_keeper&           time_keeper;
 };
 }
 

@@ -9,6 +9,8 @@
 #define IWIDGET_H_
 
 #include <action_observer.h>
+namespace gui
+{
 
 class IWidget
 {
@@ -17,10 +19,11 @@ public:
 	virtual void hide() = 0;
 	virtual void move(int x, int y) = 0;
 	virtual bool is_visible() = 0;
-	virtual void get_position(int& Window_x, int& Window_y) = 0;
+	virtual void get_position(int &Window_x, int &Window_y) = 0;
 
-	virtual void attach(action_observer* /*observer*/) {};
-	virtual void detach(action_observer* /*observer*/) {};
+	virtual void attach(Action_observer* /*observer*/) 	{};
+	virtual void detach(Action_observer* /*observer*/) 	{};
 };
 
+}
 #endif /* IWIDGET_H_ */

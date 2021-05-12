@@ -19,12 +19,15 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class MainWindow: public Gtk::Window, public action_observer, public IWidget
+class MainWindow: public Gtk::Window, public Action_observer, public IWidget
 {
 public:
 	~MainWindow() override;
 	MainWindow(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
-
+	MainWindow(const MainWindow&) = delete;
+	MainWindow( MainWindow&& ) = delete;
+	MainWindow& operator=(const MainWindow&) = delete;
+	MainWindow& operator=( MainWindow&&) = delete;
 
 	// IWidget interface
 	void show() override
@@ -52,10 +55,10 @@ public:
 	}
 	;
 
-	virtual void attach(SummaryObserver* observer);
-	virtual void detach(SummaryObserver* observer);
-	void attach(action_observer* /*observer*/) override;
-	void detach(action_observer* /*observer*/) override;
+	virtual void attach(Summary_observer* observer);
+	virtual void detach(Summary_observer* observer);
+	void attach(Action_observer* /*observer*/) override;
+	void detach(Action_observer* /*observer*/) override;
 
 	Calendar& get_calendar();
 
@@ -64,7 +67,7 @@ public:
 
 private:
 	//Action observer
-	void on_action_task_selection_changed(int selectedTaskID) override;
+	void on_action_task_selection_changed(Task_id selected_task_id) override;
 	void on_action_remove_task() override;
 
 	virtual void on_settings_changed(string name);
@@ -85,7 +88,7 @@ private:
 	void empty_containers();
 	void do_layout();
 
-	TaskList       task_list;
+	Task_list       task_list;
 	DaySummary     day_summary;
 	WeekSummary    week_summary;
 	MonthSummary   month_summary;

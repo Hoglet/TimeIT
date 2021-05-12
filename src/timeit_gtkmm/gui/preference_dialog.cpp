@@ -13,100 +13,100 @@
 namespace gui
 {
 
-PreferenceDialog::PreferenceDialog(Database &database) :
-		CancelButton(Gtk::StockID("gtk-cancel")),
-		OKButton(Gtk::StockID("gtk-apply")),
-		settingsAccessor(database)
+Preference_dialog::Preference_dialog(Database &database) :
+		cancel_button(Gtk::StockID("gtk-cancel")),
+		ok_button(Gtk::StockID("gtk-apply")),
+		settings_accessor(database)
 
 {
 	//The compact layout option is reducing the size of the toolbar in the main window
-	CompactLayoutButton.set_label(_("Compact layout"));
+	compact_layout_button.set_label(_("Compact layout"));
 	//This option will make that no window is opened on first start of application. Only an icon in the system tray will be visible
-	StartMinimizedButton.set_label(_("Start minimized"));
-	PasswordEntry.set_visibility(false);
+	start_minimized_button.set_label(_("Start minimized"));
+	password_entry.set_visibility(false);
 
-	get_vbox()->pack_start(CompactLayoutButton, Gtk::PACK_EXPAND_WIDGET, 3);
-	get_vbox()->pack_start(StartMinimizedButton, Gtk::PACK_EXPAND_WIDGET, 3);
+	get_vbox()->pack_start(compact_layout_button, Gtk::PACK_EXPAND_WIDGET, 3);
+	get_vbox()->pack_start(start_minimized_button, Gtk::PACK_EXPAND_WIDGET, 3);
 
 	/** Listeners **/
-	CompactLayoutButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	StartMinimizedButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	GzEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	GtEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	UrlEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	UserEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	PasswordEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	IgnoreCertErrorButton.signal_toggled().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	SyncIntervalEntry.signal_changed().connect(sigc::mem_fun(this, &PreferenceDialog::on_data_changed));
-	GzEntry.signal_focus_out_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_focus_changed));
-	GtEntry.signal_focus_out_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_focus_changed));
-	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
-	signal_button_release_event().connect(sigc::mem_fun(this, &PreferenceDialog::on_button_released));
+	compact_layout_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	start_minimized_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	gz_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	gt_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	url_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	user_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	password_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	ignore_cert_error_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	sync_interval_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
+	gz_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &Preference_dialog::on_focus_changed));
+	gt_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &Preference_dialog::on_focus_changed));
+	signal_button_release_event().connect(sigc::mem_fun(this, &Preference_dialog::on_button_released));
+	signal_button_release_event().connect(sigc::mem_fun(this, &Preference_dialog::on_button_released));
 	this->set_events(Gdk::BUTTON_RELEASE_MASK);
 
-	TimeConstantTable.set_border_width(2);
-	TimeConstantTable.resize(3, 2);
+	time_constant_table.set_border_width(2);
+	time_constant_table.resize(3, 2);
 	{
 		// "Zero time" is the minimum activity time that will be counted at work. Anything less will be ignored
-		GzLabel.set_text(_("Zero time (m)"));
-		GzEntry.set_range(1, 60);
-		GzEntry.set_increments(1, 10);
+		gz_label.set_text(_("Zero time (m)"));
+		gz_entry.set_range(1, 60);
+		gz_entry.set_increments(1, 10);
 
-		GtLabel.set_text(_("Idle time (m)"));
-		GtEntry.set_range(1, 60);
-		GtEntry.set_increments(1, 10);
+		gt_label.set_text(_("Idle time (m)"));
+		gt_entry.set_range(1, 60);
+		gt_entry.set_increments(1, 10);
 
-		TimeConstantTable.attach(GtLabel, 0, 1, 0, 1);
-		TimeConstantTable.attach(GtEntry, 1, 2, 0, 1);
-		TimeConstantTable.attach(GzLabel, 0, 1, 1, 2);
-		TimeConstantTable.attach(GtEntry, 1, 2, 0, 1);
-		TimeConstantTable.attach(GzEntry, 1, 2, 1, 2);
+		time_constant_table.attach(gt_label, 0, 1, 0, 1);
+		time_constant_table.attach(gt_entry, 1, 2, 0, 1);
+		time_constant_table.attach(gz_label, 0, 1, 1, 2);
+		time_constant_table.attach(gt_entry, 1, 2, 0, 1);
+		time_constant_table.attach(gz_entry, 1, 2, 1, 2);
 	}
-	get_vbox()->pack_start(TimeConstantTable, Gtk::PACK_EXPAND_WIDGET, 3);
+	get_vbox()->pack_start(time_constant_table, Gtk::PACK_EXPAND_WIDGET, 3);
 
 	/***The title for the TimeIT server related settings***/
-	ServerLabel.set_text(_("Sync server:"));
-	ServerTable.set_border_width(5);
-	ServerTable.resize(3, 2);
+	server_label.set_text(_("Sync server:"));
+	server_table.set_border_width(5);
+	server_table.resize(3, 2);
 	{
-		UrlLabel.set_text(_("URI: "));
-		UserLabel.set_text(_("User: "));
-		PasswordLabel.set_text(_("Password: "));
-		IgnoreCertErrorLabel.set_text(_("Ignore certificate errors"));
-		SyncIntervalLabel.set_text(_("Sync interval (minutes)"));
+		url_label.set_text(_("URI: "));
+		user_label.set_text(_("User: "));
+		password_label.set_text(_("Password: "));
+		ignore_cert_error_label.set_text(_("Ignore certificate errors"));
+		sync_interval_label.set_text(_("Sync interval (minutes)"));
 
-		UrlEntry.set_max_length(60);
-		UserEntry.set_max_length(20);
-		PasswordEntry.set_max_length(20);
-		SyncIntervalEntry.set_range(1, 60);
-		SyncIntervalEntry.set_increments(1, 10);
+		url_entry.set_max_length(60);
+		user_entry.set_max_length(20);
+		password_entry.set_max_length(20);
+		sync_interval_entry.set_range(1, 60);
+		sync_interval_entry.set_increments(1, 10);
 
-		ServerTable.attach(UrlLabel, 0, 1, 0, 1);
-		ServerTable.attach(UrlEntry, 1, 2, 0, 1);
-		ServerTable.attach(UserLabel, 0, 1, 1, 2);
-		ServerTable.attach(UserEntry, 1, 2, 1, 2);
-		ServerTable.attach(PasswordLabel, 0, 1, 2, 3);
-		ServerTable.attach(PasswordEntry, 1, 2, 2, 3);
-		ServerTable.attach(IgnoreCertErrorLabel, 0, 1, 3, 4);
-		ServerTable.attach(IgnoreCertErrorButton, 1, 2, 3, 4);
-		ServerTable.attach(SyncIntervalLabel, 0, 1, 4, 5);
-		ServerTable.attach(SyncIntervalEntry, 1, 2, 4, 5);
+		server_table.attach(url_label, 0, 1, 0, 1);
+		server_table.attach(url_entry, 1, 2, 0, 1);
+		server_table.attach(user_label, 0, 1, 1, 2);
+		server_table.attach(user_entry, 1, 2, 1, 2);
+		server_table.attach(password_label, 0, 1, 2, 3);
+		server_table.attach(password_entry, 1, 2, 2, 3);
+		server_table.attach(ignore_cert_error_label, 0, 1, 3, 4);
+		server_table.attach(ignore_cert_error_button, 1, 2, 3, 4);
+		server_table.attach(sync_interval_label, 0, 1, 4, 5);
+		server_table.attach(sync_interval_entry, 1, 2, 4, 5);
 
 	}
-	SyncServerFrame.add(ServerTable);
-	SyncServerFrame.set_label_widget(ServerLabel);
-	get_vbox()->pack_start(SyncServerFrame);
+	sync_server_frame.add(server_table);
+	sync_server_frame.set_label_widget(server_label);
+	get_vbox()->pack_start(sync_server_frame);
 
 	/*******/
-	CancelButton.set_flags(Gtk::CAN_FOCUS);
-	CancelButton.signal_clicked().connect(sigc::mem_fun(this, &PreferenceDialog::on_CancelButton_clicked));
-	OKButton.set_sensitive(false);
-	OKButton.set_flags(Gtk::CAN_FOCUS);
-	OKButton.signal_clicked().connect(sigc::mem_fun(this, &PreferenceDialog::on_OKButton_clicked));
+	cancel_button.set_flags(Gtk::CAN_FOCUS);
+	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &Preference_dialog::on_cancel_button_clicked));
+	ok_button.set_sensitive(false);
+	ok_button.set_flags(Gtk::CAN_FOCUS);
+	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Preference_dialog::on_ok_button_clicked));
 
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
-	get_action_area()->pack_start(CancelButton);
-	get_action_area()->pack_start(OKButton);
+	get_action_area()->pack_start(cancel_button);
+	get_action_area()->pack_start(ok_button);
 
 	show_all_children();
 
@@ -114,127 +114,122 @@ PreferenceDialog::PreferenceDialog(Database &database) :
 }
 
 
-void PreferenceDialog::set_values()
+void Preference_dialog::set_values()
 {
-	oldCompactLayout = settingsAccessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
-	oldStartMinimized = settingsAccessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
-	oldGt = settingsAccessor.get_int("Gt", DEFAULT_GT);
-	oldGz = settingsAccessor.get_int("Gz", DEFAULT_GZ);
-	oldQuietMode = settingsAccessor.get_bool("Quiet", DEFAULT_QUIET_MODE);
-	oldURL = settingsAccessor.get_string("URL", DEFAULT_URL);
-	oldUser = settingsAccessor.get_string("Username", DEFAULT_USER);
-	oldPassword = settingsAccessor.get_string("Password", DEFAULT_PASSWORD);
-	oldIgnoreCertErr = settingsAccessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	oldSyncInterval = settingsAccessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
-	GzEntry.set_value(oldGz);
-	GtEntry.set_value(oldGt);
-	CompactLayoutButton.set_active(oldCompactLayout);
-	StartMinimizedButton.set_active(oldStartMinimized);
-	UrlEntry.set_text(oldURL);
-	UserEntry.set_text(oldUser);
-	PasswordEntry.set_text(oldPassword);
-	IgnoreCertErrorButton.set_active(oldIgnoreCertErr);
-	SyncIntervalEntry.set_value(oldSyncInterval);
+	old_compact_layout = settings_accessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
+	old_start_minimized = settings_accessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
+	old_gt = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+	old_gz = (unsigned)settings_accessor.get_int("Gz", DEFAULT_GZ);
+	old_url = settings_accessor.get_string("URL", DEFAULT_URL);
+	old_user = settings_accessor.get_string("Username", DEFAULT_USER);
+	old_password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
+	old_ignore_cert_err = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	old_sync_interval = (int)settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	gz_entry.set_value(old_gz);
+	gt_entry.set_value(old_gt);
+	compact_layout_button.set_active(old_compact_layout);
+	start_minimized_button.set_active(old_start_minimized);
+	url_entry.set_text(old_url);
+	user_entry.set_text(old_user);
+	password_entry.set_text(old_password);
+	ignore_cert_error_button.set_active(old_ignore_cert_err);
+	sync_interval_entry.set_value(old_sync_interval);
 }
 
-void PreferenceDialog::get_values()
+void Preference_dialog::get_values()
 {
-	compactLayout = CompactLayoutButton.get_active();
-	startMinimized = StartMinimizedButton.get_active();
-	gz = GzEntry.get_value_as_int();
-	gt = GtEntry.get_value_as_int();
-	URL = UrlEntry.get_text();
-	if (URL.length() > 0)
+	compact_layout = compact_layout_button.get_active();
+	start_minimized = start_minimized_button.get_active();
+	gz = (unsigned)gz_entry.get_value_as_int();
+	gt = (unsigned)gt_entry.get_value_as_int();
+	url = url_entry.get_text();
+	if (url.length() > 0)
 	{
-		char lastCharacter = URL[URL.length() - 1];
-		if (lastCharacter != '/')
+		char last_character = url[url.length() - 1];
+		if (last_character != '/')
 		{
-			URL += '/';
+			url += '/';
 		}
 	}
-	User = UserEntry.get_text();
-	Password = PasswordEntry.get_text();
-	ignoreCertErr = IgnoreCertErrorButton.get_active();
-	syncInterval = SyncIntervalEntry.get_value_as_int();
+	user = user_entry.get_text();
+	password = password_entry.get_text();
+	ignore_cert_err = ignore_cert_error_button.get_active();
+	sync_interval = sync_interval_entry.get_value_as_int();
 }
 
-void PreferenceDialog::on_data_changed()
+void Preference_dialog::on_data_changed()
 {
 	get_values();
 	if (gz < gt
 		&&
 		(
-			gz != oldGz ||
-			gt != oldGt ||
-			compactLayout != oldCompactLayout ||
-			startMinimized != oldStartMinimized ||
-			oldPassword != Password ||
-			oldUser != User ||
-			oldURL != URL ||
-			oldIgnoreCertErr != ignoreCertErr ||
-			oldSyncInterval != syncInterval ||
-			oldQuietMode != quietMode
+				gz != old_gz ||
+				gt != old_gt ||
+				compact_layout != old_compact_layout ||
+				start_minimized != old_start_minimized ||
+				old_password != password ||
+				old_user != user ||
+				old_url != url ||
+				old_ignore_cert_err != ignore_cert_err ||
+				old_sync_interval != sync_interval
 		))
 	{
-		OKButton.set_sensitive(true);
+		ok_button.set_sensitive(true);
 	}
 	else
 	{
-		OKButton.set_sensitive(false);
+		ok_button.set_sensitive(false);
 	}
 }
 
-bool PreferenceDialog::on_focus_changed(GdkEventFocus*)
+bool Preference_dialog::on_focus_changed(GdkEventFocus* /*par*/)
 {
 	on_data_changed();
 	return false;
 }
 
-bool PreferenceDialog::on_button_released(GdkEventButton*)
+bool Preference_dialog::on_button_released(GdkEventButton* /*par*/)
 {
 	on_data_changed();
 	return false;
 }
 
-void PreferenceDialog::on_CancelButton_clicked()
+void Preference_dialog::on_cancel_button_clicked()
 {
 	hide();
 }
 
-void PreferenceDialog::save()
+void Preference_dialog::save()
 {
-	compactLayout = settingsAccessor.set_bool("CompactLayout", compactLayout);
-	oldCompactLayout = compactLayout;
+	compact_layout = settings_accessor.set_bool("CompactLayout", compact_layout);
+	old_compact_layout = compact_layout;
 
-	settingsAccessor.set_int("Gz", gz);
-	oldGz = gz;
+	settings_accessor.set_int("Gz", gz);
+	old_gz = gz;
 
-	settingsAccessor.set_int("Gt", gt);
-	oldGt = gt;
+	settings_accessor.set_int("Gt", gt);
+	old_gt = gt;
 
-	settingsAccessor.set_bool("StartMinimized", startMinimized);
-	oldStartMinimized = startMinimized;
+	settings_accessor.set_bool("StartMinimized", start_minimized);
+	old_start_minimized = start_minimized;
 
-	settingsAccessor.set_bool("Quiet", quietMode);
-	quietMode = oldQuietMode;
+	settings_accessor.set_string("Username", user);
+	old_user = user;
 
-	settingsAccessor.set_string("Username", User);
-	oldUser = User;
+	settings_accessor.set_string("Password", password);
+	old_password = password;
 
-	settingsAccessor.set_string("Password", Password);
-	oldPassword = Password;
+	settings_accessor.set_string("URL", url);
+	old_url = url;
 
-	settingsAccessor.set_string("URL", URL);
-	oldURL = URL;
+	settings_accessor.set_bool("IgnoreCertErr", ignore_cert_err);
+	old_ignore_cert_err = ignore_cert_err;
 
-	settingsAccessor.set_bool("IgnoreCertErr", ignoreCertErr);
-	oldIgnoreCertErr = ignoreCertErr;
-
-	settingsAccessor.set_int("SyncInterval", syncInterval);
-	oldSyncInterval = syncInterval;
+	settings_accessor.set_int("SyncInterval", sync_interval);
+	old_sync_interval = sync_interval;
 }
 
-void PreferenceDialog::on_OKButton_clicked()
+void Preference_dialog::on_ok_button_clicked()
 {
 	get_values();
 	save();

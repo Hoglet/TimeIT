@@ -54,17 +54,17 @@ void Preference_dialog::on_data_changed()
       start_minimized != old_start_minimized ||
       password        != old_password        ||
       user            != old_user            ||
-      URL             != old_URL             ||
+      url             != old_url             ||
       ignore_cert_err != old_ignore_cert_err ||
       sync_interval   != old_sync_interval   ||
       quiet_mode      != old_quiet_mode
     ))
   {
-    OK_button.set_sensitive(true);
+    ok_button.set_sensitive(true);
   }
   else
   {
-    OK_button.set_sensitive(false);
+    ok_button.set_sensitive(false);
   }
 }
 </pre>

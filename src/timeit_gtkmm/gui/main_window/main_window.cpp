@@ -67,7 +67,7 @@ Calendar& MainWindow::get_calendar()
 	return calendar;
 }
 
-void MainWindow::attach(SummaryObserver *observer)
+void MainWindow::attach(Summary_observer *observer)
 {
 	vector<Summary*>::iterator iter;
 
@@ -77,7 +77,7 @@ void MainWindow::attach(SummaryObserver *observer)
 		summary->attach(observer);
 	}
 }
-void MainWindow::detach(SummaryObserver *observer)
+void MainWindow::detach(Summary_observer *observer)
 {
 	vector<Summary*>::iterator iter;
 
@@ -88,25 +88,25 @@ void MainWindow::detach(SummaryObserver *observer)
 	}
 }
 
-void MainWindow::attach(action_observer *observer)
+void MainWindow::attach(Action_observer *observer)
 {
 	detach(observer); //To avoid duplicates
 	task_list.attach(observer);
 	toolbar.attach(observer);
 	menubar.attach(observer);
-	auto *s_observer = dynamic_cast<SummaryObserver*>(observer);
+	auto *s_observer = dynamic_cast<Summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
 		attach(s_observer);
 	}
 }
 
-void MainWindow::detach(action_observer *observer)
+void MainWindow::detach(Action_observer *observer)
 {
 	task_list.detach(observer);
 	toolbar.detach(observer);
 	menubar.detach(observer);
-	auto *s_observer = dynamic_cast<SummaryObserver*>(observer);
+	auto *s_observer = dynamic_cast<Summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
 		detach(s_observer);
@@ -125,7 +125,7 @@ void MainWindow::relate_widgets()
 	for (iter = summaries.begin(); iter != summaries.end(); ++iter)
 	{
 		Summary *summary = *iter;
-		summary->setReferences(calendar);
+		summary->set_references(calendar);
 	}
 }
 
@@ -301,26 +301,28 @@ void MainWindow::on_show()
 	set_calendar();
 }
 
+static const int YEAR_ZERO = 1900;
+
 void MainWindow::set_calendar()
 {
 	time_t now = libtimeit::now();
 	struct tm *time_info = localtime(&now);
-	int month = time_info->tm_mon;
-	int year  = time_info->tm_year + 1900;
-	int day   = time_info->tm_mday;
+	auto month = (guint)time_info->tm_mon;
+	auto year  = (guint)time_info->tm_year + YEAR_ZERO;
+	auto day   = (guint)time_info->tm_mday;
 	calendar.select_month(month, year);
 	calendar.select_day(day);
 }
 
-void MainWindow::on_action_task_selection_changed(int selectedTaskID)
+void MainWindow::on_action_task_selection_changed(Task_id selected_task_id)
 {
-	toolbar.setTaskIsSelected(selectedTaskID > 0);
-	menubar.setTaskIsSelected(selectedTaskID > 0);
+	toolbar.set_task_is_selected(selected_task_id > 0);
+	menubar.set_task_is_selected(selected_task_id > 0);
 }
 
 void MainWindow::on_action_remove_task()
 {
-	auto selected_task_id = task_list.getSelectedID();
+	auto selected_task_id = task_list.selected_id();
 	//Confirm dialog when removing task, headline!
 	const char *headline = _("Are you sure you want to delete this task?");
 	Gtk::MessageDialog dialog(*this, headline, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_OK_CANCEL);

@@ -30,7 +30,7 @@ public:
 	Edit_time(Edit_time&&)                 = delete;
 	Edit_time& operator=(const Edit_time& ) = delete;
 	Edit_time& operator=(Edit_time&& )     = delete;
-	~Edit_time() = default;
+	~Edit_time() override = default;
 
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }

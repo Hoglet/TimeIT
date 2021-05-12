@@ -18,7 +18,10 @@ public:
 	GTK_timer()
 	{
 		conn = signal_timeout().connect_seconds(
-				mem_fun(this, &Timer::on_signal_1_second),
+				[this]() -> bool
+				{
+					return this->on_signal_1_second();
+				},
 				1);
 	}
 	GTK_timer(const GTK_timer&) = delete;

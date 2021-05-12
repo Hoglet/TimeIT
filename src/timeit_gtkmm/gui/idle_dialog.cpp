@@ -18,13 +18,13 @@ namespace gui
 using namespace::std;
 using namespace libtimeit;
 
-IdleDialog::IdleDialog(
+Idle_dialog::Idle_dialog(
 		Timer& timer,
 		Database& database,
 		Time_keeper& time_keeper_)
 		:
 		Timer_observer(timer),
-		taskAccessor(database ),
+		task_accessor(database ),
 		time_accessor( database ),
 		time_keeper(time_keeper_)
 {
@@ -32,7 +32,7 @@ IdleDialog::IdleDialog(
 	//Setting start time to now in case nobody will set the idle time later.
 
 	set_deletable(false);
-	setText();
+	set_text();
 	get_vbox()->pack_start(text);
 	// This is one answer to the question "No activity have
 	// been detected for X minutes. What should we do?"
@@ -45,62 +45,64 @@ IdleDialog::IdleDialog(
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
 
-	signal_response().connect(sigc::mem_fun(this, &IdleDialog::responseHandler));
+	signal_response().connect(sigc::mem_fun(this, &Idle_dialog::response_handler));
 
 	//set_type_hint(Gdk::WindowTypeHint::WINDOW_TYPE_HINT_DIALOG);
 	show_all_children();
 	set_keep_above(true);
 }
 
-void IdleDialog::set_time_id(Time_id id)
+void Idle_dialog::set_time_id(Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if ( time_entry.has_value())
 	{
-		m_idleStartTime = time_entry->stop;
-		auto task = taskAccessor.by_ID(time_entry->task_id);
+		idle_start_time = time_entry->stop;
+		auto task = task_accessor.by_ID(time_entry->task_id);
 		if(task.has_value())
 		{
-			taskString = task->name;
+			task_string = task->name;
 			time_entry_id = id;
 		}
 	}
 }
 
-void IdleDialog::on_signal_10_seconds()
+void Idle_dialog::on_signal_10_seconds()
 {
-	setText();
+	set_text();
 }
 
-void IdleDialog::show()
+void Idle_dialog::show()
 {
-	setText();
+	set_text();
 	Gtk::Dialog::show();
 }
 
-void IdleDialog::setText()
+static const int SECONDS_PER_MINUTE = 60;
+
+void Idle_dialog::set_text()
 {
 	std::stringstream str;
-	int minutesIdle = (libtimeit::now() - m_idleStartTime) / 60;
+	auto minutes_idle = (libtimeit::now() - idle_start_time) / SECONDS_PER_MINUTE;
 
 	// %d represents the time
 	std::string format_str = ngettext("No activity has been detected for %d minute. What should we do?",
-			"No activity has been detected for %d minutes. What should we do?",
-			minutesIdle);
-	str << libtimeit::string_printf(format_str, minutesIdle);
+									  "No activity has been detected for %d minutes. What should we do?",
+									  (unsigned long)minutes_idle);
+	str << libtimeit::string_printf(format_str, minutes_idle);
 
-	if (taskString.size() > 0)
+	if ( !task_string.empty() )
 	{
 		str << "\n\n";
 		//Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this txt it will be the name of the task
 		str << _("Task affected: ");
-		str << taskString << std::endl;
+		str << task_string << std::endl;
 	}
 
 	text.set_text(str.str());
 }
 
-void IdleDialog::responseHandler(int result)
+void Idle_dialog::response_handler(int result)
 {
 	switch (result)
 	{
@@ -120,7 +122,7 @@ void IdleDialog::responseHandler(int result)
 	hide();
 }
 
-void IdleDialog::action_continue(Time_id id)
+void Idle_dialog::action_continue(Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
@@ -129,7 +131,7 @@ void IdleDialog::action_continue(Time_id id)
 	}
 }
 
-void IdleDialog::revert_and_stop(Time_id id)
+void Idle_dialog::revert_and_stop(Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())
@@ -139,7 +141,7 @@ void IdleDialog::revert_and_stop(Time_id id)
 	}
 }
 
-void IdleDialog::revert_and_continue(Time_id id)
+void Idle_dialog::revert_and_continue(Time_id id)
 {
 	auto time_entry = time_accessor.by_ID(id);
 	if(time_entry.has_value())

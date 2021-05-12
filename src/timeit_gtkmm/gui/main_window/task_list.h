@@ -12,35 +12,36 @@ namespace gui
 {
 using namespace libtimeit;
 
-class TaskList: public Gtk::TreeView, public Event_observer
+class Task_list: public Gtk::TreeView, public Event_observer
 {
 public:
-	TaskList(Database &database, Time_keeper &time_keeper, Notifier &notifier);
-	TaskList( const TaskList& )            = delete;
-	TaskList( TaskList&& )                 = delete;
-	TaskList& operator=( const TaskList& ) = delete;
-	TaskList& operator=( TaskList&& )      = delete;
-	virtual ~TaskList();
-	void populate(Gtk::TreeModel::Row *parent = 0, int parentID = 0);
-	int64_t getSelectedID();
-	virtual void on_task_added(int64_t);
-	virtual void on_task_updated(int64_t);
-	virtual void on_task_removed(int64_t);
-	virtual void on_parent_changed(int64_t);
-	virtual void on_complete_update();
-	virtual void on_task_name_changed(int64_t);
-	virtual void on_task_time_changed(int64_t);
+	~Task_list() override;
+	Task_list(Database &database, Time_keeper &time_keeper, Notifier &notifier);
+	Task_list(const Task_list& )            = delete;
+	Task_list(Task_list&& )                 = delete;
+	Task_list& operator=(const Task_list& ) = delete;
+	Task_list& operator=(Task_list&& )      = delete;
 
-	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
-	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path);
-	void attach(action_observer *observer);
-	void detach(action_observer *observer);
+	void populate(Gtk::TreeModel::Row *parent = nullptr, Task_id parent_id = 0);
+	Task_id selected_id();
+	void on_task_added(Task_id id)        override;
+	void on_task_updated(Task_id id)      override;
+	void on_task_removed(Task_id id)      override;
+	void on_parent_changed(Task_id id)    override;
+	void on_complete_update()             override;
+	void on_task_name_changed(Task_id id) override;
+	void on_task_time_changed(Task_id id) override;
+
+	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path)  override;
+	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path) override;
+	void attach(Action_observer *observer);
+	void detach(Action_observer *observer);
 private:
 	void on_selection_changed();
 	void empty();
-	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	Gtk::TreeModel::iterator findRow(int id);
-	Glib::RefPtr<Gtk::TreeStore> treeModel;
+	Gtk::TreeModel::iterator sub_search(Task_id id, Gtk::TreeModel::Children children);
+	Gtk::TreeModel::iterator find_row(Task_id id);
+	Glib::RefPtr<Gtk::TreeStore> tree_model;
 	class ModelColumns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:
@@ -53,29 +54,31 @@ private:
 			add(col_time);
 		}
 		;
-		Gtk::TreeModelColumn<int> col_id;
+		Gtk::TreeModelColumn<Task_id>       col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > col_pixbuf;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;
 	};
 	ModelColumns columns;
 	//
-	Gtk::Menu Menu_Popup;
+	Gtk::Menu menu_popup;
 	void on_menu_start();
 	void on_menu_stop();
 	void on_menu_edit();
 	void on_menu_add_task();
 	void on_menu_remove_task();
 	void on_menu_add_time();
-	virtual bool on_button_press_event(GdkEventButton *event);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, const Extended_task &task);
-	Glib::RefPtr<Gdk::Pixbuf> runningIcon;
-	Glib::RefPtr<Gdk::Pixbuf> runningIdleIcon;
-	Glib::RefPtr<Gdk::Pixbuf> blankIcon;
-	void doUpdate();
-	std::list<action_observer*> observers;
-	Extended_task_accessor taskAccessor;
-	Time_keeper& m_timeKeeper;
+	bool on_button_press_event(GdkEventButton *event) override;
+	void assign_values_to_row(Gtk::TreeModel::Row &row, const Extended_task &task);
+
+	Glib::RefPtr<Gdk::Pixbuf> running_icon;
+	Glib::RefPtr<Gdk::Pixbuf> running_idle_icon;
+	Glib::RefPtr<Gdk::Pixbuf> blank_icon;
+
+	void do_update();
+	std::list<Action_observer*> observers;
+	Extended_task_accessor task_accessor;
+	Time_keeper& time_keeper;
 };
 }
 #endif // TASK_LIST_HPP_

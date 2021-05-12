@@ -43,7 +43,7 @@ void sighandler(int sig)
 }
 }
 
-Main::Main(int argc, char *argv[])
+Main::Main(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 {
 	signal(SIGINT, &sighandler);
 
@@ -54,7 +54,7 @@ Main::Main(int argc, char *argv[])
 
 	for (int i = 0; i < argc; i++)
 	{
-		string argument = argv[i];
+		string argument = argv[i]; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		if (argument == "--help" || argument == "-?")
 		{
 			print_help();
@@ -90,7 +90,7 @@ void Main::print_help()
 	cout << "--db=[" << _("FILENAME") << "]" << endl;
 }
 
-int Main::run(int argc, char *argv[])
+int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 {
 	try
 	{
@@ -111,19 +111,19 @@ int Main::run(int argc, char *argv[])
 			Database database(db_name, notifier);
 
 			//Initiate all logic
-			Utils::MessageCenter message_center;
+			gui::Message_center message_center;
 
 			GTK_timer timer;
 
 
 			Network network;
-			Sync_manager syncManager(database, network, notifier, timer);
-			IpcServer ipcServer(socket_name, timer);
+			Sync_manager sync_manager(database, network, notifier, timer);
+			IpcServer ipc_server(socket_name, timer);
 
 			Time_keeper  time_keeper(database, timer, notifier);
-			Auto_tracker autotracker(time_keeper, database, timer);
-			GUIFactory   guiFactory(time_keeper, database, timer, notifier);
-			Controller   controller(guiFactory, time_keeper, database, ipcServer, notifier);
+			Auto_tracker auto_tracker(time_keeper, database, timer);
+			Window_manager   gui_factory(time_keeper, database, timer, notifier);
+			Controller   controller(gui_factory, time_keeper, database, ipc_server, notifier);
 
 			controller.start();
 
@@ -133,8 +133,8 @@ int Main::run(int argc, char *argv[])
 		}
 		else
 		{
-			IpcClient ipcClient(socket_name);
-			ipcClient.window2front();
+			IpcClient ipc_client(socket_name);
+			ipc_client.window2front();
 		}
 	}
 	catch (exception &e)

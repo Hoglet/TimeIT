@@ -1,13 +1,15 @@
-#ifndef MESSAGECENTER_H_
-#define MESSAGECENTER_H_
+#ifndef MESSAGE_CENTER_H_
+#define MESSAGE_CENTER_H_
 
 #include <string>
 #include <list>
 #include <deque>
 #include <glibmm.h>
 
-namespace Utils
+namespace gui
 {
+
+using namespace std;
 
 enum MessageType
 {
@@ -16,25 +18,20 @@ enum MessageType
 };
 struct Message
 {
-public:
-	Message(MessageType type, std::string header, std::string message);
-	std::string getHeader();
-	std::string getMessage();
-	MessageType getType();
-private:
-	MessageType type;
-	std::string header;
-	std::string message;
+	Message(MessageType type_, string header_, string message_);
+	const MessageType type;
+	const string header;
+	const string message;
 };
 
-class MessageCenter
+class Message_center
 {
 public:
-	MessageCenter();
-	void sendMessage(Message message);
+	Message_center();
+	void send_message(Message message);
 private:
-	void manageMessages();
-	std::deque<Message> messageQue;
+	void manage_messages();
+	std::deque<Message> message_que;
 	Glib::Dispatcher signal_message;
 	Glib::Mutex mutex;
 	Glib::Thread* receiving_thread;
@@ -42,4 +39,4 @@ private:
 
 } /* namespace Utils */
 
-#endif /* MESSAGECENTER_H_ */
+#endif /* MESSAGE_CENTER_H_ */

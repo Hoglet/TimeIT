@@ -19,83 +19,81 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class ISummary;
-class SummaryObserver
+class Summary;
+class Summary_observer
 {
+
 public:
-	SummaryObserver();
-	SummaryObserver( const SummaryObserver& )            = delete;
-	SummaryObserver( SummaryObserver&& )                 = delete;
-	SummaryObserver& operator=( const SummaryObserver& ) = delete;
-	SummaryObserver& operator=( SummaryObserver&& )      = delete;
-	virtual ~SummaryObserver();
+	Summary_observer() = default;
+	Summary_observer(const Summary_observer& )            = delete;
+	Summary_observer(Summary_observer&& )                 = delete;
+	Summary_observer& operator=(const Summary_observer& ) = delete;
+	Summary_observer& operator=(Summary_observer&& )      = delete;
+	virtual ~Summary_observer();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
 	virtual void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) = 0;
-	void attach(ISummary *subject);
-	void detach(ISummary *subject);
+	void attach(Summary *subject);
+	void detach(Summary *subject);
 private:
 	bool unsubscription_allowed{true};
-	std::list<ISummary*> subjects;
-};
-class ISummary
-{
-public:
-	virtual void attach(SummaryObserver*) = 0;
-	virtual void detach(SummaryObserver*) = 0;
+	std::list<Summary*> subjects;
 };
 
-class Summary: public Gtk::TreeView, public Event_observer, public ISummary
+
+class Summary: public Gtk::TreeView, public Event_observer
 {
 public:
 	Summary(Database &database, Notifier& notifier);
-	void setReferences(Gtk::Calendar &calendar);
-	int64_t getSelectedID();
-	time_t getStartTime() const
+	void set_references(Gtk::Calendar &calendar);
+	Task_id selected_id();
+	time_t get_start_time() const
 	{
-		return startTime;
+		return start_time;
 	}
-	time_t getStopTime() const
+	time_t get_stop_time() const
 	{
-		return stopTime;
+		return stop_time;
 	}
-	void attach(SummaryObserver* /*observer*/);
-	void detach(SummaryObserver* /*observer*/);
-	virtual bool on_focus(Gtk::DirectionType direction);
-protected:
-	Gtk::TreeModel::Row add(int64_t id);
-	Gtk::Menu Menu_Popup;
+	void attach(Summary_observer* /*observer*/);
+	void detach(Summary_observer* /*observer*/);
+	bool on_focus(Gtk::DirectionType direction) override;
 
-	bool on_button_press_event(GdkEventButton *event);
+protected:
+	void init();
+	time_t active_day = 0; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+	time_t start_time = 0; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+	time_t stop_time = 0;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+
+private:
+	Gtk::TreeModel::Row add(int64_t id);
+	Gtk::Menu menu_popup;
+
+	bool on_button_press_event(GdkEventButton *event) override;
 
 	//SummaryObserver
 	virtual void on_selection_changed();
 
 	//
-	void connectSignals();
-	void on_dateChanged();
-	virtual void on_task_added(int64_t)
-	{
-	}
-	;
-	void on_menu_showDetails();
-	virtual void on_task_updated(int64_t);
-	virtual void on_task_removed(int64_t);
-	virtual void on_complete_update();
-	virtual void on_task_name_changed(int64_t);
-	virtual void on_task_time_changed(int64_t);
-	void init();
+	void connect_signals();
+	void on_date_changed();
+	void on_menu_show_details();
+	void on_task_updated(Task_id id) override;
+	void on_task_removed(Task_id id) override;
+	void on_complete_update() override;
+	void on_task_name_changed(Task_id id) override;
+	void on_task_time_changed(Task_id id) override;
 	void populate();
 	void empty();
-	virtual void calculateTimeSpan();
-	Gtk::TreeModel::iterator findRow(Task_id id);
-	Gtk::TreeModel::iterator subSearch(int id, Gtk::TreeModel::Children children);
-	void assignValuesToRow(Gtk::TreeModel::Row &row, Task& task, time_t totalTime);
+	virtual void calculate_time_span() = 0;
+	Gtk::TreeModel::iterator find_row(Task_id id);
+	Gtk::TreeModel::iterator sub_search(Task_id id, Gtk::TreeModel::Children children);
+	void assign_values_to_row(Gtk::TreeModel::Row &row, Task& task, time_t total_time) const;
 
-	Glib::RefPtr<Gtk::TreeStore> treeModel;
-	class ModelColumns: public Gtk::TreeModel::ColumnRecord
+	Glib::RefPtr<Gtk::TreeStore> tree_model;
+	class Model_columns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		ModelColumns()
+		Model_columns()
 		{
 
 			add(col_id);
@@ -103,23 +101,22 @@ protected:
 			add(col_time);
 		}
 		;
-		Gtk::TreeModelColumn<int> col_id;
+		Gtk::TreeModelColumn<Task_id>       col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_name;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;
 	};
-	Glib::RefPtr<Gtk::TreeSelection> refTreeSelection;
-	ModelColumns columns;
+	Glib::RefPtr<Gtk::TreeSelection> ref_tree_selection;
+	Model_columns columns;
 	Gtk::Calendar *calendar = nullptr;
-	time_t activeDay = 0;
-	time_t startTime = 0;
-	time_t stopTime = 0;
-	std::list<SummaryObserver*> observers;
-	Time_accessor timeAccessor;
-	Task_accessor taskAccessor;
-private:
-	bool isVisible();
-	bool needsRePopulation = true;
+
+
+	std::list<Summary_observer*> observers;
+	Time_accessor time_accessor;
+	Task_accessor task_accessor;
+
+	bool is_visible();
+	bool needs_re_population = true;
 };
 
 }
-#endif /* DAYSUMMARY_H_ */
+#endif /* SUMMARY_H_ */

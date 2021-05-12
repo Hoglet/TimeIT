@@ -24,7 +24,7 @@ class Edit_task_dialog: public Gtk::Dialog, public IWidget
 public:
 	Edit_task_dialog(Database& database);
 
-	void on_OK_button_clicked();
+	void on_ok_button_clicked();
 	void on_cancel_button_clicked();
 	void on_data_changed();
 	void set_task_id(Task_id ID);
@@ -64,7 +64,7 @@ private:
 	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
 	// Parent task and child task.
 	Gtk::Label    parent_label   {_("Parent: ")};
-	ParentChooser parent_chooser;
+	Parent_chooser parent_chooser;
 
 	string        name;
 	unsigned      idle_time {0};

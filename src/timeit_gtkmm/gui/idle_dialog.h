@@ -1,12 +1,5 @@
-/*
- * IdleDialog.h
- *
- *  Created on: 2008-sep-06
- *      Author: hoglet
- */
-
-#ifndef IDLEDIALOG_H_
-#define IDLEDIALOG_H_
+#ifndef IDLE_DIALOG_H_
+#define IDLE_DIALOG_H_
 
 #include <gtkmm.h>
 #include <libtimeit/timer.h>
@@ -27,10 +20,10 @@ enum IdleDialogResponse{
 	RESPONSE_CONTINUE=3
 } ;
 
-class IdleDialog : public Gtk::Dialog, public Timer_observer, public IWidget
+class Idle_dialog : public Gtk::Dialog, public Timer_observer, public IWidget
 {
 public:
-	IdleDialog(Timer& timer, Database& database, Time_keeper& time_keeper);
+	Idle_dialog(Timer& timer, Database& database, Time_keeper& time_keeper);
 	void set_time_id(Time_id id);
 	// IWidget interface
 	void show() override;
@@ -40,24 +33,24 @@ public:
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 private:
 	void on_signal_10_seconds() override;
-	void setText();
+	void set_text();
 	Gtk::Label    text;
-	Gtk::Button   revertButton;
-	Gtk::Button   revertAndContinueButton;
-	Gtk::Button   continueButton;
-	string        taskString;
-	Task_accessor taskAccessor;
+	Gtk::Button   revert_button;
+	Gtk::Button   revert_and_continue_button;
+	Gtk::Button   continue_button;
+	string        task_string;
+	Task_accessor task_accessor;
 	Time_accessor time_accessor;
 	Time_keeper&  time_keeper;
 
-	Time_id       time_entry_id;
-	time_t        m_idleStartTime;
+	Time_id       time_entry_id{0};
+	time_t        idle_start_time{0};
 
-	void responseHandler(int result);
+	void response_handler(int result);
 	void action_continue(Time_id id);
 	void revert_and_stop(Time_id id);
 	void revert_and_continue(Time_id id);
 };
 
 }
-#endif /* IDLEDIALOG_H_ */
+#endif /* IDLE_DIALOG_H_ */

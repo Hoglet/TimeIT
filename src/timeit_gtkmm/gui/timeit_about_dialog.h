@@ -19,13 +19,13 @@ public:
 	TimeItAboutDialog();
 
 	// IWidget interface
-	virtual void show() { Gtk::AboutDialog::show(); }
-	virtual void hide() { Gtk::AboutDialog::hide(); }
-	virtual void move(int x, int y) { Gtk::AboutDialog::move(x,y); };
-	virtual bool is_visible() { return Gtk::AboutDialog::is_visible(); } ;
-	virtual void get_position(int& Window_x, int& Window_y) { Gtk::AboutDialog::get_position(Window_x, Window_y); };
+	void show() override { Gtk::AboutDialog::show(); }
+	void hide() override { Gtk::AboutDialog::hide(); }
+	void move(int x, int y) override { Gtk::AboutDialog::move(x,y); };
+	bool is_visible() override { return Gtk::AboutDialog::is_visible(); } ;
+	void get_position(int& Window_x, int& Window_y) override { Gtk::AboutDialog::get_position(Window_x, Window_y); };
 private:
-	void on_link_clicked(AboutDialog& about_dialog, const Glib::ustring& link);
+	static void on_link_clicked(AboutDialog& about_dialog, const Glib::ustring& link);
 };
 
 }

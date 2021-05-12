@@ -20,14 +20,14 @@ class Menu: public Gtk::MenuBar
 {
 public:
 	Menu();
-	void attach(action_observer*);
-	void detach(action_observer*);
-	void setTaskIsSelected(bool);
+	void attach(Action_observer*);
+	void detach(Action_observer*);
+	void set_task_is_selected(bool show);
 private:
-	Gtk::Menu m_fileMenu;
-	Gtk::Menu m_taskMenu;
-	Gtk::Menu m_helpMenu;
-	std::list<Gtk::MenuItem*> taskIDDependentMenus;
+	Gtk::Menu file_menu;
+	Gtk::Menu task_menu;
+	Gtk::Menu help_menu;
+	std::list<Gtk::MenuItem*> task_id_dependent_menus;
 
 	void on_menu_quit();
 	void on_menu_about();
@@ -42,7 +42,7 @@ private:
 	void on_menu_preferences();
 	void on_menu_report_bug();
 
-	list<action_observer*> observers;
+	list<Action_observer*> observers;
 };
 
 }

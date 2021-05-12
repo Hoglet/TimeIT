@@ -12,26 +12,23 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-SummaryObserver::SummaryObserver()
-{
-}
 
-SummaryObserver::~SummaryObserver()
+Summary_observer::~Summary_observer()
 {
 	unsubscription_allowed = false;
 	auto iter = subjects.begin();
 	while (iter != subjects.end())
 	{
-		ISummary *subject = *iter;
+		Summary *subject = *iter;
 		subject->detach(this);
 		++iter;
 	}
 }
-void SummaryObserver::attach(ISummary *subject)
+void Summary_observer::attach(Summary *subject)
 {
 	subjects.push_back(subject);
 }
-void SummaryObserver::detach(ISummary *subject)
+void Summary_observer::detach(Summary *subject)
 {
 	if (unsubscription_allowed)
 	{
@@ -44,50 +41,48 @@ Summary::Summary(
 		Notifier& notifier)
 		:
 		Event_observer(notifier),
-		timeAccessor(database),
-		taskAccessor(database)
+		time_accessor(database),
+		task_accessor(database)
 {
-	treeModel = TreeStore::create(columns);
-	set_model(treeModel);
+	tree_model = TreeStore::create(columns);
+	set_model(tree_model);
 	append_column("Name", columns.col_name);
 	append_column("Time", columns.col_time);
 	set_headers_visible(false);
 
-	refTreeSelection = get_selection();
-	refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
+	ref_tree_selection = get_selection();
+	ref_tree_selection->signal_changed().connect(sigc::mem_fun(*this, &Summary::on_selection_changed));
 
-	Gtk::Menu::MenuList &menu_list = Menu_Popup.items();
+	Gtk::Menu::MenuList &menu_list = menu_popup.items();
 
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this, &Summary::on_menu_showDetails)));
+	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this,
+																					 &Summary::on_menu_show_details)));
 
 }
 
 
 bool Summary::on_button_press_event(GdkEventButton *event)
 {
-	bool retVal = Gtk::TreeView::on_button_press_event(event);
+	bool return_value = Gtk::TreeView::on_button_press_event(event);
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		Menu_Popup.popup(event->button, event->time);
-		retVal = true; //It has been handled.
+		menu_popup.popup(event->button, event->time);
+		return_value = true; //It has been handled.
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
-		on_menu_showDetails();
-		retVal = true;
+		on_menu_show_details();
+		return_value = true;
 	}
-	return retVal;
+	return return_value;
 }
 
-void Summary::on_menu_showDetails()
+void Summary::on_menu_show_details()
 {
-	int64_t id = getSelectedID();
-	std::list<SummaryObserver*>::iterator iter = observers.begin();
-	while (iter != observers.end())
+	auto id = selected_id();
+	for (auto* observer: observers)
 	{
-		SummaryObserver *observer = *iter;
-		observer->on_show_details_clicked(id, startTime, stopTime);
-		++iter;
+		observer->on_show_details_clicked(id, start_time, stop_time);
 	}
 }
 
@@ -97,76 +92,73 @@ void Summary::init()
 
 void Summary::on_selection_changed()
 {
-	int64_t id = getSelectedID();
-	std::list<SummaryObserver*>::iterator iter = observers.begin();
-	while (iter != observers.end())
+	auto id = selected_id();
+	for (auto* observer: observers)
 	{
-		SummaryObserver *observer = *iter;
-		observer->on_selection_changed(id, startTime, stopTime);
-		++iter;
+		observer->on_selection_changed(id, start_time, stop_time);
 	}
 }
-void Summary::attach(SummaryObserver *observer)
+void Summary::attach(Summary_observer *observer)
 {
 	observers.push_back(observer);
 }
 
-void Summary::detach(SummaryObserver *observer)
+void Summary::detach(Summary_observer *observer)
 {
 	observer->detach(this);
 	observers.remove(observer);
 }
 
-int64_t Summary::getSelectedID()
+Task_id Summary::selected_id()
 {
-	int retVal = 0;
-	RefPtr<TreeSelection> ref_TreeSelection = get_selection();
+	Task_id ret_val = 0;
+	auto tree_selection = get_selection();
 	TreeModel::iterator iter;
-	iter = ref_TreeSelection->get_selected();
+	iter = tree_selection->get_selected();
 	if (iter) //If anything is selected
 	{
 		TreeModel::Row row;
 		row = *iter;
-		retVal = row[columns.col_id];
+		ret_val = row[columns.col_id];
 	}
-	return retVal;
+	return ret_val;
 }
-void Summary::setReferences(Gtk::Calendar &calendar_)
+void Summary::set_references(Gtk::Calendar &cal)
 {
-	calendar = &calendar_;
-	connectSignals();
-	on_dateChanged();
+	calendar = &cal;
+	connect_signals();
+	on_date_changed();
 }
-void Summary::connectSignals()
+void Summary::connect_signals()
 {
-	calendar->signal_day_selected().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_day_selected_double_click().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_month_changed().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_next_month().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_next_year().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_prev_month().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
-	calendar->signal_prev_year().connect(sigc::mem_fun(this, &Summary::on_dateChanged));
+	calendar->signal_day_selected().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_day_selected_double_click().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_month_changed().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_next_month().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_next_year().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_prev_month().connect(sigc::mem_fun(this, &Summary::on_date_changed));
+	calendar->signal_prev_year().connect(sigc::mem_fun(this, &Summary::on_date_changed));
 }
 
-void Summary::calculateTimeSpan()
+void Summary::calculate_time_span()
 {
 }
 
 void Summary::on_task_updated(Task_id taskID)
 {
-	if (isVisible())
+	if (is_visible())
 	{
-		auto task = taskAccessor.by_ID(taskID);
-		Gtk::TreeIter iter = findRow(taskID);
-		if (task.has_value() && iter != treeModel->children().end())
+		auto task = task_accessor.by_ID(taskID);
+		Gtk::TreeIter iter = find_row(taskID);
+		if (task.has_value() && iter != tree_model->children().end())
 		{
 			TreeModel::Row row = *iter;
-			time_t totalTime = timeAccessor.total_cumulative_time(taskID, startTime, stopTime);
-			assignValuesToRow(row, *task, totalTime);
-			int64_t parentID = task->parent_id;
-			if (parentID > 0)
+			time_t total_time = time_accessor.total_cumulative_time(taskID, start_time, stop_time);
+			assign_values_to_row(row, *task, total_time);
+			int64_t parent_id = task->parent_id;
+			if (parent_id > 0)
 			{
-				on_task_updated(parentID);
+				on_task_updated(parent_id);
 			}
 		}
 		else
@@ -177,7 +169,7 @@ void Summary::on_task_updated(Task_id taskID)
 	}
 	else
 	{
-		needsRePopulation = true;
+		needs_re_population = true;
 	}
 }
 
@@ -193,70 +185,73 @@ void Summary::on_task_time_changed(int64_t id)
 
 void Summary::on_complete_update()
 {
-	if (isVisible())
+	if (is_visible())
 	{
 		empty();
 		populate();
 	}
 	else
 	{
-		needsRePopulation = true;
+		needs_re_population = true;
 	}
 }
 
 void Summary::on_task_removed(int64_t taskID)
 {
-	Gtk::TreeIter iter = findRow(taskID);
-	if (iter != treeModel->children().end())
+	Gtk::TreeIter iter = find_row(taskID);
+	if (iter != tree_model->children().end())
 	{
-		treeModel->erase(iter);
+		tree_model->erase(iter);
 	}
 }
 
-void Summary::on_dateChanged()
+void Summary::on_date_changed()
 {
-	guint year;
-	guint month;
-	guint day;
+	guint year{0};
+	guint month{0};
+	guint day{0};
 	calendar->get_date(year, month, day);
-	activeDay = libtimeit::to_time(year, month, day);
-	time_t old_startTime = startTime;
-	time_t old_stopTime = stopTime;
-	calculateTimeSpan();
-	if (needsRePopulation || old_startTime != startTime || old_stopTime != stopTime)
+	active_day = libtimeit::to_time(year, month, day); // NOLINT(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
+	auto old_start_time = start_time;
+	auto old_stop_time  = stop_time;
+	calculate_time_span();
+	if (
+			needs_re_population ||
+			old_start_time != start_time ||
+			old_stop_time != stop_time )
 	{
-		if (isVisible())
+		if (is_visible())
 		{
 			empty();
 			populate();
 		}
 		else
 		{
-			needsRePopulation = true;
+			needs_re_population = true;
 		}
 	}
 }
 void Summary::empty()
 {
-	treeModel->clear();
+	tree_model->clear();
 }
 
 bool Summary::on_focus(Gtk::DirectionType direction)
 {
-	bool returnValue = Gtk::TreeView::on_focus(direction);
-	if (needsRePopulation)
+	bool return_value = Gtk::TreeView::on_focus(direction);
+	if (needs_re_population)
 	{
 		empty();
 		populate();
 	}
-	return returnValue;
+	return return_value;
 }
 
-bool Summary::isVisible()
+bool Summary::is_visible()
 {
 	Container *parent = this->get_parent();
-	Gtk::Notebook *notebook = dynamic_cast<Gtk::Notebook*>(parent->get_parent());
-	if (notebook)
+	auto* notebook = dynamic_cast<Gtk::Notebook*>(parent->get_parent());
+	if (notebook != nullptr)
 	{
 		int active_tab = notebook->get_current_page();
 		Widget *active = notebook->get_nth_page(active_tab);
@@ -270,75 +265,75 @@ bool Summary::isVisible()
 
 TreeModel::Row Summary::add(int64_t id)
 {
-	auto task = taskAccessor.by_ID(id);
+	auto task = task_accessor.by_ID(id);
 	TreeModel::Row row;
-	int64_t parentID = task->parent_id;
-	if (parentID)
+
+	if (task->parent_id > 0)
 	{
-		Gtk::TreeIter iter = findRow(parentID);
-		if (iter != treeModel->children().end())
+		Gtk::TreeIter iter = find_row(task->parent_id);
+		if (iter != tree_model->children().end())
 		{
 			row = *iter;
 		}
 		else
 		{
-			row = add(parentID);
+			row = add(task->parent_id);
 		}
-		row = *(treeModel->append((row).children()));
+		row = *(tree_model->append((row).children()));
 	}
 	else
 	{
-		TreeModel::iterator iter = treeModel->append();
+		TreeModel::iterator iter = tree_model->append();
 		row = *iter;
 	}
-	time_t totalTime = timeAccessor.total_cumulative_time(id, startTime, stopTime);
-	assignValuesToRow(row, *task, totalTime);
+	auto total_time = time_accessor.total_cumulative_time(id, start_time, stop_time);
+	assign_values_to_row(row, *task, total_time);
 	return row;
 }
 
 void Summary::populate()
 {
-	if (isVisible())
+	if (is_visible())
 	{
-		std::vector<int64_t> taskIDs = timeAccessor.active_tasks(startTime, stopTime);
+		auto active_tasks = time_accessor.active_tasks(start_time, stop_time);
 
-		for (int64_t id : taskIDs)
+		for (auto id : active_tasks)
 		{
 			add(id);
 		}
-		needsRePopulation = false;
+		needs_re_population = false;
 	}
 	else
 	{
-		needsRePopulation = true;
+		needs_re_population = true;
 	}
 }
 
-void Summary::assignValuesToRow(TreeModel::Row &row, Task& task, time_t totalTime)
+void Summary::assign_values_to_row(TreeModel::Row &row, Task& task, time_t total_time) const
 {
-	row[columns.col_id] = task.id;
+	row[columns.col_id]   = task.id;
 	row[columns.col_name] = task.name;
-	row[columns.col_time] = libtimeit::seconds_2_hhmm(totalTime);
+	row[columns.col_time] = libtimeit::seconds_2_hhmm(total_time);
 }
 
-Gtk::TreeModel::iterator Summary::findRow(Task_id id)
+Gtk::TreeModel::iterator Summary::find_row(Task_id id)
 {
-	TreeModel::Children children = treeModel->children();
-	return subSearch(id, children);
+	TreeModel::Children children = tree_model->children();
+	return sub_search(id, children);
 }
 
-Gtk::TreeModel::iterator Summary::subSearch(int id, TreeModel::Children children)
+Gtk::TreeModel::iterator Summary::sub_search(Task_id id, TreeModel::Children children)
 {
 	TreeIter iter;
 	for (iter = children.begin(); iter != children.end(); iter++)
 	{
 		TreeModel::Row row = *iter;
-		if (row.children().size() > 0)
+		if ( ! row.children().empty() )
 		{
-			TreeIter subIter = subSearch(id, row.children());
-			if (subIter != row.children().end())
+			auto sub_iter = sub_search(id, row.children());
+			if (sub_iter != row.children().end())
 			{
-				iter = subIter;
+				iter = sub_iter;
 				break;
 			}
 		}
