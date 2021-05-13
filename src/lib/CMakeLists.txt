@@ -18,13 +18,13 @@ add_library( libtimeit STATIC
 		)
 
 target_link_libraries( libtimeit
-        ${SQLITE_LIBRARIES}
-        ${XSCRNS_LIBRARIES}
-        ${XLIB_LIBRARIES}
-        ${JANSSON_LIBRARIES}
-        ${CURL_LIBRARIES}
-		pthread
-        )
+		${SQLITE_LIBRARIES}
+		${XSCRNS_LIBRARIES}
+		${XLIB_LIBRARIES}
+		${JANSSON_LIBRARIES}
+		${CURL_LIBRARIES}
+		"${CMAKE_THREAD_LIBS_INIT}"
+		)
 
 target_include_directories ( libtimeit PUBLIC
   inc

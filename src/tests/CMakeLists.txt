@@ -27,11 +27,12 @@ if( GTEST_FOUND )
   
 	add_executable(tests ${sources} ${headers}  )
   
-	target_link_libraries(tests
-                      ${GTEST_LIBRARIES} 
-                      ${GTEST_MAIN_LIBRARIES}
-					  libtimeit
-                      pthread
-                      gcov
-					)
+	target_link_libraries(
+			tests
+			${GTEST_LIBRARIES}
+			${GTEST_MAIN_LIBRARIES}
+			libtimeit
+			"${CMAKE_THREAD_LIBS_INIT}"
+			gcov
+			)
 endif()

@@ -30,7 +30,9 @@ ENDIF()
 
 #  dependencies
 # ---------------
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(PkgConfig REQUIRED)
+find_package(Threads   REQUIRED)
 pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
 pkg_check_modules(SQLITE sqlite3 REQUIRED)
 pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
