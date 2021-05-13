@@ -1,5 +1,18 @@
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake )
+
 find_package(GTest)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads          REQUIRED)
+find_package(CURL             REQUIRED)
+find_package(SQLite3          REQUIRED)
+find_package(Jansson          REQUIRED)
+
+
+find_package(X11                    REQUIRED)
+find_package(PkgConfig              REQUIRED)
+pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
+
 
 if( GTEST_FOUND )
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -coverage -fprofile-arcs -ftest-coverage ")
@@ -18,16 +31,19 @@ add_library( libtimeit STATIC
 		)
 
 target_link_libraries( libtimeit
-		${SQLITE_LIBRARIES}
+		${SQLite3_LIBRARIES}
 		${XSCRNS_LIBRARIES}
-		${XLIB_LIBRARIES}
+		${X11_LIBRARIES}
 		${JANSSON_LIBRARIES}
 		${CURL_LIBRARIES}
 		"${CMAKE_THREAD_LIBS_INIT}"
 		)
 
 target_include_directories ( libtimeit PUBLIC
-  inc
+		inc
+		${X11_INCLUDE_DIR}
+		${SQLite3_INCLUDE_DIRS}
+		${CURL_INCLUDE_DIRS}
   )
 
 

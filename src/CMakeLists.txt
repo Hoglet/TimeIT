@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.14)
 
 # Append local cmake modules
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake )
@@ -30,16 +30,8 @@ ENDIF()
 
 #  dependencies
 # ---------------
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(PkgConfig REQUIRED)
-find_package(Threads   REQUIRED)
-pkg_check_modules(GTKMM gtkmm-2.4 REQUIRED)
-pkg_check_modules(SQLITE sqlite3 REQUIRED)
-pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
-pkg_check_modules(XLIB x11 REQUIRED)
-pkg_check_modules(JANSSON jansson REQUIRED)
-pkg_check_modules(CURL libcurl REQUIRED)
-pkg_check_modules(NOTIFY libnotify REQUIRED)
+find_package(Intl             REQUIRED)
+find_package(Gettext          REQUIRED)
 
 
 # make dist target

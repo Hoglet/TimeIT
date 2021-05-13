@@ -1,5 +1,8 @@
 project(timeit)
 
+# Append local cmake modules
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake )
+
 ENABLE_TESTING()
 set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set(PROGRAMNAME_LOCALEDIR "\"${DATADIR}/locale\"")
@@ -19,20 +22,16 @@ add_definitions( -DPROGRAMNAME_LOCALEDIR=${PROGRAMNAME_LOCALEDIR})
 file( GLOB_RECURSE headers *.h)
 file( GLOB_RECURSE sources *.cpp)
 
-link_directories(${GTKMM_LIBRARY_DIRS}
-                 ${SQLITE_LIBRARY_DIRS}
-                 ${XSCRNS_LIBRARY_DIRS}
-                 ${CURL_LIBRARY_DIRS}
-                 ${NOTIFY_LIBRARY_DIRS}
-                 ${JANSSON_LIBRARY_DIRS}
+
+find_package(GTK2        2.6  REQUIRED  gtk gtkmm)
+find_package(Notify           REQUIRED)
+
+
+link_directories(
+		${NOTIFY_LIBRARY_DIRS}
                  )
 
-include_directories(${GTKMM_INCLUDE_DIRS}
-                    ${SQLITE_INCLUDE_DIRS}
-                    ${XSCRNS_INCLUDE_DIRS}
-                    ${XLIB_INCLUDE_DIRS}
-                    ${JANSSON_INCLUDE_DIRS}
-                    ${CURL_INCLUDE_DIRS}
+include_directories(${GTK2_INCLUDE_DIRS}
                     ${NOTIFY_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/logic/"
@@ -45,13 +44,8 @@ add_executable(${PROJECT_NAME} ${sources} ${headers} )
 
 target_link_libraries(
 		${PROJECT_NAME}
-		${GTKMM_LIBRARIES}
-		${SQLITE_LIBRARIES}
-		${XSCRNS_LIBRARIES}
-		${XLIB_LIBRARIES}
-		${JANSSON_LIBRARIES}
-		${CURL_LIBRARIES}
 		${NOTIFY_LIBRARIES}
+		${GTK2_LIBRARIES}
 		libtimeit
                       )
 
