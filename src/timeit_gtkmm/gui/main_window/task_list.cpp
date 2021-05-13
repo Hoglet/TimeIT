@@ -29,7 +29,7 @@ Task_list::Task_list(
 	append_column("", columns.col_pixbuf);
 	append_column(_("Time"), columns.col_time);
 	Gtk::TreeView::Column *p_column = get_column(1);
-	p_column->set_min_width(60);
+	p_column->set_min_width(60); // NOLINT(cppcoreguidelines-avoid-magic-numbers)
 	tree_model->set_sort_column(columns.col_name, Gtk::SORT_ASCENDING); // Initial sorting column
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Task_list::on_selection_changed));
 	populate();

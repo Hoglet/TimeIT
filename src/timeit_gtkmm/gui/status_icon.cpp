@@ -105,9 +105,9 @@ void Status_icon::populate_context_menu()
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this, &Status_icon::on_menu_stop_all_timers)));
 	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(
 			Gtk::StockID("gtk-quit"),
-			[]()
+			[this]()
 			{
-				Status_icon::on_menu_file_popup_quit();
+				this->on_menu_file_popup_quit();
 			}
 			));
 	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &Status_icon::on_menu_preferences)));
@@ -187,6 +187,7 @@ void Status_icon::on_menu_file_popup_open()
 }
 void Status_icon::on_menu_file_popup_quit()
 {
+	toggle_main_window(); //Uggly, but it saves the main window size.
 	Gtk::Main::quit();
 }
 void Status_icon::on_menu_stop_all_timers()

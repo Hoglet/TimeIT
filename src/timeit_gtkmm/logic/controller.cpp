@@ -59,7 +59,7 @@ void Controller::start()
 //LCOV_EXCL_START
 void Controller::on_action_quit()
 {
-	Window_manager::quit();
+	gui_factory.quit();
 }
 //LCOV_EXCL_STOP
 

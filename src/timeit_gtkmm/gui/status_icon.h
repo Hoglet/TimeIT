@@ -38,7 +38,7 @@ private:
 
 	void on_popup_menu(guint button, guint32 activate_time);
 	void toggle_main_window();
-	static void on_menu_file_popup_quit();
+	void on_menu_file_popup_quit();
 	void on_menu_file_popup_open();
 	void on_menu_stop_all_timers();
 	void on_menu_about();

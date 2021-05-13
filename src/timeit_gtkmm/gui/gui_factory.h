@@ -43,7 +43,7 @@ public:
 	virtual Status_icon& get_status_icon();
 
 	void manage_lifespan(shared_ptr<Gtk::Dialog> dialog);
-	static void quit();
+	void quit();
 private:
 	WidgetPtr add_task_instance;
 	WidgetPtr about_dialog_instance;

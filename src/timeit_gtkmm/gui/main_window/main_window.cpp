@@ -19,6 +19,7 @@ namespace gui
 MainWindow::~MainWindow()
 {
 	empty_containers();
+	save_size();
 	detach(this);
 }
 
@@ -28,7 +29,8 @@ static const int DEFAULT_WINDOW_HEIGHT = 550;
 MainWindow::MainWindow(
 		Database &database,
 		Time_keeper &timeKeeper,
-		Notifier& notifier)
+		Notifier& notifier,
+		Window_manager& gui_factory)
 		:
 		task_list(database, timeKeeper, notifier),
 		day_summary(database, notifier),
@@ -40,6 +42,7 @@ MainWindow::MainWindow(
 		label_week(_("Week")),
 		label_month(_("Month")),
 		label_year(_("Year")),
+		details(database, notifier, gui_factory),
 		time_accessor(database),
 		task_accessor(database),
 		settings_accessor(database)
@@ -60,6 +63,8 @@ void MainWindow::save_size()
 {
 	settings_accessor.set_int("main_window_width", get_width());
 	settings_accessor.set_int("main_window_height", get_height());
+	settings_accessor.set_int("main_win_v_paned_position", v_paned.get_position());
+	settings_accessor.set_int("main_win_h_paned_position", h_paned.get_position());
 }
 
 Calendar& MainWindow::get_calendar()
@@ -126,6 +131,7 @@ void MainWindow::relate_widgets()
 	{
 		Summary *summary = *iter;
 		summary->set_references(calendar);
+		summary->attach(&details);
 	}
 }
 
@@ -156,8 +162,17 @@ void MainWindow::create_layout()
 	h_paned.set_flags(Gtk::CAN_FOCUS);
 	summary_tabs.set_flags(Gtk::CAN_FOCUS);
 	summary_tabs.set_size_request(250, 150);
+
 	//Then the actual layout
+	details.set_size_request(100, 100);
 	do_layout();
+	details_window.add(details);
+	details_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+
+
+	h_paned.set_position(settings_accessor.get_int("main_win_h_paned_position", get_width() * 0.4));;
+	v_paned.set_position(settings_accessor.get_int("main_win_v_paned_position", 10));
+	v_paned.pack2(details_window);
 
 	show_all_children();
 	grab_focus();
@@ -211,9 +226,10 @@ void MainWindow::do_layout()
 
 void MainWindow::default_layout()
 {
-	add(h_paned);
+	add(v_paned);
+	v_paned.pack1(h_paned, Gtk::SHRINK);
 	{
-		h_paned.pack1(main_v_box);
+		h_paned.pack1(main_v_box, Gtk::SHRINK);
 		{
 			main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
 			main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
@@ -223,7 +239,7 @@ void MainWindow::default_layout()
 				task_list_container.add(task_list);
 			}
 		}
-		h_paned.pack2(secondary_v_box, Gtk::EXPAND | Gtk::SHRINK);
+		h_paned.pack2(secondary_v_box,  Gtk::EXPAND);
 		{
 			secondary_v_box.pack_start(calendar, Gtk::PACK_SHRINK, 0);
 			secondary_v_box.pack_start(summary_tabs);
@@ -241,24 +257,26 @@ void MainWindow::default_layout()
 		}
 
 	}
+
 	//mainVBox.pack_start(statusbar, Gtk::PACK_SHRINK, 0);
 
 }
 
 void MainWindow::classic_layout()
 {
-	add(main_v_box);
+	add(v_paned);
+	v_paned.pack1(main_v_box, Gtk::SHRINK);
 	{
 		main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(h_paned);
 		{
-			h_paned.pack1(task_list_container, Gtk::EXPAND | Gtk::SHRINK); // Gtk::AttachOptions(0));
+			h_paned.pack1(task_list_container, Gtk::SHRINK); // Gtk::AttachOptions(0));
 
 			{
 				task_list_container.add(task_list);
 			}
-			h_paned.pack2(secondary_v_box);
+			h_paned.pack2(secondary_v_box, Gtk::EXPAND);
 			{
 				secondary_v_box.pack_start(calendar, Gtk::PACK_SHRINK, 0);
 				secondary_v_box.pack_start(summary_tabs);

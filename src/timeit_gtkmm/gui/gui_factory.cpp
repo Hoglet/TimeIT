@@ -32,6 +32,10 @@ Window_manager::Window_manager(
 
 void Window_manager::quit()
 {
+	if(main_window!=nullptr)
+	{
+		main_window->hide();
+	}
 	Gtk::Main::quit();
 }
 
@@ -43,7 +47,7 @@ WidgetPtr Window_manager::get_widget(EWidget widget)
 	case MAIN_WINDOW:
 		if (main_window == nullptr)
 		{
-			shared_ptr<MainWindow> window(new MainWindow(database, time_keeper, notifier));
+			shared_ptr<MainWindow> window(new MainWindow(database, time_keeper, notifier, *this));
 			window->signal_hide().connect(sigc::mem_fun(this, &Window_manager::on_main_window_hide));
 			this->main_window = window;
 

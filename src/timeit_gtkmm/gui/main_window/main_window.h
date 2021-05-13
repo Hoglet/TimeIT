@@ -23,7 +23,7 @@ class MainWindow: public Gtk::Window, public Action_observer, public IWidget
 {
 public:
 	~MainWindow() override;
-	MainWindow(Database& database, Time_keeper &timeKeeper, Notifier& notifier);
+	MainWindow(Database& database, Time_keeper &timeKeeper, Notifier& notifier,Window_manager& window_manager);
 	MainWindow(const MainWindow&) = delete;
 	MainWindow( MainWindow&& ) = delete;
 	MainWindow& operator=(const MainWindow&) = delete;
@@ -108,6 +108,9 @@ private:
 	Gtk::Label           label_month;
 	Gtk::ScrolledWindow  year_summary_container;
 	Gtk::Label           label_year;
+	Gtk::ScrolledWindow  details_window;
+	Gtk::VPaned          v_paned;
+	Details              details;
 
 	Gtk::VBox      secondary_v_box; //on right side
 	Gtk::HPaned    h_paned;

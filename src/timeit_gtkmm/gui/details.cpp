@@ -43,7 +43,7 @@ Details::Details(
 	append_column("  ∑  ", columns.col_day_total);
 	append_column(_(" Idle time"), columns.col_idle);
 
-	set_headers_visible(true);
+	set_headers_visible(false);
 	//Fill the popup menu:
 	{
 		Gtk::Menu::MenuList &menulist = menu_popup.items();
@@ -61,7 +61,12 @@ Details::Details(
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	menu_popup.accelerate(*this);
-	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Details::on_selection_changed));
+	get_selection()->signal_changed().connect(
+			[this]()
+			{
+				this->on_selection_changed();
+			}
+				);
 
 }
 
@@ -380,6 +385,7 @@ void Details::set(int64_t ID, time_t start, time_t stop)
 {
 	if (ID > 0)
 	{
+		set_headers_visible(true);
 		task_id = ID;
 		start_time = start;
 		stop_time = stop;
@@ -388,6 +394,7 @@ void Details::set(int64_t ID, time_t start, time_t stop)
 	}
 	else
 	{
+		set_headers_visible(false);
 		task_id = 0;
 		start_time = 0;
 		stop_time = 0;
@@ -395,7 +402,10 @@ void Details::set(int64_t ID, time_t start, time_t stop)
 	}
 }
 
-
+void Details::on_selection_changed(int64_t id, time_t start, time_t stop)
+{
+	set(id, start, stop);
+}
 
 
 
@@ -427,7 +437,7 @@ void Details::update_row(TreeModel::Row& row, Row_data row_data ) const
 		}
 		else
 		{
-			row[columns.col_day_total] = string_printf("\u2003≈ ", seconds_2_hhmm(seconds_today).c_str());
+			row[columns.col_day_total] = string_printf("\u2003≈%s ", seconds_2_hhmm(seconds_today).c_str());
 		}
 	}
 }

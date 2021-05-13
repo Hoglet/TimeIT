@@ -50,7 +50,7 @@ struct Row_data
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details: public Gtk::TreeView, public Event_observer
+class Details: public Gtk::TreeView, public Event_observer, public Summary_observer
 {
 public:
 	Details(Database &database, Notifier& notifier, Window_manager&  gui_factory);
@@ -66,6 +66,8 @@ public:
 	void on_complete_update() override;
 	void on_task_name_changed(Task_id task_id) override;
 	void on_time_entry_changed(Time_id id) override;
+	//Summary_observer interface
+	void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) override;
 	//
 	Time_id get_selected_id();
 	vector<Time_id> get_selected_and_next_id();
