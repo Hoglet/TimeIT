@@ -19,10 +19,11 @@ class Details_dialog:
 		public Gtk::Dialog,
 		public Summary_observer,
 		public Event_observer,
+		public Time_keeper_observer,
 		public IWidget
 {
 public:
-	static std::shared_ptr<Details_dialog> create(Database& database, Time_keeper &timeKeeper, Notifier& notifier, Window_manager  &gui_factory);
+	Details_dialog(Database& database, Time_keeper &time_keeper, Notifier& notifier, Window_manager  &window_manager);
 	Details_dialog(const Details_dialog&) = delete;
 	Details_dialog(Details_dialog&&) = delete;
 	Details_dialog& operator=(const Details_dialog&) = delete;
@@ -38,12 +39,11 @@ public:
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 
-	void on_running_tasks_changed();
+	void on_running_changed() override;
 	void on_task_name_updated(int64_t task_id);
 	void on_task_total_time_updated(int64_t task_id);
 
 private:
-	Details_dialog(Database& database, Time_keeper &timeKeeper, Notifier& notifier, Window_manager  &gui_factory);
 
 	//SummaryObserver
 	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;

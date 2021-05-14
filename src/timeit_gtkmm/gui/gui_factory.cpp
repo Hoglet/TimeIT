@@ -80,15 +80,6 @@ WidgetPtr Window_manager::get_widget(EWidget widget)
 			ret_val = dialog;
 		}
 		break;
-	case DETAILS_DIALOG:
-		if (details_dialog_instance == nullptr)
-		{
-			shared_ptr<Details_dialog> dialog = Details_dialog::create(database, time_keeper, notifier, *this);
-			dialog->signal_hide().connect(sigc::mem_fun(this, &Window_manager::on_details_dialog_hide));
-			details_dialog_instance = dialog;
-		}
-		ret_val = details_dialog_instance;
-		break;
 	case PREFERENCE_DIALOG:
 		if (preference_dialog_instance == nullptr)
 		{
@@ -113,15 +104,18 @@ void Window_manager::on_add_task_dialog_hide()
 	add_task_instance.reset();
 }
 
-void Window_manager::on_dialog_hide(shared_ptr<Gtk::Dialog> dialog)
+void Window_manager::on_dialog_hide(Gtk::Dialog* dialog)
 {
-	active_dialogs.remove(dialog);
+	for( auto item: active_dialogs)
+	{
+		if( item.get() == dialog)
+		{
+			active_dialogs.remove(item);
+			break;
+		}
+	}
 }
 
-void Window_manager::on_details_dialog_hide()
-{
-	details_dialog_instance.reset();
-}
 
 void Window_manager::on_about_dialog_response(int /*response*/)
 {
@@ -154,13 +148,14 @@ Status_icon& Window_manager::get_status_icon()
 
 void Window_manager::manage_lifespan(shared_ptr<Gtk::Dialog> dialog)
 {
-	dialog->signal_hide().connect([this, dialog]() { this->on_dialog_hide(dialog); } );
-	dialog->signal_response().connect([dialog](int /*response*/) { Window_manager::on_dialog_response(dialog); });
+	auto raw_pointer = dialog.get();
+	dialog->signal_hide().connect([this, raw_pointer]() { this->on_dialog_hide(raw_pointer); } );
+	dialog->signal_response().connect([raw_pointer](int /*response*/) { Window_manager::on_dialog_response(raw_pointer); });
 	active_dialogs.push_back(dialog);
 }
 
 
-void Window_manager::on_dialog_response(shared_ptr<Gtk::Dialog> dialog)
+void Window_manager::on_dialog_response(Gtk::Dialog* dialog)
 {
 	dialog->hide();
 }

@@ -150,7 +150,6 @@ void Details::on_menu_file_popup_remove()
 				}
 				auto row_data = create_row_data(start_time, stop_time);
 				populate( row_data );
-				//DetailsDialog::instance().show();
 				break;
 			}
 			case (Gtk::RESPONSE_CANCEL):

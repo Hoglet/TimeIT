@@ -20,15 +20,17 @@ Controller::Controller(
 		Time_keeper &op_timeKeeper,
 		Database    &database_,
 		IpcServer   &ipc,
-		Notifier    &notifier)
+		Notifier    &notifier_)
 		:
 		Time_keeper_observer(op_timeKeeper),
-		Event_observer( notifier ),
-		gui_factory(op_guiFactory),
+		Event_observer( notifier_ ),
+		window_manager(op_guiFactory),
 		time_keeper(op_timeKeeper),
 		time_accessor(database_),
 		settings_accessor(database_),
-		database(database_)
+		database(database_),
+		notifier(notifier_)
+
 
 {
 	ipc.attach(this);
@@ -36,16 +38,16 @@ Controller::Controller(
 
 Controller::~Controller()
 {
-	gui_factory.get_widget(MAIN_WINDOW)->detach(this);
+	window_manager.get_widget(MAIN_WINDOW)->detach(this);
 }
 
 void Controller::start()
 {
-	gui_factory.get_status_icon().show();
-	gui_factory.get_status_icon().attach(this);
+	window_manager.get_status_icon().show();
+	window_manager.get_status_icon().attach(this);
 	if (!settings_accessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED))
 	{
-		WidgetPtr main_window = gui_factory.get_widget(MAIN_WINDOW);
+		WidgetPtr main_window = window_manager.get_widget(MAIN_WINDOW);
 		main_window->attach(this);
 		main_window->show();
 	}
@@ -59,13 +61,13 @@ void Controller::start()
 //LCOV_EXCL_START
 void Controller::on_action_quit()
 {
-	gui_factory.quit();
+	window_manager.quit();
 }
 //LCOV_EXCL_STOP
 
 void Controller::on_action_toggle_main_window()
 {
-	WidgetPtr main_window = gui_factory.get_widget(MAIN_WINDOW);
+	WidgetPtr main_window = window_manager.get_widget(MAIN_WINDOW);
 	if (main_window->is_visible())
 	{
 		main_window->get_position(main_window_x, main_window_y);
@@ -79,19 +81,19 @@ void Controller::on_action_toggle_main_window()
 			main_window->move(main_window_x, main_window_y);
 		}
 		first_time = false;
-		gui_factory.get_widget(MAIN_WINDOW)->attach(this);
+		window_manager.get_widget(MAIN_WINDOW)->attach(this);
 		main_window->show();
 	}
 }
 void Controller::on_show_main_window()
 {
-	WidgetPtr main_window = gui_factory.get_widget(MAIN_WINDOW);
+	WidgetPtr main_window = window_manager.get_widget(MAIN_WINDOW);
 	main_window->show();
 }
 
 void Controller::on_action_about()
 {
-	gui_factory.get_widget(ABOUT_DIALOG)->show();
+	window_manager.get_widget(ABOUT_DIALOG)->show();
 }
 //LCOV_EXCL_START
 void Controller::on_action_report_bug()
@@ -137,7 +139,7 @@ void Controller::on_action_edit_task()
 	//m_refXML->get_widget_derived("EditTaskDialog", dialog);
 	if (selected_task_id > 0)
 	{
-		WidgetPtr edit_task_dialog = gui_factory.get_widget(EDIT_TASK_DIALOG);
+		WidgetPtr edit_task_dialog = window_manager.get_widget(EDIT_TASK_DIALOG);
 		dynamic_pointer_cast<Edit_task_dialog>(edit_task_dialog)->set_task_id(selected_task_id);
 		edit_task_dialog->show();
 	}
@@ -150,7 +152,7 @@ void Controller::on_action_add_time()
 		auto now = libtimeit::now();
 		Time_entry time_entry(selected_task_id, now, now);
 		auto dialog = make_shared<gui::Edit_time>(time_entry, database);
-		gui_factory.manage_lifespan(dialog);
+		window_manager.manage_lifespan(dialog);
 		dialog->show();
 	}
 }
@@ -174,11 +176,8 @@ void Controller::on_idle_detected(Time_id id)
 
 void Controller::on_idle_changed()
 {
-	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(gui_factory.get_widget(MAIN_WINDOW));
+	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(window_manager.get_widget(MAIN_WINDOW));
 	main_window->on_running_tasks_changed();
-	shared_ptr<Details_dialog> details_dialog = dynamic_pointer_cast<Details_dialog>(
-			gui_factory.get_widget(DETAILS_DIALOG));
-	details_dialog->on_running_tasks_changed();
 }
 
 void Controller::on_action_stop_timers()
@@ -193,23 +192,23 @@ void Controller::on_action_task_selection_changed(Task_id selected_task_ID)
 
 void Controller::on_action_add_task()
 {
-	WidgetPtr add_task_dialog = gui_factory.get_widget(ADD_TASK_DIALOG);
+	WidgetPtr add_task_dialog = window_manager.get_widget(ADD_TASK_DIALOG);
 	dynamic_pointer_cast<Edit_task_dialog>(add_task_dialog)->set_parent(selected_task_id);
 	add_task_dialog->show();
 }
 
 void Controller::on_action_preferences()
 {
-	WidgetPtr preference_dialog = gui_factory.get_widget(PREFERENCE_DIALOG);
+	WidgetPtr preference_dialog = window_manager.get_widget(PREFERENCE_DIALOG);
 	preference_dialog->show();
 }
 
 void Controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime)
 {
-	shared_ptr<Details_dialog> details_dialog = dynamic_pointer_cast<Details_dialog>(
-			gui_factory.get_widget(gui::DETAILS_DIALOG));
+	auto details_dialog = make_shared<Details_dialog>(database, time_keeper, notifier, window_manager);
 	if (details_dialog)
 	{
+		window_manager.manage_lifespan(details_dialog);
 		details_dialog->set(taskId, startTime, stopTime);
 		details_dialog->show();
 	}
@@ -228,19 +227,17 @@ void Controller::on_time_entry_changed(Time_id /*id*/)
 //LCOV_EXCL_START
 void Controller::on_running_changed()
 {
-	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(gui_factory.get_widget(MAIN_WINDOW));
+	shared_ptr<MainWindow> main_window = dynamic_pointer_cast<MainWindow>(window_manager.get_widget(MAIN_WINDOW));
 	main_window->on_running_tasks_changed();
-	shared_ptr<Details_dialog> details_dialog = dynamic_pointer_cast<Details_dialog>(
-			gui_factory.get_widget(DETAILS_DIALOG));
-	details_dialog->on_running_tasks_changed();
 }
+
 void Controller::on_selection_changed(int64_t /*task_id*/, time_t /*start*/, time_t /*stop*/)
 {
 }
 
 void Controller::show_idle_dialog(Time_id id)
 {
-	auto idle_dialog = dynamic_pointer_cast<Idle_dialog>(gui_factory.get_widget(gui::IDLE_DIALOG));
+	auto idle_dialog = dynamic_pointer_cast<Idle_dialog>(window_manager.get_widget(gui::IDLE_DIALOG));
 	idle_dialog->set_time_id(id);
 	idle_dialog->show();
 }

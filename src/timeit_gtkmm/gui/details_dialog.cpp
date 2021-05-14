@@ -11,11 +11,6 @@ namespace gui
 
 static const int COMPLETE_DAY = 86403;
 
-std::shared_ptr<Details_dialog> Details_dialog::create(Database& database, Time_keeper &timeKeeper, Notifier& notifier, Window_manager  &gui_factory)
-{
-	shared_ptr<Details_dialog> return_value(new Details_dialog(database, timeKeeper, notifier, gui_factory));
-	return return_value;
-}
 
 Details_dialog::Details_dialog(
 		Database    &database,
@@ -24,6 +19,7 @@ Details_dialog::Details_dialog(
 		Window_manager  &gui_factory)
 		:
 		Event_observer(notifier),
+		Time_keeper_observer( timeKeeper ),
 		table1(14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		task_name(""),
 		detail_list(database, notifier, gui_factory),
@@ -49,7 +45,7 @@ Details_dialog::Details_dialog(
 
 	scrolled_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-	scrolled_window.set_size_request(400, 600);
+	scrolled_window.set_size_request(400, 400);
 
 	task_name.set_alignment(0.0, 0.5);
 	running_image.set_alignment(0.0, 0.5);
@@ -103,13 +99,13 @@ void Details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 	on_task_total_time_updated(taskID);
 
 	detail_list.set(taskID, range_start, range_stop);
-	on_running_tasks_changed();
+	on_running_changed();
 }
 
 
 
 // also displays whether idle
-void Details_dialog::on_running_tasks_changed()
+void Details_dialog::on_running_changed()
 {
 	auto running_tasks = time_accessor.currently_running();
 	bool running_this_task_id = false;

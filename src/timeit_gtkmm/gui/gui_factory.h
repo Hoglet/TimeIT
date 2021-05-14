@@ -28,7 +28,6 @@ enum EWidget
 	EDIT_TASK_DIALOG,
 	ADD_TIME,
 	IDLE_DIALOG,
-	DETAILS_DIALOG,
 	PREFERENCE_DIALOG,
 	MAX_WIDGETS
 };
@@ -50,18 +49,16 @@ private:
 	WidgetPtr main_window;
 	WidgetPtr edit_task_dialog_instace;
 	WidgetPtr add_time_dialog_instace;
-	WidgetPtr details_dialog_instance;
 	WidgetPtr preference_dialog_instance;
 
 	void on_main_window_hide();
 	void on_add_task_dialog_hide();
 	void on_about_dialog_response(int);
 	void on_edit_task_hide();
-	void on_details_dialog_hide();
 	void on_preference_dialog_hide();
 
-	static void on_dialog_response(shared_ptr <Gtk::Dialog> dialog);
-	void on_dialog_hide(shared_ptr<Gtk::Dialog> dialog);
+	static void on_dialog_response(Gtk::Dialog* dialog);
+	void on_dialog_hide(Gtk::Dialog* dialog);
 
 
 	Time_keeper& time_keeper;

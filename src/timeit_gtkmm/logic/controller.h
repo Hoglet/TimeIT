@@ -62,12 +62,12 @@ public:
 	void on_action_stop_timers() override;
 
 private:
-	Window_manager&         gui_factory;
+	Window_manager&     window_manager;
 	Time_keeper&        time_keeper;
 	Time_accessor       time_accessor;
 	Settings_accessor   settings_accessor;
 	Database&           database;
-
+	Notifier&           notifier;
 	int main_window_x = 0;
 	int main_window_y = 0;
 	Task_id selected_task_id = 0;
