@@ -1,12 +1,5 @@
-/*
- * GUIFactory.h
- *
- *  Created on: 2008-nov-22
- *      Author: hoglet
- */
-
-#ifndef GUI_FACTORY_H_
-#define GUI_FACTORY_H_
+#ifndef WINDOW_MANAGER_H_
+#define WINDOW_MANAGER_H_
 
 #include <libtimeit/db/database.h>
 #include <libtimeit/logic/time_keeper.h>
@@ -69,4 +62,4 @@ private:
 	list<shared_ptr<Gtk::Dialog>> active_dialogs;
 };
 }
-#endif /* GUI_FACTORY_H_ */
+#endif /* WINDOW_MANAGER_H_ */

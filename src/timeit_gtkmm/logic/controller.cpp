@@ -6,7 +6,7 @@
 #include <iostream>
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
-#include <gui_factory.h>
+#include <window_manager.h>
 #include <main_window/main_window.h>
 #include <edit_time.h>
 

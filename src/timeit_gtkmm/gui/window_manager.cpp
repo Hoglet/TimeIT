@@ -1,4 +1,4 @@
-#include "gui_factory.h"
+#include "window_manager.h"
 #include "main_window/main_window.h"
 #include "timeit_about_dialog.h"
 #include "edit_task_dialog.h"

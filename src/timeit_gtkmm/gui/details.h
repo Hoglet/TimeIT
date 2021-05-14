@@ -16,7 +16,7 @@
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
-#include <gui_factory.h>
+#include <window_manager.h>
 #include <vector>
 
 namespace gui
@@ -53,7 +53,7 @@ struct Row_data
 class Details: public Gtk::TreeView, public Event_observer, public Summary_observer
 {
 public:
-	Details(Database &database, Notifier& notifier, Window_manager&  gui_factory);
+	Details(Database &database, Notifier& notifier, Window_manager&  window_manager);
 	void set(Task_id id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
@@ -120,7 +120,7 @@ private:
 	std::list<DetailsObserver*> observers;
 	Time_accessor               time_accessor;
 	Settings_accessor           settings_accessor;
-	Window_manager&                 gui_factory;
+	Window_manager&             window_manager;
 	Database&                   database;
 	void edit_time_entry(Time_id i);
 };

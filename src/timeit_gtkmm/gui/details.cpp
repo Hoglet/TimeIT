@@ -30,7 +30,7 @@ Details::Details(
 		Event_observer(notifier),
 		time_accessor(database_),
 		settings_accessor(database_),
-		gui_factory(gui_factory_),
+		window_manager(gui_factory_),
 		database(database_)
 {
 	tree_model = ListStore::create(columns);
@@ -560,7 +560,7 @@ void Details::edit_time_entry(Time_id id)
 	if(time_entry.has_value())
 	{
 		auto dialog = make_shared<gui::Edit_time>(*time_entry, database);
-		gui_factory.manage_lifespan(dialog);
+		window_manager.manage_lifespan(dialog);
 		dialog->show();
 	}
 }

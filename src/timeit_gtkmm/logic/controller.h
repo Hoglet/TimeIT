@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 #include <action_observer.h>
-#include <gui_factory.h>
+#include <window_manager.h>
 #include <idle_dialog.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>

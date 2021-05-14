@@ -14,7 +14,7 @@
 #include <glibmm.h>
 #include <glibmm/i18n.h>
 
-#include <gui_factory.h>
+#include <window_manager.h>
 #include <controller.h>
 #include <MessageCenter.h>
 #include <GTK_timer.h>
