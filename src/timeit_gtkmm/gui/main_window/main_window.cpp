@@ -138,7 +138,6 @@ void MainWindow::relate_widgets()
 void MainWindow::create_layout()
 {
 	//First setting parameters on widgets
-
 	task_list_container.set_size_request(270, 230);
 	task_list_container.set_flags(Gtk::CAN_FOCUS);
 	task_list_container.set_shadow_type(Gtk::SHADOW_NONE);
@@ -164,7 +163,7 @@ void MainWindow::create_layout()
 	summary_tabs.set_size_request(250, 150);
 
 	//Then the actual layout
-	details.set_size_request(100, 100);
+	details.set_size_request(100, 40);
 	do_layout();
 	details_window.add(details);
 	details_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -227,9 +226,9 @@ void MainWindow::do_layout()
 void MainWindow::default_layout()
 {
 	add(v_paned);
-	v_paned.pack1(h_paned, Gtk::SHRINK);
+	v_paned.pack1(h_paned, Gtk::FILL);
 	{
-		h_paned.pack1(main_v_box, Gtk::SHRINK);
+		h_paned.pack1(main_v_box, Gtk::FILL);
 		{
 			main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
 			main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
@@ -265,13 +264,13 @@ void MainWindow::default_layout()
 void MainWindow::classic_layout()
 {
 	add(v_paned);
-	v_paned.pack1(main_v_box, Gtk::SHRINK);
+	v_paned.pack1(main_v_box, Gtk::FILL);
 	{
 		main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(h_paned);
 		{
-			h_paned.pack1(task_list_container, Gtk::SHRINK); // Gtk::AttachOptions(0));
+			h_paned.pack1(task_list_container, Gtk::FILL); // Gtk::AttachOptions(0));
 
 			{
 				task_list_container.add(task_list);
