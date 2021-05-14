@@ -69,7 +69,7 @@ bool Task_list::on_button_press_event(GdkEventButton *event)
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
-		on_menu_edit();
+		on_menu_add_time();
 		retval = true;
 	}
 	return retval;
