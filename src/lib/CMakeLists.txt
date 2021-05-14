@@ -13,8 +13,7 @@ find_package(X11                    REQUIRED)
 find_package(PkgConfig              REQUIRED)
 pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
 
-
-if( GTEST_FOUND )
+if( GTEST_FOUND AND CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -coverage -fprofile-arcs -ftest-coverage ")
 	set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov")
 endif()
