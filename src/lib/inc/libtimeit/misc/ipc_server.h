@@ -1,12 +1,5 @@
-/*
- * Ipc.h
- *
- *  Created on: 11 Jul 2019
- *      Author: hoglet
- */
-
-#ifndef SRC_MISC_IPC_SERVER_H_
-#define SRC_MISC_IPC_SERVER_H_
+#ifndef IPC_SERVER_H_
+#define IPC_SERVER_H_
 
 #include <string>
 #include <memory>
@@ -20,23 +13,23 @@ namespace libtimeit
 using namespace std;
 using namespace libtimeit;
 
-class IpcServer: public Ipc, public Timer_observer
+class Ipc_server: public Ipc, public Timer_observer
 {
 public:
-	IpcServer(string socketName, Timer&);
-	IpcServer(const IpcServer& ) = delete;
-	IpcServer(IpcServer&& ) = delete;
-	IpcServer& operator=(const IpcServer& ) = delete;
-	IpcServer& operator=( IpcServer&& ) = delete;
+	Ipc_server(string socketName, Timer&);
+	Ipc_server(const Ipc_server& ) = delete;
+	Ipc_server(Ipc_server&& ) = delete;
+	Ipc_server& operator=(const Ipc_server& ) = delete;
+	Ipc_server& operator=(Ipc_server&& ) = delete;
 
-	~IpcServer() override;
+	~Ipc_server() override;
 	void poll();
 	void on_signal_1_second() override;
 	void attach(Event_observer*);
 	void detach(Event_observer*);
 	private:
 	void on_show_menu();
-	string socketName;
+	string socket_name;
 	list<Event_observer*> observers;
 	int sock;
 };
@@ -44,4 +37,4 @@ public:
 } /* namespace libtimeit */
 
 
-#endif /* SRC_MISC_IPC_SERVER_H_ */
+#endif /* IPC_SERVER_H_ */

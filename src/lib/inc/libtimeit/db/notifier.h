@@ -21,7 +21,7 @@ using namespace std;
 struct Notification_message
 {
 	message_type type;
-	int64_t      ID;
+	int64_t      id;
 	string       name;
 };
 
@@ -30,7 +30,7 @@ class Notifier
 	friend class Event_observer;
 public:
 	void          send_notification(message_type type, int64_t item_id, string name = "");
-	void          enabled(bool);
+	void          is_enabled(bool enabled_);
 	void          send(EventType type, string headline, string message);
 	unsigned long size();
 protected:
@@ -39,7 +39,7 @@ protected:
 private:
 	void send_message(Notification_message);
 
-	bool enabled_ = true;
+	bool enabled = true;
 	bool missed_notification = false;
 
 	list<Event_observer*> observers = {};

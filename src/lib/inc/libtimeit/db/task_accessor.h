@@ -21,15 +21,15 @@ class Task_accessor: public Accessor
 public:
 	Task_accessor(Database& database);
 
-	optional<Task> by_ID(int64_t taskID);
-	vector<Task>   by_parent_ID(int64_t parent = 0);
+	optional<Task> by_id(int64_t taskID);
+	vector<Task>   by_parent_id(int64_t parent = 0);
 	vector<Task>   changed_since(time_t timestamp = 0);
 
 	Task_id        create(const Task &task);
 	bool           update(const Task &task);
 	void           remove(int64_t taskID);
 
-	Task_id  ID(UUID uuid);
+	Task_id  id(UUID uuid);
 	void     enable_notifications(bool);
 
 	void     set_parent_id(Task_id task_id, Task_id parent_id);
@@ -40,13 +40,13 @@ protected:
 	void      drop_views()     override {};
 	void      create_views()   override {};
 	void      upgrade()        override;
-	void      upgrade_to_DB5();
+	void      upgrade_to_db_5();
 
 	Database& database; // NOLINT
 
 private:
 	void notify(const Task &old_task, const Task &new_task);
-	void _update(const Task &task);
+	void internal_update(const Task &task);
 
 	optional<class UUID> uuid(Task_id id);
 	optional<Task>       get_task_unlimited(Task_id taskID);

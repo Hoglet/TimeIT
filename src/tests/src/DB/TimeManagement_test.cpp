@@ -16,7 +16,7 @@ Extended_task getTask(time_t start = 0, time_t stop = 0)
 	auto subTaskID = taskAccessor.create(Task("subtask", taskID));
 	timeAccessor.create( Time_entry( taskID, 100, 200 ) );
 	timeAccessor.create( Time_entry( subTaskID, 150, 200 ) );
-	return *taskAccessor.by_ID(taskID, start, stop);
+	return *taskAccessor.by_id(taskID, start, stop);
 }
 
 TEST(TimeManagement, tasksTimeIs100)

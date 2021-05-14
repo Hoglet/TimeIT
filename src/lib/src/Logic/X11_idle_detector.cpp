@@ -80,7 +80,7 @@ void X11_idle_detector::poll_status()
 	{
 		last_activity = now;
 	}
-	is_idle = (idle_seconds > idle_timeout_);
+	is_idle = (idle_seconds > idle_timeout);
 
 }
 

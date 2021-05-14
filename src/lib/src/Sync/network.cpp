@@ -34,12 +34,12 @@ shared_ptr<asyncHTTPResponse> Network::request(
 	shared_ptr<asyncHTTPResponse> result = make_shared<asyncHTTPResponse>();
 
 
-	result->futureResponse = async(
+	result->future_response = async(
 			launch::async,
 			[url, data, username, password, ignore_certificate_errors]() {
 				HTTP_request request;
 				request.ignore_cert_errors(ignore_certificate_errors);
-				return request.PUT(url, data, username, password);
+				return request.put(url, data, username, password);
 			}
 	).share();
 

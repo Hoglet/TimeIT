@@ -67,7 +67,7 @@ HTTP_request::~HTTP_request()
 	curl = nullptr;
 };
 
-HTTP_response HTTP_request::PUT(
+HTTP_response HTTP_request::put(
 		string url,
 		string data,
 		string username,

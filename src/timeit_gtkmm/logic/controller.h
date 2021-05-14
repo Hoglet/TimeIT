@@ -28,7 +28,7 @@ public:
 			Window_manager &gui_factory,
 			Time_keeper &time_keeper,
 			Database    &database,
-			IpcServer   &ipc_server,
+			Ipc_server   &ipc_server,
 			Notifier    &notifier);
 	~Controller() override;
 	void start();

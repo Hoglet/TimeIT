@@ -35,9 +35,9 @@ public:
 
 	Query_result        execute(const string& statement);
 	Statement           prepare(string statement);
-	int64_t             ID_of_last_insert();
+	int64_t             id_of_last_insert();
 	bool                table_exists(string name);
-	[[nodiscard]] int   current_DB_version() const;
+	[[nodiscard]] int   current_db_version() const;
 	[[nodiscard]] bool  column_exists( string_view string, string_view string_1);
 protected:
 	static void create_tables( list<Accessor*>& accessors );

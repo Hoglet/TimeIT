@@ -25,7 +25,7 @@ void Database::create_tables( list<Accessor*>& accessors)
 
 
 
-int Database::current_DB_version() const
+int Database::current_db_version() const
 {
 	return db_version;
 }
@@ -184,7 +184,7 @@ void Database::end_transaction()
 }
 void Database::enable_notifications(bool state)
 {
-	notifier.enabled(state);
+	notifier.is_enabled(state);
 }
 
 
@@ -203,9 +203,9 @@ Statement Database::prepare(string statement)
 	return db.prepare(statement);
 }
 
-int64_t Database::ID_of_last_insert()
+int64_t Database::id_of_last_insert()
 {
-	return db.ID_of_last_insert();
+	return db.id_of_last_insert();
 }
 
 [[nodiscard]] bool Database::column_exists( string_view table, string_view  column)

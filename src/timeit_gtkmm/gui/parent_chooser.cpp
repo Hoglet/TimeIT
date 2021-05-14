@@ -88,7 +88,7 @@ Gtk::TreeModel::iterator Parent_chooser::find_row(Task_id id)
 
 void Parent_chooser::populate(std::string &base_string, Task_id parent_id)
 {
-	vector<Task> tasks = task_accessor.by_parent_ID(parent_id);
+	vector<Task> tasks = task_accessor.by_parent_id(parent_id);
 
 	for (auto task: tasks)
 	{

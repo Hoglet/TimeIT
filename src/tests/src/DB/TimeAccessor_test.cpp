@@ -33,7 +33,7 @@ TEST(TimeAccessor, ChangeEndTime)
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	Time_accessor timeAccessor(tempdb);
 	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
-	auto te = timeAccessor.by_ID(timeId);
+	auto te = timeAccessor.by_id(timeId);
 	if (te)
 	{
 		timeAccessor.update(te->with_stop(1300));
@@ -51,7 +51,7 @@ TEST(TimeAccessor, ChangeStartTime)
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	Time_accessor timeAccessor(tempdb);
 	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
-	auto te = timeAccessor.by_ID(timeId);
+	auto te = timeAccessor.by_id(timeId);
 	timeAccessor.update(te->with_start(300));
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(700, result);
@@ -69,7 +69,7 @@ TEST(TimeAccessor, UpdateTime)
 	Time_accessor timeAccessor(tempdb);
 	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
 	observer.task_id_time = 0;
-	auto original = timeAccessor.by_ID(timeId).value();
+	auto original = timeAccessor.by_id(timeId).value();
 	timeAccessor.update( original.with_start(300).with_stop(700));
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(400, result);
@@ -130,8 +130,8 @@ TEST(TimeAccessor, testGetByID)
 	Extended_task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	int64_t timeEntryID = timeAccessor.create( Time_entry(taskId, 10, 100) );
-	auto te = timeAccessor.by_ID(timeEntryID);
-	ASSERT_EQ(taskId, te->task_id) << "Check task ID";
+	auto te = timeAccessor.by_id(timeEntryID);
+	ASSERT_EQ(taskId, te->task_id) << "Check task id";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
 
@@ -147,7 +147,7 @@ TEST(TimeAccessor, newItem)
 	Time_entry item1(0, UUID(), taskId, {}, 100, 200, STOPPED, 200);
 
 	int64_t timeEntryID = timeAccessor.create(item1);
-	auto item2 = timeAccessor.by_ID(timeEntryID);
+	auto item2 = timeAccessor.by_id(timeEntryID);
 
 	ASSERT_EQ(item1.uuid, item2->uuid) << "UUID: ";
 	ASSERT_EQ(item1.task_id, item2->task_id) << "Task_ID: ";
@@ -192,7 +192,7 @@ TEST(TimeAccessor, getTimesChangedSince)
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
 	int64_t timeid = timeAccessor.create( Time_entry(taskId, 0, 1000) );
 
-	auto item = timeAccessor.by_ID(timeid);
+	auto item = timeAccessor.by_id(timeid);
 	vector<Time_entry> result = timeAccessor.times_changed_since(0);
 	ASSERT_EQ(1, result.size());
 	result = timeAccessor.times_changed_since(item->changed);

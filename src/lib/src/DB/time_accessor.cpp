@@ -16,14 +16,14 @@ Time_accessor::Time_accessor(Database &op_database) : database(op_database)
 
 void Time_accessor::remove(int64_t id)
 {
-	auto te = by_ID(id);
+	auto te = by_id(id);
 	if(te)
 	{
 		update(te->with(DELETED));
 	}
 }
 
-optional<Time_entry> Time_accessor::by_ID(int64_t id)
+optional<Time_entry> Time_accessor::by_id(int64_t id)
 {
 	Statement statement = database.prepare(
 			"SELECT taskID, start, stop, changed, uuid, task_UUID, state FROM v_times WHERE id = ?");
@@ -265,7 +265,7 @@ Time_id Time_accessor::uuid_to_id(UUID uuid)
 bool Time_accessor::update(Time_entry item )
 {
 	int64_t id = item.id;
-	auto existing_item = by_ID(id);
+	auto existing_item = by_id(id);
 	if (existing_item && item != *existing_item && item.changed >= existing_item->changed)
 	{
 		auto deleted = false;
@@ -305,17 +305,16 @@ bool Time_accessor::update(Time_entry item )
 	return false;
 }
 
-Task_id_list Time_accessor::children_IDs(int64_t taskID)
+Task_id_list Time_accessor::children_id_list(int64_t id)
 {
 	Task_id_list result;
 	Statement statement_get_children_i_ds = database.prepare("SELECT id FROM tasks WHERE parent=?;");
-	statement_get_children_i_ds.bind_value(1, taskID);
+	statement_get_children_i_ds.bind_value(1, id);
 	Query_result rows = statement_get_children_i_ds.execute();
 
 	for (auto row : rows)
 	{
-		int64_t id = row[0].integer();
-		result.push_back(id);
+		result.push_back(row[0].integer());
 	}
 	return result;
 }
@@ -323,7 +322,7 @@ Task_id_list Time_accessor::children_IDs(int64_t taskID)
 Duration Time_accessor::total_cumulative_time(int64_t taskID, time_t start, time_t stop)
 {
 	Duration total_time = duration_time(taskID, start, stop);
-	Task_id_list children = children_IDs(taskID);
+	Task_id_list children = children_id_list(taskID);
 	for (auto child : children)
 	{
 		total_time += total_cumulative_time(child, start, stop);
@@ -359,7 +358,7 @@ Time_id Time_accessor::create(Time_entry item)
 	statement_new_entry.bind_value(index++, (int64_t)running);
 	statement_new_entry.bind_value(index, item.state);
 	statement_new_entry.execute();
-	Time_id time_id = database.ID_of_last_insert();
+	Time_id time_id = database.id_of_last_insert();
 
 	if (item.start != item.stop)
 	{
@@ -369,7 +368,7 @@ Time_id Time_accessor::create(Time_entry item)
 	return time_id;
 }
 
-void Time_accessor::upgrade_to_DB5()
+void Time_accessor::upgrade_to_db_5()
 {
 	time_t now = time(nullptr);
 
@@ -394,11 +393,11 @@ void Time_accessor::upgrade_to_DB5()
 }
 void Time_accessor::upgrade()
 {
-	if ( database.current_DB_version() <5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if (database.current_db_version() < 5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		upgrade_to_DB5();
+		upgrade_to_db_5();
 	}
-	if( database.current_DB_version() == 5) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if(database.current_db_version() == 5) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		if (!database.column_exists("times", "state") )
 		{
@@ -525,7 +524,7 @@ Time_list Time_accessor::by_state(Time_entry_state state) const
 
 	Statement statement = database.prepare( R"Query(
 		SELECT
-			ID,
+			id,
 			taskID,
 			start,
 			stop,

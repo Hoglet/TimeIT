@@ -61,13 +61,6 @@ Details::Details(
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &Details::on_menu_file_popup_remove)));
 	}
 	menu_popup.accelerate(*this);
-	get_selection()->signal_changed().connect(
-			[this]()
-			{
-				this->on_selection_changed();
-			}
-				);
-
 }
 
 
@@ -113,7 +106,7 @@ void Details::on_menu_file_popup_remove()
 	Time_id selected_id = get_selected_id();
 	if (selected_id > 0)
 	{
-		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
+		optional<Time_entry> optional_time_entry = time_accessor.by_id(selected_id);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
@@ -172,8 +165,8 @@ void Details::on_menu_file_popup_merge()
 	vector<Time_id> selected_id_list = get_selected_and_next_id();
 	if (selected_id_list[0] > 0 && selected_id_list[1] > 0)
 	{
-		optional<Time_entry> optional_time_entry_0 = time_accessor.by_ID(selected_id_list[0]);
-		optional<Time_entry> optional_time_entry_1 = time_accessor.by_ID(selected_id_list[1]);
+		optional<Time_entry> optional_time_entry_0 = time_accessor.by_id(selected_id_list[0]);
+		optional<Time_entry> optional_time_entry_1 = time_accessor.by_id(selected_id_list[1]);
 		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
 			Time_entry time_entry_0 = optional_time_entry_0.value();
@@ -234,7 +227,7 @@ void Details::on_menu_file_popup_split()
 	int64_t selected_id = get_selected_id();
 	if (selected_id > 0)
 	{
-		optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
+		optional<Time_entry> optional_time_entry = time_accessor.by_id(selected_id);
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
@@ -286,8 +279,8 @@ bool Details::on_button_press_event(GdkEventButton *event)
 		int64_t next_id = selected_ids[1];
 		if (selected_id > 0)
 		{
-			optional<Time_entry> optional_time_entry = time_accessor.by_ID(selected_id);
-			optional<Time_entry> optional_next_time_entry = time_accessor.by_ID(next_id);
+			optional<Time_entry> optional_time_entry = time_accessor.by_id(selected_id);
+			optional<Time_entry> optional_next_time_entry = time_accessor.by_id(next_id);
 			if (optional_time_entry)
 			{
 				if (offer_to_merge(optional_time_entry, optional_next_time_entry))
@@ -351,7 +344,7 @@ void Details::on_time_entry_changed(Time_id id)
 	auto row = find_row(id);
 	if ( row.has_value() )
 	{
-		auto time_entry = time_accessor.by_ID(id);
+		auto time_entry = time_accessor.by_id(id);
 		if(time_entry.has_value())
 		{
 			auto day = time_entry->start;
@@ -531,24 +524,7 @@ void Details::on_menu_file_popup_edit()
 	}
 }
 
-void Details::on_selection_changed()
-{
-	std::list<DetailsObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		DetailsObserver *observer = *iter;
-		observer->on_selected_changed();
-	}
-}
 
-void Details::attach(DetailsObserver *observer)
-{
-	observers.push_back(observer);
-}
-void Details::detach(DetailsObserver *observer)
-{
-	observers.remove(observer);
-}
 
 void Details::edit_time_entry(Time_id id)
 {
@@ -556,7 +532,7 @@ void Details::edit_time_entry(Time_id id)
 	{
 		return;
 	}
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		auto dialog = make_shared<gui::Edit_time>(*time_entry, database);

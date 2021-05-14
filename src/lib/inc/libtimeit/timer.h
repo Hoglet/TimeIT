@@ -38,7 +38,7 @@ private:
 	void attach(Timer_observer *observer);
 	void detach(Timer_observer *observer);
 
-	void signalSender();
+	void signal_sender();
 	list<Timer_observer*> observers = {};
 	int ten_second_counter{10};  // NOLINT
 };

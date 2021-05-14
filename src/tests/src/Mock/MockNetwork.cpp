@@ -56,7 +56,7 @@ shared_ptr<asyncHTTPResponse> MockNetwork::request(string url, string , string ,
 	};
 
 
-	result->futureResponse = async(f);
+	result->future_response = async(f);
 	return result;
 }
 } /* namespace Test */

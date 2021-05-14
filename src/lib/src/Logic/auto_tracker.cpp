@@ -43,7 +43,7 @@ void Auto_tracker::check_for_changes()
 	{
 		for(auto task_id : auto_track_accessor.task_ids(new_workspace))
 		{
-			auto task = task_accessor.by_ID(task_id);
+			auto task = task_accessor.by_id(task_id);
 			if(task.has_value() && task->quiet)
 			{
 				time_keeper.start(task_id);

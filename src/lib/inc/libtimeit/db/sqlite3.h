@@ -52,7 +52,7 @@ public:
 
 	virtual ~SQLite3();
 	Query_result execute(const string& statement);
-	int64_t      ID_of_last_insert();
+	int64_t      id_of_last_insert();
 	Statement    prepare(const string& query);
 	string       last_error_message();
 	void         begin_transaction();

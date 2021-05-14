@@ -29,7 +29,7 @@ public:
 	Time_keeper_observer& operator=( Time_keeper_observer&& )      = delete;
 	~Time_keeper_observer();
 
-	virtual void on_idle_detected(Time_id ) {};
+	virtual void on_idle_detected(Time_id /*id*/) {};
 	virtual void on_running_changed()       {};
 private:
 	Time_keeper& time_keeper;
@@ -52,7 +52,7 @@ public:
 	void stop(Task_id id);
 	void toggle(Task_id id);
 
-	bool hasRunningTasks();
+	bool has_running_tasks();
 	bool user_is_active();
 
 	//Stop all tasks without saving new time records

@@ -22,7 +22,7 @@ public:
 	HTTP_request& operator=( HTTP_request&& ) = delete;
 	~HTTP_request();
 	void ignore_cert_errors(bool ignore);
-	HTTP_response PUT(
+	HTTP_response put(
 			string url,
 			string data,
 			string username,

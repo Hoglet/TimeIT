@@ -44,14 +44,14 @@ void Notifier::send_message(Notification_message message)
 		case TASK_UPDATED:
 			this->notify_all( [message](Event_observer* observer)
 							  {
-								  observer->on_task_updated(message.ID);
+								  observer->on_task_updated(message.id);
 							  }
 							  );
 			break;
 		case  TASK_NAME_CHANGED:
 			this->notify_all( [message](Event_observer* observer)
 								{
-									observer->on_task_name_changed(message.ID);
+									observer->on_task_name_changed(message.id);
 								}
 							);
 			break;
@@ -59,7 +59,7 @@ void Notifier::send_message(Notification_message message)
 			this->notify_all(
 					[message](Event_observer* observer)
 					{
-						observer->on_task_time_changed(message.ID);
+						observer->on_task_time_changed(message.id);
 					}
 					);
 			break;
@@ -67,7 +67,7 @@ void Notifier::send_message(Notification_message message)
 			this->notify_all(
 					[message](Event_observer* observer)
 					{
-						observer->on_task_added(message.ID);
+						observer->on_task_added(message.id);
 					}
 					);
 			break;
@@ -75,7 +75,7 @@ void Notifier::send_message(Notification_message message)
 			this->notify_all(
 					[message](Event_observer* observer)
 					{
-						observer->on_task_removed(message.ID);
+						observer->on_task_removed(message.id);
 					}
 			);
 			break;
@@ -83,7 +83,7 @@ void Notifier::send_message(Notification_message message)
 			this->notify_all(
 					[message](Event_observer* observer)
 					{
-						observer->on_parent_changed(message.ID);
+						observer->on_parent_changed(message.id);
 					}
 			);
 		case COMPLETE_UPDATE:
@@ -106,7 +106,7 @@ void Notifier::send_message(Notification_message message)
 			this->notify_all(
 					[message](Event_observer* observer)
 					{
-						observer->on_time_entry_changed( message.ID );
+						observer->on_time_entry_changed( message.id );
 					}
 			);
 			break;
@@ -115,11 +115,11 @@ void Notifier::send_message(Notification_message message)
 	}
 }
 
-void Notifier::enabled(bool enabled)
+void Notifier::is_enabled(bool enabled_)
 {
 	if (enabled_ != enabled)
 	{
-		enabled_ = enabled;
+		enabled = enabled_;
 	}
 	if (enabled && missed_notification)
 	{
@@ -133,7 +133,7 @@ void Notifier::send_notification(message_type type, int64_t ID, string name)
 {
 	Notification_message message{type, ID, name};
 
-	if (enabled_)
+	if (enabled)
 	{
 		send_message(message);
 	}

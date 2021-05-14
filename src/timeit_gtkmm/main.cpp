@@ -118,7 +118,7 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 			Network network;
 			Sync_manager sync_manager(database, network, notifier, timer);
-			IpcServer ipc_server(socket_name, timer);
+			Ipc_server ipc_server(socket_name, timer);
 
 			Time_keeper  time_keeper(database, timer, notifier);
 			Auto_tracker auto_tracker(time_keeper, database, timer);
@@ -133,8 +133,8 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 		}
 		else
 		{
-			IpcClient ipc_client(socket_name);
-			ipc_client.window2front();
+			Ipc_client ipc_client(socket_name);
+			ipc_client.window_2_front();
 		}
 	}
 	catch (exception &e)

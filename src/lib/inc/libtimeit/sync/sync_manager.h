@@ -55,9 +55,9 @@ private:
 
 	Sync_state                     state          {Sync_state::IDLE};
 	Sync_state                     following_state{Sync_state::IDLE};
-	shared_ptr <asyncHTTPResponse> outstandingRequest;
+	shared_ptr <asyncHTTPResponse> outstanding_request;
 
-	Notifier&  notifier_;
+	Notifier&  notifier;
 	time_t     next_sync{0};
 	time_t     next_full_sync{0};
 	time_t     last_sync{0};

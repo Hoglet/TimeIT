@@ -24,14 +24,6 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class DetailsObserver
-{
-public:
-	virtual void on_selected_changed() = 0;
-	virtual void on_edit_details(int64_t) = 0;
-};
-
-
 struct Row_data
 {
 	Time_id time_id;
@@ -72,11 +64,7 @@ public:
 	Time_id get_selected_id();
 	vector<Time_id> get_selected_and_next_id();
 	//
-
-	void attach(DetailsObserver*);
-	void detach(DetailsObserver*);
 private:
-	void on_selection_changed();
 	void update_row(Gtk::TreeModel::Row& row, Row_data ) const;
 
 	optional<Gtk::TreeModel::Row> find_row(Time_id id);
@@ -117,7 +105,6 @@ private:
 	Gtk::Menu                   menu_popup;
 	Glib::RefPtr<Gtk::MenuItem> merge_menu_item;
 	Glib::RefPtr<Gtk::MenuItem> split_menu_item;
-	std::list<DetailsObserver*> observers;
 	Time_accessor               time_accessor;
 	Settings_accessor           settings_accessor;
 	Window_manager&             window_manager;

@@ -35,7 +35,7 @@ void SQLite3::init(string dbname)
 	}
 }
 
-int64_t SQLite3::ID_of_last_insert()
+int64_t SQLite3::id_of_last_insert()
 {
 	return sqlite3_last_insert_rowid(db);
 }

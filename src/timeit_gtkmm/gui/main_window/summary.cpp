@@ -148,7 +148,7 @@ void Summary::on_task_updated(Task_id taskID)
 {
 	if (is_visible())
 	{
-		auto task = task_accessor.by_ID(taskID);
+		auto task = task_accessor.by_id(taskID);
 		Gtk::TreeIter iter = find_row(taskID);
 		if (task.has_value() && iter != tree_model->children().end())
 		{
@@ -265,7 +265,7 @@ bool Summary::is_visible()
 
 TreeModel::Row Summary::add(int64_t id)
 {
-	auto task = task_accessor.by_ID(id);
+	auto task = task_accessor.by_id(id);
 	TreeModel::Row row;
 
 	if (task->parent_id > 0)

@@ -88,7 +88,7 @@ void Time_keeper::toggle(int64_t id)
 
 void Time_keeper::stop_time(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		if( time_entry->stop -time_entry->start < idle_gz )
@@ -134,7 +134,7 @@ void Time_keeper::on_complete_update()
 
 
 
-bool Time_keeper::hasRunningTasks()
+bool Time_keeper::has_running_tasks()
 {
 	auto running_items = time_accessor.by_state(RUNNING);
 	return ( !running_items.empty() );
@@ -227,7 +227,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 	auto running_time_items = time_accessor.by_state(RUNNING);
 	for (auto time_item: running_time_items)
 	{
-		auto task = task_accessor.by_ID(time_item.task_id);
+		auto task = task_accessor.by_id(time_item.task_id);
 		auto idle_time = task->idle;
 		if(idle_time == 0)
 		{
@@ -245,7 +245,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 	}
 	for ( auto time_id: times_to_stop )
 	{
-		auto time_entry = time_accessor.by_ID(time_id);
+		auto time_entry = time_accessor.by_id(time_id);
 		if ( time_entry.has_value() && time_entry->state == RUNNING )
 		{
 			stop_time(time_id);

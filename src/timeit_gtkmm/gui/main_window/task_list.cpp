@@ -95,7 +95,7 @@ void Task_list::on_task_added(int64_t /*id*/)
 
 void Task_list::on_task_updated(int64_t taskID)
 {
-	auto task = task_accessor.by_ID(taskID);
+	auto task = task_accessor.by_id(taskID);
 	if (task.has_value())
 	{
 		Gtk::TreeIter iter = find_row(taskID);
@@ -238,7 +238,7 @@ void Task_list::assign_values_to_row(TreeModel::Row &row, const Extended_task &t
 
 void Task_list::populate(TreeModel::Row *parent, Task_id parentID)
 {
-	auto tasks = task_accessor.by_parent_ID(parentID);
+	auto tasks = task_accessor.by_parent_id(parentID);
 
 	for (auto task: tasks)
 	{

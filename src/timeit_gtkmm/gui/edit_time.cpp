@@ -27,7 +27,7 @@ Edit_time::Edit_time(
 {
 	set_deletable(false);
 
-	auto task = task_accessor.by_ID(time_entry.task_id);
+	auto task = task_accessor.by_id(time_entry.task_id);
 	if (task.has_value())
 	{
 		task_name.set_text(task->name);

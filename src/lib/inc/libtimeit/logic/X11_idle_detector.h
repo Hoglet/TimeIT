@@ -34,7 +34,7 @@ private:
 	void   poll_status();
 	time_t  idle_seconds = 0;
 	time_t  last_poll = 0;
-	long    idle_timeout_{2000}; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	long    idle_timeout{2000}; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	bool     is_idle{false};
 	time_t   last_activity;
 };

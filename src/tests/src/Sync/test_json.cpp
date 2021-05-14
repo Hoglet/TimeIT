@@ -121,7 +121,7 @@ TEST( Json, simpleTimeTest )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		bool expectedState = STOPPED;
-		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "ID: ";
+		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "id: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
@@ -149,7 +149,7 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		auto expectedState = DELETED;
-		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "ID: ";
+		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "id: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
@@ -182,7 +182,7 @@ TEST( Json, threeWayTimeTest )
 	items = to_times(result);
 	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ(item1.uuid, item2.uuid) << "ID ";
+	ASSERT_EQ(item1.uuid, item2.uuid) << "id ";
 	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";
@@ -213,7 +213,7 @@ TEST( Json, threeWayTimeTest2 )
 	items = to_times(result);
 	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ(item1.uuid, item2.uuid) << "ID ";
+	ASSERT_EQ(item1.uuid, item2.uuid) << "id ";
 	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";

@@ -22,10 +22,10 @@ const int ONE_DAY = 60 * 60 * 24;
 Sync_manager::Sync_manager(
 		Database &database,
 		INetwork  &op_network,
-		Notifier& notifier,
+		Notifier& notifier_,
 		Timer&    timer
 		):
-		notifier_(notifier),
+		notifier(notifier_),
 		network(op_network),
 		task_accessor(database),
 		time_accessor(database),
@@ -62,14 +62,14 @@ void Sync_manager::on_signal_1_second()
 		}
 			break;
 		case Sync_state::TASK_REQUEST:
-			outstandingRequest = request_tasks(last_sync);
+			outstanding_request = request_tasks(last_sync);
 			state = Sync_state::WAIT;
 			following_state = Sync_state::TASK_STORE;
 			break;
 		case Sync_state::WAIT:
 			if (request_is_done() )
 			{
-				auto response = outstandingRequest->futureResponse.get();
+				auto response = outstanding_request->future_response.get();
 				if (response.status_ok && response.http_code == HTTP_OK)
 				{
 					state = following_state;
@@ -84,7 +84,7 @@ void Sync_manager::on_signal_1_second()
 			sync_tasks_to_database();
 			state = Sync_state::TIME_REQUEST;
 		case Sync_state::TIME_REQUEST:
-			outstandingRequest = request_times(last_sync);
+			outstanding_request = request_times(last_sync);
 			state = Sync_state::WAIT;
 			following_state = Sync_state::TIME_STORE;
 			break;
@@ -105,7 +105,7 @@ void Sync_manager::on_signal_1_second()
 
 bool Sync_manager::request_is_done()
 {
-	auto future = outstandingRequest->futureResponse;
+	auto future = outstanding_request->future_response;
 	if(future.valid())
 	{
 		return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
@@ -130,13 +130,13 @@ bool Sync_manager::is_active()
 }
 void Sync_manager::sync_tasks_to_database()
 {
-	auto result = outstandingRequest->futureResponse.get();
+	auto result = outstanding_request->future_response.get();
 	vector<Task> tasks = to_tasks(result.response);
 
 	vector<Task> tasks_to_update;
 	for (Task task : tasks)
 	{
-		int64_t id = task_accessor.ID(task.uuid);
+		int64_t id = task_accessor.id(task.uuid);
 		auto parent_uuid = task.parent_uuid;
 		bool completed = task.completed;
 		int64_t parent = 0;
@@ -147,7 +147,7 @@ void Sync_manager::sync_tasks_to_database()
 		auto idle    = task.idle;
 		bool quiet   = task.quiet;
 
-		auto  original_task = task_accessor.by_ID(id);
+		auto  original_task = task_accessor.by_id(id);
 		if( original_task.has_value() )
 		{
 			//These are only to be stored locally
@@ -156,7 +156,7 @@ void Sync_manager::sync_tasks_to_database()
 		}
 		if (parent_uuid)
 		{
-			parent = task_accessor.ID(*parent_uuid);
+			parent = task_accessor.id(*parent_uuid);
 			if (parent == 0)
 			{
 				tasks_to_update.push_back(task);
@@ -179,8 +179,8 @@ void Sync_manager::sync_tasks_to_database()
 		auto parent_uuid = task.parent_uuid;
 		if (parent_uuid)
 		{
-			int64_t id         = task_accessor.ID(task.uuid);
-			int64_t parent     = task_accessor.ID(*parent_uuid);
+			int64_t id         = task_accessor.id(task.uuid);
+			int64_t parent     = task_accessor.id(*parent_uuid);
 			bool    completed  = task.completed;
 			time_t last_changed = task.last_changed;
 			string name        = task.name;
@@ -204,7 +204,7 @@ void Sync_manager::sync_tasks_to_database()
 
 void Sync_manager::sync_times_to_database()
 {
-	auto result = outstandingRequest->futureResponse.get();
+	auto result = outstanding_request->future_response.get();
 	Time_list times = to_times(result.response);
 
 	task_accessor.enable_notifications(false);
@@ -212,7 +212,7 @@ void Sync_manager::sync_times_to_database()
 	for (auto item : times)
 	{
 		auto task_uuid = item.task_uuid;
-		auto task_id = task_accessor.ID(*task_uuid);
+		auto task_id = task_accessor.id(*task_uuid);
 		auto uuid = item.uuid;
 		auto id = time_accessor.uuid_to_id(uuid);
 		time_t changed = item.changed;
@@ -222,7 +222,7 @@ void Sync_manager::sync_times_to_database()
 		bool running = false;
 		if (id > 0)
 		{
-			auto original_item = time_accessor.by_ID(id);
+			auto original_item = time_accessor.by_id(id);
 			if(original_item)
 			{
 				running = (original_item->state == RUNNING);
@@ -280,7 +280,7 @@ shared_ptr <asyncHTTPResponse> Sync_manager::request_times(time_t sincePointInTi
 
 void Sync_manager::manage_network_problems()
 {
-	auto result = outstandingRequest->futureResponse.get();
+	auto result = outstanding_request->future_response.get();
 	if (!result.status_ok || result.http_code != HTTP_OK)
 	{
 		std::stringstream text;
@@ -297,7 +297,7 @@ void Sync_manager::manage_network_problems()
 			text << result.error_message;
 		}
 
-		notifier_.send(EventType::ERROR_MESSAGE, _("Network error"), text.str() );
+		notifier.send(EventType::ERROR_MESSAGE, _("Network error"), text.str() );
 	}
 }
 

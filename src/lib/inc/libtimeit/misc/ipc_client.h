@@ -1,12 +1,5 @@
-/*
- * Ipc.h
- *
- *  Created on: 11 Jul 2019
- *      Author: hoglet
- */
-
-#ifndef SRC_MISC_IPC_CLIENT_H_
-#define SRC_MISC_IPC_CLIENT_H_
+#ifndef IPC_CLIENT_H_
+#define IPC_CLIENT_H_
 
 #include <string>
 #include <memory>
@@ -18,15 +11,15 @@
 namespace libtimeit
 {
 
-class IpcClient: public Ipc
+class Ipc_client: public Ipc
 {
 public:
-	IpcClient(string socketName);
-	void window2front();
+	Ipc_client(string socketName);
+	void window_2_front();
 private:
-	string socketName;
+	string socket_name;
 };
 
 } /* namespace libtimeit */
 
-#endif /* SRC_MISC_IPC_CLIENT_H_ */
+#endif /* IPC_CLIENT_H_ */

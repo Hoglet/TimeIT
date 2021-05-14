@@ -47,12 +47,12 @@ void Timer::detach(Timer_observer *observer)
 
 bool Timer::on_signal_1_second()
 {
-	signalSender();
+	signal_sender();
 	return true;
 }
 
 //This function is called every second
-void Timer::signalSender()
+void Timer::signal_sender()
 {
 	ten_second_counter--;
 	bool signal_10_seconds = false;

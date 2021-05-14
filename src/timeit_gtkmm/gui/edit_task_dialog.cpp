@@ -153,7 +153,7 @@ vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
 void Edit_task_dialog::set_task_id(Task_id ID)
 {
 	task_id = ID;
-	auto task = task_accessor.by_ID(task_id);
+	auto task = task_accessor.by_id(task_id);
 	if (task.has_value())
 	{
 		name = task->name;
@@ -222,7 +222,7 @@ void Edit_task_dialog::on_ok_button_clicked()
 	else
 	{
 		task_accessor.set_parent_id(task_id, parent_id);
-		auto task = task_accessor.by_ID(task_id);
+		auto task = task_accessor.by_id(task_id);
 		if (task.has_value())
 		{
 			auto new_idle_time = (unsigned)idle_time_entry.get_value_as_int();

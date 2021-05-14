@@ -19,7 +19,7 @@ Controller::Controller(
 		Window_manager  &op_guiFactory,
 		Time_keeper &op_timeKeeper,
 		Database    &database_,
-		IpcServer   &ipc,
+		Ipc_server   &ipc,
 		Notifier    &notifier_)
 		:
 		Time_keeper_observer(op_timeKeeper),
@@ -166,7 +166,7 @@ void Controller::on_idle_detected(Time_id id)
 {
 	on_idle_changed();
 
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_accessor.update(time_entry->with(PAUSED));

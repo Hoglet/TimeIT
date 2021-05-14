@@ -23,7 +23,7 @@ TEST (TaskAccessor, getTask)
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
-	auto task = taskAccessor.by_ID(taskId);
+	auto task = taskAccessor.by_id(taskId);
 	ASSERT_EQ("Test", task->name );
 }
 
@@ -35,21 +35,21 @@ TEST (TaskAccessor, testGetTasks)
 
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
-	vector<Task> tasks = taskAccessor.by_parent_ID();
+	vector<Task> tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(1, tasks.size());
 
 	taskAccessor.create(Task("NextTask", 0));
 	taskAccessor.create(Task("Sub task", taskId));
-	tasks = taskAccessor.by_parent_ID();
+	tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(2, tasks.size());
 
 	taskAccessor.create(Task("Test2", 0));
 
-	tasks = taskAccessor.by_parent_ID();
+	tasks = taskAccessor.by_parent_id();
 	Task &task = tasks.at(0);
 	ASSERT_EQ("Test", task.name);
 
-	tasks = taskAccessor.by_parent_ID(taskId);
+	tasks = taskAccessor.by_parent_id(taskId);
 	ASSERT_EQ(1, tasks.size()) << "Finding number of sub tasks ";
 
 }
@@ -60,10 +60,10 @@ TEST (TaskAccessor, setTaskName)
 	TempDB tempdb(notifier);
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
-	auto task = taskAccessor.by_ID(taskId);
+	auto task = taskAccessor.by_id(taskId);
 	ASSERT_EQ("Test", task->name);
 	taskAccessor.update(task->with_name("Tjohopp"));
-	auto task2 = taskAccessor.by_ID(taskId);
+	auto task2 = taskAccessor.by_id(taskId);
 	ASSERT_EQ("Tjohopp", task2->name);
 }
 
@@ -74,10 +74,10 @@ TEST (TaskAccessor, setParentID)
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId1 = taskAccessor.create(Task("Test", 0));
 	int64_t taskId2 = taskAccessor.create(Task("Test2", 0));
-	auto task = taskAccessor.by_ID(taskId1);
+	auto task = taskAccessor.by_id(taskId1);
 	ASSERT_EQ(0, task->parent_id);
 	taskAccessor.set_parent_id(taskId1, taskId2);
-	auto task2 = taskAccessor.by_ID(taskId1);
+	auto task2 = taskAccessor.by_id(taskId1);
 	ASSERT_EQ(taskId2, task2->parent_id);
 }
 
@@ -87,7 +87,7 @@ TEST (TaskAccessor, setParentID_inputValidation)
 	TempDB tempdb(notifier);
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
-	auto task = taskAccessor.by_ID(taskId);
+	auto task = taskAccessor.by_id(taskId);
 	ASSERT_EQ(0, task->parent_id);
 	ASSERT_THROW(taskAccessor.set_parent_id(taskId, taskId + 1), db_exception);
 }
@@ -98,10 +98,10 @@ TEST (TaskAccessor, remove)
 	TempDB tempdb(notifier);
 	Task_accessor taskAccessor(tempdb);
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
-	vector<Task> tasks = taskAccessor.by_parent_ID();
+	vector<Task> tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(1, tasks.size());
 	taskAccessor.remove(taskId);
-	tasks = taskAccessor.by_parent_ID();
+	tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(0, tasks.size());
 }
 
@@ -113,7 +113,7 @@ TEST (TaskAccessor, newTask)
 
 	Task task("Test");
 	taskAccessor.create(task);
-	vector<Task> tasks = taskAccessor.by_parent_ID();
+	vector<Task> tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(1, tasks.size());
 	Task *taskp = &(tasks.at(0));
 
@@ -192,11 +192,11 @@ TEST (TaskAccessor, updateTask)
 
 	int64_t id = taskAccessor.create(original_task);
 
-	auto task1 = taskAccessor.by_ID(id);
+	auto task1 = taskAccessor.by_id(id);
 
 	observer.updatedTaskID = 0;
 	taskAccessor.update(task1->with_name("Coding"));
-	auto changedTask = taskAccessor.by_ID(id);
+	auto changedTask = taskAccessor.by_id(id);
 	ASSERT_EQ("Coding", changedTask->name);
 	ASSERT_EQ(task1->id, observer.nameChangedTaskID) << "Notified Task_ID: ";
 	ASSERT_EQ(0, observer.updatedParentTaskID) << "Notified ParentID: ";
@@ -205,13 +205,13 @@ TEST (TaskAccessor, updateTask)
 
 	Task task2( *changedTask);
 	taskAccessor.update(task2);
-	auto changedTask2 = taskAccessor.by_ID(id);
+	auto changedTask2 = taskAccessor.by_id(id);
 	ASSERT_EQ(0, observer.nameChangedTaskID) << "Notified Task_ID: ";
 	ASSERT_EQ(0, observer.updatedParentTaskID) << "Notified ParentID: ";
 
 	Task subtask("Sub task");
 	int64_t id2 = taskAccessor.create(subtask);
-	auto temp_task = taskAccessor.by_ID(id2);
+	auto temp_task = taskAccessor.by_id(id2);
 
 	auto task3 = temp_task->with_parent(id);
 	taskAccessor.update(task3);

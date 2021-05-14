@@ -42,7 +42,7 @@ void Task_accessor::enable_notifications(bool state)
 	database.enable_notifications(state);
 }
 
-vector<Task> Task_accessor::by_parent_ID(int64_t parent)
+vector<Task> Task_accessor::by_parent_id(int64_t parent)
 {
 	vector<Task> return_value;
 	stringstream statement;
@@ -85,7 +85,7 @@ vector<Task> Task_accessor::by_parent_ID(int64_t parent)
 	return return_value;
 }
 
-optional<Task> Task_accessor::by_ID(int64_t taskID)
+optional<Task> Task_accessor::by_id(int64_t taskID)
 {
 	Statement statement_get_task = database.prepare(
 			R"(
@@ -227,7 +227,7 @@ vector<Task> Task_accessor::changed_since(time_t timestamp)
 	return return_value;
 }
 
-Task_id Task_accessor::ID(UUID uuid)
+Task_id Task_accessor::id(UUID uuid)
 {
 
 	Task_id id = 0;
@@ -257,7 +257,7 @@ optional<class UUID> Task_accessor::uuid(Task_id id)
 	return {};
 }
 
-void Task_accessor::_update(const Task &task)
+void Task_accessor::internal_update(const Task &task)
 {
 	Statement statement_update_task = database.prepare(
 			R"(
@@ -315,22 +315,20 @@ void Task_accessor::notify(const Task &existingTask, const Task &task)
 
 bool Task_accessor::update(const Task &task)
 {
-	auto id = task.id;
-	if (id == 0)
+	if (task.id == 0)
 	{
-		id = ID(task.uuid);
-		if (id == 0)
+		if (id(task.uuid) == 0)
 		{
 			stringstream message;
 			message << "Unable to find task with UUID=" << task.uuid.c_str();
 			throw db_exception(message.str());
 		}
 	}
-	auto existing_task = get_task_unlimited(id);
+	auto existing_task = get_task_unlimited(task.id);
 	if (existing_task.has_value() && task != *existing_task && task.last_changed >= existing_task->last_changed)
 	{
 
-		_update(task);
+		internal_update(task);
 		notify(*existing_task, task);
 		return true;
 	}
@@ -363,7 +361,7 @@ Task_id Task_accessor::create(const Task &task)
 	statement_new_task.bind_value(index,   (int64_t)task.quiet);
 
 	statement_new_task.execute();
-	Task_id id = database.ID_of_last_insert();
+	Task_id id = database.id_of_last_insert();
 
 	database.send_notification(TASK_ADDED, id);
 	return id;
@@ -398,7 +396,7 @@ void Task_accessor::remove(int64_t taskID)
 	database.send_notification(TASK_REMOVED, taskID);
 }
 
-void Task_accessor::upgrade_to_DB5()
+void Task_accessor::upgrade_to_db_5()
 {
 	time_t now = time(nullptr);
 //Update Tasks to new design
@@ -430,9 +428,9 @@ void Task_accessor::upgrade_to_DB5()
 
 void Task_accessor::upgrade()
 {
-	if ( database.current_DB_version() <5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if (database.current_db_version() < 5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		upgrade_to_DB5();
+		upgrade_to_db_5();
 	}
 	if( ! database.column_exists("tasks", "idle") )
 	{

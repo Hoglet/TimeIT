@@ -146,7 +146,7 @@ void Details_dialog::on_task_name_updated(int64_t id)
 {
 	if (task_id == id)
 	{
-		auto task = task_accessor.by_ID(task_id);
+		auto task = task_accessor.by_id(task_id);
 		if (task.has_value())
 		{
 			task_name.set_text(task->name);
@@ -170,7 +170,7 @@ void Details_dialog::on_task_total_time_updated(int64_t id)
 		if (difftime(range_stop, range_start) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto task = task_accessor.by_ID(task_id);
+			auto task = task_accessor.by_id(task_id);
 			if (task.has_value())
 			{
 				time_t total_time = time_accessor.total_cumulative_time(task_id, range_start, range_stop);

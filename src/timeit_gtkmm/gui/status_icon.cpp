@@ -61,7 +61,7 @@ void Status_icon::populate_context_menu()
 		try
 		{
 			int64_t id = latest_tasks[i];
-			auto task = task_accessor.by_ID(id);
+			auto task = task_accessor.by_id(id);
 			string menu_line = complete_task_path(latest_tasks[i]);
 
 			Gtk::Image *menu_icon = Gtk::manage(new Gtk::Image());
@@ -118,7 +118,7 @@ void Status_icon::populate_context_menu()
 std::string Status_icon::complete_task_path(int64_t id)
 {
 	std::string task_name;
-	auto task = task_accessor.by_ID(id);
+	auto task = task_accessor.by_id(id);
 	if (task.has_value())
 	{
 		task_name = task->name;
@@ -266,7 +266,7 @@ void Status_icon::set_tooltip()
 		auto stop_time  = libtimeit::end_of_day(time(nullptr));
 		for (int64_t id : currently_running)
 		{
-			auto task = task_accessor.by_ID(id);
+			auto task = task_accessor.by_id(id);
 			message << setw(15) << setiosflags(ios::left) << task->name;
 			message << " " << libtimeit::seconds_2_hhmm(time_accessor.duration_time(id, start_time, stop_time));
 		}
@@ -276,7 +276,7 @@ void Status_icon::set_tooltip()
 
 void Status_icon::set_icon()
 {
-	if (m_time_keeper.hasRunningTasks())
+	if (m_time_keeper.has_running_tasks())
 	{
 		status_icon->set(running_icon);
 		Gtk::Window::set_default_icon(running_icon);

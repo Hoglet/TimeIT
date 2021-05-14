@@ -54,11 +54,11 @@ Idle_dialog::Idle_dialog(
 
 void Idle_dialog::set_time_id(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if ( time_entry.has_value())
 	{
 		idle_start_time = time_entry->stop;
-		auto task = task_accessor.by_ID(time_entry->task_id);
+		auto task = task_accessor.by_id(time_entry->task_id);
 		if(task.has_value())
 		{
 			task_string = task->name;
@@ -124,7 +124,7 @@ void Idle_dialog::response_handler(int result)
 
 void Idle_dialog::action_continue(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_accessor.update(time_entry->with(RUNNING).with_stop(libtimeit::now()));
@@ -133,7 +133,7 @@ void Idle_dialog::action_continue(Time_id id)
 
 void Idle_dialog::revert_and_stop(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_keeper.stop_time(id);
@@ -143,7 +143,7 @@ void Idle_dialog::revert_and_stop(Time_id id)
 
 void Idle_dialog::revert_and_continue(Time_id id)
 {
-	auto time_entry = time_accessor.by_ID(id);
+	auto time_entry = time_accessor.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_keeper.stop_time(id);

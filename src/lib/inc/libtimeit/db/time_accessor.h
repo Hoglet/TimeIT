@@ -26,7 +26,7 @@ public:
 	Time_accessor(Database& database);
 
 	Time_id                 create(Time_entry item);
-	optional<Time_entry>    by_ID(Time_id id);
+	optional<Time_entry>    by_id(Time_id id);
 	[[nodiscard]] Time_list by_state(Time_entry_state state) const;
 	bool                    update(Time_entry item);
 	void                    remove(Time_id id);
@@ -49,7 +49,7 @@ protected:
 	void                 drop_views()     override;
     void                 create_views()   override;
 	void                 upgrade()        override;
-	void                 upgrade_to_DB5();
+	void                 upgrade_to_db_5();
 
     void                 remove_short_time_spans();
 
@@ -59,7 +59,7 @@ private:
     Duration        time_passing_start_limit(Task_id id, time_t start, time_t stop);
     Duration        time_passing_end_limit(Task_id & id, time_t & start, time_t & stop);
     Duration        time_completely_within_limits(Task_id & id, time_t & start, time_t & stop);
-    Task_id_list    children_IDs(Task_id id);
+    Task_id_list    children_id_list(Task_id id);
 
 };
 }

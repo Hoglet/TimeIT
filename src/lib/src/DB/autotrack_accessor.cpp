@@ -45,7 +45,7 @@ Task_id_list Auto_track_accessor::task_ids(unsigned workspace)
 	for (vector<Data_cell> row : rows)
 	{
 		int64_t id = row[0].integer();
-		auto task = task_accessor.by_ID(id);
+		auto task = task_accessor.by_id(id);
 		if (task.has_value() && !task->deleted)
 		{
 			return_value.push_back(id);

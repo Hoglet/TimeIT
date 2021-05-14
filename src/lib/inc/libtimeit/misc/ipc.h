@@ -19,7 +19,7 @@ class Ipc
 public:
 	Ipc() = default;
 protected:
-	static string prepareSocketDir();
+	static string prepare_socket_dir();
 };
 
 } /* namespace libtimeit */

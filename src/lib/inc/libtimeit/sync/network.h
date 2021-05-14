@@ -15,7 +15,7 @@ using namespace std;
 
 struct asyncHTTPResponse
 {
-	shared_future<HTTP_response> futureResponse;
+	shared_future<HTTP_response> future_response;
 };
 
 class INetwork

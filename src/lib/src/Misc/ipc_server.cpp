@@ -18,11 +18,11 @@ namespace libtimeit
 {
 using namespace std;
 
-IpcServer::IpcServer(string name, Timer& timer) : Timer_observer(timer)
+Ipc_server::Ipc_server(string name, Timer& timer) : Timer_observer(timer)
 {
-	socketName = prepareSocketDir() + name;
+	socket_name = prepare_socket_dir() + name;
 
-	unlink(socketName.c_str());
+	unlink(socket_name.c_str());
 
 	struct sockaddr_un server{};
 	sock = socket(AF_UNIX, SOCK_STREAM, 0);  // NOLINT
@@ -36,7 +36,7 @@ IpcServer::IpcServer(string name, Timer& timer) : Timer_observer(timer)
 	else
 	{
 		server.sun_family = AF_UNIX;
-		strncpy(server.sun_path, socketName.c_str(),sizeof(server.sun_path)); // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+		strncpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)); // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 		if (bind(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)))   // NOLINT
 		{
 			if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT
@@ -52,13 +52,13 @@ IpcServer::IpcServer(string name, Timer& timer) : Timer_observer(timer)
 	}
 }
 
-IpcServer::~IpcServer()
+Ipc_server::~Ipc_server()
 {
 	close(sock);
-	unlink(socketName.c_str());
+	unlink(socket_name.c_str());
 }
 
-void IpcServer::poll()
+void Ipc_server::poll()
 {
 	constexpr auto BUFFER_SIZE=1024;
 	char buf[BUFFER_SIZE]; // NOLINT(modernize-avoid-c-arrays)
@@ -89,22 +89,22 @@ void IpcServer::poll()
 	close(msg_socket);
 }
 
-void IpcServer::on_signal_1_second()
+void Ipc_server::on_signal_1_second()
 {
 	poll();
 }
 
-void IpcServer::attach(Event_observer *observer)
+void Ipc_server::attach(Event_observer *observer)
 {
 	observers.push_back(observer);
 }
 
-void IpcServer::detach(Event_observer *observer)
+void Ipc_server::detach(Event_observer *observer)
 {
 	observers.remove(observer);
 }
 
-void IpcServer::on_show_menu()
+void Ipc_server::on_show_menu()
 {
 	std::list<Event_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)

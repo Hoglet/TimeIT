@@ -15,7 +15,7 @@ namespace libtimeit
 using namespace std;
 
 
-std::string Ipc::prepareSocketDir()
+std::string Ipc::prepare_socket_dir()
 {
 	string runtime_dir;
 	char *s = getenv("XDG_RUNTIME_DIR");   // NOLINT

@@ -17,14 +17,14 @@ namespace libtimeit
 {
 using namespace std;
 
-IpcClient::IpcClient(string name)
+Ipc_client::Ipc_client(string name)
 {
-	socketName = prepareSocketDir() + name;
+	socket_name = prepare_socket_dir() + name;
 
 }
 
 
-void IpcClient::window2front()
+void Ipc_client::window_2_front()
 {
 	struct sockaddr_un server{};
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -39,7 +39,7 @@ void IpcClient::window2front()
 	{
 		server.sun_family = AF_UNIX;
 
-		strncpy(server.sun_path, socketName.c_str(),  sizeof(server.sun_path));    // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+		strncpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path));    // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 		if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 		{
 			close(sock);
