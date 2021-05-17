@@ -6,7 +6,7 @@
  */
 
 #include "calendar.h"
-
+#include <libtimeit/utils.h>
 namespace gui
 {
 
@@ -19,16 +19,17 @@ Calendar::Calendar()
 	signal_next_year().connect(sigc::mem_fun(this, &Calendar::notify));
 	signal_prev_month().connect(sigc::mem_fun(this, &Calendar::notify));
 	signal_prev_year().connect(sigc::mem_fun(this, &Calendar::notify));
+	mark_today();
+
 }
 
 void Calendar::notify()
 {
-	std::list<CalendarObserver*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	for (auto* observer: observers)
 	{
-		CalendarObserver* observer = *iter;
 		observer->on_date_changed();
 	}
+	mark_today();
 }
 
 void Calendar::attach(CalendarObserver* observer)
@@ -38,6 +39,29 @@ void Calendar::attach(CalendarObserver* observer)
 void Calendar::detach(CalendarObserver* observer)
 {
 	observers.remove(observer);
+}
+
+void Calendar::mark_today()
+{
+	auto now = libtimeit::now();
+
+	guint year{0};
+	guint month{0};
+	guint day{0};
+	get_date(year, month, day);
+	struct tm* today  = localtime(&now);
+	int current_year  = today->tm_year + 1900;
+	int current_month = today->tm_mon;
+
+	unmark_day(marked_day);
+	if(
+			current_year  == (int)year   &&
+			current_month == (int)month
+			)
+	{
+		marked_day=today->tm_mday;
+		mark_day(marked_day);
+	}
 }
 
 }

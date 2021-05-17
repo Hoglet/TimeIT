@@ -28,6 +28,9 @@ public:
 	void detach(CalendarObserver* observer);
 private:
 	void notify();
+	void mark_today();
+
+	guint marked_day=0;
 	std::list<CalendarObserver*> observers;
 };
 
