@@ -190,7 +190,7 @@ void Database::enable_notifications(bool state)
 
 void Database::send_notification(message_type type, int64_t ID, string name)
 {
-	notifier.send_notification(type, ID, name);
+	notifier.try_send_notification(type, ID, name);
 }
 
 

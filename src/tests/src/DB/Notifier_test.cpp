@@ -14,7 +14,7 @@ TEST( Notifier, TaskUpdated)
 {
 	Notifier notifier;
 	Notify_observer test(notifier);
-	notifier.send_notification(TASK_UPDATED, 1);
+	notifier.try_send_notification(TASK_UPDATED, 1);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -25,7 +25,7 @@ TEST(Notifier, TaskAdded)
 {
 	Notifier notifier;
 	Notify_observer test(notifier);
-	notifier.send_notification(TASK_ADDED, 2);
+	notifier.try_send_notification(TASK_ADDED, 2);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_parent);
 	ASSERT_EQ(0, test.task_id_removed);
@@ -36,7 +36,7 @@ TEST(Notifier,TaskRemoved)
 {
 	Notifier notifier;
 	Notify_observer test(notifier);
-	notifier.send_notification(TASK_REMOVED, 3);
+	notifier.try_send_notification(TASK_REMOVED, 3);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_parent);
@@ -46,7 +46,7 @@ TEST(Notifier,TaskParentChanged)
 {
 	Notifier notifier;
 	Notify_observer test(notifier);
-	notifier.send_notification(TASK_PARENT_CHANGED, 4);
+	notifier.try_send_notification(TASK_PARENT_CHANGED, 4);
 	ASSERT_EQ(0, test.task_id_updated);
 	ASSERT_EQ(0, test.task_id_added);
 	ASSERT_EQ(0, test.task_id_removed);

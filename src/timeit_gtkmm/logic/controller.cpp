@@ -33,7 +33,6 @@ Controller::Controller(
 
 
 {
-	ipc.attach(this);
 }
 
 Controller::~Controller()

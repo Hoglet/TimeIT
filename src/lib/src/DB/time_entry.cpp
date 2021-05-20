@@ -116,9 +116,15 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
-	return (op1.id == op2.id && op1.changed == op2.changed && op1.state == op2.state
-			&& op1.start == op2.start && op1.stop == op2.stop && op1.task_id == op2.task_id && op1.uuid == op2.uuid
-			&& op1.task_uuid == op2.task_uuid);
+	return (
+			op1.id        == op2.id      &&
+			op1.changed   == op2.changed &&
+			op1.state     == op2.state   &&
+			op1.start     == op2.start   &&
+			op1.stop      == op2.stop    &&
+			op1.task_id   == op2.task_id &&
+			op1.uuid      == op2.uuid    &&
+			op1.task_uuid == op2.task_uuid);
 }
 
 bool operator!=(const Time_entry &op1, const Time_entry &op2)

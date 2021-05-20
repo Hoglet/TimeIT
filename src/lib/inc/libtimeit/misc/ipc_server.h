@@ -16,7 +16,7 @@ using namespace libtimeit;
 class Ipc_server: public Ipc, public Timer_observer
 {
 public:
-	Ipc_server(string socketName, Timer&);
+	Ipc_server(string /*socket_name*/, Timer& /*timer*/, Notifier& /*notifier*/);
 	Ipc_server(const Ipc_server& ) = delete;
 	Ipc_server(Ipc_server&& ) = delete;
 	Ipc_server& operator=(const Ipc_server& ) = delete;
@@ -25,13 +25,11 @@ public:
 	~Ipc_server() override;
 	void poll();
 	void on_signal_1_second() override;
-	void attach(Event_observer*);
-	void detach(Event_observer*);
-	private:
+private:
 	void on_show_menu();
 	string socket_name;
-	list<Event_observer*> observers;
 	int sock;
+	Notifier& notifier;
 };
 
 } /* namespace libtimeit */

@@ -110,6 +110,14 @@ void Notifier::send_message(Notification_message message)
 					}
 			);
 			break;
+		case SHOW_MAIN_WINDOW:
+			this->notify_all(
+					[message](Event_observer* observer)
+					{
+						observer->on_show_main_window();
+					}
+			);
+			break;
 		default:
 			throw ("Unknown message type");
 	}
@@ -124,23 +132,23 @@ void Notifier::is_enabled(bool enabled_)
 	if (enabled && missed_notification)
 	{
 		missed_notification = false;
-		send_notification(COMPLETE_UPDATE, 0);
+		try_send_notification(COMPLETE_UPDATE, 0);
 	}
 }
 
-
-void Notifier::send_notification(message_type type, int64_t ID, string name)
+void Notifier::send_notification(message_type type, int64_t item_id, string name)
 {
-	Notification_message message{type, ID, name};
+	Notification_message message{type, item_id, name};
+	send_message(message);
+}
 
+void Notifier::try_send_notification(message_type type, int64_t item_id, string name)
+{
 	if (enabled)
 	{
-		send_message(message);
+		send_notification( type, item_id, name);
 	}
-	else
-	{
-		missed_notification = true;
-	}
+	missed_notification = true;
 }
 
 unsigned long Notifier::size()

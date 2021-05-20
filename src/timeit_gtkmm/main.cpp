@@ -118,7 +118,7 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 			Network network;
 			Sync_manager sync_manager(database, network, notifier, timer);
-			Ipc_server ipc_server(socket_name, timer);
+			Ipc_server ipc_server(socket_name, timer, notifier);
 
 			Time_keeper  time_keeper(database, timer, notifier);
 			Auto_tracker auto_tracker(time_keeper, database, timer);

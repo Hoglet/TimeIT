@@ -13,12 +13,16 @@
 #include <unistd.h>
 #include <iostream>
 #include <fcntl.h>
+#include <libtimeit/db/notifier.h>
 
 namespace libtimeit
 {
 using namespace std;
 
-Ipc_server::Ipc_server(string name, Timer& timer) : Timer_observer(timer)
+Ipc_server::Ipc_server(string name, Timer& timer, Notifier& notifier_)
+	:
+	Timer_observer(timer),
+	notifier(notifier_)
 {
 	socket_name = prepare_socket_dir() + name;
 
@@ -94,23 +98,8 @@ void Ipc_server::on_signal_1_second()
 	poll();
 }
 
-void Ipc_server::attach(Event_observer *observer)
-{
-	observers.push_back(observer);
-}
-
-void Ipc_server::detach(Event_observer *observer)
-{
-	observers.remove(observer);
-}
-
 void Ipc_server::on_show_menu()
 {
-	std::list<Event_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		Event_observer *observer = *iter;
-		observer->on_show_main_window();
-	}
+	notifier.send_notification(SHOW_MAIN_WINDOW, 0);
 }
 } /* namespace libtimeit */

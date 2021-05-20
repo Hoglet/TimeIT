@@ -29,10 +29,11 @@ class Notifier
 {
 	friend class Event_observer;
 public:
-	void          send_notification(message_type type, int64_t item_id, string name = "");
-	void          is_enabled(bool enabled_);
-	void          send(EventType type, string headline, string message);
-	unsigned long size();
+	void             try_send_notification(message_type type, int64_t item_id, string name = "");
+	void             send_notification(message_type type, int64_t item_id, string name = "");
+	void             is_enabled(bool enabled_);
+	void             send(EventType type, string headline, string message);
+	unsigned long    size();
 protected:
 	void attach(Event_observer*);
 	void detach(Event_observer*);
