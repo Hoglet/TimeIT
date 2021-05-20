@@ -44,8 +44,6 @@ add_custom_target(dist
 
 # make DEB & RPM package
 #--------------------
-set(CMAKE_INSTALL_PREFIX "/usr" )
-set(CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
 set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 SET(CPACK_GENERATOR "RPM")
 set(CPACK_RPM_PACKAGE_REQUIRES "libgtkmm-2.4-1v5, libsqlite3-0, libxss1, libnotify-bin, libjansson4, libcurl")
@@ -61,7 +59,6 @@ set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
 
 add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
-
 
 #  Subfolders
 # ---------------
