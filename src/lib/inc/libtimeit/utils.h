@@ -14,7 +14,6 @@ namespace libtimeit
 {
 using namespace std;
 
-string image_path();
 string ISO_639_language_string();
 time_t now();
 time_t to_time(int year, int month, int day, int hour = 0, int min = 0, int sec = 0);

@@ -23,7 +23,12 @@ class MainWindow: public Gtk::Window, public Action_observer, public IWidget
 {
 public:
 	~MainWindow() override;
-	MainWindow(Database& database, Time_keeper &timeKeeper, Notifier& notifier,Window_manager& window_manager);
+	MainWindow(
+			Database&       database,
+			Time_keeper&    timeKeeper,
+			Notifier&       notifier,
+			Window_manager& window_manager,
+			Images&         images);
 	MainWindow(const MainWindow&) = delete;
 	MainWindow( MainWindow&& ) = delete;
 	MainWindow& operator=(const MainWindow&) = delete;

@@ -13,6 +13,7 @@
 #include "libtimeit/logic/time_keeper.h"
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
+#include <gui/images.h>
 #include "action_observer.h"
 
 namespace gui
@@ -22,7 +23,11 @@ using namespace libtimeit;
 class Status_icon: public Time_keeper_observer, public Event_observer
 {
 public:
-	Status_icon(Time_keeper&, Database&, Notifier& notifier);
+	Status_icon(
+			Time_keeper&,
+			Database&,
+			Notifier&   notifier,
+			Images&     images);
 
 	void show()
 	{

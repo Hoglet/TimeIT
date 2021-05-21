@@ -7,7 +7,7 @@
 
 #include "libtimeit/utils.h"
 #include <sys/types.h>
-#include "libtimeit/OS_abstraction.h"
+#include "libtimeit/os_abstraction.h"
 #include <ctime>
 #include <iomanip>
 #include <langinfo.h>
@@ -22,10 +22,6 @@ namespace libtimeit
 constexpr auto SECOND_PER_DAY = 24 * 60 * 60;
 
 //LCOV_EXCL_START
-string image_path()
-{
-	return PROGRAMNAME_DATADIR;
-}
 
 string ISO_639_language_string()
 {

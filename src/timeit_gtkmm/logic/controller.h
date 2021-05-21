@@ -25,11 +25,12 @@ class Controller : // NOLINT(cppcoreguidelines-special-member-functions)
 {
 public:
 	Controller(
-			Window_manager &gui_factory,
-			Time_keeper &time_keeper,
-			Database    &database,
-			Ipc_server   &ipc_server,
-			Notifier    &notifier);
+			Window_manager& gui_factory,
+			Time_keeper&    time_keeper,
+			Database&       database,
+			Ipc_server&     ipc_server,
+			Notifier&       notifier,
+			Images&         images);
 	~Controller() override;
 	void start();
 
@@ -68,6 +69,8 @@ private:
 	Settings_accessor   settings_accessor;
 	Database&           database;
 	Notifier&           notifier;
+	Images&             images;
+
 	int main_window_x = 0;
 	int main_window_y = 0;
 	Task_id selected_task_id = 0;

@@ -13,10 +13,11 @@ static const int COMPLETE_DAY = 86403;
 
 
 Details_dialog::Details_dialog(
-		Database    &database,
-		Time_keeper &timeKeeper,
-		Notifier    &notifier,
-		Window_manager  &gui_factory)
+		Database&        database,
+		Time_keeper&     timeKeeper,
+		Notifier&        notifier,
+		Window_manager&  gui_factory,
+		Images&          images)
 		:
 		Event_observer(notifier),
 		Time_keeper_observer( timeKeeper ),
@@ -33,10 +34,9 @@ Details_dialog::Details_dialog(
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
 
-	// consider not loading and having these icons in memory multiple times accross multiple classes
-	running_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running.svg"), 24, 24, true);
-	running_idle_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
-	blank_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
+	running_icon      = images.by_id(image_identifier::RUNNING);
+	running_idle_icon = images.by_id(image_identifier::RUNNING_IDLE);
+	blank_icon        = images.by_id(image_identifier::BLANK);
 
 	auto width = (int)settings_accessor.get_int("details_dialog_width", 550);
 	auto height = (int)settings_accessor.get_int("details_dialog_height", 700);

@@ -7,6 +7,7 @@
 #include <gtkmm.h>
 #include "IWidget.h"
 #include "status_icon.h"
+#include <gui/images.h>
 
 namespace gui
 {
@@ -30,7 +31,7 @@ using WidgetPtr = std::shared_ptr<IWidget>;
 class Window_manager
 {
 public:
-	Window_manager(Time_keeper&, Database &database, Timer& timer, Notifier& notifier);
+	Window_manager(Time_keeper&, Database &database, Timer& timer, Notifier& notifier,Images& images_);
 	virtual WidgetPtr get_widget(EWidget widget);
 	virtual Status_icon& get_status_icon();
 
@@ -58,7 +59,7 @@ private:
 	Database&    database;
 	Timer&       timer;
 	Notifier&    notifier;
-
+	Images&      images;
 	list<shared_ptr<Gtk::Dialog>> active_dialogs;
 };
 }

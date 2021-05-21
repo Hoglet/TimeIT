@@ -25,7 +25,7 @@
 #include <libtimeit/misc/application_lock.h>
 #include <libtimeit/misc/ipc_server.h>
 #include <libtimeit/misc/ipc_client.h>
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 #include <libtimeit/sync/sync_manager.h>
 
 namespace gui
@@ -118,12 +118,14 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 			Network network;
 			Sync_manager sync_manager(database, network, notifier, timer);
-			Ipc_server ipc_server(socket_name, timer, notifier);
+			Ipc_server   ipc_server(socket_name, timer, notifier);
 
 			Time_keeper  time_keeper(database, timer, notifier);
 			Auto_tracker auto_tracker(time_keeper, database, timer);
-			Window_manager   gui_factory(time_keeper, database, timer, notifier);
-			Controller   controller(gui_factory, time_keeper, database, ipc_server, notifier);
+
+			Images images;
+			Window_manager   gui_factory(time_keeper, database, timer, notifier, images);
+			Controller       controller(gui_factory, time_keeper, database, ipc_server, notifier, images);
 
 			controller.start();
 

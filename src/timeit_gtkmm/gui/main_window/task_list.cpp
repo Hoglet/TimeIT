@@ -10,9 +10,10 @@ using namespace std;
 using namespace Gtk;
 using namespace Glib;
 Task_list::Task_list(
-		Database    &database,
-		Time_keeper &timeKeeper,
-		Notifier    &notifier)
+		Database&    database,
+		Time_keeper& timeKeeper,
+		Notifier&    notifier,
+		Images&      images)
 		:
 		Event_observer(notifier),
 		task_accessor(database),
@@ -20,9 +21,10 @@ Task_list::Task_list(
 
 {
 	// consider not loading and having these icons in memory multiple times across multiple classes
-	running_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running.svg"), 24, 24, true);
-	running_idle_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "running-idle.svg"), 24, 24, true);
-	blank_icon = Gdk::Pixbuf::create_from_file(Glib::build_filename(libtimeit::image_path(), "blank.svg"), 24, 24, true);
+	running_icon      = images.by_id(image_identifier::RUNNING);
+	running_idle_icon = images.by_id(image_identifier::RUNNING_IDLE);
+	blank_icon        = images.by_id(image_identifier::BLANK);
+
 	tree_model = TreeStore::create(columns);
 	set_model(tree_model);
 	append_column(_("Name"), columns.col_name);

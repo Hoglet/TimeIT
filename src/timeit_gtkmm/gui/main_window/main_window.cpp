@@ -3,7 +3,7 @@
 #include <gtkmm.h>
 #include <iostream>
 #include <libtimeit/utils.h>
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 #include <vector>
 #include <glibmm/i18n.h>
 #include "summary.h"
@@ -30,9 +30,10 @@ MainWindow::MainWindow(
 		Database &database,
 		Time_keeper &timeKeeper,
 		Notifier& notifier,
-		Window_manager& gui_factory)
+		Window_manager& gui_factory,
+		Images&         images)
 		:
-		task_list(database, timeKeeper, notifier),
+		task_list(database, timeKeeper, notifier, images),
 		day_summary(database, notifier),
 		week_summary(database, notifier),
 		month_summary(database, notifier),

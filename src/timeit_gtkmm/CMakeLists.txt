@@ -16,6 +16,7 @@ add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
 add_definitions( -DPACKAGE_DATA_DIR=\"${DATADIR}\" )
 add_definitions( -DGETTEXT_PACKAGE=${GETTEXT_PACKAGE})
 add_definitions( -DPROGRAMNAME_LOCALEDIR=${PROGRAMNAME_LOCALEDIR})
+add_definitions( -DIMAGE_SRC_DIR=\"${CMAKE_CURRENT_LIST_DIR}/../images/\" )
 
 #  Source files
 # --------------

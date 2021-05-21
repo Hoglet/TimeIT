@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
 #include <libtimeit/db/database.h>
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 #include <libtimeit/exceptions/db_exception.h>
 #include <libtimeit/db/data_cell.h>
 #include <libtimeit/db/sqlite3.h>

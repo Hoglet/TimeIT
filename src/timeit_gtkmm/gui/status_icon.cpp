@@ -10,6 +10,7 @@
 #include <iostream>
 #include <glibmm/i18n.h>
 #include <iomanip>
+#include <gui/images.h>
 
 namespace gui
 {
@@ -17,9 +18,10 @@ using namespace std;
 using namespace libtimeit;
 
 Status_icon::Status_icon(
-		Time_keeper &time_keeper,
-		Database &database,
-		Notifier& notifier)
+		Time_keeper& time_keeper,
+		Database&    database,
+		Notifier&    notifier,
+		Images&      images)
 		:
 		Time_keeper_observer(time_keeper),
 		Event_observer(notifier),
@@ -28,18 +30,13 @@ Status_icon::Status_icon(
 		time_accessor(database)
 
 {
-	auto image_path = libtimeit::image_path();
-	auto default_icon_path = Glib::build_filename(image_path, "icon.svg");
-	auto running_icon_path = Glib::build_filename(image_path, "running.svg");
-	auto blank_icon_path = Glib::build_filename(image_path, "blank.png");
-
-	default_icon = Gdk::Pixbuf::create_from_file(default_icon_path);
-	running_icon = Gdk::Pixbuf::create_from_file(running_icon_path);
-	status_icon = Gtk::StatusIcon::create(default_icon);
+	default_icon = images.by_id(image_identifier::STD_ICON);
+	running_icon = images.by_id(image_identifier::RUNNING_BIG);
+	status_icon  = Gtk::StatusIcon::create(default_icon);
 	set_icon();
 
-	running_icon_small = Gdk::Pixbuf::create_from_file(running_icon_path, 15, 15, true);
-	idle_icon_small = Gdk::Pixbuf::create_from_file(blank_icon_path, 15, 15, true);
+	running_icon_small = images.by_id(image_identifier::RUNNING_SMALL);
+	idle_icon_small    = images.by_id(image_identifier::BLANK_SMALL);
 
 	Gtk::Window::set_default_icon(default_icon);
 

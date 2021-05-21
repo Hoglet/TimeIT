@@ -1,0 +1,59 @@
+#include "images.h"
+#include <libtimeit/os_abstraction.h>
+
+namespace gui
+{
+using namespace Glib;
+using namespace Gdk;
+using namespace libtimeit;
+
+map<image_identifier, string> image_file_names{
+		{image_identifier::STD_ICON,     "icon.svg"},
+		{image_identifier::RUNNING,      "running.svg"},
+		{image_identifier::RUNNING_IDLE, "running-idle.svg" },
+		{image_identifier::BLANK,        "blank.svg"},
+		{image_identifier::DEFAULT,      "icon.svg"},
+		{image_identifier::RUNNING_SMALL,"running.svg"},
+		{image_identifier::BLANK_SMALL,  "blank.svg"},
+		{image_identifier::RUNNING_BIG,  "running.svg"},
+
+};
+
+Images::Images()
+{
+	create_image(image_identifier::STD_ICON,200,200);
+	create_image(image_identifier::RUNNING,24,24);
+	create_image(image_identifier::RUNNING_IDLE,24,24);
+	create_image(image_identifier::BLANK,24,24);
+	create_image(image_identifier::DEFAULT, 24,24);
+	create_image(image_identifier::RUNNING_SMALL, 15,15);
+	create_image(image_identifier::BLANK_SMALL, 15, 15);
+	create_image(image_identifier::RUNNING_BIG,200,200);
+}
+
+image_pointer Images::by_id(image_identifier id)
+{
+	if(images.find(id)!=images.end())
+	{
+		return images.at(id);
+	}
+	return images.at(image_identifier::DEFAULT);
+}
+
+void Images::create_image(image_identifier id, int width, int height)
+{
+	auto file_name=image_file_names.at(id);
+	string icon_path = build_filename(image_path, file_name );
+	if( ! file_exists(icon_path) )
+	{
+		icon_path = build_filename(image_src_dir, file_name );
+	}
+	if( file_exists(icon_path) )
+	{
+		auto image = Pixbuf::create_from_file(icon_path, width, height, true);
+		images.insert_or_assign(id, image);
+	}
+}
+
+
+}

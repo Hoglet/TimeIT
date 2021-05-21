@@ -2,7 +2,7 @@
 #include <edit_task_dialog.h>
 #include "controller.h"
 #include <details_dialog.h>
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 #include <iostream>
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
@@ -16,11 +16,12 @@ using namespace libtimeit;
 using namespace std;
 
 Controller::Controller(
-		Window_manager  &op_guiFactory,
-		Time_keeper &op_timeKeeper,
-		Database    &database_,
-		Ipc_server   &ipc,
-		Notifier    &notifier_)
+		Window_manager& op_guiFactory,
+		Time_keeper&    op_timeKeeper,
+		Database&       database_,
+		Ipc_server&     ipc,
+		Notifier&       notifier_,
+		Images&         images_)
 		:
 		Time_keeper_observer(op_timeKeeper),
 		Event_observer( notifier_ ),
@@ -29,7 +30,8 @@ Controller::Controller(
 		time_accessor(database_),
 		settings_accessor(database_),
 		database(database_),
-		notifier(notifier_)
+		notifier(notifier_),
+		images(images_)
 
 
 {
@@ -204,7 +206,7 @@ void Controller::on_action_preferences()
 
 void Controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime)
 {
-	auto details_dialog = make_shared<Details_dialog>(database, time_keeper, notifier, window_manager);
+	auto details_dialog = make_shared<Details_dialog>(database, time_keeper, notifier, window_manager, images);
 	if (details_dialog)
 	{
 		window_manager.manage_lifespan(details_dialog);

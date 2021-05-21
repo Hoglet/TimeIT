@@ -7,6 +7,7 @@
 #include <libtimeit/db/database.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
+#include <gui/images.h>
 
 namespace gui
 {
@@ -16,7 +17,11 @@ class Task_list: public Gtk::TreeView, public Event_observer
 {
 public:
 	~Task_list() override;
-	Task_list(Database &database, Time_keeper &time_keeper, Notifier &notifier);
+	Task_list(
+			Database&    database,
+			Time_keeper& time_keeper,
+			Notifier&    notifier,
+			Images&      images);
 	Task_list(const Task_list& )            = delete;
 	Task_list(Task_list&& )                 = delete;
 	Task_list& operator=(const Task_list& ) = delete;

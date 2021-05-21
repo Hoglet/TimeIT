@@ -10,13 +10,14 @@
 
 #include <gtkmm.h>
 #include <IWidget.h>
+#include <gui/images.h>
 
 namespace gui
 {
 class TimeItAboutDialog : public Gtk::AboutDialog, public IWidget
 {
 public:
-	TimeItAboutDialog();
+	TimeItAboutDialog(Images& images);
 
 	// IWidget interface
 	void show() override { Gtk::AboutDialog::show(); }

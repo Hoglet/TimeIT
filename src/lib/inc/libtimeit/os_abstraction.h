@@ -1,10 +1,3 @@
-/*
- * OS_abstraction.h
- *
- *  Created on: 2008-jul-07
- *      Author: hoglet
- */
-
 #ifndef OS_ABSTRACTION_H_
 #define OS_ABSTRACTION_H_
 

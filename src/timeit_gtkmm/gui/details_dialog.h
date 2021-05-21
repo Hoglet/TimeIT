@@ -23,7 +23,12 @@ class Details_dialog:
 		public IWidget
 {
 public:
-	Details_dialog(Database& database, Time_keeper &time_keeper, Notifier& notifier, Window_manager  &window_manager);
+	Details_dialog(
+			Database&       database,
+			Time_keeper&    time_keeper,
+			Notifier&       notifier,
+			Window_manager& window_manager,
+			Images&         images);
 	Details_dialog(const Details_dialog&) = delete;
 	Details_dialog(Details_dialog&&) = delete;
 	Details_dialog& operator=(const Details_dialog&) = delete;

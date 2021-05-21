@@ -6,7 +6,7 @@
  */
 
 #include "timeit_about_dialog.h"
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 #include <libtimeit/version.h>
@@ -19,7 +19,7 @@ void TimeItAboutDialog::on_link_clicked(AboutDialog &about_dialog, const Glib::u
 	show_URL(link);
 }
 
-TimeItAboutDialog::TimeItAboutDialog()
+TimeItAboutDialog::TimeItAboutDialog(Images& images)
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
@@ -33,8 +33,9 @@ TimeItAboutDialog::TimeItAboutDialog()
 	//This is the licence txt
 	set_license(_("This program is licenced under GNU General Public Licence (GPL) version 2."));
 
-	std::string icon_path = Glib::build_filename(libtimeit::image_path(), "icon.svg" );
-	set_logo(Gdk::Pixbuf::create_from_file(icon_path, 200, 200));
+
+
+	set_logo( images.by_id(image_identifier::STD_ICON));
 
 	set_url_hook(
 			[](AboutDialog &dialog, const Glib::ustring& link)

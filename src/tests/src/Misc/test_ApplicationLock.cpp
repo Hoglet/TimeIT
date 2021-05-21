@@ -1,7 +1,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 #include <libtimeit/misc/application_lock.h>
-#include <libtimeit/OS_abstraction.h>
+#include <libtimeit/os_abstraction.h>
 
 namespace Test
 {
