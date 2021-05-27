@@ -10,6 +10,7 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <optional>
 #include <libtimeit/utils.h>
+#include <fmt/core.h>
 
 using namespace std;
 
@@ -22,14 +23,14 @@ Settings_accessor::Settings_accessor(Database &op_database) : database(op_databa
 
 optional<int> Settings_accessor::value(string name)
 {
-	string statement = string_printf(
+	string statement = fmt::format(
 			R"Query(
 				SELECT
 					intValue
 				FROM
 					settings
 				WHERE
-					name = '%s'; )Query", name.c_str());
+					name = '{}'; )Query", name.c_str());
 
 
 	Query_result rows = database.execute(statement);

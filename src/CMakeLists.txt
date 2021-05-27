@@ -32,6 +32,7 @@ ENDIF()
 # ---------------
 find_package(Intl             REQUIRED)
 find_package(Gettext          REQUIRED)
+find_package(fmt              REQUIRED)
 
 
 # make dist target

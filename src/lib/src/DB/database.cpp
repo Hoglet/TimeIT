@@ -8,6 +8,7 @@
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/utils.h>
+#include <fmt/core.h>
 
 namespace libtimeit
 {
@@ -115,7 +116,7 @@ Database::Database(
 
 bool Database::table_exists(string name)
 {
-	auto query = string_printf(
+	auto query = fmt::format(
 			R"Query(
 				SELECT
 					name
@@ -124,7 +125,7 @@ bool Database::table_exists(string name)
 				WHERE
 					type='table'
 				AND
-					name='%s')Query", name.c_str());
+					name='{}')Query", name.c_str());
 	auto rows = db.execute( query );
 
 	return !rows.empty();
@@ -210,7 +211,7 @@ int64_t Database::id_of_last_insert()
 
 [[nodiscard]] bool Database::column_exists( string_view table, string_view  column)
 {
-	auto query = string_printf("SELECT %s FROM %s", column.data(), table.data() );
+	auto query = fmt::format("SELECT {} FROM {}", column.data(), table.data() );
 	try
 	{
 		db.execute(query);

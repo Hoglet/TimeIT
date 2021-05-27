@@ -11,6 +11,7 @@
 #include <glibmm/i18n.h>
 #include "libtimeit/timer.h"
 #include <libtimeit/utils.h>
+#include <fmt/core.h>
 
 namespace gui
 {
@@ -85,11 +86,11 @@ void Idle_dialog::set_text()
 	std::stringstream str;
 	auto minutes_idle = (libtimeit::now() - idle_start_time) / SECONDS_PER_MINUTE;
 
-	// %d represents the time
-	std::string format_str = ngettext("No activity has been detected for %d minute. What should we do?",
-									  "No activity has been detected for %d minutes. What should we do?",
+	// {} represents the time
+	std::string format_str = ngettext("No activity has been detected for {} minute. What should we do?",
+									  "No activity has been detected for {} minutes. What should we do?",
 									  (unsigned long)minutes_idle);
-	str << libtimeit::string_printf(format_str, minutes_idle);
+	str << fmt::format(format_str, minutes_idle);
 
 	if ( !task_string.empty() )
 	{

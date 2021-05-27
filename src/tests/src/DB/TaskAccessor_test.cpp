@@ -24,7 +24,7 @@ TEST (TaskAccessor, getTask)
 	int64_t taskId = taskAccessor.create(Task("Test", 0));
 
 	auto task = taskAccessor.by_id(taskId);
-	ASSERT_EQ("Test", task->name );
+	ASSERT_EQ("Test", task->name);
 }
 
 TEST (TaskAccessor, testGetTasks)
@@ -115,7 +115,7 @@ TEST (TaskAccessor, newTask)
 	taskAccessor.create(task);
 	vector<Task> tasks = taskAccessor.by_parent_id();
 	ASSERT_EQ(1, tasks.size());
-	Task *taskp = &(tasks.at(0));
+	Task* taskp = &(tasks.at(0));
 
 	ASSERT_THROW(taskAccessor.create(*taskp), db_exception) << "Adding an existing task should not be allowed";
 }
@@ -123,7 +123,7 @@ TEST (TaskAccessor, newTask)
 class TAObserver : public Event_observer
 {
 public:
-	TAObserver(Notifier& notifier) : Event_observer(notifier)
+	TAObserver(Notifier &notifier) : Event_observer(notifier)
 	{
 		updatedTaskID = 0;
 		updatedParentTaskID = 0;
@@ -183,7 +183,7 @@ TEST (TaskAccessor, updateTask)
 {
 	Notifier notifier;
 	TempDB tempdb(notifier);
-	TAObserver observer( notifier);
+	TAObserver observer(notifier);
 	Task original_task("Test");
 	Task_accessor taskAccessor(tempdb);
 
@@ -203,7 +203,7 @@ TEST (TaskAccessor, updateTask)
 
 	observer.nameChangedTaskID = 0;
 
-	Task task2( *changedTask);
+	Task task2(*changedTask);
 	taskAccessor.update(task2);
 	auto changedTask2 = taskAccessor.by_id(id);
 	ASSERT_EQ(0, observer.nameChangedTaskID) << "Notified Task_ID: ";
@@ -254,14 +254,25 @@ TEST(TaskAccessor, lastChanged)
 	tasks = taskAccessor.changed_since(0);
 
 	ASSERT_EQ(1, tasks.size()) <<
-								"Updated with task changed before task in database. Number of tasks should be unchanged";
+							   "Updated with task changed before task in database. Number of tasks should be unchanged";
 
 	Task task2 = tasks.at(0);
 
 	ASSERT_EQ(originalName, task2.name) <<
-										  "Updated with task changed before task in database, name should not change";
+										"Updated with task changed before task in database, name should not change";
 
 }
 
+TEST(TaskAccessor, id)
+{
+	Notifier notifier;
+	TempDB tempdb(notifier);
+	Task_accessor taskAccessor(tempdb);
+	string originalName = "Test";
+	Task task(originalName, 0, UUID(), false, 0, 500, {}, false, 0, false);
+	auto expected_id = taskAccessor.create(task);
+	auto id = taskAccessor.id(task.uuid);
+	ASSERT_EQ(expected_id, id);
+}
 
 }

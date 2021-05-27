@@ -35,6 +35,7 @@ target_link_libraries( libtimeit
 		${X11_LIBRARIES}
 		${JANSSON_LIBRARIES}
 		${CURL_LIBRARIES}
+		fmt::fmt
 		"${CMAKE_THREAD_LIBS_INIT}"
 		)
 

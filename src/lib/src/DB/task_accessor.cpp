@@ -1,4 +1,5 @@
 #include <sstream>
+#include <fmt/core.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/utils.h>
 
@@ -232,7 +233,7 @@ Task_id Task_accessor::id(UUID uuid)
 
 	Task_id id = 0;
 	Statement statement_uuid_to_id = database.prepare("SELECT id FROM tasks WHERE uuid=?;");
-	statement_uuid_to_id.bind_value(1, uuid.c_str());
+	statement_uuid_to_id.bind_value(1, uuid.to_string());
 	Query_result rows = statement_uuid_to_id.execute();
 	for (vector<Data_cell> row : rows)
 	{
@@ -460,14 +461,14 @@ void Task_accessor::upgrade()
 
 void Task_accessor::set_task_expanded(Task_id taskID, bool expanded)
 {
-	auto statement = string_printf(
+	auto statement = fmt::format(
 			R"Query(
 				UPDATE
 					tasks
 				SET
-					expanded = %d
+					expanded = {}
 				WHERE
-					id= %d ;
+					id= {} ;
 			)Query"
 					, expanded, taskID);
 	database.execute(statement);

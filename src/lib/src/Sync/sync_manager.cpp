@@ -5,7 +5,7 @@
 #include <libtimeit/db/default_values.h>
 #include <sstream>
 #include <libintl.h>
-
+#include <fmt/core.h>
 #include <libtimeit/internal/gettext.h>
 
 namespace libtimeit
@@ -127,6 +127,7 @@ bool Sync_manager::is_active()
 	string base_url = settings_accessor.get_string("URL", DEFAULT_URL);
 	string username = settings_accessor.get_string("Username", DEFAULT_USER);
 	return (base_url.length() > 0 && username.length() > 0);
+
 }
 void Sync_manager::sync_tasks_to_database()
 {
@@ -284,8 +285,8 @@ void Sync_manager::manage_network_problems()
 	if (!result.status_ok || result.http_code != HTTP_OK)
 	{
 		std::stringstream text;
-		// %s is replaced with the URI on which the connection failed
-		text << string_printf(_("Failed connection to %s:\n"), result.url.c_str());
+		// {} is replaced with the URI on which the connection failed
+		text << fmt::format(_("Failed connection to {}:\n"), result.url.c_str());
 
 		text << _("HTTP error ") << result.http_code << " ";
 		if (result.http_code == HTTP_UNAUTHORIZED)

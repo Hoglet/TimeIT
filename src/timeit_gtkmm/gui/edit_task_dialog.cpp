@@ -4,6 +4,7 @@
 #include <libtimeit/logic/workspace.h>
 #include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
+#include <fmt/core.h>
 
 namespace gui
 {
@@ -27,7 +28,7 @@ Edit_task_dialog::Edit_task_dialog(Database &database) :
 
 	/* This txt is the headline for the area where you choose
 	 on what workspace the task should be automatically started */
-	string text = string_printf("<b>%s</b>", _("Workspace tracking"));
+	string text = fmt::format("<b>{}</b>", _("Workspace tracking"));
 	workspace_label.set_text(text);
 
 	create_layout();

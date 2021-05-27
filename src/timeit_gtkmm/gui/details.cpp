@@ -1,11 +1,5 @@
-/*
- * Details.cpp
- *
- *  Created on: 2008-jul-22
- *      Author: hoglet
- */
-
 #include "details.h"
+#include <fmt/core.h>
 #include <vector>
 #include <libtimeit/utils.h>
 #include <glibmm/i18n.h>
@@ -113,13 +107,18 @@ void Details::on_menu_file_popup_remove()
 			auto idle_gt = settings_accessor.get_int("Gt", DEFAULT_GT);
 			auto idle_gz = settings_accessor.get_int("Gz", DEFAULT_GZ);
 			int64_t minutes_to_lose = (int64_t)difftime(time_entry.stop, time_entry.start) / SECONDS_PER_MINUTE;
-			std::string minutes_string = string_printf("<span color='red'>%d</span>", minutes_to_lose);
-			std::string secondary_text =
-					minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0 ?
-					string_printf(
-							_("Removing will lose %s minutes.\n\nRemoving will be permanent."),
-							minutes_string.c_str()) :
-					_("Gone, gone will not come again...");
+			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose);
+			std::string secondary_text;
+			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0)
+			{
+				secondary_text = fmt::format(
+						_("Removing will lose {} minutes.\n\nRemoving will be permanent."),
+						minutes_string.c_str());
+			}
+			else
+			{
+				secondary_text = _("Gone, gone will not come again...");
+			}
 
 			Gtk::MessageDialog dialog(_("Do you really want to remove this?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 			dialog.set_secondary_text(secondary_text, true);
@@ -176,14 +175,29 @@ void Details::on_menu_file_popup_merge()
 
 			auto minutes_to_gain = (int)difftime(time_entry_1.start, time_entry_0.stop) / SECONDS_PER_MINUTE;
 
-			std::string minutes_string = string_printf(
-					minutes_to_gain >= 0 ? "<span color='green'>%d</span>" : "<span color='red'>%d</span>", minutes_to_gain);
-			std::string secondary_text =
-					minutes_to_gain > idle_gt || minutes_to_gain > idle_gz || minutes_to_gain < 0 ?
-					string_printf(
-							_("Merging will add %s minutes.\n\nMerging with the next row will be permanent."),
-							minutes_string.c_str()) :
-					_("Merging with the next row will be permanent.");
+			std::string minutes_string;
+			if (minutes_to_gain >= 0)
+			{
+				minutes_string = fmt::format("<span color='green'>{}</span>", minutes_to_gain);
+			}
+			else
+			{
+				minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_gain);
+			}
+			std::string secondary_text;
+			if (
+					minutes_to_gain > idle_gt ||
+					minutes_to_gain > idle_gz ||
+					minutes_to_gain < 0)
+			{
+				secondary_text = fmt::format(
+						_("Merging will add {} minutes.\n\nMerging with the next row will be permanent."),
+						minutes_string.c_str());
+			}
+			else
+			{
+				secondary_text = _("Merging with the next row will be permanent.");
+			}
 
 			Gtk::MessageDialog dialog(_("Do you really want to merge?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 			dialog.set_secondary_text(secondary_text, true);
@@ -425,11 +439,11 @@ void Details::update_row(TreeModel::Row& row, Row_data row_data ) const
 		auto seconds_today = row_data.cumulative_time;
 		if (is_on_different_days(row_data.start, row_data.stop))
 		{
-			row[columns.col_day_total] = string_printf("\u2003≠%s ", seconds_2_hhmm(seconds_today).c_str() );
+			row[columns.col_day_total] = fmt::format("\u2003≠{} ", seconds_2_hhmm(seconds_today).c_str() );
 		}
 		else
 		{
-			row[columns.col_day_total] = string_printf("\u2003≈%s ", seconds_2_hhmm(seconds_today).c_str());
+			row[columns.col_day_total] = fmt::format("\u2003≈{} ", seconds_2_hhmm(seconds_today).c_str());
 		}
 	}
 }
