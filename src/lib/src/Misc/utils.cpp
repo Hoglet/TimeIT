@@ -1,13 +1,6 @@
-/*
- * Utils.cpp
- *
- *  Created on: 20-Jun-08
- *      Author: hoglet
- */
-
-#include "libtimeit/utils.h"
+#include <libtimeit/utils.h>
 #include <sys/types.h>
-#include "libtimeit/os_abstraction.h"
+#include <libtimeit/os_abstraction.h>
 #include <ctime>
 #include <iomanip>
 #include <langinfo.h>
