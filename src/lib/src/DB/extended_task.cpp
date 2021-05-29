@@ -5,6 +5,7 @@ namespace libtimeit
 
 Extended_task::Extended_task(
 		int           ID,
+		UUID          uuid,
 		int           parent_ID,
 		const string& name,
 		int           time,
@@ -15,7 +16,7 @@ Extended_task::Extended_task(
 		Task(
 				name,
 				parent_ID,
-				UUID(),
+				uuid,
 				false,
 				ID,
 				0,

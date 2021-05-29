@@ -16,6 +16,7 @@ struct Extended_task : public Task
 
 	Extended_task(
 			int           ID,
+			UUID          uuid,
 			int           parent_ID,
 			const string& name,
 			int           time = 0,

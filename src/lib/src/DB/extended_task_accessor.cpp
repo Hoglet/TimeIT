@@ -42,7 +42,7 @@ vector<Extended_task> Extended_task_accessor::get_extended_tasks(int64_t taskID,
 	vector<Extended_task> return_value;
 	stringstream statement;
 
-	statement << "SELECT id, parent, name, expanded, running "
+	statement << "SELECT id, parent, name, expanded, running, uuid"
 			"  FROM "
 			"    v_tasks"
 			"  WHERE deleted=0";
@@ -81,12 +81,22 @@ vector<Extended_task> Extended_task_accessor::get_extended_tasks(int64_t taskID,
 		bool running = row[4].boolean();
 		int time = time_accessor.duration_time(id, start, stop);
 		int total_time = time;
-		if(id>0)
+		total_time = time_accessor.total_cumulative_time(id, start, stop);
+		auto opt_uuid=UUID::from_string(row[5].text());
+
+		if(opt_uuid.has_value())
 		{
-			total_time = time_accessor.total_cumulative_time(id, start, stop);
+			Extended_task task(
+					id,
+					opt_uuid.value(),
+					parent,
+					name,
+					time,
+					expanded,
+					running,
+					total_time);
+			return_value.push_back(task);
 		}
-		Extended_task task(id, parent, name, time, expanded, running, total_time);
-		return_value.push_back(task);
 	}
 	return return_value;
 }
