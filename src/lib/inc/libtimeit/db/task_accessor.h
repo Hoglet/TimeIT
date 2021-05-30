@@ -1,7 +1,6 @@
 #ifndef TASK_ACCESSOR_H_
 #define TASK_ACCESSOR_H_
 
-#include <libtimeit/db/accessor.h>
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/task.h>
@@ -13,7 +12,7 @@
 namespace libtimeit
 {
 
-class Task_accessor: public Accessor
+class Task_accessor
 {
 	friend class Database;
 	friend class Sync_manager;
@@ -36,12 +35,6 @@ public:
 	void     set_task_expanded(Task_id taskID, bool expanded);
 
 protected:
-	void      create_table()   override;
-	void      drop_views()     override {};
-	void      create_views()   override {};
-	void      upgrade()        override;
-	void      upgrade_to_db_5();
-
 	Database& database; // NOLINT
 
 private:
@@ -50,6 +43,17 @@ private:
 
 	optional<class UUID> uuid(Task_id id);
 	optional<Task>       get_task_unlimited(Task_id taskID);
+
+	Statement statement_uuid_to_id;
+	Statement statement_get_task;
+	Statement statement_id_to_uuid;
+	Statement statement_new_task;
+
+	static void  setup(Database& database);
+	static void  create_table(Database& db);
+	static void  upgrade(Database& db);
+	static void  upgrade_to_db_5(Database& db);
+	static void  internal_create(const Task &task, Statement &statement_new_task);
 };
 
 }

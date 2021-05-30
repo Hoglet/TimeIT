@@ -18,7 +18,7 @@ Auto_track_accessor::Auto_track_accessor(Database& op_database) : database(op_da
 }
 
 
-void  Auto_track_accessor::create_table()
+void  Auto_track_accessor::create_table(Database& database)
 {
 	database.execute(R"Query(
 		CREATE TABLE IF NOT EXISTS
@@ -30,7 +30,7 @@ void  Auto_track_accessor::create_table()
 		)Query");
 }
 
-void  Auto_track_accessor::upgrade()
+void  Auto_track_accessor::upgrade(Database& /*database*/)
 {
 
 }
@@ -80,6 +80,13 @@ void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<unsigned> works
 		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << task_ID << ", " << workspace << ")";
 		database.execute(statement.str());
 	}
+}
+
+void Auto_track_accessor::setup(Database& database)
+{
+	Auto_track_accessor::create_table(database);
+	Auto_track_accessor::upgrade(database);
+
 }
 
 }

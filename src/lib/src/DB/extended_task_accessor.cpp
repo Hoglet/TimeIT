@@ -112,13 +112,13 @@ optional<Extended_task> Extended_task_accessor::by_id(int64_t taskID, time_t sta
 }
 
 
-void Extended_task_accessor::drop_views()
+void Extended_task_accessor::drop_views(Database& database)
 {
 	database.execute("DROP VIEW IF EXISTS v_running");
 	database.execute("DROP VIEW IF EXISTS v_tasks");
 }
 
-void Extended_task_accessor::create_views()
+void Extended_task_accessor::create_views(Database& database)
 {
 	database.execute(
 			R"Query(
@@ -146,6 +146,18 @@ void Extended_task_accessor::create_views()
 					tasks.id=v_running.taskId
 				)Query");
 
+}
+
+void Extended_task_accessor::upgrade(Database& /*database*/)
+{
+	//noop
+}
+
+void Extended_task_accessor::setup(Database& database)
+{
+	Extended_task_accessor::drop_views(database);
+	Extended_task_accessor::upgrade(database);
+	Extended_task_accessor::create_views(database);
 }
 
 

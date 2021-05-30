@@ -9,7 +9,6 @@
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/db/accessor.h>
 #include "sqlite3.h"
 #include "notifier.h"
 #include "time_entry.h"
@@ -19,7 +18,7 @@ namespace libtimeit
 class Notifier;
 using namespace std;
 
-class Time_accessor: public Accessor
+class Time_accessor
 {
 	friend Database;
 public:
@@ -45,12 +44,9 @@ public:
 	Task_id_list            active_tasks(time_t start, time_t stop) ;
 
 protected:
-	void                 create_table()   override;
-	void                 drop_views()     override;
-    void                 create_views()   override;
-	void                 upgrade()        override;
-	void                 upgrade_to_db_5();
-
+	static void          create_table(Database& db);
+	static void          drop_views(Database& database);
+    static void          create_views(Database& database);
     void                 remove_short_time_spans();
 
 private:
@@ -61,6 +57,14 @@ private:
     Duration        time_completely_within_limits(Task_id & id, time_t & start, time_t & stop);
     Task_id_list    children_id_list(Task_id id);
 
+	Statement statement_uuid_to_id;
+	Statement by_id_statement;
+	Statement statement_update_time;
+	Statement statement_new_entry;
+	static void setup(Database& database);
+	static void upgrade(Database& database);
+	static void upgrade_to_db_5(Database& database);
+	static void internal_create(const Time_entry &item, Statement& new_entry);
 };
 }
 #endif

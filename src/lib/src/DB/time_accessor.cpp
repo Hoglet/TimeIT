@@ -7,7 +7,32 @@ using namespace std;
 namespace libtimeit
 {
 
-Time_accessor::Time_accessor(Database &op_database) : database(op_database)
+static const string new_time_entry_statement = R"Query(
+	INSERT INTO
+		times (uuid,taskID, start, stop, changed,deleted,running,state)
+	VALUES (?,?,?,?,?,?,?,?))Query";
+
+Time_accessor::Time_accessor(Database &op_database)
+	:
+	database(op_database),
+	statement_uuid_to_id(database.prepare("SELECT id FROM times WHERE uuid=?;")),
+	by_id_statement(database.prepare("SELECT taskID, start, stop, changed, uuid, task_UUID, state FROM v_times WHERE id = ?")),
+	statement_update_time(database.prepare(
+R"(
+	UPDATE
+ 		times
+	SET
+		uuid=?,
+		taskID=?,
+		start=?,
+		stop=?,
+		running=?,
+		changed=?,
+		deleted=?,
+		state=?
+	WHERE
+		id=?)")),
+	statement_new_entry( database.prepare(new_time_entry_statement))
 {
 }
 
@@ -25,11 +50,9 @@ void Time_accessor::remove(int64_t id)
 
 optional<Time_entry> Time_accessor::by_id(int64_t id)
 {
-	Statement statement = database.prepare(
-			"SELECT taskID, start, stop, changed, uuid, task_UUID, state FROM v_times WHERE id = ?");
-	statement.bind_value(1, id);
+	by_id_statement.bind_value(1, id);
 
-	Query_result rows = statement.execute();
+	Query_result rows = by_id_statement.execute();
 	for ( auto row: rows )
 	{
 		int column{0};
@@ -252,7 +275,6 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 Time_id Time_accessor::uuid_to_id(UUID uuid)
 {
 	Time_id id = 0;
-	Statement statement_uuid_to_id = database.prepare("SELECT id FROM times WHERE uuid=?;");
 	statement_uuid_to_id.bind_value(1, uuid.c_str());
 	Query_result rows = statement_uuid_to_id.execute();
 	for (auto row : rows)
@@ -282,8 +304,6 @@ bool Time_accessor::update(Time_entry item )
 			case PAUSED:
 				break;
 		}
-		Statement statement_update_time = database.prepare(
-				"UPDATE times SET uuid=?, taskID=?, start=?, stop=?, running=?, changed=?, deleted=?, state=? WHERE id=?");
 		auto index{1};
 		statement_update_time.bind_value(index++, item.uuid.c_str());
 		statement_update_time.bind_value(index++, item.task_id);
@@ -332,6 +352,19 @@ Duration Time_accessor::total_cumulative_time(int64_t taskID, time_t start, time
 
 Time_id Time_accessor::create(Time_entry item)
 {
+	internal_create(item, statement_new_entry);
+	Time_id time_id = database.id_of_last_insert();
+
+	if (item.start != item.stop)
+	{
+		database.send_notification(TASK_UPDATED, item.task_id);
+	}
+	database.send_notification(TIME_ENTRY_CHANGED, time_id);
+	return time_id;
+}
+
+void Time_accessor::internal_create(const Time_entry &item, Statement& statement_new_entry)
+{
 	auto deleted = false;
 	auto running = false;
 	switch ( item.state )
@@ -346,8 +379,6 @@ Time_id Time_accessor::create(Time_entry item)
 		case PAUSED:
 			break;
 	}
-	Statement statement_new_entry = database.prepare(
-			"INSERT INTO times (uuid,taskID, start, stop, changed,deleted,running,state) VALUES (?,?,?,?,?,?,?,?)");
 	auto index{1};
 	statement_new_entry.bind_value(index++, item.uuid.c_str());
 	statement_new_entry.bind_value(index++, item.task_id);
@@ -358,24 +389,17 @@ Time_id Time_accessor::create(Time_entry item)
 	statement_new_entry.bind_value(index++, (int64_t)running);
 	statement_new_entry.bind_value(index, item.state);
 	statement_new_entry.execute();
-	Time_id time_id = database.id_of_last_insert();
-
-	if (item.start != item.stop)
-	{
-		database.send_notification(TASK_UPDATED, item.task_id);
-	}
-	database.send_notification(TIME_ENTRY_CHANGED, time_id);
-	return time_id;
 }
 
-void Time_accessor::upgrade_to_db_5()
+void Time_accessor::upgrade_to_db_5(Database& database)
 {
 	time_t now = time(nullptr);
 
 	database.execute("DELETE FROM times WHERE taskID = 0");
 	database.execute("DROP TABLE IF EXISTS times_backup");
 	database.execute("ALTER TABLE times RENAME TO times_backup");
-	create_table();
+	Time_accessor::create_table(database);
+	auto statement_new_entry(database.prepare(new_time_entry_statement));
 
 	Statement statement = database.prepare("SELECT id, taskID, start, stop FROM  times_backup");
 	Query_result rows = statement.execute();
@@ -387,15 +411,15 @@ void Time_accessor::upgrade_to_db_5()
 		time_t  stop   = row[3].integer();
 
 		Time_entry item(id, UUID(), task_id, {}, start, stop, STOPPED, now);
-		create(item);
+		internal_create(item, statement_new_entry);
 	}
 	database.execute("DROP TABLE IF EXISTS times_backup");
 }
-void Time_accessor::upgrade()
+void Time_accessor::upgrade(Database& database)
 {
 	if (database.current_db_version() < 5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		upgrade_to_db_5();
+		upgrade_to_db_5(database);
 	}
 	if(database.current_db_version() == 5) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
@@ -430,7 +454,7 @@ void Time_accessor::upgrade()
 	}
 }
 
-void Time_accessor::create_table()
+void Time_accessor::create_table(Database& database)
 {
 	database.execute( R"Query(
 			CREATE TABLE IF NOT EXISTS times
@@ -449,13 +473,13 @@ void Time_accessor::create_table()
 		);
 }
 
-void Time_accessor::drop_views()
+void Time_accessor::drop_views(Database& database)
 {
 	database.execute("DROP VIEW IF EXISTS v_times");
 }
-void Time_accessor::create_views()
+void Time_accessor::create_views(Database& database)
 {
-
+	Time_accessor::drop_views(database);
 	database.execute(R"Query(
 			CREATE VIEW v_times AS
 			SELECT
@@ -559,6 +583,14 @@ Time_list Time_accessor::by_state(Time_entry_state state) const
 		}
 	}
 	return time_list;
+}
+
+void Time_accessor::setup(Database& database)
+{
+	Time_accessor::create_table(database);
+	Time_accessor::drop_views(database);
+	Time_accessor::upgrade(database);
+	Time_accessor::create_views(database);
 }
 
 }

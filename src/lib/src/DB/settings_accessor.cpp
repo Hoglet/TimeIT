@@ -197,7 +197,7 @@ void Settings_accessor::setting_changed(string name)
 	database.send_notification(SETTINGS_CHANGED, 0, name);
 }
 
-void Settings_accessor::create_table()
+void Settings_accessor::create_table(Database& database)
 {
 	database.execute( R"Query(
 		CREATE TABLE IF NOT EXISTS
@@ -211,9 +211,15 @@ void Settings_accessor::create_table()
 		)Query");
 }
 
-void Settings_accessor::upgrade()
+void Settings_accessor::upgrade(Database& /*database*/)
 {
+	//noop
+}
 
+void Settings_accessor::setup(Database& database)
+{
+	Settings_accessor::create_table(database);
+	Settings_accessor::upgrade( database );
 }
 
 }

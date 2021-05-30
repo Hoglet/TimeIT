@@ -16,47 +16,10 @@ using namespace std;
 
 const int EXPECTED_DB_VERSION = 5;
 
-void Database::create_tables( list<Accessor*>& accessors)
-{
-	for ( auto *accessor : accessors )
-	{
-		accessor->create_table();
-	}
-}
-
-
 
 int Database::current_db_version() const
 {
 	return db_version;
-}
-
-void Database::upgrade( list<Accessor*>& accessors)
-{
-	for ( auto *accessor : accessors)
-	{
-		accessor->upgrade();
-	}
-
-	//LCOV_EXCL_START
-	db.execute("DROP VIEW IF EXISTS v_timesSummary;");
-	//LCOV_EXCL_STOP
-}
-
-void Database::drop_views( list<Accessor*>& accessors )
-{
-	for ( auto *accessor : accessors)
-	{
-		accessor->drop_views();
-	}
-}
-
-void Database::create_views( list<Accessor*>& accessors )
-{
-	for ( auto *accessor : accessors)
-	{
-		accessor->create_views();
-	}
 }
 
 Database::Database(
@@ -71,28 +34,22 @@ Database::Database(
 
 		find_db_version();
 
+
+		Task_accessor::setup(*this);
+		Time_accessor::setup(*this);
+		Auto_track_accessor::setup(*this);
+		Settings_accessor::setup(*this);
+		Extended_task_accessor::setup(*this);
+
 		begin_transaction();
+		//db.execute("PRAGMA foreign_keys = OFF");
 
-		Task_accessor          tasks( *this );
 		Time_accessor          times( *this );
-		Auto_track_accessor    auto_track(*this );
 		Settings_accessor      settings( *this );
-		Extended_task_accessor extended_tasks( *this);
 
-		list<Accessor*> accessors =
-				{
-						&tasks,
-						&times,
-						&auto_track,
-						&settings,
-						&extended_tasks,
-				};
 
-		create_tables(accessors);
-		db.execute("PRAGMA foreign_keys = OFF");
-		drop_views( accessors );
-		upgrade(accessors);
-		create_views( accessors );
+
+
 
 		db_version = EXPECTED_DB_VERSION;
 		settings.set_int("db_version", db_version);

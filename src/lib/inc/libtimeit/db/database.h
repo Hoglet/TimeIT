@@ -5,7 +5,6 @@
 #include <memory>
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/query_result.h>
-#include <libtimeit/db/accessor.h>
 
 
 namespace libtimeit
@@ -39,11 +38,6 @@ public:
 	bool                table_exists(string name);
 	[[nodiscard]] int   current_db_version() const;
 	[[nodiscard]] bool  column_exists( string_view string, string_view string_1);
-protected:
-	static void create_tables( list<Accessor*>& accessors );
-	void upgrade( list<Accessor*>&  accessors);
-	static void drop_views( list<Accessor*>& accessors );
-	static void create_views( list<Accessor*>& accessors );
 private:
 	int        db_version{0};
 	Notifier&  notifier;

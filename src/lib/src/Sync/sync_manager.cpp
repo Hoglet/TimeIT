@@ -7,6 +7,7 @@
 #include <libintl.h>
 #include <fmt/core.h>
 #include <libtimeit/internal/gettext.h>
+#include <libtimeit/logging.h>
 
 namespace libtimeit
 {
@@ -18,6 +19,8 @@ static const int MINUTE = 60;
 using namespace std;
 
 const int ONE_DAY = 60 * 60 * 24;
+
+
 
 Sync_manager::Sync_manager(
 		Database &database,
@@ -55,6 +58,7 @@ void Sync_manager::on_signal_1_second()
 			}
 			if (is_active() && now > next_sync)
 			{
+				logg("Starting sync run");
 				state = Sync_state::TASK_REQUEST;
 				current_sync = now;
 				next_sync = get_next_sync(current_sync);
@@ -62,9 +66,11 @@ void Sync_manager::on_signal_1_second()
 		}
 			break;
 		case Sync_state::TASK_REQUEST:
+			logg("Requesting tasks");
 			outstanding_request = request_tasks(last_sync);
 			state = Sync_state::WAIT;
 			following_state = Sync_state::TASK_STORE;
+			logg("Done");
 			break;
 		case Sync_state::WAIT:
 			if (request_is_done() )
@@ -72,29 +78,40 @@ void Sync_manager::on_signal_1_second()
 				auto response = outstanding_request->future_response.get();
 				if (response.status_ok && response.http_code == HTTP_OK)
 				{
+					logg("Response arrived");
 					state = following_state;
 				}
 				else
 				{
+					logg("Request failed");
 					state = Sync_state::FAIL;
 				}
 			}
 			break;
 		case Sync_state::TASK_STORE:
+			logg("Storing tasks");
 			sync_tasks_to_database();
 			state = Sync_state::TIME_REQUEST;
+			logg("Done");
+			break;
 		case Sync_state::TIME_REQUEST:
+			logg("Requesting times");
 			outstanding_request = request_times(last_sync);
 			state = Sync_state::WAIT;
 			following_state = Sync_state::TIME_STORE;
+			logg("Done");
 			break;
 		case Sync_state::TIME_STORE:
+			logg("Storing times");
 			sync_times_to_database();
 			state = Sync_state::IDLE;
 			next_sync = get_next_sync(current_sync);
 			last_sync = current_sync;
+			logg("Done");
+			logg("Sync run done");
 			break;
 		case Sync_state::FAIL:
+			logg("Failure");
 			manage_network_problems();
 			state = Sync_state::IDLE;
 			next_sync = get_next_sync(current_sync);
@@ -171,7 +188,10 @@ void Sync_manager::sync_tasks_to_database()
 		}
 		else
 		{
-			task_accessor.create(temp_task);
+			if( !temp_task.deleted )
+			{
+				task_accessor.create(temp_task);
+			}
 		}
 	}
 //Update tasks that had missing parent earlier
@@ -214,6 +234,10 @@ void Sync_manager::sync_times_to_database()
 	{
 		auto task_uuid = item.task_uuid;
 		auto task_id = task_accessor.id(*task_uuid);
+		if(task_id==0)
+		{
+			break;
+		}
 		auto uuid = item.uuid;
 		auto id = time_accessor.uuid_to_id(uuid);
 		time_t changed = item.changed;
@@ -247,7 +271,10 @@ void Sync_manager::sync_times_to_database()
 		}
 		else
 		{
-			time_accessor.create(te);
+			if( te.state != DELETED)
+			{
+				time_accessor.create(te);
+			}
 		}
 	}
 	task_accessor.enable_notifications(true);

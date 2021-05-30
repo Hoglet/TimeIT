@@ -8,17 +8,43 @@ namespace libtimeit
 
 using namespace std;
 
+const string create_task_query = R"Query(
+				INSERT INTO
+					tasks (name,parent,changed,uuid,completed,deleted,idle,quiet)
+				VALUES (?,?,?,?,?,?,?,?);
+				)Query";
+
+
+
 Task_accessor::Task_accessor(	Database& op_database )
 		:
-		database(op_database)
+		database(op_database),
+		statement_uuid_to_id(database.prepare("SELECT id FROM tasks WHERE uuid=?;")),
+		statement_get_task(database.prepare(R"(
+				SELECT
+					id,
+					parent,
+					name,
+					completed,
+					uuid,
+					changed,
+					deleted,
+					idle,
+					quiet
+				FROM
+					tasks
+				WHERE
+					id=?)")),
+		statement_id_to_uuid(database.prepare("SELECT uuid FROM tasks WHERE id=?;")),
+		statement_new_task(database.prepare( create_task_query ))
 {
 }
 
 
 
-void Task_accessor::create_table()
+void Task_accessor::create_table(Database& db)
 {
-	database.execute( R"Query(
+	Statement create_statement = db.prepare( R"Query(
 		CREATE TABLE IF NOT EXISTS
  			tasks
 			 (
@@ -36,6 +62,7 @@ void Task_accessor::create_table()
 			)
 			)Query"
 			);
+	create_statement.execute();
 }
 
 void Task_accessor::enable_notifications(bool state)
@@ -88,22 +115,6 @@ vector<Task> Task_accessor::by_parent_id(int64_t parent)
 
 optional<Task> Task_accessor::by_id(int64_t taskID)
 {
-	Statement statement_get_task = database.prepare(
-			R"(
-				SELECT
-					id,
-					parent,
-					name,
-					completed,
-					uuid,
-					changed,
-					deleted,
-					idle,
-					quiet
-				FROM
-					tasks
-				WHERE
-					id=?)");
 	statement_get_task.bind_value(1, taskID);
 	Query_result rows = statement_get_task.execute();
 	shared_ptr<Task> task;
@@ -232,7 +243,6 @@ Task_id Task_accessor::id(UUID uuid)
 {
 
 	Task_id id = 0;
-	Statement statement_uuid_to_id = database.prepare("SELECT id FROM tasks WHERE uuid=?;");
 	statement_uuid_to_id.bind_value(1, uuid.to_string());
 	Query_result rows = statement_uuid_to_id.execute();
 	for (vector<Data_cell> row : rows)
@@ -246,7 +256,6 @@ optional<class UUID> Task_accessor::uuid(Task_id id)
 {
 	if( id>0 )
 	{
-		Statement statement_id_to_uuid = database.prepare("SELECT uuid FROM tasks WHERE id=?;");
 		statement_id_to_uuid.bind_value(1, id);
 		Query_result rows = statement_id_to_uuid.execute();
 		for (vector<Data_cell> row : rows)
@@ -328,7 +337,6 @@ bool Task_accessor::update(const Task &task)
 	auto existing_task = get_task_unlimited(task.id);
 	if (existing_task.has_value() && task != *existing_task && task.last_changed >= existing_task->last_changed)
 	{
-
 		internal_update(task);
 		notify(*existing_task, task);
 		return true;
@@ -338,12 +346,16 @@ bool Task_accessor::update(const Task &task)
 
 Task_id Task_accessor::create(const Task &task)
 {
-	Statement statement_new_task = database.prepare(
-			R"Query(
-				INSERT INTO
-					tasks (name,parent,changed,uuid,completed,deleted,idle,quiet)
-				VALUES (?,?,?,?,?,?,?,?);
-				)Query");
+
+	internal_create(task, statement_new_task);
+	Task_id id = database.id_of_last_insert();
+
+	database.send_notification(TASK_ADDED, id);
+	return id;
+}
+
+void Task_accessor::internal_create(const Task &task, Statement &statement_new_task)
+{
 	auto index{1};
 	statement_new_task.bind_value(index++, task.name);
 	if (task.parent_id > 0)
@@ -362,10 +374,6 @@ Task_id Task_accessor::create(const Task &task)
 	statement_new_task.bind_value(index,   (int64_t)task.quiet);
 
 	statement_new_task.execute();
-	Task_id id = database.id_of_last_insert();
-
-	database.send_notification(TASK_ADDED, id);
-	return id;
 }
 
 void Task_accessor::set_parent_id(Task_id taskID, Task_id parentID)
@@ -397,12 +405,14 @@ void Task_accessor::remove(int64_t taskID)
 	database.send_notification(TASK_REMOVED, taskID);
 }
 
-void Task_accessor::upgrade_to_db_5()
+void Task_accessor::upgrade_to_db_5(Database& database)
 {
 	time_t now = time(nullptr);
 //Update Tasks to new design
 	database.execute("ALTER TABLE tasks RENAME TO tasks_backup");
-	create_table();
+	Task_accessor::create_table(database);
+	auto statement_new_task(database.prepare( create_task_query ));
+
 	database.execute("UPDATE tasks_backup SET deleted = 0 WHERE deleted != 1");
 	database.execute("UPDATE tasks_backup SET parent = NULL WHERE parent = 0");
 	Statement statement = database.prepare("SELECT id, parent, name, deleted FROM  tasks_backup");
@@ -421,17 +431,17 @@ void Task_accessor::upgrade_to_db_5()
 		time_t changed   = now;
 
 		Task task(name, parent, UUID(), completed, id, changed, {}, deleted, 0, false);
-		create(task);
+		internal_create(task, statement_new_task);
 	}
 	database.execute("DROP TABLE tasks_backup");
 
 }
 
-void Task_accessor::upgrade()
+void Task_accessor::upgrade(Database& database)
 {
 	if (database.current_db_version() < 5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		upgrade_to_db_5();
+		upgrade_to_db_5(database);
 	}
 	if( ! database.column_exists("tasks", "idle") )
 	{
@@ -472,6 +482,12 @@ void Task_accessor::set_task_expanded(Task_id taskID, bool expanded)
 			)Query"
 					, expanded, taskID);
 	database.execute(statement);
+}
+
+void Task_accessor::setup(Database& database)
+{
+	Task_accessor::create_table(database);
+	Task_accessor::upgrade(database);
 }
 
 }
