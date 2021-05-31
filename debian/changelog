@@ -1,27 +1,28 @@
 timeit (2.1.0.1) UNRELEASED; urgency=medium
- 
-	* Removal of dead code.
-	* Separating logic into library
-	* Switching to google test framework
-	* Separating tests into separate binary
-	* Refactoring of code.
-	* More usage of C++11 -> C++17.
-	* Gui tweaks
+
+  * Removal of dead code.
+  * Separating logic into library
+  * Switching to google test framework
+  * Separating tests into separate binary
+  * Refactoring of code.
+  * More usage of C++11 -> C++17.
+  * Gui tweaks
+
+ -- Kent Asplund <hoglet@solit.se>  Mon, 19 Apr 2021 11:37:09 +0200
 
 timeit (2.0.2) UNRELEASED; urgency=medium
 
   * Reverted to automatic dependencies in the binary ( ${shlibs:Depends}, ${misc:Depends} )
   * Translation to Portuguese
-  * 
 
  -- Kent Asplund <hoglet@solit.se>  Mon, 19 Apr 2021 11:37:09 +0200
 
 timeit (2.0.0) released; urgency=medium
 
-	* Romanian translation
-	* Updates to German translation
-	* Creation of ctags
-	* Removed project files
+  * Romanian translation
+  * Updates to German translation
+  * Creation of ctags
+  * Removed project files
 
  -- Kent Asplund <hoglet@solit.se>  Sun, 18 Aug 2019 21:19:46 +0200
 
