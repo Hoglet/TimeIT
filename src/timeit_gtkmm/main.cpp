@@ -125,7 +125,7 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 			Images images;
 			Window_manager   gui_factory(time_keeper, database, timer, notifier, images);
-			Controller       controller(gui_factory, time_keeper, database, ipc_server, notifier, images);
+			Controller       controller(gui_factory, time_keeper, database, notifier, images);
 
 			controller.start();
 

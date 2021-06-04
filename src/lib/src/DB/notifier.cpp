@@ -86,6 +86,7 @@ void Notifier::send_message(Notification_message message)
 						observer->on_parent_changed(message.id);
 					}
 			);
+			break;
 		case COMPLETE_UPDATE:
 			this->notify_all(
 					[message](Event_observer* observer)

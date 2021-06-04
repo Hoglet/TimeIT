@@ -25,10 +25,10 @@ Extended_task::Extended_task(
 				0,
 				false
 				),
-		total_time(total_time_),
 		expanded(expanded),
 		running(running),
-		time(time)
+		time(time),
+		total_time(total_time_)
 {
 }
 

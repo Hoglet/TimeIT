@@ -9,14 +9,41 @@
 namespace libtimeit
 {
 
+class Data
+{
+public:
+	Data(size_t size)
+	{
+		length_=size;
+		data=new char[length_ + 1];
+	}
+	~Data()
+	{
+		delete[] data;
+	}
+	Data() = delete;
+	Data(const Data&) = delete;
+	Data(const Data&&) = delete;
+	Data& operator=(const Data&) = delete;
+	Data& operator=(const Data&&) = delete;
+
+	char* c_str()
+	{
+		data[length_] = 0;
+		return data;
+	}
+
+private:
+	char* data=nullptr;
+	size_t length_=0;
+};
 
 size_t receive_data(void* ptr, size_t size, size_t nmemb, string* received_data)
 {
 	auto length = size * nmemb;
-	char data[length + 1];                    // NOLINT
-	strncpy(data, (const char*) ptr, length); // NOLINT
-	data[length] = 0;
-	received_data->append(data);              // NOLINT
+	Data data(length);
+	strncpy(data.c_str(), (const char*) ptr, length);
+	received_data->append(string(data.c_str()));
 	return size * nmemb;
 }
 
@@ -65,7 +92,7 @@ HTTP_request::~HTTP_request()
 {
 	curl_easy_cleanup(curl);
 	curl = nullptr;
-};
+}
 
 HTTP_response HTTP_request::put(
 		string url,

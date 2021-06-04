@@ -11,11 +11,11 @@ const auto DATA_CELL_TEXT    = 3;
 const auto DATA_CELL_NULL    = 5;
 
 
-Data_cell::Data_cell(int op_value) : value(op_value), type(DATA_CELL_INTEGER)
+Data_cell::Data_cell(int op_value) : type(DATA_CELL_INTEGER), value(op_value)
 {
 }
 
-Data_cell::Data_cell(const char *op_text) : txt(op_text), type(DATA_CELL_TEXT)
+Data_cell::Data_cell(const char *op_text) :  type(DATA_CELL_TEXT), txt(op_text)
 {
 }
 

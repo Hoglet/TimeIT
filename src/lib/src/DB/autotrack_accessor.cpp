@@ -13,7 +13,10 @@ namespace libtimeit
 {
 using namespace std;
 
-Auto_track_accessor::Auto_track_accessor(Database& op_database) : database(op_database), task_accessor(op_database)
+Auto_track_accessor::Auto_track_accessor(Database& op_database)
+	:
+	task_accessor(op_database),
+	database(op_database)
 {
 }
 

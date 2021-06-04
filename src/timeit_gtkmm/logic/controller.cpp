@@ -19,7 +19,6 @@ Controller::Controller(
 		Window_manager& op_guiFactory,
 		Time_keeper&    op_timeKeeper,
 		Database&       database_,
-		Ipc_server&     ipc,
 		Notifier&       notifier_,
 		Images&         images_)
 		:

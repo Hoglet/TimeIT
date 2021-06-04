@@ -28,13 +28,12 @@ Sync_manager::Sync_manager(
 		Notifier& notifier_,
 		Timer&    timer
 		):
-		notifier(notifier_),
-		network(op_network),
+		Timer_observer(timer),
 		task_accessor(database),
 		time_accessor(database),
 		settings_accessor(database),
-		Timer_observer(timer)
-
+		network(op_network),
+		notifier(notifier_)
 {
 }
 

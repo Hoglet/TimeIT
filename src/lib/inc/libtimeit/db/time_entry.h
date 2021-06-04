@@ -27,7 +27,7 @@ struct Time_entry
 	const time_t               stop;
 	const Time_entry_state     state;
 	const time_t               changed;
-	const optional<class UUID> task_uuid;
+	const optional<class UUID> task_uuid = {};
 
 	Time_entry(
 			Task_id          task_id,

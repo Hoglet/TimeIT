@@ -77,13 +77,13 @@ bool Task_list::on_button_press_event(GdkEventButton *event)
 	return retval;
 }
 
-void Task_list::on_row_expanded(const TreeModel::iterator &iter, const TreeModel::Path &path)
+void Task_list::on_row_expanded(const TreeModel::iterator &iter, const TreeModel::Path& /*path*/)
 {
 	TreeModel::Row row = *iter;
 	auto id = row[columns.col_id];
 	task_accessor.set_task_expanded(id, true);
 }
-void Task_list::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel::Path &path)
+void Task_list::on_row_collapsed(const TreeModel::iterator &iter, const TreeModel::Path& /*path*/)
 {
 	TreeModel::Row row = *iter;
 	auto id = row[columns.col_id];

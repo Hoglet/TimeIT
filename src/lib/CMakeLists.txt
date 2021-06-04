@@ -46,4 +46,9 @@ target_include_directories ( libtimeit PUBLIC
 		${CURL_INCLUDE_DIRS}
   )
 
+if(MSVC)
+	target_compile_options(libtimeit PRIVATE /W4 /WX)
+else()
+	target_compile_options(libtimeit PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
 

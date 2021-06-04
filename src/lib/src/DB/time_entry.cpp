@@ -17,11 +17,11 @@ Time_entry::Time_entry(
 		id(id_),
 		uuid(move(move(uuid_))),
 		task_id(task_ID_),
-		task_uuid(move(move(taskUUID_))),
 		start(start_),
 		stop(stop_),
 		state(state_),
-		changed(changed_)
+		changed(changed_),
+		task_uuid(move(move(taskUUID_)))
 {
 }
 
@@ -35,11 +35,11 @@ Time_entry::Time_entry(
 		id(0),
 		uuid(UUID() ),
 		task_id(task_ID_ ),
-		task_uuid({} ),
 		start(start_ ),
 		stop(stop_ ),
 		state(STOPPED ),
-		changed(time(nullptr) )
+		changed(time(nullptr)
+		)
 {
 }
 
@@ -52,11 +52,11 @@ Time_entry::Time_entry(
 		id(0),
 		uuid(UUID() ),
 		task_id(task_ID_ ),
-		task_uuid({} ),
 		start(start_ ),
 		stop(stop_ ),
 		state(state_ ),
-		changed(time(nullptr) )
+		changed(time(nullptr)
+		)
 {
 }
 

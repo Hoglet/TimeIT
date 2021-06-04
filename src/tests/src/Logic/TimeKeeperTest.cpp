@@ -14,7 +14,7 @@ class TKObserver: public Time_keeper_observer
 {
 public:
 	TKObserver(Time_keeper& tk): Time_keeper_observer(tk) {};
-	virtual void on_idle_detected(Time_id id)
+	virtual void on_idle_detected(Time_id /*id*/)
 	{
 		idleDetected = true;
 	}

@@ -15,10 +15,10 @@ Auto_tracker::Auto_tracker(
 		Database   &database,
 		Timer       &timer)
 		:
+		Timer_observer(timer),
 		time_keeper(time_keeper_),
 		auto_track_accessor(database),
-		task_accessor( database ),
-		Timer_observer(timer)
+		task_accessor( database )
 {
 	check_for_changes(); //check if we should start anything;
 }
@@ -32,7 +32,7 @@ void Auto_tracker::on_signal_1_second()
 void Auto_tracker::check_for_changes()
 {
 	unsigned new_workspace = workspace.active();
-	if (new_workspace >= 0 && old_workspace != new_workspace)
+	if (old_workspace != new_workspace)
 	{
 		do_task_switching(old_workspace, new_workspace);
 		old_workspace = new_workspace;

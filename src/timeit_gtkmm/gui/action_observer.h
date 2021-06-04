@@ -17,7 +17,7 @@ using namespace libtimeit;
 class Action_observer
 {
 public:
-	virtual void on_action_task_selection_changed(Task_id selectedTaskID) {};
+	virtual void on_action_task_selection_changed(Task_id /*selectedTaskID*/) {};
 	virtual void on_action_add_task()           {};
 	virtual void on_action_remove_task()        {};
 	virtual void on_action_add_time()           {};

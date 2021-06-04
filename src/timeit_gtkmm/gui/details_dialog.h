@@ -52,7 +52,7 @@ private:
 
 	//SummaryObserver
 	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;
-	void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) override {};
+	void on_show_details_clicked(Task_id /*id*/, time_t /*start*/, time_t /*stop*/) override {};
 
 	//EventObserver
 	void on_task_time_changed(int64_t task_ID) override;

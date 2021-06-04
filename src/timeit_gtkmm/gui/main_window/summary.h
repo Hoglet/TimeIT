@@ -31,7 +31,7 @@ public:
 	Summary_observer& operator=(Summary_observer&& )      = delete;
 	virtual ~Summary_observer();
 	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
-	virtual void on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime) {};
+	virtual void on_show_details_clicked(int64_t /*task_id*/, time_t /*start_time*/, time_t /*stop_time*/) {};
 	void attach(Summary *subject);
 	void detach(Summary *subject);
 private:

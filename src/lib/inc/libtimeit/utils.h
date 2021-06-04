@@ -44,6 +44,6 @@ string idling_string(time_t to, time_t next);
 [[maybe_unused]] uint64_t milliseconds_since_epoch();
 
 }
-;
+
 
 #endif /* UTILS_H_ */

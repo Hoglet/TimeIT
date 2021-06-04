@@ -5,7 +5,6 @@ find_package(GTest)
 if( GTEST_FOUND )
 	set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 	
-	set(CMAKE_CXX_FLAGS "-Wall")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -coverage -fprofile-arcs -ftest-coverage ")
 	set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -coverage -lgcov")
 
@@ -35,4 +34,11 @@ if( GTEST_FOUND )
 			"${CMAKE_THREAD_LIBS_INIT}"
 			gcov
 			)
+
+	if(MSVC)
+		target_compile_options(tests PRIVATE /W4 /WX)
+	else()
+		target_compile_options(tests PRIVATE -Wall -Wextra -pedantic -Werror)
+	endif()
+
 endif()

@@ -28,7 +28,7 @@ public:
 	vector<Extended_task>   by_parent_id(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
 private:
 	static void setup(Database& db);
-	static void create_table(Database& db)  {};
+	static void create_table(Database& /*db*/)  {};
 	static void drop_views(Database& db);
 	static void create_views(Database& db);
 	static void upgrade(Database& db);

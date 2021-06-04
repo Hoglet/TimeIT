@@ -75,14 +75,14 @@ Task::Task(
 		unsigned             idle_,
 		bool                 quiet_)
 	:
-		name(move(name_)),
-		parent_id(parentID_),
-		uuid(move(uuid_)),
-		completed(completed_),
 		id(ID_),
-		last_changed(last_change_),
+		name(move(name_)),
+		uuid(move(uuid_)),
 		parent_uuid(move(parent_uuid_)),
+		completed(completed_),
 		deleted(deleted_),
+		parent_id(parentID_),
+		last_changed(last_change_),
 		idle(idle_),
 		quiet(quiet_)
 {

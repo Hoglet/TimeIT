@@ -121,7 +121,7 @@ string Workspace::name(unsigned workspace_nr)
 	{
 		vector<string> names = x11.get_strings("_NET_DESKTOP_NAMES");
 
-		if ((int) names.size() > workspace_nr)
+		if ((unsigned) names.size() > workspace_nr)
 		{
 			return_value = names.at(workspace_nr);
 		}

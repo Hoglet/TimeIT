@@ -8,7 +8,6 @@ set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set(PROGRAMNAME_LOCALEDIR "\"${DATADIR}/locale\"")
 set(GETTEXT_PACKAGE "\"${PROJECT_NAME}\"")
 
-set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -fprofile-arcs --coverage -ftest-coverage")
 set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs --coverage -ftest-coverage")
 
@@ -50,5 +49,9 @@ target_link_libraries(
 		libtimeit
                       )
 
-
+if(MSVC)
+	target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+else()
+	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
+endif()
 

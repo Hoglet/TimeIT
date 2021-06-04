@@ -8,7 +8,6 @@
 #include <main_window/summary.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/misc/ipc_server.h>
 #include <libtimeit/event_observer.h>
 
 namespace gui
@@ -28,7 +27,6 @@ public:
 			Window_manager& gui_factory,
 			Time_keeper&    time_keeper,
 			Database&       database,
-			Ipc_server&     ipc_server,
 			Notifier&       notifier,
 			Images&         images);
 	~Controller() override;

@@ -22,11 +22,11 @@ Time_keeper::Time_keeper(
 		Timer& timer,
 		Notifier& notifier)
 		:
+		Timer_observer(timer ),
+		Event_observer(notifier),
 		time_accessor( database ),
 		task_accessor( database ),
 		settings_accessor( database ),
-		Event_observer(notifier),
-		Timer_observer(timer ),
 		idle_detector(timer)
 
 {
