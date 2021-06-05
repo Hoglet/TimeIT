@@ -1,7 +1,3 @@
-//
-// Created by hoglet on 14/11/2020.
-//
-
 #include "libtimeit/sync/HTTP_request.h"
 #include <cstring>
 #include <stdexcept>
@@ -9,41 +5,10 @@
 namespace libtimeit
 {
 
-class Data
-{
-public:
-	Data(size_t size)
-	{
-		length_=size;
-		data=new char[length_ + 1];
-	}
-	~Data()
-	{
-		delete[] data;
-	}
-	Data() = delete;
-	Data(const Data&) = delete;
-	Data(const Data&&) = delete;
-	Data& operator=(const Data&) = delete;
-	Data& operator=(const Data&&) = delete;
-
-	char* c_str()
-	{
-		data[length_] = 0;
-		return data;
-	}
-
-private:
-	char* data=nullptr;
-	size_t length_=0;
-};
-
-size_t receive_data(void* ptr, size_t size, size_t nmemb, string* received_data)
+size_t receive_data(void* ptr, size_t size, size_t nmemb, stringstream* received_data)
 {
 	auto length = size * nmemb;
-	Data data(length);
-	strncpy(data.c_str(), (const char*) ptr, length);
-	received_data->append(string(data.c_str()));
+	(*received_data).write(reinterpret_cast<char*>(ptr), length);
 	return size * nmemb;
 }
 
@@ -130,7 +95,7 @@ HTTP_response HTTP_request::put(
 
 	HTTP_response result(
 			url,
-			receive_buffer,
+			receive_buffer.str(),
 			(res == CURLE_OK),
 			http_code,
 			curl_easy_strerror(res));

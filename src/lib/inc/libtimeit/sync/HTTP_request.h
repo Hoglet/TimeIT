@@ -7,6 +7,7 @@
 #include <libtimeit/sync/HTTP_response.h>
 #include <curl/curl.h>
 #include <string>
+#include <sstream>
 
 namespace libtimeit
 {
@@ -31,9 +32,9 @@ public:
 private:
 	static size_t   send_data(void *pVoid, size_t i, size_t i1, HTTP_request* caller);
 
-	CURL*    curl;
-	string   receive_buffer;
-	string   send_buffer;
+	CURL*        curl;
+	stringstream receive_buffer;
+	string       send_buffer;
 
 	size_t   cur_send_position{0};
 	bool     ignore_certificate_errors{false};
