@@ -80,8 +80,7 @@ vector<Extended_task> Extended_task_accessor::get_extended_tasks(int64_t taskID,
 		bool expanded = row[3].boolean();
 		bool running = row[4].boolean();
 		int time = time_accessor.duration_time(id, start, stop);
-		int total_time = time;
-		total_time = time_accessor.total_cumulative_time(id, start, stop);
+		int total_time = time_accessor.total_cumulative_time(id, start, stop);
 		auto opt_uuid=UUID::from_string(row[5].text());
 
 		if(opt_uuid.has_value())
