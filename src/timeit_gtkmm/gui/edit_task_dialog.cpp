@@ -2,7 +2,6 @@
 #include "parent_chooser.h"
 #include <iostream>
 #include <libtimeit/logic/workspace.h>
-#include <libtimeit/utils.h>
 #include <libtimeit/db/default_values.h>
 #include <fmt/core.h>
 

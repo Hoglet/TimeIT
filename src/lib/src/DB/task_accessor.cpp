@@ -1,7 +1,6 @@
 #include <sstream>
 #include <fmt/core.h>
 #include <libtimeit/db/task_accessor.h>
-#include <libtimeit/utils.h>
 
 namespace libtimeit
 {

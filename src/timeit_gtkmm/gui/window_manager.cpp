@@ -4,7 +4,6 @@
 #include "edit_task_dialog.h"
 #include "idle_dialog.h"
 #include "status_icon.h"
-#include "details_dialog.h"
 #include "preference_dialog.h"
 #include <memory>
 

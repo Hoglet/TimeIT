@@ -9,7 +9,6 @@
 #include <iostream>
 #include <libtimeit/db/settings_accessor.h>
 #include <optional>
-#include <libtimeit/utils.h>
 #include <fmt/core.h>
 
 using namespace std;

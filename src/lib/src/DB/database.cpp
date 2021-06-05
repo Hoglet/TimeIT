@@ -7,7 +7,6 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/utils.h>
 #include <fmt/core.h>
 
 namespace libtimeit
