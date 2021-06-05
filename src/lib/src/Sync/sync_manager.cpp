@@ -235,7 +235,7 @@ void Sync_manager::sync_times_to_database()
 		auto task_id = task_accessor.id(*task_uuid);
 		if(task_id==0)
 		{
-			break;
+			continue;
 		}
 		auto uuid = item.uuid;
 		auto id = time_accessor.uuid_to_id(uuid);
