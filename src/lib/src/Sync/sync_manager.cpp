@@ -270,7 +270,7 @@ void Sync_manager::sync_times_to_database()
 		}
 		else
 		{
-			if( te.state != DELETED)
+			if( te.state != DELETED && (te.stop - te.start)>60 )
 			{
 				time_accessor.create(te);
 			}
