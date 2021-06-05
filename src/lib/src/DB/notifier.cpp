@@ -149,7 +149,10 @@ void Notifier::try_send_notification(message_type type, int64_t item_id, string 
 	{
 		send_notification( type, item_id, name);
 	}
-	missed_notification = true;
+	else
+	{
+		missed_notification = true;
+	}
 }
 
 unsigned long Notifier::size()
