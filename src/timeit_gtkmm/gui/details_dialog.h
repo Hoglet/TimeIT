@@ -2,7 +2,7 @@
 #define DETAILS_DIALOG_H_
 
 #include <gtkmm.h>
-#include "lz_spin_button.h"
+#include "gui/widgets/lz_spin_button.h"
 #include "details.h"
 #include "main_window/summary.h"
 #include <libtimeit/db/database.h>
