@@ -1,10 +1,3 @@
-/*
- * LZSpinButton.h
- *
- *  Created on: 2008-aug-21
- *      Author: hoglet
- */
-
 #ifndef LZSPINBUTTON_H_
 #define LZSPINBUTTON_H_
 

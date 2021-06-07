@@ -1,10 +1,3 @@
-/*
- * LZSpinButton.cpp
- *
- *  Created on: 2008-aug-21
- *      Author: hoglet
- */
-
 #include "lz_spin_button.h"
 #include <sstream>
 #include <iomanip>
