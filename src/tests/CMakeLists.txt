@@ -38,7 +38,7 @@ if( GTEST_FOUND )
 	if(MSVC)
 		target_compile_options(tests PRIVATE /W4 /WX)
 	else()
-		target_compile_options(tests PRIVATE -Wall -Wextra -pedantic -Werror)
+		target_compile_options(tests PRIVATE -Wall -Wextra -pedantic)
 	endif()
 
 endif()

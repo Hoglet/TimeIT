@@ -49,6 +49,6 @@ target_include_directories ( libtimeit PUBLIC
 if(MSVC)
 	target_compile_options(libtimeit PRIVATE /W4 /WX)
 else()
-	target_compile_options(libtimeit PRIVATE -Wall -Wextra -pedantic -Werror)
+	target_compile_options(libtimeit PRIVATE -Wall -Wextra -pedantic)
 endif()
 
