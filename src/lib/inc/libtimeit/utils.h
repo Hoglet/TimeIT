@@ -41,6 +41,8 @@ string time_span_string(time_t from, time_t to);
 string duration_string(time_t from, time_t to);
 string idling_string(time_t to, time_t next);
 
+int safe_strcpy(char* destination, const char* source, size_t destination_size);
+
 [[maybe_unused]] uint64_t milliseconds_since_epoch();
 
 }

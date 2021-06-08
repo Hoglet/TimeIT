@@ -178,4 +178,45 @@ TEST( Utils, endOfYear )
 	ASSERT_EQ(  59, end_of_day->tm_sec )  << "Check seconds";
 }
 
+TEST( Utils, safe_strcpy_normal)
+{
+	const int BUFFER_SIZE=5;
+	char buffer[BUFFER_SIZE]{"a"};
+	const char * source="ab";
+	auto result=libtimeit::safe_strcpy(buffer, source, BUFFER_SIZE);
 
+	ASSERT_EQ(result, 0);
+	ASSERT_STREQ(buffer, source);
+}
+
+TEST( Utils, safe_strcpy_to_long_source)
+{
+	const int BUFFER_SIZE=5;
+
+	char buffer[BUFFER_SIZE]{"a"};
+	const char * source="abcde";
+	auto result=libtimeit::safe_strcpy(buffer, source, BUFFER_SIZE);
+
+	ASSERT_EQ(result, 2);
+	ASSERT_STREQ(buffer, "a");
+}
+
+TEST( Utils, safe_strcpy_null_source)
+{
+	const int BUFFER_SIZE=5;
+	char buffer[BUFFER_SIZE]{"a"};
+	const char * source="abcde";
+	auto result=libtimeit::safe_strcpy(buffer, nullptr, BUFFER_SIZE);
+
+	ASSERT_EQ(result, 1);
+	ASSERT_STREQ(buffer, "a");
+}
+TEST( Utils, safe_strcpy_null_buffer)
+{
+	const int BUFFER_SIZE=5;
+	char buffer[BUFFER_SIZE]{"a"};
+	const char * source="abcde";
+	auto result=libtimeit::safe_strcpy(nullptr, source, BUFFER_SIZE);
+
+	ASSERT_EQ(result, 1);
+}

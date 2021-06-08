@@ -6,6 +6,7 @@
 #include <langinfo.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <cstring>
 
 //using namespace Glib;
 using namespace std;
@@ -287,6 +288,22 @@ time_t now()
 {
 	return time(nullptr);
 }
+
+int safe_strcpy(char* dest, const char* src, size_t size)
+{
+	if(src == nullptr || dest == nullptr || size==0)
+	{
+		return 1;
+	}
+	auto src_len= strlen(src);
+	if(src_len<size)
+	{
+		memcpy(dest, src, src_len+1);
+		return 0;
+	}
+	return 2;
+}
+
 
 [[maybe_unused]] uint64_t milliseconds_since_epoch()
 {
