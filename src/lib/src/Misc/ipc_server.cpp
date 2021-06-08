@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fcntl.h>
 #include <libtimeit/db/notifier.h>
+#include <libtimeit/utils.h>
 
 namespace libtimeit
 {
@@ -40,7 +41,7 @@ Ipc_server::Ipc_server(string name, Timer& timer, Notifier& notifier_)
 	else
 	{
 		server.sun_family = AF_UNIX;
-		strncpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)); // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+		safe_strcpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)); // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 		if (bind(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)))   // NOLINT
 		{
 			if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT

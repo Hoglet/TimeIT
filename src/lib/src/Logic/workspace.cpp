@@ -116,21 +116,21 @@ string Workspace::name(unsigned workspace_nr)
 	{
 		workspace_nr = 0;
 	}
-	string return_value;
+
 	try
 	{
 		vector<string> names = x11.get_strings("_NET_DESKTOP_NAMES");
 
 		if ((unsigned) names.size() > workspace_nr)
 		{
-			return_value = names.at(workspace_nr);
+			return names.at(workspace_nr);
 		}
 	}
 	catch (const General_exception &e)
 	{
 		cerr << e.what();
 	}
-	return return_value;
+	return string();
 }
 
 }

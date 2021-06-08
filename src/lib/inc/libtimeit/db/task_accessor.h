@@ -15,8 +15,6 @@ namespace libtimeit
 class Task_accessor
 {
 	friend class Database;
-	friend class Sync_manager;
-
 public:
 	Task_accessor(Database& database);
 

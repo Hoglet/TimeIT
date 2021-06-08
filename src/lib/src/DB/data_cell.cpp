@@ -10,6 +10,9 @@ const auto DATA_CELL_INTEGER = 1;
 const auto DATA_CELL_TEXT    = 3;
 const auto DATA_CELL_NULL    = 5;
 
+Data_cell::Data_cell()
+{
+}
 
 Data_cell::Data_cell(int op_value) : type(DATA_CELL_INTEGER), value(op_value)
 {

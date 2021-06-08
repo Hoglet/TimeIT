@@ -1,17 +1,12 @@
-/*
- * Ipc.cpp
- *
- *  Created on: 11 Jul 2019
- *      Author: hoglet
- */
-
 #include "libtimeit/misc/ipc_client.h"
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <cstdio>
 #include <unistd.h>
-#include <iostream>
 #include <fcntl.h>
+#include <string.h>
+#include <libtimeit/utils.h>
+#include <libtimeit/logging.h>
 
 namespace libtimeit
 {
@@ -39,7 +34,11 @@ void Ipc_client::window_2_front()
 	{
 		server.sun_family = AF_UNIX;
 
-		strncpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path));    // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+		if(safe_strcpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)))
+		{
+			logg("Path to socket is too long");
+			return;
+		}
 		if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 		{
 			close(sock);

@@ -5,10 +5,10 @@
 namespace libtimeit
 {
 
-size_t receive_data(void* ptr, size_t size, size_t nmemb, stringstream* received_data)
+size_t receive_data(char* ptr, size_t size, size_t nmemb, stringstream* received_data)
 {
 	auto length = size * nmemb;
-	(*received_data).write(reinterpret_cast<char*>(ptr), length);
+	(*received_data).write(ptr, length);
 	return size * nmemb;
 }
 
@@ -37,7 +37,7 @@ void HTTP_request::ignore_cert_errors(bool ignore)
 }
 
 
-size_t HTTP_request::send_data(void* pVoid, size_t i, size_t i1, HTTP_request* caller)
+size_t HTTP_request::send_data(char* dest, size_t i, size_t i1, HTTP_request* caller)
 {
 	size_t data_length = caller->send_buffer.size();
 	size_t buffer_length = i * i1;
@@ -46,8 +46,8 @@ size_t HTTP_request::send_data(void* pVoid, size_t i, size_t i1, HTTP_request* c
 	{
 		characters_to_send = buffer_length;
 	}
-
-	strncpy((char*) pVoid, &(caller->send_buffer.c_str()[caller->cur_send_position]), characters_to_send); // NOLINT
+	auto read_pointer=&(caller->send_buffer.c_str()[caller->cur_send_position]);
+	memcpy(dest, read_pointer , characters_to_send); // NOLINT
 	caller->cur_send_position += characters_to_send;
 	return characters_to_send;
 

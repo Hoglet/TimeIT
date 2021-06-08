@@ -47,10 +47,6 @@ struct [[nodiscard]]  Task
 	Task       with_deleted(bool  /*deleted*/)    const;
 	Task       with_idle(unsigned /*idle*/)       const;
 	Task       with_quiet(bool /*quiet*/)         const;
-
-	friend bool       operator==(const Task &op1, const Task &op2);
-	friend bool       operator!=(const Task &op1, const Task &op2);
-
 };
 
 extern bool operator==(const Task &op1, const Task &op2);

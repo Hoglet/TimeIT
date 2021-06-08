@@ -18,7 +18,7 @@ then
 	do
 		echo
 		echo "$file:"
-		msgmerge --update $file timeit.pot
+		msgmerge --update "$file" timeit.pot
 	done
 fi
 popd

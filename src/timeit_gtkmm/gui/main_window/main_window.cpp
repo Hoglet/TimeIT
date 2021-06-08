@@ -170,8 +170,8 @@ void MainWindow::create_layout()
 	details_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 
-	h_paned.set_position(settings_accessor.get_int("main_win_h_paned_position", get_width() * 0.4));;
-	v_paned.set_position(settings_accessor.get_int("main_win_v_paned_position", 10));
+	h_paned.set_position((int)settings_accessor.get_int("main_win_h_paned_position", get_width() * 4 /10));;
+	v_paned.set_position((int)settings_accessor.get_int("main_win_v_paned_position", 10));
 	v_paned.pack2(details_window);
 
 	show_all_children();

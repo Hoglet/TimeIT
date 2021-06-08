@@ -55,8 +55,9 @@ struct Time_entry
 	[[nodiscard]] Time_entry with_stop(time_t) const;
 	[[nodiscard]] Time_entry with( Time_entry_state ) const;
 
-	friend bool operator==(const Time_entry &op1, const Time_entry &op2);
-	friend bool operator!=(const Time_entry &op1, const Time_entry &op2);
 };
+bool operator==(const Time_entry &op1, const Time_entry &op2);
+bool operator!=(const Time_entry &op1, const Time_entry &op2);
+
 }
 #endif

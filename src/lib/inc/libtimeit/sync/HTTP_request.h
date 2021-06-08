@@ -30,7 +30,7 @@ public:
 			string password
 			);
 private:
-	static size_t   send_data(void *pVoid, size_t i, size_t i1, HTTP_request* caller);
+	static size_t   send_data(char* dest, size_t i, size_t i1, HTTP_request* caller);
 
 	CURL*        curl;
 	stringstream receive_buffer;

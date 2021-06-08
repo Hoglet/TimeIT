@@ -34,7 +34,7 @@ void Auto_tracker::check_for_changes()
 	unsigned new_workspace = workspace.active();
 	if (old_workspace != new_workspace)
 	{
-		do_task_switching(old_workspace, new_workspace);
+		do_task_switching(new_workspace);
 		old_workspace = new_workspace;
 	}
 
@@ -58,7 +58,7 @@ bool contains(vector<Task_id> vec, Task_id item)
 	return (find(vec.begin(), vec.end(), item) != vec.end());
 }
 
-void Auto_tracker::do_task_switching(unsigned old_workspace, unsigned new_workspace)
+void Auto_tracker::do_task_switching( unsigned new_workspace)
 {
 	vector<Task_id> tasks_to_stop  = auto_track_accessor.task_ids(old_workspace);
 	vector<Task_id> tasks_to_start = auto_track_accessor.task_ids(new_workspace);
