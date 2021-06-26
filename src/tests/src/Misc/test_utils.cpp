@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <ctime>
 #include <libtimeit/utils.h>
+#include <string>
 
+using namespace std;
 
 TEST( Utils, testGetDaysInMonth )
 {
@@ -205,7 +207,6 @@ TEST( Utils, safe_strcpy_null_source)
 {
 	const int BUFFER_SIZE=5;
 	char buffer[BUFFER_SIZE]{"a"};
-	const char * source="abcde";
 	auto result=libtimeit::safe_strcpy(buffer, nullptr, BUFFER_SIZE);
 
 	ASSERT_EQ(result, 1);
@@ -214,9 +215,87 @@ TEST( Utils, safe_strcpy_null_source)
 TEST( Utils, safe_strcpy_null_buffer)
 {
 	const int BUFFER_SIZE=5;
-	char buffer[BUFFER_SIZE]{"a"};
 	const char * source="abcde";
 	auto result=libtimeit::safe_strcpy(nullptr, source, BUFFER_SIZE);
 
 	ASSERT_EQ(result, 1);
 }
+
+TEST( Utils, trim_left)
+{
+	const auto original = R"(
+  S O M E T I N G
+   )";
+	const auto expected = R"(S O M E T I N G
+   )";
+	const auto result = libtimeit::trim_left(original);
+	ASSERT_EQ(result,expected);
+}
+
+
+TEST( Utils, trim_right)
+{
+	const auto original = R"(
+  S O M E T I N G
+   )";
+	const auto expected = R"(
+  S O M E T I N G)";
+	const auto result = libtimeit::trim_right(original);
+	ASSERT_EQ(result,expected);
+}
+
+TEST( Utils, trim)
+{
+	const auto original = R"(
+   S O M E T I N G
+   )";
+	const auto expected = R"(S O M E T I N G)";
+	const auto result = libtimeit::trim(original);
+	ASSERT_EQ(result,expected);
+}
+
+
+
+TEST( Utils, abbreviate_string_empty)
+{
+	string original;
+	string expected = "";
+	auto result = libtimeit::abbreviate_string(original, 1000);
+	ASSERT_EQ(result, expected);
+}
+
+TEST( Utils, abbreviate_string_short_line)
+{
+	string original = R"(This is the first line)";
+	string expected = "This is the first line";
+	auto result = libtimeit::abbreviate_string(original, 1000);
+	ASSERT_EQ(result, expected);
+}
+
+TEST( Utils, abbreviate_string_long_line)
+{
+	string original = R"(This is the first line)";
+	string expected = "This i ...";
+	auto result = libtimeit::abbreviate_string(original, 10);
+	ASSERT_EQ(result, expected);
+}
+
+TEST( Utils, abbreviate_string_multi_line)
+{
+	string original = R"(This is the first line
+This is the second line)";
+	string expected = "This is the first line ...";
+	auto result = libtimeit::abbreviate_string(original, 100);
+	ASSERT_EQ(result, expected);
+}
+
+TEST( Utils, abbreviate_string_empty_lines)
+{
+	string original = R"(
+
+This is the third line)";
+	string expected = "This is the third line";
+	auto result = libtimeit::abbreviate_string(original, 100);
+	ASSERT_EQ(result, expected);
+}
+

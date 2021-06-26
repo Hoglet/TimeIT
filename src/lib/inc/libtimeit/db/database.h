@@ -37,7 +37,7 @@ public:
 	int64_t             id_of_last_insert();
 	bool                table_exists(string name);
 	[[nodiscard]] int   current_db_version() const;
-	[[nodiscard]] bool  column_exists( string_view string, string_view string_1);
+	[[nodiscard]] bool  column_exists( string_view table, string_view column);
 private:
 	int        db_version{0};
 	Notifier&  notifier;

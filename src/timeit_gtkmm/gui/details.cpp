@@ -36,6 +36,7 @@ Details::Details(
 	append_column(_(" Duration"), columns.col_time_amount);
 	append_column("  ∑  ", columns.col_day_total);
 	append_column(_(" Idle time"), columns.col_idle);
+	append_column(_(" Comment"), columns.col_comment);
 
 	set_headers_visible(false);
 	//Fill the popup menu:
@@ -422,6 +423,7 @@ void Details::update_row(TreeModel::Row& row, Row_data row_data ) const
 	row[columns.col_date]        = row_data.first_in_day ? date_string(row_data.start) : "";
 	row[columns.col_time]        = time_span_string(row_data.start, row_data.stop);
 	row[columns.col_time_amount] = duration_string(row_data.start, row_data.stop);
+	row[columns.col_comment]     = libtimeit::abbreviate_string(row_data.comment, 50);
 	if(row_data.running)
 	{
 		row[columns.col_idle] = string("\u2003⌚");
@@ -467,6 +469,7 @@ list<Row_data> Details::create_row_data(time_t start, time_t stop)
 		prev_start            = row_data.start;
 		row_data.stop         = time_entry.stop;
 		row_data.running      = time_entry.state == RUNNING;
+		row_data.comment      = time_entry.comment;
 
 		cumulative_time_for_day += row_data.stop - row_data.start;
 		row_data.cumulative_time =  cumulative_time_for_day;

@@ -13,6 +13,8 @@ namespace test
 using namespace libtimeit;
 using namespace std;
 
+const string comment = "Just a comment";
+
 TEST(TimeAccessor, simpleTest)
 {
 	Notifier notifier;
@@ -144,7 +146,7 @@ TEST(TimeAccessor, newItem)
 	Time_accessor timeAccessor(db);
 	Extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
-	Time_entry item1(0, UUID(), taskId, {}, 100, 200, STOPPED, 200);
+	Time_entry item1(0, UUID(), taskId, {}, 100, 200, STOPPED, 200, comment);
 
 	int64_t timeEntryID = timeAccessor.create(item1);
 	auto item2 = timeAccessor.by_id(timeEntryID);
@@ -155,6 +157,7 @@ TEST(TimeAccessor, newItem)
 	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";
 	ASSERT_EQ(item1.changed, item2->changed) << "Changed: ";
+	ASSERT_EQ(item1.comment, item2->comment) << "Comment: ";
 
 	ASSERT_THROW(timeAccessor.create(item1), db_exception);
 //	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
@@ -208,7 +211,7 @@ TEST(TimeAccessor, getActiveTasks)
 	Time_accessor timeAccessor (db);
 	Extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(Task("test", 0));
-	Time_entry item(0, UUID(), taskId, {}, 100, 600, STOPPED, 200);
+	Time_entry item(0, UUID(), taskId, {}, 100, 600, STOPPED, 200, comment);
 
 	timeAccessor.create(item);
 

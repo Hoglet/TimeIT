@@ -53,6 +53,10 @@ private:
 
 	Gtk::Label to_label {"→"};
 
+	Gtk::Label                    comment_label {_("Comment:")};
+	Glib::RefPtr<Gtk::TextBuffer> comment_buffer;
+	Gtk::TextView                 comment_edit ;
+
 	Gtk::Button* ok_button;
 
 	Time_entry    time_entry;
@@ -61,6 +65,7 @@ private:
 
 	time_t original_start{0};
 	time_t original_stop{0};
+	string original_comment;
 };
 }
 

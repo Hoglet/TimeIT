@@ -9,14 +9,14 @@ namespace libtimeit
 
 static const string new_time_entry_statement = R"Query(
 	INSERT INTO
-		times (uuid,taskID, start, stop, changed,deleted,running,state)
-	VALUES (?,?,?,?,?,?,?,?))Query";
+		times (uuid,taskID, start, stop, changed,deleted,running,state, comment)
+	VALUES (?,?,?,?,?,?,?,?,?))Query";
 
 Time_accessor::Time_accessor(Database &op_database)
 	:
 	database(op_database),
 	statement_uuid_to_id(database.prepare("SELECT id FROM times WHERE uuid=?;")),
-	by_id_statement(database.prepare("SELECT taskID, start, stop, changed, uuid, task_UUID, state FROM v_times WHERE id = ?")),
+	by_id_statement(database.prepare("SELECT taskID, start, stop, changed, uuid, task_UUID, state, comment FROM v_times WHERE id = ?")),
 	statement_update_time(database.prepare(
 R"(
 	UPDATE
@@ -29,7 +29,8 @@ R"(
 		running=?,
 		changed=?,
 		deleted=?,
-		state=?
+		state=?,
+		comment=?
 	WHERE
 		id=?)")),
 	statement_new_entry( database.prepare(new_time_entry_statement))
@@ -61,13 +62,13 @@ optional<Time_entry> Time_accessor::by_id(int64_t id)
 		time_t  stop      = row[column++].integer();
 		time_t  changed   = row[column++].integer();
 		auto    uuid      = UUID::from_string(row[column++].text());
-		auto    task_uuid  = UUID::from_string(row[column++].text());
-		auto    state     = static_cast<Time_entry_state>(row[column].integer());
+		auto    task_uuid = UUID::from_string(row[column++].text());
+		auto    state     = static_cast<Time_entry_state>(row[column++].integer());
+		auto    comment   = row[column].text();
 
 		if( uuid && task_uuid )
 		{
-
-			return Time_entry(id, *uuid, task_id, *task_uuid, start, stop, state, changed);
+			return Time_entry(id, *uuid, task_id, *task_uuid, start, stop, state, changed, comment);
 		}
 		break;
 	}
@@ -215,7 +216,7 @@ Time_list Time_accessor::time_list(int64_t taskId, time_t startTime, time_t stop
 {
 	Time_list result_list;
 	stringstream statement;
-	statement << "SELECT id, start, stop, state, changed, uuid, task_UUID FROM v_times ";
+	statement << "SELECT id, start, stop, state, changed, uuid, task_UUID, comment FROM v_times ";
 	statement << " WHERE stop > " << startTime;
 	statement << " AND start <" << stopTime;
 	statement << " AND taskID = " << taskId;
@@ -226,17 +227,18 @@ Time_list Time_accessor::time_list(int64_t taskId, time_t startTime, time_t stop
 	for (vector<Data_cell> row : rows)
 	{
 		int column{0};
-		int64_t id      = row[column++].integer();
-		time_t start    = row[column++].integer();
-		time_t stop     = row[column++].integer();
-		auto   state    = static_cast<Time_entry_state>(row[column++].integer());
-		time_t changed  = row[column++].integer();
-		auto   uuid     = UUID::from_string(row[column++].text());
-		auto   task_uuid = UUID::from_string(row[column].text());
+		int64_t id       = row[column++].integer();
+		time_t start     = row[column++].integer();
+		time_t stop      = row[column++].integer();
+		auto   state     = static_cast<Time_entry_state>(row[column++].integer());
+		time_t changed   = row[column++].integer();
+		auto   uuid      = UUID::from_string(row[column++].text());
+		auto   task_uuid = UUID::from_string(row[column++].text());
+		auto   comment   = row[column].text();
 
 		if (uuid && task_uuid)
 		{
-			result_list.push_back(Time_entry(id, *uuid, taskId, *task_uuid, start, stop, state, changed));
+			result_list.push_back(Time_entry(id, *uuid, taskId, *task_uuid, start, stop, state, changed, comment));
 		}
 	}
 	return result_list;
@@ -246,7 +248,7 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 {
 	Time_list result;
 
-	Statement statement = database.prepare("SELECT taskID, start, stop, state, changed, uuid, id, task_UUID FROM v_times WHERE changed>=?");
+	Statement statement = database.prepare("SELECT taskID, start, stop, state, changed, uuid, id, task_UUID, comment FROM v_times WHERE changed>=?");
 
 	statement.bind_value(1, timestamp);
 
@@ -261,11 +263,12 @@ Time_list Time_accessor::times_changed_since(time_t timestamp)
 		time_t changed  = row[column++].integer();
 		auto uuid       = UUID::from_string(row[column++].text());
 		int64_t id      = row[column++].integer();
-		auto task_uuid   = UUID::from_string(row[column].text());
+		auto task_uuid  = UUID::from_string(row[column++].text());
+		auto comment    = row[column].text();
 
 		if(uuid && task_uuid)
 		{
-			Time_entry te(id, *uuid, task_id, *task_uuid, start, stop, state, changed);
+			Time_entry te(id, *uuid, task_id, *task_uuid, start, stop, state, changed, comment);
 			result.push_back(te);
 		}
 	}
@@ -313,6 +316,7 @@ bool Time_accessor::update(Time_entry item )
 		statement_update_time.bind_value(index++, item.changed);
 		statement_update_time.bind_value(index++, (int64_t)deleted);
 		statement_update_time.bind_value(index++, item.state);
+		statement_update_time.bind_value(index++, item.comment);
 		statement_update_time.bind_value(index, item.id);
 
 		statement_update_time.execute();
@@ -387,7 +391,8 @@ void Time_accessor::internal_create(const Time_entry &item, Statement& statement
 	statement_new_entry.bind_value(index++, item.changed);
 	statement_new_entry.bind_value(index++, (int64_t)deleted);
 	statement_new_entry.bind_value(index++, (int64_t)running);
-	statement_new_entry.bind_value(index, item.state);
+	statement_new_entry.bind_value(index++, item.state);
+	statement_new_entry.bind_value(index,   item.comment);
 	statement_new_entry.execute();
 }
 
@@ -410,7 +415,7 @@ void Time_accessor::upgrade_to_db_5(Database& database)
 		time_t  start  = row[2].integer();
 		time_t  stop   = row[3].integer();
 
-		Time_entry item(id, UUID(), task_id, {}, start, stop, STOPPED, now);
+		Time_entry item(id, UUID(), task_id, {}, start, stop, STOPPED, now, "");
 		internal_create(item, statement_new_entry);
 	}
 	database.execute("DROP TABLE IF EXISTS times_backup");
@@ -451,6 +456,16 @@ void Time_accessor::upgrade(Database& database)
 					deleted = 1;
 				)query");
 		}
+		if( ! database.column_exists("times", "comment") )
+		{
+			database.execute(
+					R"query(
+				ALTER TABLE
+					times
+				ADD
+					comment VARCHAR;
+				)query");
+		}
 	}
 }
 
@@ -467,6 +482,7 @@ void Time_accessor::create_table(Database& database)
 			 deleted     BOOL    DEFAULT 0,
 			 running     BOOL    DEFAULT 0,
 			 state       INTEGER DEFAULT 0,
+			 comment     VARCHAR,
 			 FOREIGN KEY(taskID) REFERENCES tasks(id)
 			)
 		)Query"
@@ -555,7 +571,8 @@ Time_list Time_accessor::by_state(Time_entry_state state) const
 			state,
 			changed,
 			uuid,
-			task_UUID
+			task_UUID,
+			comment
 		FROM
 			v_times
 		WHERE
@@ -574,12 +591,12 @@ Time_list Time_accessor::by_state(Time_entry_state state) const
 		auto    item_state = static_cast<Time_entry_state>(row[column++].integer());
 		int64_t changed    = row[column++].integer();
 		auto    uuid       = UUID::from_string(row[column++].text());
-		auto    task_uuid  = UUID::from_string(row[column].text());
-
+		auto    task_uuid  = UUID::from_string(row[column++].text());
+		auto    comment    = row[column].text();
 
 		if (uuid && task_uuid)
 		{
-			time_list.emplace_back( Time_entry(id, *uuid, task_id, *task_uuid, start, stop, item_state, changed));
+			time_list.emplace_back( Time_entry(id, *uuid, task_id, *task_uuid, start, stop, item_state, changed, comment));
 		}
 	}
 	return time_list;

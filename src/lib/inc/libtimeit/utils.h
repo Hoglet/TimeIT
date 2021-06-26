@@ -44,6 +44,11 @@ string idling_string(time_t to, time_t next);
 int safe_strcpy(char* destination, const char* source, size_t destination_size);
 
 [[maybe_unused]] uint64_t milliseconds_since_epoch();
+string_view trim_left(string_view str);
+string_view trim_right(string_view str);
+string_view trim(string_view str);
+
+string abbreviate_string(string_view basic_string, long unsigned i);
 
 }
 

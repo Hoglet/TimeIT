@@ -313,4 +313,48 @@ int safe_strcpy(char* dest, const char* src, size_t size)
 	return uint64_t(tv.tv_sec) * 1000 + tv.tv_usec / 1000; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
+string_view trim_left(string_view str)
+{
+	const auto pos(str.find_first_not_of(" \t\n\r\f\v"));
+	str.remove_prefix(std::min(pos, str.length()));
+	return str;
+}
+
+string_view trim_right(string_view str)
+{
+	const auto pos(str.find_last_not_of(" \t\n\r\f\v"));
+	str.remove_suffix(std::min(str.length() - pos - 1, str.length()));
+	return str;
+}
+
+string_view trim(string_view str)
+{
+
+	return trim_right(trim_left(str));
+}
+
+string abbreviate_string(string_view original, long unsigned i)
+{
+	constexpr string_view dots = " ...";
+	auto extra_length = 0;
+
+	bool removed_text = false;
+	string result(trim(original));
+	const auto end_of_first_line = result.find('\n');
+
+	if(
+		end_of_first_line == string::npos &&
+		result.length() < i
+			)
+	{
+		return result;
+	}
+
+	auto cut_position = min(end_of_first_line, i - dots.length()) ;
+	result = result.substr(0,cut_position);
+	result.append(dots);
+
+	return result;
+}
+
 }

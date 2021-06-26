@@ -35,6 +35,7 @@ struct Row_data
 	bool    last_in_day;
 	bool    running ;
 	time_t  cumulative_time;
+	string  comment;
 };
 
 
@@ -87,6 +88,7 @@ private:
 			add(col_day_total);
 			add(col_idle);
 			add(col_morning);
+			add(col_comment);
 		}
 		;
 		Gtk::TreeModelColumn<Time_id>       col_id;
@@ -96,6 +98,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_day_total;
 		Gtk::TreeModelColumn<Glib::ustring> col_idle;
 		Gtk::TreeModelColumn<Glib::ustring> col_morning;
+		Gtk::TreeModelColumn<Glib::ustring> col_comment;
 	};
 	ModelColumns columns;
 	Task_id      task_id {0};

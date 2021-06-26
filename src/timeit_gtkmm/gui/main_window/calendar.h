@@ -30,7 +30,7 @@ private:
 	void notify();
 	void mark_today();
 
-	guint marked_day=0;
+	int marked_day=0;
 	std::list<CalendarObserver*> observers;
 };
 

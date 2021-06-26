@@ -27,6 +27,10 @@ Edit_time::Edit_time(
 	{
 		task_name.set_text(task->name);
 	}
+	comment_buffer =Gtk:: TextBuffer::create();
+	comment_edit.set_buffer(comment_buffer);
+	comment_edit.set_size_request(300, 200);
+
 	set_values();
 
 	//Layout
@@ -49,6 +53,10 @@ Edit_time::Edit_time(
 	edit_box.pack_start(to_label, Gtk::PACK_SHRINK);
 	edit_box.pack_start(stop_timestamp_edit);
 
+	comment_label.set_alignment(Gtk::PACK_START);
+	get_vbox()->pack_start(comment_label);
+	get_vbox()->pack_start(comment_edit);
+
 	add_button(Gtk::StockID("gtk-cancel"), Gtk::RESPONSE_CANCEL);
 	ok_button = add_button(Gtk::StockID("gtk-apply"), Gtk::RESPONSE_OK);
 	ok_button->set_sensitive(false);
@@ -69,6 +77,7 @@ void Edit_time::connect_signals()
 
 	start_timestamp_edit.signal_changed.connect( slot );
 	stop_timestamp_edit.signal_changed.connect( slot );
+	comment_buffer->signal_changed().connect(slot);
 }
 
 
@@ -77,14 +86,15 @@ void Edit_time::on_response(int response_id)
 	if (response_id == Gtk::RESPONSE_OK)
 	{
 		time_t start_time = start_timestamp_edit.timestamp();
-		time_t stop_time = stop_timestamp_edit.timestamp();
+		time_t stop_time  = stop_timestamp_edit.timestamp();
+		auto   comment    = comment_buffer->get_text();
 		if(time_entry.id>0)
 		{
-			time_accessor.update(time_entry.with_start(start_time).with_stop(stop_time));
+			time_accessor.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
 		}
 		else
 		{
-			time_accessor.create(time_entry.with_start(start_time).with_stop(stop_time));
+			time_accessor.create(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
 		}
 	}
 }
@@ -98,16 +108,21 @@ void Edit_time::set_values()
 
 	original_start = start_timestamp_edit.timestamp();
 	original_stop  = stop_timestamp_edit.timestamp();
+
+	comment_buffer->set_text(time_entry.comment);
+	original_comment = time_entry.comment;
 }
 
 void Edit_time::on_change()
 {
-	auto start = start_timestamp_edit.timestamp();
-	auto stop  = stop_timestamp_edit.timestamp();
+	auto start   = start_timestamp_edit.timestamp();
+	auto stop    = stop_timestamp_edit.timestamp();
+	auto comment = comment_buffer->get_text();
 	if ( stop > start &&
 			(
-				original_start != start ||
-				original_stop  != stop
+				original_start   != start ||
+				original_stop    != stop  ||
+				original_comment != comment
 			)
 		)
 	{

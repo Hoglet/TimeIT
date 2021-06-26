@@ -12,7 +12,8 @@ Time_entry::Time_entry(
 		time_t                start_,
 		time_t                stop_,
 		Time_entry_state      state_,
-		time_t                changed_)
+		time_t                changed_,
+		string                comment_)
 		:
 		id(id_),
 		uuid(move(move(uuid_))),
@@ -21,7 +22,8 @@ Time_entry::Time_entry(
 		stop(stop_),
 		state(state_),
 		changed(changed_),
-		task_uuid(move(move(taskUUID_)))
+		task_uuid(move(move(taskUUID_))),
+		comment(comment_)
 {
 }
 
@@ -38,8 +40,8 @@ Time_entry::Time_entry(
 		start(start_ ),
 		stop(stop_ ),
 		state(STOPPED ),
-		changed(time(nullptr)
-		)
+		changed(time(nullptr)),
+		comment()
 {
 }
 
@@ -55,8 +57,8 @@ Time_entry::Time_entry(
 		start(start_ ),
 		stop(stop_ ),
 		state(state_ ),
-		changed(time(nullptr)
-		)
+		changed(time(nullptr)),
+		comment()
 {
 }
 
@@ -76,7 +78,8 @@ Time_entry Time_entry::with_start(time_t start_) const
 			start_,
 			stop,
 			state,
-			time(nullptr));
+			time(nullptr),
+			comment);
 }
 
 Time_entry Time_entry::with_stop(time_t stop_) const
@@ -93,7 +96,8 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 			start,
 			stop_,
 			state,
-			time(nullptr));
+			time(nullptr),
+			comment);
 }
 
 
@@ -111,20 +115,42 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 			start,
 			stop,
 			new_state,
-			time(nullptr));
+			time(nullptr),
+			comment);
+}
+
+Time_entry Time_entry::with_comment(string new_comment)
+{
+	if (comment == new_comment)
+	{
+		return *this;
+	}
+	return Time_entry(
+			id,
+			uuid,
+			task_id,
+			task_uuid,
+			start,
+			stop,
+			state,
+			time(nullptr),
+			new_comment
+			);
 }
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
 	return (
-			op1.id        == op2.id      &&
-			op1.changed   == op2.changed &&
-			op1.state     == op2.state   &&
-			op1.start     == op2.start   &&
-			op1.stop      == op2.stop    &&
-			op1.task_id   == op2.task_id &&
-			op1.uuid      == op2.uuid    &&
-			op1.task_uuid == op2.task_uuid);
+			op1.id        == op2.id        &&
+			op1.changed   == op2.changed   &&
+			op1.state     == op2.state     &&
+			op1.start     == op2.start     &&
+			op1.stop      == op2.stop      &&
+			op1.task_id   == op2.task_id   &&
+			op1.uuid      == op2.uuid      &&
+			op1.task_uuid == op2.task_uuid &&
+			op1.comment   == op2.comment
+			);
 }
 
 bool operator!=(const Time_entry &op1, const Time_entry &op2)

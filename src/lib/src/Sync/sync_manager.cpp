@@ -244,6 +244,7 @@ void Sync_manager::sync_times_to_database()
 		time_t start = item.start;
 		time_t stop = item.stop;
 		bool running = false;
+		auto comment = item.comment;
 		if (id > 0)
 		{
 			auto original_item = time_accessor.by_id(id);
@@ -263,7 +264,7 @@ void Sync_manager::sync_times_to_database()
 			item_state = DELETED;
 		}
 
-		Time_entry te(id, uuid, task_id, task_uuid, start, stop, item_state, changed);
+		Time_entry te(id, uuid, task_id, task_uuid, start, stop, item_state, changed, comment);
 		if (id > 0)
 		{
 			time_accessor.update(te);
@@ -322,6 +323,11 @@ void Sync_manager::manage_network_problems()
 		else
 		{
 			text << result.error_message;
+			auto logg_text = fmt::format("Error {} requesting {} : {}",
+										 result.http_code,
+										 result.url.c_str(),
+										 result.response);
+			logg(logg_text);
 		}
 
 		notifier.send(EventType::ERROR_MESSAGE, _("Network error"), text.str() );

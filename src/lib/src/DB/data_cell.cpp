@@ -10,10 +10,6 @@ const auto DATA_CELL_INTEGER = 1;
 const auto DATA_CELL_TEXT    = 3;
 const auto DATA_CELL_NULL    = 5;
 
-Data_cell::Data_cell()
-{
-}
-
 Data_cell::Data_cell(int op_value) : type(DATA_CELL_INTEGER), value(op_value)
 {
 }
@@ -38,6 +34,10 @@ int64_t Data_cell::integer() const
 
 string Data_cell::text() const
 {
+	if (type == DATA_CELL_NULL )
+	{
+		return "";
+	}
 	if (type != DATA_CELL_TEXT)
 	{
 

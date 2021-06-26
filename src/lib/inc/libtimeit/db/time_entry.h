@@ -28,6 +28,7 @@ struct Time_entry
 	const Time_entry_state     state;
 	const time_t               changed;
 	const optional<class UUID> task_uuid = {};
+	const string               comment;
 
 	Time_entry(
 			Task_id          task_id,
@@ -49,12 +50,13 @@ struct Time_entry
 			time_t           start,
 			time_t           stop,
 			Time_entry_state state,
-			time_t           changed);
+			time_t           changed,
+			string           comment);
 
 	[[nodiscard]] Time_entry with_start(time_t) const;
 	[[nodiscard]] Time_entry with_stop(time_t) const;
 	[[nodiscard]] Time_entry with( Time_entry_state ) const;
-
+	[[nodiscard]] Time_entry with_comment(string comment);
 };
 bool operator==(const Time_entry &op1, const Time_entry &op2);
 bool operator!=(const Time_entry &op1, const Time_entry &op2);
