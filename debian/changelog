@@ -1,17 +1,17 @@
-timeit (2.1.1) UNRELEASED; urgency=medium
+timeit (2.1.1) unstable; urgency=medium
 
   * Adding comments to times.
   * Editing times passing midnight.
   * Per task idle dialogs.
   * Restart of application manages running states, idle dialog shows up appropriately and running tasks continue running.
   * Not syncing small/empty timespans.
-  * Pruning of small timespans from database
+  * Pruning of small timespans from database.
   * Many small buggfixes.
   * Rewrites to improve readability and maintainability.
-  * Improved usability
-  * Details in main window
+  * Improved usability.
+  * Details in main window.
 
- -- Kent Asplund <hoglet@solit.se>  Sun, 04 Jul 2021 13:58:38 +0200
+ -- Kent Asplund <hoglet@solit.se>  Mon, 05 Jul 2021 17:33:28 +0200
 
 timeit (2.1.0.2) UNRELEASED; urgency=medium
 
