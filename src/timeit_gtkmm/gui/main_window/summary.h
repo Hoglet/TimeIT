@@ -116,6 +116,9 @@ private:
 
 	bool is_visible();
 	bool needs_re_population = true;
+
+	inline static int global_id = 0;
+	void try_set_selection();
 };
 
 }

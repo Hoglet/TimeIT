@@ -97,6 +97,11 @@ void Summary::on_selection_changed()
 	{
 		observer->on_selection_changed(id, start_time, stop_time);
 	}
+	if(id!=0)
+	{
+		global_id = id;
+	}
+
 }
 void Summary::attach(Summary_observer *observer)
 {
@@ -244,6 +249,8 @@ bool Summary::on_focus(Gtk::DirectionType direction)
 		empty();
 		populate();
 	}
+	try_set_selection();
+	on_selection_changed();
 	return return_value;
 }
 
@@ -343,6 +350,20 @@ Gtk::TreeModel::iterator Summary::sub_search(Task_id id, TreeModel::Children chi
 		}
 	}
 	return iter;
+}
+
+void Summary::try_set_selection()
+{
+	auto row = find_row(global_id);
+	auto tree_selection = get_selection();
+	if(row != tree_model->children().end())
+	{
+		tree_selection->select(row);
+	}
+	else
+	{
+		tree_selection->unselect_all();
+	}
 }
 
 }
