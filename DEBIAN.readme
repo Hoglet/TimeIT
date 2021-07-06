@@ -1,9 +1,17 @@
 
 Making new version:
-* dch -i
+* Release current: dch --release
+  - Add changes.
 * checkin files
 * tag version with git
+* Create a new version: dch -v
+
+Adding new entry in changelog
+
+dch -a
 
 Making  package:
-* pkg-buildpackage -us -uc
+* debian/rules/build
+* fakeroot debian/rules binary
+
 
