@@ -9,11 +9,11 @@
 
 namespace libtimeit
 {
-class Task_accessor;
+class task_accessor;
 
 using namespace std;
 
-struct [[nodiscard]]  Task
+struct [[nodiscard]]  task
 {
 	const Task_id              id           {0};
 	const string               name;
@@ -28,8 +28,8 @@ struct [[nodiscard]]  Task
 
 
 
-	Task(string name_, Task_id parent_ID = 0);
-	Task(
+	task(string name_, Task_id parent_ID = 0);
+	task(
 			string         name_,
 			Task_id        parentID_,
 			UUID           uuid_,
@@ -41,16 +41,16 @@ struct [[nodiscard]]  Task
 			unsigned       idle_,
 			bool           quiet_);
 
-	Task       with_name(string /*new_name*/)     const;
-	Task       with_parent(Task_id /*id*/)        const;
-	Task       with_completed(bool /*completed*/) const;
-	Task       with_deleted(bool  /*deleted*/)    const;
-	Task       with_idle(unsigned /*idle*/)       const;
-	Task       with_quiet(bool /*quiet*/)         const;
+	task       with_name(string /*new_name*/)     const;
+	task       with_parent(Task_id /*id*/)        const;
+	task       with_completed(bool /*completed*/) const;
+	task       with_deleted(bool  /*deleted*/)    const;
+	task       with_idle(unsigned /*idle*/)       const;
+	task       with_quiet(bool /*quiet*/)         const;
 };
 
-extern bool operator==(const Task &op1, const Task &op2);
-extern bool operator!=(const Task &op1, const Task &op2);
+extern bool operator==(const task &op1, const task &op2);
+extern bool operator!=(const task &op1, const task &op2);
 }
 
 #endif

@@ -9,7 +9,7 @@ static const int MINUTE = 60;
 #include <libtimeit/db/task.h>
 #include <libtimeit/timer.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/logic/X11_idle_detector.h>
+#include <libtimeit/logic/x11_idle_detector.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/time_accessor.h>
@@ -19,15 +19,15 @@ namespace libtimeit
 using namespace std;
 class Time_keeper;
 
-class Time_keeper_observer
+class time_keeper_observer
 {
 public:
-	Time_keeper_observer(Time_keeper& /*time_keeper*/);
-	Time_keeper_observer( const Time_keeper_observer& ) = delete;
-	Time_keeper_observer( Time_keeper_observer&& )      = delete;
-	Time_keeper_observer& operator=( const Time_keeper_observer& ) = delete;
-	Time_keeper_observer& operator=( Time_keeper_observer&& )      = delete;
-	~Time_keeper_observer();
+	time_keeper_observer(Time_keeper& /*time_keeper*/);
+	time_keeper_observer(const time_keeper_observer& ) = delete;
+	time_keeper_observer(time_keeper_observer&& )      = delete;
+	time_keeper_observer& operator=(const time_keeper_observer& ) = delete;
+	time_keeper_observer& operator=(time_keeper_observer&& )      = delete;
+	~time_keeper_observer();
 
 	virtual void on_idle_detected(Time_id /*id*/) {};
 	virtual void on_running_changed()       {};
@@ -36,15 +36,15 @@ private:
 };
 
 class Time_keeper :
-		public Timer_observer,
-		public Event_observer
+		public timer_observer,
+		public event_observer
 {
-	friend class Time_keeper_observer;
+	friend class time_keeper_observer;
 public:
 	Time_keeper(
-			Database& database,
+			database& db,
 			Timer&    timer,
-			Notifier& notifier
+			notification_manager& notifier
 			);
 
 
@@ -72,8 +72,8 @@ public:
 	void stop_time(Time_id id);
 private:
 	//
-	void attach(Time_keeper_observer *);
-	void detach(Time_keeper_observer *);
+	void attach(time_keeper_observer *);
+	void detach(time_keeper_observer *);
 
 	void check_for_status_change();
 
@@ -87,11 +87,11 @@ private:
 	void notify_running_changed();
 	void notify_idle_detected(Time_id /*id*/);
 
-	list<Time_keeper_observer *> observers;
+	list<time_keeper_observer *> observers;
 
-	Time_accessor      time_accessor;
-	Task_accessor      task_accessor;
-	Settings_accessor  settings_accessor;
+	time_accessor      times;
+	task_accessor      tasks;
+	settings_accessor  settings;
 
 	X11_idle_detector idle_detector;
 	void update_running_entries();

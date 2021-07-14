@@ -17,10 +17,10 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class Preference_dialog: public Gtk::Dialog, public IWidget
+class preference_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	Preference_dialog(Database& database);
+	preference_dialog(database& db);
 
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }
@@ -73,7 +73,7 @@ private:
 	string   url;
 	string   user;
 	string   password;
-	bool	 old_ignore_cert_err{0};
+	bool	 old_ignore_cert_err{false};
 	bool	 ignore_cert_err{false};
 	int		 old_sync_interval{0};
 	int		 sync_interval{0};
@@ -83,7 +83,7 @@ private:
 	bool on_button_released(GdkEventButton* event);
 	void save();
 
-	Settings_accessor settings_accessor;
+	settings_accessor settings;
 };
 
 }

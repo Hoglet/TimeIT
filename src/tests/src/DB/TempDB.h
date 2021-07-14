@@ -16,10 +16,10 @@ namespace test
 using namespace std;
 using namespace libtimeit;
 
-class TempDB : public libtimeit::Database
+class TempDB : public libtimeit::database
 {
 public:
-	TempDB(Notifier &notifier);
+	TempDB(notification_manager &notifier);
 };
 
 }

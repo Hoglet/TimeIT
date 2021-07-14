@@ -10,9 +10,9 @@ using namespace std;
 
 TEST(Settings_accessor, IntAccessor)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
-	Settings_accessor settingsAccessor(tempdb );
+	settings_accessor settingsAccessor(tempdb );
 	ASSERT_EQ(10, settingsAccessor.get_int("Tjohopp", 10));
 	settingsAccessor.set_int("Tjohopp", 30);
 	ASSERT_EQ(30, settingsAccessor.get_int("Tjohopp", 10));
@@ -20,18 +20,18 @@ TEST(Settings_accessor, IntAccessor)
 
 TEST(Settings_accessor, BoolAccessor)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
-	Settings_accessor settingsAccessor(tempdb);
+	settings_accessor settingsAccessor(tempdb);
 	ASSERT_EQ(true, settingsAccessor.get_bool("Tjohopp", true));
 	settingsAccessor.set_bool("Tjohopp", false);
 	ASSERT_EQ(false, settingsAccessor.get_bool("Tjohopp", true));
 }
 
-class Observer : public Event_observer
+class Observer : public event_observer
 {
 public:
-	Observer(Notifier& notifier) : Event_observer(notifier) {};
+	Observer(notification_manager& notifier) : event_observer(notifier) {};
 	void on_settings_changed(string name)
 	{
 		changed_setting = name;
@@ -42,11 +42,11 @@ public:
 
 TEST(Settings_accessor, notification)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
 	Observer observer(notifier);
 	ASSERT_EQ("", observer.changed_setting);
-	Settings_accessor settingsAccessor(tempdb);
+	settings_accessor settingsAccessor(tempdb);
 	settingsAccessor.set_bool("Tjohopp", false);
 	ASSERT_EQ("Tjohopp", observer.changed_setting);
 

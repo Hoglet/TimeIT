@@ -15,16 +15,16 @@ namespace libtimeit
 {
 using namespace std;
 
-class X11
+class x11_lib
 {
 public:
-	X11();
-	X11(const X11&) = delete;
-	X11(X11&&) = delete;
-	X11& operator=(X11&&) = delete;
-	X11& operator=(const X11&) = delete;
+	x11_lib();
+	x11_lib(const x11_lib&) = delete;
+	x11_lib(x11_lib&&) = delete;
+	x11_lib& operator=(x11_lib&&) = delete;
+	x11_lib& operator=(const x11_lib&) = delete;
 
-	virtual ~X11();
+	virtual ~x11_lib();
 	long            get_cardinal(const char *prop_name, int index) noexcept(false);
 	vector<string>  get_strings(const char *prop_name)             noexcept(false);
 	int             viewport_width();

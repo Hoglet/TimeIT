@@ -10,11 +10,11 @@ namespace  gui
 {
 using namespace std;
 
-class Timestamp_edit : public Gtk::Frame
+class timestamp_edit : public Gtk::Frame
 {
 public:
-	Timestamp_edit() = delete;
-	Timestamp_edit(string title);
+	timestamp_edit() = delete;
+	timestamp_edit(string title);
 
 	void set_values(time_t timestamp);
 	time_t timestamp();
@@ -31,16 +31,16 @@ private:
 	Gtk::Label day_label  {_("Day")};
 
 
-	LZSpinButton year;
-	LZSpinButton month;
-	LZSpinButton day;
+	ls_spin_button year;
+	ls_spin_button month;
+	ls_spin_button day;
 
 	Gtk::HBox  time_box;
 	Gtk::Label time_label  {_("Time:")};
 	Gtk::Label colon_label {":"};
 
-	LZSpinButton hour;
-	LZSpinButton minute;
+	ls_spin_button hour;
+	ls_spin_button minute;
 
 	void   set_behaviour();
 	void   do_layout();

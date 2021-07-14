@@ -7,13 +7,13 @@ namespace libtimeit
 {
 using namespace  std;
 //LCOV_EXCL_START
-Workspace::Workspace()
+x11_workspace::x11_workspace()
 {
 	try
 	{
 		x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
 	}
-	catch (const General_exception &e)
+	catch (const general_exception &e)
 	{
 		supports_layout = false;
 	}
@@ -21,7 +21,7 @@ Workspace::Workspace()
 
 
 
-Layout Workspace::layout()
+workspace_layout x11_workspace::layout()
 {
 	unsigned rows {1};
 	unsigned columns {1};
@@ -76,14 +76,14 @@ Layout Workspace::layout()
 			}
 		}
 	}
-	catch (const General_exception &e)
+	catch (const general_exception &e)
 	{
 		cerr << e.what();
 	}
-	return Layout(number_of_workspaces, rows, columns);
+	return workspace_layout(number_of_workspaces, rows, columns);
 }
 
-unsigned Workspace::active()
+unsigned x11_workspace::active()
 {
 	long active = 0;
 	auto layout = this->layout();
@@ -102,7 +102,7 @@ unsigned Workspace::active()
 		{
 			active = x11.get_cardinal("_NET_CURRENT_DESKTOP", 0);
 		}
-		catch (const General_exception &e)
+		catch (const general_exception &e)
 		{
 			cerr << e.what();
 		}
@@ -110,7 +110,7 @@ unsigned Workspace::active()
 	return (unsigned)max(active,0L);
 }
 
-string Workspace::name(unsigned workspace_nr)
+string x11_workspace::name(unsigned workspace_nr)
 {
 	if (is_virtual)
 	{
@@ -126,7 +126,7 @@ string Workspace::name(unsigned workspace_nr)
 			return names.at(workspace_nr);
 		}
 	}
-	catch (const General_exception &e)
+	catch (const general_exception &e)
 	{
 		cerr << e.what();
 	}

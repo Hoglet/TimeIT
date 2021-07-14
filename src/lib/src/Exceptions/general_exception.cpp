@@ -7,12 +7,12 @@
 
 #include <libtimeit/exceptions/general_exception.h>
 
-General_exception::General_exception(const char* op1) : message(op1)
+general_exception::general_exception(const char* op1) : message(op1)
 {
 }
 
 
-const char* General_exception::what() const noexcept
+const char* general_exception::what() const noexcept
 {
 	return message;
 }

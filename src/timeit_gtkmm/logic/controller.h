@@ -16,20 +16,20 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-class Controller : // NOLINT(cppcoreguidelines-special-member-functions)
-		public Action_observer,
-		public Time_keeper_observer,
-		public Summary_observer,
-		public Event_observer
+class widget_controller : // NOLINT(cppcoreguidelines-special-member-functions)
+		public action_observer,
+		public time_keeper_observer,
+		public summary_observer,
+		public event_observer
 {
 public:
-	Controller(
-			Window_manager& gui_factory,
+	widget_controller(
+			window_manager& gui_factory,
 			Time_keeper&    time_keeper,
-			Database&       database,
-			Notifier&       notifier,
-			Images&         images);
-	~Controller() override;
+			database&       database,
+			notification_manager&       notifier,
+			image_cache&         images);
+	~widget_controller() override;
 	void start();
 
 	//Action observers
@@ -61,13 +61,13 @@ public:
 	void on_action_stop_timers() override;
 
 private:
-	Window_manager&     window_manager;
+	window_manager&     windows;
 	Time_keeper&        time_keeper;
-	Time_accessor       time_accessor;
-	Settings_accessor   settings_accessor;
-	Database&           database;
-	Notifier&           notifier;
-	Images&             images;
+	time_accessor       times;
+	settings_accessor   settings;
+	database&           db;
+	notification_manager&           notifier;
+	image_cache&             images;
 
 	int main_window_x = 0;
 	int main_window_y = 0;

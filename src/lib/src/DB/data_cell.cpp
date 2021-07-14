@@ -10,20 +10,20 @@ const auto DATA_CELL_INTEGER = 1;
 const auto DATA_CELL_TEXT    = 3;
 const auto DATA_CELL_NULL    = 5;
 
-Data_cell::Data_cell(int op_value) : type(DATA_CELL_INTEGER), value(op_value)
+data_cell::data_cell(int op_value) : type(DATA_CELL_INTEGER), value(op_value)
 {
 }
 
-Data_cell::Data_cell(const char *op_text) :  type(DATA_CELL_TEXT), txt(op_text)
+data_cell::data_cell(const char *op_text) : type(DATA_CELL_TEXT), txt(op_text)
 {
 }
 
-bool Data_cell::has_value() const
+bool data_cell::has_value() const
 {
 	return (type != DATA_CELL_NULL);
 }
 
-int64_t Data_cell::integer() const
+int64_t data_cell::integer() const
 {
 	if (type != DATA_CELL_INTEGER)
 	{
@@ -32,7 +32,7 @@ int64_t Data_cell::integer() const
 	return value;
 }
 
-string Data_cell::text() const
+string data_cell::text() const
 {
 	if (type == DATA_CELL_NULL )
 	{
@@ -46,7 +46,7 @@ string Data_cell::text() const
 	return txt;
 }
 
-bool Data_cell::boolean() const
+bool data_cell::boolean() const
 {
 	if (type != DATA_CELL_INTEGER)
 	{

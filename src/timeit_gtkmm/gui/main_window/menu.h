@@ -16,12 +16,12 @@ namespace gui
 
 using namespace std;
 
-class Menu: public Gtk::MenuBar
+class menu_bar : public Gtk::MenuBar
 {
 public:
-	Menu();
-	void attach(Action_observer*);
-	void detach(Action_observer*);
+	menu_bar();
+	void attach(action_observer*);
+	void detach(action_observer*);
 	void set_task_is_selected(bool show);
 private:
 	Gtk::Menu file_menu;
@@ -42,7 +42,7 @@ private:
 	void on_menu_preferences();
 	void on_menu_report_bug();
 
-	list<Action_observer*> observers;
+	list<action_observer*> observers;
 };
 
 }

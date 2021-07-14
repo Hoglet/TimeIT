@@ -11,10 +11,10 @@
 namespace libtimeit
 {
 
-class Ipc_client: public Ipc
+class ipc_client : public ipc
 {
 public:
-	Ipc_client(string socketName);
+	ipc_client(string socket_name);
 	void window_2_front();
 private:
 	string socket_name;

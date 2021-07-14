@@ -12,10 +12,10 @@ using sigc::connection;
 using sigc::mem_fun;
 using namespace Glib;
 
-class GTK_timer : public libtimeit::Timer
+class gtk_timer : public libtimeit::Timer
 {
 public:
-	GTK_timer()
+	gtk_timer()
 	{
 		conn = signal_timeout().connect_seconds(
 				[this]() -> bool
@@ -24,11 +24,11 @@ public:
 				},
 				1);
 	}
-	GTK_timer(const GTK_timer&) = delete;
-	GTK_timer( GTK_timer&& ) = delete;
-	GTK_timer& operator=( const GTK_timer& ) = delete;
-	GTK_timer& operator=( GTK_timer&& ) = delete;
-
+	gtk_timer(const gtk_timer&) = delete;
+	gtk_timer( gtk_timer&& ) = delete;
+	gtk_timer& operator=( const gtk_timer& ) = delete;
+	gtk_timer& operator=( gtk_timer&& ) = delete;
+	~gtk_timer() = default;
 private:
 	connection conn{};
 };

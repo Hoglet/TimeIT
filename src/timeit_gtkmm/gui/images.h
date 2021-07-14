@@ -24,10 +24,10 @@ enum class image_identifier
 
 using image_pointer = Glib::RefPtr<Pixbuf>;
 
-class Images
+class image_cache
 {
 public:
-	Images();
+	image_cache();
 	image_pointer by_id(image_identifier id);
 private:
 	void create_image(image_identifier id, int width, int height);

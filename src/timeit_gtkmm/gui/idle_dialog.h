@@ -20,10 +20,10 @@ enum IdleDialogResponse{
 	RESPONSE_CONTINUE=3
 } ;
 
-class Idle_dialog : public Gtk::Dialog, public Timer_observer, public IWidget
+class idle_dialog : public Gtk::Dialog, public timer_observer, public IWidget
 {
 public:
-	Idle_dialog(Timer& timer, Database& database, Time_keeper& time_keeper);
+	idle_dialog(Timer& timer, database& db, Time_keeper& time_keeper);
 	void set_time_id(Time_id id);
 	// IWidget interface
 	void show() override;
@@ -39,8 +39,8 @@ private:
 	Gtk::Button   revert_and_continue_button;
 	Gtk::Button   continue_button;
 	string        task_string;
-	Task_accessor task_accessor;
-	Time_accessor time_accessor;
+	task_accessor tasks;
+	time_accessor times;
 	Time_keeper&  time_keeper;
 
 	Time_id       time_entry_id{0};

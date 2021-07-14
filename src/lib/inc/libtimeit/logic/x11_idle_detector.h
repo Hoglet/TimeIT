@@ -17,7 +17,7 @@
 namespace libtimeit
 {
 
-class X11_idle_detector : public Timer_observer
+class X11_idle_detector : public timer_observer
 {
 public:
 	static bool available();

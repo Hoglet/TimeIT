@@ -23,7 +23,7 @@ Time_entry::Time_entry(
 		state(state_),
 		changed(changed_),
 		task_uuid(move(move(taskUUID_))),
-		comment(comment_)
+		comment(std::move(comment_))
 {
 }
 

@@ -19,10 +19,10 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-class Edit_task_dialog: public Gtk::Dialog, public IWidget
+class edit_task_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	Edit_task_dialog(Database& database);
+	edit_task_dialog(database& db);
 
 	void on_ok_button_clicked();
 	void on_cancel_button_clicked();
@@ -64,7 +64,7 @@ private:
 	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
 	// Parent task and child task.
 	Gtk::Label    parent_label   {_("Parent: ")};
-	Parent_chooser parent_chooser;
+	parent_chooser_widget parent_chooser;
 
 	string        name;
 	unsigned      idle_time {0};
@@ -74,10 +74,10 @@ private:
 
 	vector<unsigned> workspaces;
 
-	Auto_track_accessor auto_track_accessor;
-	Task_accessor       task_accessor;
-	Settings_accessor   settings_accessor;
-	Workspace           workspace;
+	auto_track_accessor auto_track_table;
+	task_accessor       tasks;
+	settings_accessor   settings;
+	x11_workspace           workspace;
 
 	vector<shared_ptr<Gtk::CheckButton>> check_button;
 };

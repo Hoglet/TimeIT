@@ -18,7 +18,7 @@ TEST( Exception, dbException )
 
 TEST( Exceptions, generalException)
 {
-	General_exception ge("Something happened");
+	general_exception ge("Something happened");
 	string expected("Something happened");
 	ASSERT_EQ(expected, ge.what());
 }

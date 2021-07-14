@@ -17,11 +17,11 @@ namespace libtimeit
 
 using namespace std;
 
-class Settings_accessor
+class settings_accessor
 {
-	friend class Database;
+	friend class database;
 public:
-	Settings_accessor(Database& database);
+	settings_accessor(database& database);
 
 	optional<int>   value(string name);
 
@@ -34,14 +34,14 @@ public:
 	string    get_string(string name, string default_value);
 	bool      set_string(string name, string value);
 protected:
-	static void create_table(Database& db);
+	static void create_table(database& db);
 
 private:
 	void  setting_changed(string name);
 
-	Database& database;
-	static void setup(Database& database);
-	static void upgrade(Database& database);
+	database& db;
+	static void setup(database& db);
+	static void upgrade(database& database);
 };
 }
 

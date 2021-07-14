@@ -8,13 +8,13 @@
 namespace libtimeit
 {
 
-Event_observer::Event_observer(Notifier &notifier) : publisher(notifier)
+event_observer::event_observer(notification_manager &notifier) : publisher(notifier)
 {
 	publisher.attach(this);
 }
 
 
-Event_observer::~Event_observer()
+event_observer::~event_observer()
 {
 	publisher.detach(this);
 }

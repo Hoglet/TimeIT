@@ -8,68 +8,68 @@ namespace libtimeit
 {
 using namespace std;
 
-string to_json(vector<Task> tasks, string username)
+string to_json(vector<task> tasks, string username)
 {
-	vector<Json> items{};
-	for (Task task : tasks)
+	vector<json> items{};
+	for (task node : tasks)
 	{
-		Json item;
-		item.set("name", Json(task.name));
-		item.set("id", Json(task.uuid.to_string()));
-		if (task.parent_uuid)
+		json item;
+		item.set("name", json(node.name));
+		item.set("id", json(node.uuid.to_string()));
+		if (node.parent_uuid)
 		{
-			Json parent;
-			parent.set( "id", Json(task.parent_uuid->to_string()));
+			json parent;
+			parent.set( "id", json(node.parent_uuid->to_string()));
 			item.set( "parent", parent);
 		}
-		item.set("completed", Json(task.completed));
-		item.set("lastChange", Json(task.last_changed));
-		item.set("deleted", Json(task.deleted));
+		item.set("completed", json(node.completed));
+		item.set("lastChange", json(node.last_changed));
+		item.set("deleted", json(node.deleted));
 
-		item.set("idle", Json((int64_t)task.idle));
-		item.set("quiet", Json(task.quiet));
+		item.set("idle", json((int64_t)node.idle));
+		item.set("quiet", json(node.quiet));
 
-		Json owner;
-		owner.set("username", Json(username));
+		json owner;
+		owner.set("username", json(username));
 		item.set("owner", owner);
 
-		items.emplace_back(item);
+		items.push_back(item);
 	}
-	Json result(items);
+	json result(items);
 	return result.to_string();
 }
 
 string to_json(const Time_list& times)
 {
-	vector<Json> items{};
+	vector<json> items{};
 	for (auto time : times)
 	{
-		Json item;
-		item.set("id", Json( time.uuid.to_string()));
-		item.set("task", Json(time.task_uuid->to_string()));
-		item.set("start", Json(time.start));
-		item.set("stop", Json(time.stop));
-		item.set( "deleted",Json(time.state == DELETED));
-		item.set("changed",  Json(time.changed));
-		item.set("state", Json((int64_t)time.state));
-		item.set("comment", Json(time.comment));
-		Json task;
-		task.set("id", Json(time.task_uuid->to_string()));
-		item.set( "task", task);
+		json item;
+		item.set("id", json( time.uuid.to_string()));
+		item.set("task", json(time.task_uuid->to_string()));
+		item.set("start", json(time.start));
+		item.set("stop", json(time.stop));
+		item.set( "deleted",json(time.state == DELETED));
+		item.set("changed",  json(time.changed));
+		item.set("state", json((int64_t)time.state));
+		item.set("comment", json(time.comment));
+		json node;
+		node.set("id", json(time.task_uuid->to_string()));
+		item.set("task", node);
 
 		items.emplace_back(item);
 	}
-	Json result(items);
+	json result(items);
 	return result.to_string();
 }
 
-vector<Task> to_tasks(const string &text)
+vector<task> to_tasks(const string &text)
 {
-	vector<Task> return_value;
+	vector<task> return_value;
 
-	Json json=Json::from_json_string(text);
+	json json_document=json::from_json_string(text);
 
-	for (auto json_object: json.objects())
+	for (auto json_object: json_document.objects())
 	{
 		string   name            = json_object.text("name");
 		string   uuid_string     = json_object.text("id");
@@ -83,8 +83,17 @@ vector<Task> to_tasks(const string &text)
 		if(uuid)
 		{
 			auto parent = UUID::from_string(parent_string);
-			Task task(name, 0, *uuid, completed, 0, last_changed, parent, deleted, idle, quiet);
-			return_value.push_back(task);
+			return_value.emplace_back(
+					name,
+					0,
+					*uuid,
+					completed,
+					0,
+					last_changed,
+					parent,
+					deleted,
+					idle,
+					quiet);
 		}
 	}
 	return return_value;
@@ -94,15 +103,15 @@ Time_list to_times(const string &input)
 {
 	Time_list return_value;
 
-	Json json=Json::from_json_string(input);
+	json json_document=json::from_json_string(input);
 
-	for (Json item: json.objects())
+	for (json item: json_document.objects())
 	{
 		int64_t id            = 0;
 		string uuid_string    = item.text("id");
 		string task_id_string = item.by_name("task").text("id");
 		time_t start          = item.integer("start");
-		time_t stop           = item.integer("stop");;
+		time_t stop           = item.integer("stop");
 		time_t changed        = item.integer("changed");
 		auto   state          = (Time_entry_state)item.integer("state");
 		auto   deleted        = item.boolean( "deleted");

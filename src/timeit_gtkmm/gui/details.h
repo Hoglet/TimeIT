@@ -24,7 +24,7 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-struct Row_data
+struct row_data
 {
 	Time_id time_id;
 	time_t  prev_start;
@@ -43,10 +43,10 @@ struct Row_data
  *  Is showing details on the task that is selected
  *  (if any) in active (day/week/month)-summary
  */
-class Details: public Gtk::TreeView, public Event_observer, public Summary_observer
+class details: public Gtk::TreeView, public event_observer, public summary_observer
 {
 public:
-	Details(Database &database, Notifier& notifier, Window_manager&  window_manager);
+	details(database &database, notification_manager& notifier, window_manager&  window_manager);
 	void set(Task_id id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
@@ -66,19 +66,20 @@ public:
 	vector<Time_id> get_selected_and_next_id();
 	//
 private:
-	void update_row(Gtk::TreeModel::Row& row, Row_data ) const;
+	void update_row(Gtk::TreeModel::Row& row, row_data ) const;
 
 	optional<Gtk::TreeModel::Row> find_row(Time_id id);
 
-	list<Row_data> create_row_data(time_t start, time_t stop);
-	void           populate(list<Row_data> data_rows);
-	void           update(list<Row_data> data_rows);
+	list<row_data> create_row_data(time_t start, time_t stop);
+	void           populate();
+	void           populate(list<row_data> data_rows);
+	void           update(list<row_data> data_rows);
 
 	Glib::RefPtr<Gtk::ListStore> tree_model;
-	class ModelColumns: public Gtk::TreeModel::ColumnRecord
+	class model_columns: public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		ModelColumns()
+		model_columns()
 		{
 
 			add(col_id);
@@ -100,7 +101,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_morning;
 		Gtk::TreeModelColumn<Glib::ustring> col_comment;
 	};
-	ModelColumns columns;
+	model_columns columns;
 	Task_id      task_id {0};
 
 	time_t start_time {0};
@@ -108,10 +109,10 @@ private:
 	Gtk::Menu                   menu_popup;
 	Glib::RefPtr<Gtk::MenuItem> merge_menu_item;
 	Glib::RefPtr<Gtk::MenuItem> split_menu_item;
-	Time_accessor               time_accessor;
-	Settings_accessor           settings_accessor;
-	Window_manager&             window_manager;
-	Database&                   database;
+	time_accessor               times;
+	settings_accessor           settings;
+	window_manager&             windows;
+	database&                   db;
 	void edit_time_entry(Time_id i);
 };
 }

@@ -3,10 +3,10 @@
 
 using namespace libtimeit;
 
-class TimerTest: public Timer_observer
+class TimerTest: public timer_observer
 {
 public:
-	explicit TimerTest(Timer& timer) : Timer_observer(timer)
+	explicit TimerTest(Timer& timer) : timer_observer(timer)
 	{
 		oneSecond=0;
 		tenSeconds=0;

@@ -14,11 +14,11 @@ static const int IDLE_TIME_PAGING_LENGTH = 10;
 
 using namespace libtimeit;
 using namespace std;
-Edit_task_dialog::Edit_task_dialog(Database &database) :
-		parent_chooser(database),
-		auto_track_accessor(database),
-		task_accessor(database),
-		settings_accessor( database)
+edit_task_dialog::edit_task_dialog(database &db) :
+		parent_chooser(db),
+		auto_track_table(db),
+		tasks(db),
+		settings(db)
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
@@ -31,24 +31,24 @@ Edit_task_dialog::Edit_task_dialog(Database &database) :
 	workspace_label.set_text(text);
 
 	create_layout();
-	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_ok_button_clicked));
-	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_cancel_button_clicked));
-	task_name_entry.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
-	parent_chooser.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
-	idle_time_entry.signal_changed().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
-	quiet_button.signal_clicked().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
+	ok_button.signal_clicked().connect(sigc::mem_fun(this, &edit_task_dialog::on_ok_button_clicked));
+	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &edit_task_dialog::on_cancel_button_clicked));
+	task_name_entry.signal_changed().connect(sigc::mem_fun(this, &edit_task_dialog::on_data_changed));
+	parent_chooser.signal_changed().connect(sigc::mem_fun(this, &edit_task_dialog::on_data_changed));
+	idle_time_entry.signal_changed().connect(sigc::mem_fun(this, &edit_task_dialog::on_data_changed));
+	quiet_button.signal_clicked().connect(sigc::mem_fun(this, &edit_task_dialog::on_data_changed));
 
 	auto iter = check_button.begin();
 	while (iter != check_button.end())
 	{
-		(*iter)->signal_toggled().connect(sigc::mem_fun(this, &Edit_task_dialog::on_data_changed));
+		(*iter)->signal_toggled().connect(sigc::mem_fun(this, &edit_task_dialog::on_data_changed));
 		++iter;
 	}
 }
 
 
 
-void Edit_task_dialog::create_layout()
+void edit_task_dialog::create_layout()
 {
 	auto layout      = workspace.layout();
 	auto num_rows    = layout.rows;
@@ -69,7 +69,7 @@ void Edit_task_dialog::create_layout()
 	idle_time_entry.set_max_length(4);
 	idle_time_entry.set_range(1, MAX_IDLE_TIME);
 	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
-	idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT );
+	idle_time = (unsigned)settings.get_int("Gt", DEFAULT_GT );
 	idle_time_entry.set_value( idle_time );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
@@ -127,7 +127,7 @@ void Edit_task_dialog::create_layout()
 	show_all_children();
 }
 
-vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
+vector<unsigned> edit_task_dialog::get_ticked_workspaces()
 {
 	vector<unsigned> workspace_list;
 
@@ -150,25 +150,25 @@ vector<unsigned> Edit_task_dialog::get_ticked_workspaces()
 }
 
 
-void Edit_task_dialog::set_task_id(Task_id ID)
+void edit_task_dialog::set_task_id(Task_id ID)
 {
 	task_id = ID;
-	auto task = task_accessor.by_id(task_id);
-	if (task.has_value())
+	auto task_to_edit = tasks.by_id(task_id);
+	if (task_to_edit.has_value())
 	{
-		name = task->name;
-		set_parent(task->parent_id);
+		name = task_to_edit->name;
+		set_parent(task_to_edit->parent_id);
 		task_name_entry.set_text(name);
-		vector<unsigned> workspace_list = auto_track_accessor.workspaces(ID);
+		vector<unsigned> workspace_list = auto_track_table.workspaces(ID);
 		set_ticked_workspaces(workspace_list);
 		ok_button.set_sensitive(false);
 		workspaces = workspace_list;
 		parent_chooser.set_id(ID);
-		idle_time = task->idle;
-		quiet = task->quiet;
+		idle_time = task_to_edit->idle;
+		quiet = task_to_edit->quiet;
 		if(idle_time==0)
 		{
-			idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+			idle_time = (unsigned)settings.get_int("Gt", DEFAULT_GT);
 		}
 
 		idle_time_entry.set_value( idle_time);
@@ -176,13 +176,13 @@ void Edit_task_dialog::set_task_id(Task_id ID)
 	}
 }
 
-void Edit_task_dialog::set_parent(Task_id ID)
+void edit_task_dialog::set_parent(Task_id ID)
 {
 	parent_id = ID;
 	parent_chooser.set_parent(parent_id);
 }
 
-void Edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
+void edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
 {
 
 	auto check_button_iter = check_button.begin();
@@ -206,7 +206,7 @@ void Edit_task_dialog::set_ticked_workspaces(vector<unsigned> workspaces_list)
 	}
 
 }
-void Edit_task_dialog::on_ok_button_clicked()
+void edit_task_dialog::on_ok_button_clicked()
 {
 
 	stringstream check_button_name;
@@ -216,40 +216,39 @@ void Edit_task_dialog::on_ok_button_clicked()
 
 	if (task_id < 1)
 	{
-		Task task(new_name, parent_id);
-		task_id = task_accessor.create(task);
+		task_id = tasks.create({new_name, parent_id});
 	}
 	else
 	{
-		task_accessor.set_parent_id(task_id, parent_id);
-		auto task = task_accessor.by_id(task_id);
-		if (task.has_value())
+		tasks.set_parent_id(task_id, parent_id);
+		auto current_task = tasks.by_id(task_id);
+		if (current_task.has_value())
 		{
 			auto new_idle_time = (unsigned)idle_time_entry.get_value_as_int();
-			auto default_idle_time = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
+			auto default_idle_time = (unsigned)settings.get_int("Gt", DEFAULT_GT);
 			if(new_idle_time == default_idle_time)
 			{
 				new_idle_time = 0;
 			}
-			auto updated_task = task->
+			auto updated_task = current_task->
 					with_name(new_name).
 					with_idle(new_idle_time).
 					with_quiet(quiet_button.get_active());
-			task_accessor.update(updated_task);
+			tasks.update(updated_task);
 		}
 	}
-	auto_track_accessor.set_workspaces(task_id, workspace_list);
+	auto_track_table.set_workspaces(task_id, workspace_list);
 	task_id = -1;
 	parent_id = 0;
 	hide();
 }
-void Edit_task_dialog::on_cancel_button_clicked()
+void edit_task_dialog::on_cancel_button_clicked()
 {
 	task_id = -1;
 	parent_id = 0;
 	hide();
 }
-void Edit_task_dialog::check_for_changes()
+void edit_task_dialog::check_for_changes()
 {
 	auto ticked_workspaces = get_ticked_workspaces();
 
@@ -271,32 +270,32 @@ void Edit_task_dialog::check_for_changes()
 	}
 }
 
-void Edit_task_dialog::on_data_changed()
+void edit_task_dialog::on_data_changed()
 {
 	check_for_changes();
 }
 
-void Edit_task_dialog::get_position(int &Window_x, int &Window_y)
+void edit_task_dialog::get_position(int &Window_x, int &Window_y)
 {
 	Gtk::Dialog::get_position(Window_x, Window_y);
 }
 
-bool Edit_task_dialog::is_visible()
+bool edit_task_dialog::is_visible()
 {
 	return Gtk::Dialog::is_visible();
 }
 
-void Edit_task_dialog::move(int x, int y)
+void edit_task_dialog::move(int x, int y)
 {
 	Gtk::Dialog::move(x,y);
 }
 
-void Edit_task_dialog::hide()
+void edit_task_dialog::hide()
 {
 	Gtk::Dialog::hide();
 }
 
-void Edit_task_dialog::show()
+void edit_task_dialog::show()
 {
 	Gtk::Dialog::show();
 }

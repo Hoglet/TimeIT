@@ -12,12 +12,12 @@ namespace libtimeit
 {
 using namespace std;
 
-class Auto_tracker : public Timer_observer
+class auto_tracker : public timer_observer
 {
 public:
-	Auto_tracker(
+	auto_tracker(
 			Time_keeper& time_keeper_,
-			Database&    database_,
+			database&    db,
 			Timer&       timer_
 			);
 
@@ -31,9 +31,9 @@ private:
 
 	Time_keeper        &time_keeper;
 
-	Auto_track_accessor  auto_track_accessor;
-	Task_accessor        task_accessor;
-	Workspace            workspace;
+	auto_track_accessor  auto_track;
+	task_accessor        tasks;
+	x11_workspace            workspace;
 	bool                 old_user_is_active{false};
 };
 

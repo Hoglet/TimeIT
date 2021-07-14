@@ -8,13 +8,13 @@ using namespace libtimeit;
 namespace gui
 {
 
-Edit_time::Edit_time(
+edit_time_dialog::edit_time_dialog(
 		Time_entry time_entry_,
-		Database& database)
+		database& db)
 		:
 		time_entry(std::move(time_entry_)),
-		time_accessor(database),
-		task_accessor(database)
+		times(db),
+		tasks(db)
 {
 	if(time_entry_.id!=0)
 	{
@@ -22,10 +22,10 @@ Edit_time::Edit_time(
 	}
 	set_deletable(false);
 
-	auto task = task_accessor.by_id(time_entry.task_id);
-	if (task.has_value())
+	auto owning_task = tasks.by_id(time_entry.task_id);
+	if (owning_task.has_value())
 	{
-		task_name.set_text(task->name);
+		task_name.set_text(owning_task->name);
 	}
 	comment_buffer =Gtk:: TextBuffer::create();
 	comment_edit.set_buffer(comment_buffer);
@@ -68,7 +68,7 @@ Edit_time::Edit_time(
 
 }
 
-void Edit_time::connect_signals()
+void edit_time_dialog::connect_signals()
 {
 	auto slot = [this]()
 	{
@@ -81,7 +81,7 @@ void Edit_time::connect_signals()
 }
 
 
-void Edit_time::on_response(int response_id)
+void edit_time_dialog::on_response(int response_id)
 {
 	if (response_id == Gtk::RESPONSE_OK)
 	{
@@ -90,18 +90,18 @@ void Edit_time::on_response(int response_id)
 		auto   comment    = comment_buffer->get_text();
 		if(time_entry.id>0)
 		{
-			time_accessor.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
+			times.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
 		}
 		else
 		{
-			time_accessor.create(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
+			times.create(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
 		}
 	}
 }
 
 
 
-void Edit_time::set_values()
+void edit_time_dialog::set_values()
 {
 	start_timestamp_edit.set_values(time_entry.start);
 	stop_timestamp_edit.set_values(time_entry.stop);
@@ -113,7 +113,7 @@ void Edit_time::set_values()
 	original_comment = time_entry.comment;
 }
 
-void Edit_time::on_change()
+void edit_time_dialog::on_change()
 {
 	auto start   = start_timestamp_edit.timestamp();
 	auto stop    = stop_timestamp_edit.timestamp();

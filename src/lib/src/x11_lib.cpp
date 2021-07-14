@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "libtimeit/X11.h"
+#include "libtimeit/x11_lib.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -15,30 +15,30 @@ namespace libtimeit
 
 
 //LCOV_EXCL_START
-X11::X11() : display(XOpenDisplay(nullptr))
+x11_lib::x11_lib() : display(XOpenDisplay(nullptr))
 {
 	root_window = DefaultRootWindow(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-prefer-member-initializer,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
-X11::~X11()
+x11_lib::~x11_lib()
 {
 	XCloseDisplay(display);
 }
 
-int X11::viewport_width()
+int x11_lib::viewport_width()
 {
 	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	return screen->width;
 }
 
-int X11::viewport_height()
+int x11_lib::viewport_height()
 {
 	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	return screen->height;
 }
 
 
-long X11::get_cardinal(const char *name, int offset) noexcept(false)
+long x11_lib::get_cardinal(const char *name, int offset) noexcept(false)
 {
 	Atom property_name = XInternAtom(display, name, False);
 	Atom property_type = XA_CARDINAL;
@@ -63,18 +63,18 @@ long X11::get_cardinal(const char *name, int offset) noexcept(false)
 		else
 		{
 			XFree(returned_data);
-			throw General_exception("get_cardinal failed: Unexpected data");
+			throw general_exception("get_cardinal failed: Unexpected data");
 
 		}
 	}
 	else
 	{
-		throw General_exception("get_cardinal failed: XGetWindowProperty failed");
+		throw general_exception("get_cardinal failed: XGetWindowProperty failed");
 	}
 	return return_value;
 }
 
-vector<string> X11::get_strings(const char *name) noexcept(false)
+vector<string> x11_lib::get_strings(const char *name) noexcept(false)
 {
 	Atom property_name = XInternAtom(display, name, False);
 	Atom property_type = XInternAtom(display, "UTF8_STRING", False);
@@ -105,12 +105,12 @@ vector<string> X11::get_strings(const char *name) noexcept(false)
 		else
 		{
 			XFree(returned_data);
-			throw General_exception("get_strings failed: Unexpected data");
+			throw general_exception("get_strings failed: Unexpected data");
 		}
 	}
 	else
 	{
-		throw General_exception("get_cardinal failed: XGetWindowProperty failed");
+		throw general_exception("get_cardinal failed: XGetWindowProperty failed");
 	}
 	return return_values;
 }

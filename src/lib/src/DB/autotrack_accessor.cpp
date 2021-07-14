@@ -13,17 +13,17 @@ namespace libtimeit
 {
 using namespace std;
 
-Auto_track_accessor::Auto_track_accessor(Database& op_database)
+auto_track_accessor::auto_track_accessor(database& op_database)
 	:
-	task_accessor(op_database),
-	database(op_database)
+		tasks(op_database),
+		db(op_database)
 {
 }
 
 
-void  Auto_track_accessor::create_table(Database& database)
+void  auto_track_accessor::create_table(database& db)
 {
-	database.execute(R"Query(
+	db.execute(R"Query(
 		CREATE TABLE IF NOT EXISTS
 			autotrack
 			(
@@ -33,23 +33,23 @@ void  Auto_track_accessor::create_table(Database& database)
 		)Query");
 }
 
-void  Auto_track_accessor::upgrade(Database& /*database*/)
+void  auto_track_accessor::upgrade(database& /*database*/)
 {
 
 }
 
-Task_id_list Auto_track_accessor::task_ids(unsigned workspace)
+task_id_list auto_track_accessor::task_ids(unsigned workspace)
 {
-	Task_id_list return_value;
+	task_id_list return_value;
 	stringstream  statement;
 
 	statement << "SELECT taskID FROM autotrack where workspace =" << workspace;
-	Query_result rows = database.execute(statement.str());
-	for (vector<Data_cell> row : rows)
+	Query_result rows = db.execute(statement.str());
+	for (vector<data_cell> row : rows)
 	{
 		int64_t id = row[0].integer();
-		auto task = task_accessor.by_id(id);
-		if (task.has_value() && !task->deleted)
+		auto item = tasks.by_id(id);
+		if (item.has_value() && !item->deleted)
 		{
 			return_value.push_back(id);
 		}
@@ -57,12 +57,12 @@ Task_id_list Auto_track_accessor::task_ids(unsigned workspace)
 	return return_value;
 }
 
-vector<unsigned> Auto_track_accessor::workspaces(int64_t taskID)
+vector<unsigned> auto_track_accessor::workspaces(int64_t taskID)
 {
 	vector<unsigned> return_value;
 	stringstream     statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	for (auto row : rows)
 	{
 		auto workspace = (unsigned)row[0].integer();
@@ -71,24 +71,24 @@ vector<unsigned> Auto_track_accessor::workspaces(int64_t taskID)
 	return return_value;
 }
 
-void Auto_track_accessor::set_workspaces(int64_t task_ID, vector<unsigned> workspaces)
+void auto_track_accessor::set_workspaces(int64_t task_ID, vector<unsigned> workspaces)
 {
 	stringstream statement;
 	statement << "DELETE FROM autotrack WHERE taskID = " << task_ID;
-	database.execute(statement.str());
+	db.execute(statement.str());
 
 	for (auto workspace : workspaces)
 	{
 		statement.str("");
 		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << task_ID << ", " << workspace << ")";
-		database.execute(statement.str());
+		db.execute(statement.str());
 	}
 }
 
-void Auto_track_accessor::setup(Database& database)
+void auto_track_accessor::setup(database& db)
 {
-	Auto_track_accessor::create_table(database);
-	Auto_track_accessor::upgrade(database);
+	auto_track_accessor::create_table(db);
+	auto_track_accessor::upgrade(db);
 
 }
 

@@ -8,8 +8,8 @@ namespace gui
 {
 
 using namespace std;
-Parent_chooser::Parent_chooser(Database &database) :
-		task_accessor(database)
+parent_chooser_widget::parent_chooser_widget(database &db) :
+		tasks(db)
 {
 	//Create the Tree model:
 	//m_refTreeModel = Gtk::TreeStore::create(m_Columns);
@@ -31,11 +31,11 @@ Parent_chooser::Parent_chooser(Database &database) :
 
 	set_active(0);
 	//Connect signal handler:
-	signal_changed().connect(sigc::mem_fun(*this, &Parent_chooser::on_combo_changed));
+	signal_changed().connect(sigc::mem_fun(*this, &parent_chooser_widget::on_combo_changed));
 
 }
 
-void Parent_chooser::set_id(Task_id id)
+void parent_chooser_widget::set_id(Task_id id)
 {
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
@@ -46,7 +46,7 @@ void Parent_chooser::set_id(Task_id id)
 	}
 }
 
-void Parent_chooser::set_parent(Task_id id)
+void parent_chooser_widget::set_parent(Task_id id)
 {
 	if (id >= 0)
 	{
@@ -65,12 +65,12 @@ void Parent_chooser::set_parent(Task_id id)
 	}
 }
 
-Task_id Parent_chooser::get_parent_id() const
+Task_id parent_chooser_widget::get_parent_id() const
 {
 	return parent_id;
 }
 
-Gtk::TreeModel::iterator Parent_chooser::find_row(Task_id id)
+Gtk::TreeModel::iterator parent_chooser_widget::find_row(Task_id id)
 {
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
@@ -86,11 +86,11 @@ Gtk::TreeModel::iterator Parent_chooser::find_row(Task_id id)
 	return iter;
 }
 
-void Parent_chooser::populate(std::string &base_string, Task_id parent_id_)
+void parent_chooser_widget::populate(std::string &base_string, Task_id parent_id_)
 {
-	vector<Task> tasks = task_accessor.by_parent_id(parent_id_);
+	vector<task> child_tasks = tasks.by_parent_id(parent_id_);
 
-	for (auto task: tasks)
+	for (auto child: child_tasks)
 	{
 		Gtk::TreeModel::Row row;
 		Gtk::TreeModel::iterator iter = model->append();
@@ -101,17 +101,17 @@ void Parent_chooser::populate(std::string &base_string, Task_id parent_id_)
 		{
 			name = base_string;
 		}
-		name += task.name;
-		row[columns.col_id] = task.id;
+		name += child.name;
+		row[columns.col_id] = child.id;
 		row[columns.col_name] = name;
 
 		string new_base_string = base_string + "    ";
-		populate(new_base_string, task.id);
+		populate(new_base_string, child.id);
 	}
 }
 
 
-void Parent_chooser::on_combo_changed()
+void parent_chooser_widget::on_combo_changed()
 {
 	Gtk::TreeModel::iterator iter = get_active();
 	if (iter)

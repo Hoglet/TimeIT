@@ -14,7 +14,7 @@ namespace gui
 
 using namespace libtimeit;
 
-class Action_observer
+class action_observer
 {
 public:
 	virtual void on_action_task_selection_changed(Task_id /*selectedTaskID*/) {};

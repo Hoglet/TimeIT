@@ -14,24 +14,24 @@
 namespace gui
 {
 
-class CalendarObserver
+class calendar_observer
 {
 public:
 	virtual void on_date_changed() = 0;
 };
 
-class Calendar : public Gtk::Calendar
+class calendar_widget : public Gtk::Calendar
 {
 public:
-	Calendar();
-	void attach(CalendarObserver* observer);
-	void detach(CalendarObserver* observer);
+	calendar_widget();
+	void attach(calendar_observer* observer);
+	void detach(calendar_observer* observer);
 private:
 	void notify();
 	void mark_today();
 
-	int marked_day=0;
-	std::list<CalendarObserver*> observers;
+	int marked_day = 0;
+	std::list<calendar_observer*> observers;
 };
 
 }

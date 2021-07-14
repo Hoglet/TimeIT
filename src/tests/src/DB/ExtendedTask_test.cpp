@@ -5,14 +5,14 @@ using namespace libtimeit;
 
 TEST(ExtendedTask, testTime)
 {
-	Extended_task task(0, UUID(), 0,  "Test");
-	ASSERT_EQ(0, task.time);
+	extended_task task1(0, UUID(), 0, "Test");
+	ASSERT_EQ(0, task1.time);
 }
 
 TEST(ExtendedTask, testRunning)
 {
-	Extended_task task(0, UUID(), 0, "Test", 0, 0, false);
-	Extended_task task2(0, UUID(), 0, "Test2", 0, 0, true);
-	ASSERT_EQ(false, task.running);
+	extended_task task1(0, UUID(), 0, "Test", 0, 0, false);
+	extended_task task2(0, UUID(), 0, "Test2", 0, 0, true);
+	ASSERT_EQ(false, task1.running);
 	ASSERT_EQ(true, task2.running);
 }

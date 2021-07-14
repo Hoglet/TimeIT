@@ -14,13 +14,19 @@ Indent with tabs.
 
 ## Readability 
 * Ensure horizontal and vertical whitespace.
-* Form parameters as lists.
-* Symmetry. 
 * Reduce complexity.
 * camelCase -> snake_case.
 * Remove noise
-    * ::getName() -> ::name()
-    * liberal use of "using namespace" 
+  * ::get_name() -> ::name()
+  * liberal use of "using namespace" 
+  * Does it add value? If not remove.
+  * Comments clutter code. Rewrite code so that it is clear
+* Code should visually convey information.
+  * Form parameters as lists.
+  * Symmetry.
+    * Starting brace on same column as ending brace (or on same line).
+    * Variables in columns.
+  
 
 ## robustness
 * Immutable.
@@ -33,16 +39,18 @@ Indent with tabs.
 ## Conventions
 * Indent with tabs.
 * snake_case.
-* lover case filenames.
+* lower case filenames.
 * No prefix or postfix on variables and fields if possible. 
   * If fields and method names collide we concatenate "_" on the field.
   * If parameter and field name collides concatenate "_" on parameter.
   
 
 
-## Code example
+## Code examples
+
+### Example 1
 <pre>
-void Preference_dialog::on_data_changed()
+void preference_dialog::on_data_changed()
 {
   get_values();
   if (gz < gt
@@ -66,5 +74,19 @@ void Preference_dialog::on_data_changed()
   {
     ok_button.set_sensitive(false);
   }
+}
+</pre>
+
+### Example 1
+<pre>
+bool arbitrary_function(
+  float    param1,
+  float    param2,
+  long int param3)
+{
+  constexpr auto pi = 3.141592
+
+  auto result = param1 * param2 * pi;
+  return (result < param3);
 }
 </pre>

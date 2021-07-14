@@ -14,7 +14,7 @@ Message::Message(MessageType type_, string header_, string message_) : type(type
 }
 
 
-Message_center::Message_center(): receiving_thread(Glib::Thread::self())
+message_center::message_center(): receiving_thread(Glib::Thread::self())
 {
 	signal_message.connect(
 			[this]()
@@ -26,7 +26,7 @@ Message_center::Message_center(): receiving_thread(Glib::Thread::self())
 
 
 
-void Message_center::manage_messages()
+void message_center::manage_messages()
 {
 	while (!message_que.empty())
 	{
@@ -44,7 +44,7 @@ void Message_center::manage_messages()
 	}
 }
 
-void Message_center::send_message(Message message)
+void message_center::send_message(Message message)
 {
 	Glib::Mutex::Lock lock(mutex);
 	message_que.push_front(message);

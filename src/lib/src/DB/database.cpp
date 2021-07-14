@@ -16,14 +16,14 @@ using namespace std;
 const int EXPECTED_DB_VERSION = 5;
 
 
-int Database::current_db_version() const
+int database::current_db_version() const
 {
 	return db_version;
 }
 
-Database::Database(
+database::database(
 		const std::string& dbname,
-		Notifier&          publisher)
+		notification_manager&          publisher)
 		:
 		notifier(publisher),
 		db(dbname)
@@ -34,17 +34,17 @@ Database::Database(
 		find_db_version();
 
 
-		Task_accessor::setup(*this);
-		Time_accessor::setup(*this);
-		Auto_track_accessor::setup(*this);
-		Settings_accessor::setup(*this);
-		Extended_task_accessor::setup(*this);
+		task_accessor::setup(*this);
+		time_accessor::setup(*this);
+		auto_track_accessor::setup(*this);
+		settings_accessor::setup(*this);
+		extended_task_accessor::setup(*this);
 
 		begin_transaction();
 		//db.execute("PRAGMA foreign_keys = OFF");
 
-		Time_accessor          times( *this );
-		Settings_accessor      settings( *this );
+		time_accessor          times(*this );
+		settings_accessor      settings(*this );
 
 
 
@@ -70,7 +70,7 @@ Database::Database(
 
 }
 
-bool Database::table_exists(string name)
+bool database::table_exists(string name)
 {
 	auto query = fmt::format(
 			R"Query(
@@ -88,7 +88,7 @@ bool Database::table_exists(string name)
 
 
 }
-void Database::find_db_version()
+void database::find_db_version()
 {
 
 	if ( table_exists("parameters") )
@@ -105,14 +105,14 @@ void Database::find_db_version()
 
 		if (!rows.empty())
 		{
-			vector<Data_cell> row = rows.at(0);
+			vector<data_cell> row = rows.at(0);
 			db_version = (int) row[0].integer();
 		}
 	}
 	else if ( table_exists("settings") )
 	{
 
-		Settings_accessor  settings( *this );
+		settings_accessor  settings(*this );
 		auto version = settings.value("db_version");
 		if (version.has_value())
 		{
@@ -125,47 +125,47 @@ void Database::find_db_version()
 	}
 }
 
-void Database::begin_transaction()
+void database::begin_transaction()
 {
 	db.begin_transaction();
 }
 
-void Database::try_rollback()
+void database::try_rollback()
 {
 	db.try_rollback();
 }
 
-void Database::end_transaction()
+void database::end_transaction()
 {
 	db.end_transaction();
 }
-void Database::enable_notifications(bool state)
+void database::enable_notifications(bool state)
 {
 	notifier.is_enabled(state);
 }
 
 
-void Database::send_notification(message_type type, int64_t ID, string name)
+void database::send_notification(message_type type, int64_t ID, string name)
 {
 	notifier.try_send_notification(type, ID, name);
 }
 
 
-Query_result Database::execute(const string& statement)
+Query_result database::execute(const string& statement)
 {
 	return db.execute(statement);
 }
-Statement Database::prepare(string statement)
+sql_statement database::prepare(string statement)
 {
 	return db.prepare(statement);
 }
 
-int64_t Database::id_of_last_insert()
+int64_t database::id_of_last_insert()
 {
 	return db.id_of_last_insert();
 }
 
-[[nodiscard]] bool Database::column_exists( string_view table, string_view  column)
+[[nodiscard]] bool database::column_exists(string_view table, string_view  column)
 {
 	auto query = fmt::format("SELECT {} FROM {}", column.data(), table.data() );
 	try
