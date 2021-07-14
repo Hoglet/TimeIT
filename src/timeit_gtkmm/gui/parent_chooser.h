@@ -19,10 +19,10 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class Parent_chooser: public Gtk::ComboBox
+class parent_chooser_widget: public Gtk::ComboBox
 {
 public:
-	Parent_chooser(Database& database);
+	parent_chooser_widget(database& db);
 
 	void    set_id(Task_id id);
 	void    set_parent(Task_id id);
@@ -35,11 +35,11 @@ private:
 	Gtk::TreeModel::iterator find_row(Task_id id);
 
 	//Tree model columns:
-	class Model_columns : public Gtk::TreeModel::ColumnRecord
+	class model_columns : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
 
-		Model_columns()
+		model_columns()
 		{
 			add(col_id);
 			add(col_name);
@@ -49,11 +49,11 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_name;
 	};
 
-	Model_columns columns;
+	model_columns columns;
 
 	Glib::RefPtr<Gtk::ListStore> model;
 
-	Task_accessor task_accessor;
+	task_accessor tasks;
 	Task_id       parent_id{0};
 };
 

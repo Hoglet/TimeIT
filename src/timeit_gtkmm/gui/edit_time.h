@@ -18,15 +18,15 @@ using namespace libtimeit;
 /*
  * Edit and add times
  */
-class Edit_time: public Gtk::Dialog, public IWidget
+class edit_time_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	Edit_time(Time_entry time_entry, Database& database);
-	Edit_time(const Edit_time&)             = delete;
-	Edit_time(Edit_time&&)                 = delete;
-	Edit_time& operator=(const Edit_time& ) = delete;
-	Edit_time& operator=(Edit_time&& )     = delete;
-	~Edit_time() override = default;
+	edit_time_dialog(Time_entry time_entry, database& db);
+	edit_time_dialog(const edit_time_dialog&)             = delete;
+	edit_time_dialog(edit_time_dialog&&)                 = delete;
+	edit_time_dialog& operator=(const edit_time_dialog& ) = delete;
+	edit_time_dialog& operator=(edit_time_dialog&& )     = delete;
+	~edit_time_dialog() override = default;
 
 	// IWidget interface
 	void show() override { Gtk::Dialog::show(); }
@@ -45,8 +45,8 @@ private:
 	Gtk::HSeparator hseparator;
 
 	Gtk::HBox  edit_box;
-	Timestamp_edit start_timestamp_edit {_("Begin")};
-	Timestamp_edit stop_timestamp_edit  {_("End")};
+	timestamp_edit start_timestamp_edit {_("Begin")};
+	timestamp_edit stop_timestamp_edit  {_("End")};
 
 	Gtk::Label task_name_label {_("Adding time to: ")};
 	Gtk::Label task_name;
@@ -60,8 +60,8 @@ private:
 	Gtk::Button* ok_button;
 
 	Time_entry    time_entry;
-	Time_accessor time_accessor;
-	Task_accessor task_accessor;
+	time_accessor times;
+	task_accessor tasks;
 
 	time_t original_start{0};
 	time_t original_stop{0};

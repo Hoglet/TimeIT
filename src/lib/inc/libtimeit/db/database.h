@@ -12,16 +12,16 @@ namespace libtimeit
 class SQLite3;
 using namespace std;
 
-class Database
+class database
 {
 public:
-	Database(const string& dbname, Notifier& publisher);
-	Database() = delete;
-	Database(const Database&) = delete;
-	Database(const Database&&) = delete;
-	~Database() = default;
-	void operator=(const Database&) = delete;
-	void operator=(const Database&&) = delete;
+	database(const string& dbname, notification_manager& publisher);
+	database() = delete;
+	database(const database&) = delete;
+	database(const database&&) = delete;
+	~database() = default;
+	void operator=(const database&) = delete;
+	void operator=(const database&&) = delete;
 
 
 
@@ -33,14 +33,14 @@ public:
 	void send_notification(message_type type, int64_t taskId, string name = "");
 
 	Query_result        execute(const string& statement);
-	Statement           prepare(string statement);
+	sql_statement           prepare(string statement);
 	int64_t             id_of_last_insert();
 	bool                table_exists(string name);
 	[[nodiscard]] int   current_db_version() const;
 	[[nodiscard]] bool  column_exists( string_view table, string_view column);
 private:
 	int        db_version{0};
-	Notifier&  notifier;
+	notification_manager&  notifier;
 	SQLite3    db;
 
 	void find_db_version();

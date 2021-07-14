@@ -11,7 +11,7 @@ Adding new entry in changelog
 dch -a
 
 Making  package:
-* debian/rules/build
+* debian/rules build
 * fakeroot debian/rules binary
 
 

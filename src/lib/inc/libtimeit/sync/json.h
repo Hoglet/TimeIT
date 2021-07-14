@@ -11,31 +11,31 @@ namespace libtimeit
 {
 using namespace std;
 
-class Json
+class json
 {
 
 public:
-	Json();
-	~Json();
-	Json(Json&&);
-	Json(const Json&);
-	Json(json_t* object);
-	Json(string  text);
-	Json(int64_t number);
-	Json(bool state);
-	Json(vector<Json>);
-	Json& operator=(Json&&);
-	Json& operator=(const Json&) = delete;
+	json();
+	~json();
+	json(json&&);
+	json(const json&);
+	json(json_t* object);
+	json(string  text);
+	json(int64_t number);
+	json(bool state);
+	json(vector<json>);
+	json& operator=(json&&);
+	json& operator=(const json&) = delete;
 
-	static Json from_json_string(string text);
+	static json from_json_string(string text);
 
-	void set(string key, Json value);
+	void set(string key, json value);
 
-	[[nodiscard]] vector<Json> objects()           const;
+	[[nodiscard]] vector<json> objects()           const;
 	[[nodiscard]] string       text(string key)    const;
 	[[nodiscard]] bool         boolean(string key) const;
 	[[nodiscard]] int64_t      integer(string key) const;
-	[[nodiscard]] Json         by_name(string key) const;
+	[[nodiscard]] json         by_name(string key) const;
 
 
 	string to_string();

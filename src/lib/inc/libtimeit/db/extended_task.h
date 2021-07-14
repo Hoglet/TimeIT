@@ -5,16 +5,16 @@
 
 namespace libtimeit
 {
-struct Extended_task : public Task
+struct extended_task : public task
 {
-	friend class Extended_task_accessor;
+	friend class extended_task_accessor;
 
 	const bool expanded;
 	const bool running;
 	const int  time;
 	const int  total_time;
 
-	Extended_task(
+	extended_task(
 			int           ID,
 			UUID          uuid,
 			int           parent_ID,

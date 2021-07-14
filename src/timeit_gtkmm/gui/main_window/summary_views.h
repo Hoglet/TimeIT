@@ -17,11 +17,11 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-class DaySummary: public Summary
+class day_summary_widget : public summary
 {
 public:
-	DaySummary( Database& database, Notifier& notifier) :
-		Summary( database, notifier)
+	day_summary_widget(database &database, notification_manager &notifier) :
+			summary(database, notifier)
 	{
 		init();
 	};
@@ -33,11 +33,11 @@ private:
 	}
 };
 
-class WeekSummary: public Summary
+class week_summary_widget : public summary
 {
 public:
-	WeekSummary( Database& database, Notifier& notifier) :
-		Summary( database, notifier)
+	week_summary_widget(database &database, notification_manager &notifier) :
+			summary(database, notifier)
 	{
 		init();
 	};
@@ -49,11 +49,11 @@ private:
 	}
 };
 
-class MonthSummary: public Summary
+class month_summary_widget : public summary
 {
 public:
-	MonthSummary( Database& database, Notifier& notifier) :
-		Summary( database, notifier)
+	month_summary_widget(database &database, notification_manager &notifier) :
+			summary(database, notifier)
 	{
 		init();
 	};
@@ -65,11 +65,11 @@ private:
 	}
 };
 
-class YearSummary: public Summary
+class year_summary_widget : public summary
 {
 public:
-	YearSummary( Database& database, Notifier& notifier) :
-		Summary( database, notifier)
+	year_summary_widget(database &database, notification_manager &notifier) :
+			summary(database, notifier)
 	{
 		init();
 	};

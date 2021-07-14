@@ -16,16 +16,16 @@ namespace libtimeit
 using namespace std;
 class SQLite3;
 
-class Statement
+class sql_statement
 {
 public:
-	Statement(sqlite3_stmt* stmt, SQLite3& db);
-	Statement(const Statement&) = delete;
-	Statement(Statement&&);
-	Statement& operator=(const Statement&) = delete;
-	Statement& operator=(Statement&&) = delete;
+	sql_statement(sqlite3_stmt* stmt, SQLite3& db);
+	sql_statement(const sql_statement&) = delete;
+	sql_statement(sql_statement&&);
+	sql_statement& operator=(const sql_statement&) = delete;
+	sql_statement& operator=(sql_statement&&) = delete;
 
-	~Statement();
+	~sql_statement();
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
 	void bind_null_value(int index);
@@ -36,7 +36,7 @@ private:
 	sqlite3_stmt* stmt;
 	int           number_of_columns;
 
-	vector<Data_cell> get_row();
+	vector<data_cell> get_row();
 };
 
 class SQLite3
@@ -53,7 +53,7 @@ public:
 	virtual ~SQLite3();
 	Query_result execute(const string& statement);
 	int64_t      id_of_last_insert();
-	Statement    prepare(const string& query);
+	sql_statement    prepare(const string& query);
 	string       last_error_message();
 	void         begin_transaction();
 	void         end_transaction();

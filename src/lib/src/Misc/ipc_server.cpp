@@ -20,10 +20,10 @@ namespace libtimeit
 {
 using namespace std;
 
-Ipc_server::Ipc_server(string name, Timer& timer, Notifier& notifier_)
+ipc_server::ipc_server(string name, Timer& timer, notification_manager& notifier_)
 	:
-	Timer_observer(timer),
-	notifier(notifier_)
+		timer_observer(timer),
+		notifier(notifier_)
 {
 	socket_name = prepare_socket_dir() + name;
 
@@ -57,13 +57,13 @@ Ipc_server::Ipc_server(string name, Timer& timer, Notifier& notifier_)
 	}
 }
 
-Ipc_server::~Ipc_server()
+ipc_server::~ipc_server()
 {
 	close(sock);
 	unlink(socket_name.c_str());
 }
 
-void Ipc_server::poll()
+void ipc_server::poll()
 {
 	constexpr auto BUFFER_SIZE=1024;
 	char buf[BUFFER_SIZE]; // NOLINT(modernize-avoid-c-arrays)
@@ -94,12 +94,12 @@ void Ipc_server::poll()
 	close(msg_socket);
 }
 
-void Ipc_server::on_signal_1_second()
+void ipc_server::on_signal_1_second()
 {
 	poll();
 }
 
-void Ipc_server::on_show_menu()
+void ipc_server::on_show_menu()
 {
 	notifier.send_notification(SHOW_MAIN_WINDOW, 0);
 }

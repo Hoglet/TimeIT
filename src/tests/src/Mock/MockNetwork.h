@@ -9,13 +9,13 @@ namespace test
 {
 using namespace libtimeit;
 
-class MockNetwork: public INetwork
+class MockNetwork: public abstract_network
 {
 public:
 	MockNetwork();
 	virtual ~MockNetwork();
 
-	virtual shared_ptr<asyncHTTPResponse> request(
+	virtual shared_ptr<async_http_response> request(
 			string url,
 			string data,
 			string username,

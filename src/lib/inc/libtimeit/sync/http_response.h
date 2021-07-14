@@ -10,9 +10,9 @@ namespace libtimeit
 {
 using namespace std;
 
-class HTTP_request;
+class http_request;
 
-struct HTTP_response
+struct http_response
 {
 	const string url;
 	const string response;
@@ -20,7 +20,7 @@ struct HTTP_response
 	const int    http_code;
 	const string error_message;
 
-	HTTP_response(
+	http_response(
 			string url,
 			string response,
 			bool   status_OK,

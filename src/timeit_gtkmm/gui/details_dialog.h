@@ -15,25 +15,25 @@ namespace gui
 using namespace libtimeit;
 
 
-class Details_dialog:
+class details_dialog:
 		public Gtk::Dialog,
-		public Summary_observer,
-		public Event_observer,
-		public Time_keeper_observer,
+		public summary_observer,
+		public event_observer,
+		public time_keeper_observer,
 		public IWidget
 {
 public:
-	Details_dialog(
-			Database&       database,
+	details_dialog(
+			database&       db,
 			Time_keeper&    time_keeper,
-			Notifier&       notifier,
-			Window_manager& window_manager,
-			Images&         images);
-	Details_dialog(const Details_dialog&) = delete;
-	Details_dialog(Details_dialog&&) = delete;
-	Details_dialog& operator=(const Details_dialog&) = delete;
-	Details_dialog& operator=(Details_dialog&&) = delete;
-	~Details_dialog() override ;
+			notification_manager&       notifier,
+			window_manager& window_manager,
+			image_cache&         images);
+	details_dialog(const details_dialog&) = delete;
+	details_dialog(details_dialog&&) = delete;
+	details_dialog& operator=(const details_dialog&) = delete;
+	details_dialog& operator=(details_dialog&&) = delete;
+	~details_dialog() override ;
 	void set(int64_t ID,time_t startTime,time_t stopTime);
 
 
@@ -62,7 +62,7 @@ private:
 	Gtk::Table table1;
 	Gtk::Label task_name;
 	Gtk::Image running_image;
-	Details    detail_list;
+	details    detail_list;
 	Gtk::Label task_total_time;
 	Glib::RefPtr<Gdk::Pixbuf> running_icon;
 	Glib::RefPtr<Gdk::Pixbuf> running_idle_icon;
@@ -75,9 +75,9 @@ private:
 	time_t  range_stop    {0};
 	int64_t task_id       {0};
 	int64_t time_entry_id {0};
-	Time_accessor          time_accessor;
-	Extended_task_accessor task_accessor;
-	Settings_accessor      settings_accessor;
+	time_accessor          times;
+	extended_task_accessor tasks;
+	settings_accessor      settings;
 	Time_keeper&           time_keeper;
 };
 }

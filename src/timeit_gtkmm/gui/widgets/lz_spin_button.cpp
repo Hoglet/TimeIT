@@ -7,7 +7,7 @@ namespace gui
 using namespace std;
 
 
-bool LZSpinButton::on_output()
+bool ls_spin_button::on_output()
 {
 	   int value=get_value_as_int();
 	   stringstream str;

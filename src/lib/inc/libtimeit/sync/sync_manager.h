@@ -24,13 +24,13 @@ enum class Sync_state
 	FAIL
 };
 
-class Sync_manager : public Timer_observer
+class sync_manager : public timer_observer
 {
 public:
-	Sync_manager(
-			Database& database,
-			INetwork& network,
-			Notifier& notifier,
+	sync_manager(
+			database& db,
+			abstract_network& network,
+			notification_manager& notifier,
 			Timer&    timer);
 
 	Sync_state status();
@@ -45,19 +45,19 @@ private:
 	void    sync_tasks_to_database();
 	void    manage_network_problems();
 
-	shared_ptr<asyncHTTPResponse> request_tasks(time_t sincePointInTime);
-	shared_ptr<asyncHTTPResponse> request_times(time_t sincePointInTime);
+	shared_ptr<async_http_response> request_tasks(time_t sincePointInTime);
+	shared_ptr<async_http_response> request_times(time_t sincePointInTime);
 
-	Task_accessor     task_accessor;
-	Time_accessor     time_accessor;
-	Settings_accessor settings_accessor;
-	INetwork&         network;
+	task_accessor     tasks;
+	time_accessor     times;
+	settings_accessor settings;
+	abstract_network&         network;
 
 	Sync_state                     state          {Sync_state::IDLE};
 	Sync_state                     following_state{Sync_state::IDLE};
-	shared_ptr <asyncHTTPResponse> outstanding_request;
+	shared_ptr <async_http_response> outstanding_request;
 
-	Notifier&  notifier;
+	notification_manager&  notifier;
 	time_t     next_sync{0};
 	time_t     next_full_sync{0};
 	time_t     last_sync{0};

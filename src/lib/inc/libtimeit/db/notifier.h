@@ -18,16 +18,16 @@ namespace libtimeit
 {
 using namespace std;
 
-struct Notification_message
+struct notification_message
 {
 	message_type type;
 	int64_t      id;
 	string       name;
 };
 
-class Notifier
+class notification_manager
 {
-	friend class Event_observer;
+	friend class event_observer;
 public:
 	void             try_send_notification(message_type type, int64_t item_id, string name = "");
 	void             send_notification(message_type type, int64_t item_id, string name = "");
@@ -35,17 +35,17 @@ public:
 	void             send(EventType type, string headline, string message);
 	unsigned long    size();
 protected:
-	void attach(Event_observer*);
-	void detach(Event_observer*);
+	void attach(event_observer*);
+	void detach(event_observer*);
 private:
-	void send_message(Notification_message);
+	void send_message(notification_message);
 
 	bool enabled = true;
 	bool missed_notification = false;
 
-	list<Event_observer*> observers = {};
+	list<event_observer*> observers = {};
 
-	void notify_all(function<void(Event_observer*)>);
+	void notify_all(function<void(event_observer*)>);
 };
 
 }

@@ -20,21 +20,21 @@ namespace gui
 {
 using namespace libtimeit;
 
-class Status_icon: public Time_keeper_observer, public Event_observer
+class status_icon_widget: public time_keeper_observer, public event_observer
 {
 public:
-	Status_icon(
+	status_icon_widget(
 			Time_keeper&,
-			Database&,
-			Notifier&   notifier,
-			Images&     images);
+			database&,
+			notification_manager&   notifier,
+			image_cache&     images);
 
 	void show()
 	{
 	}
 	; //Shown directly on creation. Might change
-	void attach(Action_observer *observer);
-	void detach(Action_observer *observer);
+	void attach(action_observer *observer);
+	void detach(action_observer *observer);
 private:
 	void on_activate();
 	void set_icon();
@@ -62,7 +62,7 @@ private:
 	void on_task_time_changed(Task_id id) override;
 
 	void on_complete_update() override;
-	Glib::RefPtr<Gtk::StatusIcon> status_icon;
+	Glib::RefPtr<Gtk::StatusIcon> status_icon_instance;
 	Glib::RefPtr<Gdk::Pixbuf> default_icon;
 	Glib::RefPtr<Gdk::Pixbuf> running_icon;
 	Glib::RefPtr<Gdk::Pixbuf> idle_icon_small;
@@ -70,10 +70,10 @@ private:
 
 	Gtk::Menu menu_popup;
 	Time_keeper&  m_time_keeper;
-	Task_accessor task_accessor;
-	Time_accessor time_accessor;
+	task_accessor tasks;
+	time_accessor times;
 
-	std::list<Action_observer*> observers;
+	std::list<action_observer*> observers;
 	std::vector<Task_id> latest_tasks;
 
 };

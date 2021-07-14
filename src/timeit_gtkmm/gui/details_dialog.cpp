@@ -12,23 +12,23 @@ namespace gui
 static const int COMPLETE_DAY = 86403;
 
 
-Details_dialog::Details_dialog(
-		Database&        database,
+details_dialog::details_dialog(
+		database&        db,
 		Time_keeper&     timeKeeper,
-		Notifier&        notifier,
-		Window_manager&  gui_factory,
-		Images&          images)
+		notification_manager&        notifier,
+		window_manager&  gui_factory,
+		image_cache&          images)
 		:
-		Event_observer(notifier),
-		Time_keeper_observer( timeKeeper ),
+		event_observer(notifier),
+		time_keeper_observer(timeKeeper ),
 		table1(14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		task_name(""),
-		detail_list(database, notifier, gui_factory),
+		detail_list(db, notifier, gui_factory),
 		task_total_time(""),
 		table2(7, 4), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-		time_accessor(database),
-		task_accessor(database),
-		settings_accessor( database ),
+		times(db),
+		tasks(db),
+		settings(db ),
 		time_keeper(timeKeeper)
 {
 	set_skip_pager_hint(true);
@@ -38,8 +38,8 @@ Details_dialog::Details_dialog(
 	running_idle_icon = images.by_id(image_identifier::RUNNING_IDLE);
 	blank_icon        = images.by_id(image_identifier::BLANK);
 
-	auto width = (int)settings_accessor.get_int("details_dialog_width", 550);
-	auto height = (int)settings_accessor.get_int("details_dialog_height", 700);
+	auto width = (int)settings.get_int("details_dialog_width", 550);
+	auto height = (int)settings.get_int("details_dialog_height", 700);
 	set_default_size( width, height);
 
 
@@ -65,30 +65,30 @@ Details_dialog::Details_dialog(
 
 }
 
-Details_dialog::~Details_dialog()
+details_dialog::~details_dialog()
 {
-	settings_accessor.set_int("details_dialog_width", this->get_width());
-	settings_accessor.set_int("details_dialog_height", this->get_height());
+	settings.set_int("details_dialog_width", this->get_width());
+	settings.set_int("details_dialog_height", this->get_height());
 }
 
 
-void Details_dialog::on_selection_changed(int64_t taskID, time_t startTime, time_t stopTime)
+void details_dialog::on_selection_changed(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	set(taskID, startTime, stopTime);
 }
 
-void Details_dialog::on_task_time_changed(int64_t task_ID)
+void details_dialog::on_task_time_changed(int64_t task_ID)
 {
 	on_task_total_time_updated(task_ID);
 }
 
-void Details_dialog::on_task_name_changed(int64_t task_ID)
+void details_dialog::on_task_name_changed(int64_t task_ID)
 {
 	on_task_name_updated(task_ID);
 }
 
 
-void Details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
+void details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	time_entry_id = 0;
 	task_id = taskID;
@@ -105,9 +105,9 @@ void Details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 
 
 // also displays whether idle
-void Details_dialog::on_running_changed()
+void details_dialog::on_running_changed()
 {
-	auto running_tasks = time_accessor.currently_running();
+	auto running_tasks = times.currently_running();
 	bool running_this_task_id = false;
 	if (running_tasks.empty())
 	{
@@ -142,14 +142,14 @@ void Details_dialog::on_running_changed()
 	}
 }
 
-void Details_dialog::on_task_name_updated(int64_t id)
+void details_dialog::on_task_name_updated(int64_t id)
 {
 	if (task_id == id)
 	{
-		auto task = task_accessor.by_id(task_id);
-		if (task.has_value())
+		auto updated_task = tasks.by_id(task_id);
+		if (updated_task.has_value())
 		{
-			task_name.set_text(task->name);
+			task_name.set_text(updated_task->name);
 		}
 		else
 		{
@@ -163,17 +163,17 @@ void Details_dialog::on_task_name_updated(int64_t id)
 }
 
 
-void Details_dialog::on_task_total_time_updated(int64_t id)
+void details_dialog::on_task_total_time_updated(int64_t id)
 {
 	if (task_id == id)
 	{
 		if (difftime(range_stop, range_start) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto task = task_accessor.by_id(task_id);
-			if (task.has_value())
+			auto updated_task = tasks.by_id(task_id);
+			if (updated_task.has_value())
 			{
-				time_t total_time = time_accessor.total_cumulative_time(task_id, range_start, range_stop);
+				time_t total_time = times.total_cumulative_time(task_id, range_start, range_stop);
 				task_total_time.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else

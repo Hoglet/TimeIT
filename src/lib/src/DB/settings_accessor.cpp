@@ -16,11 +16,11 @@ using namespace std;
 namespace libtimeit
 {
 
-Settings_accessor::Settings_accessor(Database &op_database) : database(op_database)
+settings_accessor::settings_accessor(database &op_database) : db(op_database)
 {
 }
 
-optional<int> Settings_accessor::value(string name)
+optional<int> settings_accessor::value(string name)
 {
 	string statement = fmt::format(
 			R"Query(
@@ -32,16 +32,16 @@ optional<int> Settings_accessor::value(string name)
 					name = '{}'; )Query", name.c_str());
 
 
-	Query_result rows = database.execute(statement);
+	Query_result rows = db.execute(statement);
 	if (rows.empty())
 	{
 		return {};
 	}
-	vector<Data_cell> row = rows.at(0);
+	vector<data_cell> row = rows.at(0);
 	return row[0].integer();
 }
 
-int64_t Settings_accessor::get_int(string name, int64_t default_value)
+int64_t settings_accessor::get_int(string name, int64_t default_value)
 {
 	stringstream statement;
 	statement << "SELECT intValue FROM settings ";
@@ -49,34 +49,34 @@ int64_t Settings_accessor::get_int(string name, int64_t default_value)
 
 	auto return_value = default_value;
 
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	if (rows.empty())
 	{
 		set_int(name, default_value);
 	}
 	else
 	{
-		vector<Data_cell> row = rows.at(0);
+		vector<data_cell> row = rows.at(0);
 		return_value = row[0].integer();
 	}
 	return return_value;
 }
 
-bool Settings_accessor::set_int(string name, int64_t value)
+bool settings_accessor::set_int(string name, int64_t value)
 {
 	stringstream statement;
 	statement << "SELECT intValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
 
-	auto rows = database.execute(statement.str());
+	auto rows = db.execute(statement.str());
 	if (rows.empty())
 	{//Value did not exist
 		statement.str("");
 		statement << "INSERT INTO settings";
 		statement << " (intValue, name) ";
 		statement << " VALUES (" << value << ", '" << name << "') ";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 	}
 	else
@@ -85,13 +85,13 @@ bool Settings_accessor::set_int(string name, int64_t value)
 		statement << "UPDATE settings";
 		statement << " SET intValue = " << value;
 		statement << " WHERE name = '" << name << "'";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 	}
 	return true;
 }
 
-bool Settings_accessor::get_bool(string name, bool default_value)
+bool settings_accessor::get_bool(string name, bool default_value)
 {
 	stringstream statement;
 	statement << "SELECT boolValue FROM settings ";
@@ -99,33 +99,33 @@ bool Settings_accessor::get_bool(string name, bool default_value)
 
 	bool return_value = default_value;
 
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	if (rows.empty())
 	{
 		set_bool(name, default_value);
 	}
 	else
 	{
-		vector<Data_cell> row = rows.at(0);
+		vector<data_cell> row = rows.at(0);
 		return_value = row[0].boolean();
 	}
 	return return_value;
 }
 
-bool Settings_accessor::set_bool(string name, bool value)
+bool settings_accessor::set_bool(string name, bool value)
 {
 	stringstream statement;
 	statement << "SELECT boolValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	if (rows.empty())
 	{//Value did not exist
 		statement.str("");
 		statement << "INSERT INTO settings";
 		statement << " (boolValue, name) ";
 		statement << " VALUES (" << value << ", '" << name << "') ";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 	}
 	else
@@ -134,14 +134,14 @@ bool Settings_accessor::set_bool(string name, bool value)
 		statement << "UPDATE settings";
 		statement << " SET boolValue = " << value;
 		statement << " WHERE name = '" << name << "'";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 
 	}
 	return true;
 }
 
-string Settings_accessor::get_string(string name, string default_value)
+string settings_accessor::get_string(string name, string default_value)
 {
 	stringstream statement;
 	statement << "SELECT stringValue FROM settings ";
@@ -149,33 +149,33 @@ string Settings_accessor::get_string(string name, string default_value)
 
 	string return_value = default_value;
 
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	if (rows.empty())
 	{
 		set_string(name, default_value);
 	}
 	else
 	{
-		vector<Data_cell> row = rows.at(0);
+		vector<data_cell> row = rows.at(0);
 		return_value = row[0].text();
 	}
 	return return_value;
 }
 
-bool Settings_accessor::set_string(string name, string value)
+bool settings_accessor::set_string(string name, string value)
 {
 	stringstream statement;
 	statement << "SELECT stringValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	Query_result rows = database.execute(statement.str());
+	Query_result rows = db.execute(statement.str());
 	if (rows.empty())
 	{
 		statement.str("");
 		statement << "INSERT INTO settings";
 		statement << " (stringValue, name) ";
 		statement << " VALUES ('" << value << "', '" << name << "') ";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 	}
 	else //Value did not exist
@@ -184,21 +184,21 @@ bool Settings_accessor::set_string(string name, string value)
 		statement << "UPDATE settings";
 		statement << " SET stringValue = '" << value << "'";
 		statement << " WHERE name = '" << name << "'";
-		database.execute(statement.str());
+		db.execute(statement.str());
 		setting_changed(name);
 	}
 	return true;
 }
 
 
-void Settings_accessor::setting_changed(string name)
+void settings_accessor::setting_changed(string name)
 {
-	database.send_notification(SETTINGS_CHANGED, 0, name);
+	db.send_notification(SETTINGS_CHANGED, 0, name);
 }
 
-void Settings_accessor::create_table(Database& database)
+void settings_accessor::create_table(database& db)
 {
-	database.execute( R"Query(
+	db.execute(R"Query(
 		CREATE TABLE IF NOT EXISTS
 			settings
 			(
@@ -210,15 +210,15 @@ void Settings_accessor::create_table(Database& database)
 		)Query");
 }
 
-void Settings_accessor::upgrade(Database& /*database*/)
+void settings_accessor::upgrade(database& /*database*/)
 {
 	//noop
 }
 
-void Settings_accessor::setup(Database& database)
+void settings_accessor::setup(database& db)
 {
-	Settings_accessor::create_table(database);
-	Settings_accessor::upgrade( database );
+	settings_accessor::create_table(db);
+	settings_accessor::upgrade(db );
 }
 
 }

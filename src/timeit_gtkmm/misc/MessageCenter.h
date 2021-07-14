@@ -24,10 +24,10 @@ struct Message
 	const string message;
 };
 
-class Message_center
+class message_center
 {
 public:
-	Message_center();
+	message_center();
 	void send_message(Message message);
 private:
 	void manage_messages();

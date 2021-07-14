@@ -15,7 +15,7 @@ namespace libtimeit
 
 static const int RW_RW_RW = 0666;
 
-Application_lock::Application_lock(string lock_base) : locked(false)
+application_lock::application_lock(string lock_base) : locked(false)
 {
 
 	string file_name = lock_base + ".lock";
@@ -36,13 +36,13 @@ Application_lock::Application_lock(string lock_base) : locked(false)
 	}
 }
 
-bool Application_lock::lock_acquired() const
+bool application_lock::lock_acquired() const
 {
 	return locked;
 }
 
 
-Application_lock::~Application_lock()
+application_lock::~application_lock()
 {
 	if (fd_lock != -1)
 	{

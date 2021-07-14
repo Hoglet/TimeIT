@@ -14,10 +14,10 @@
 
 namespace gui
 {
-class TimeItAboutDialog : public Gtk::AboutDialog, public IWidget
+class about_dialog : public Gtk::AboutDialog, public IWidget
 {
 public:
-	TimeItAboutDialog(Images& images);
+	about_dialog(image_cache& images);
 
 	// IWidget interface
 	void show() override { Gtk::AboutDialog::show(); }

@@ -13,19 +13,19 @@ namespace libtimeit
 {
 using namespace std;
 
-class Application_lock
+class application_lock
 {
 public:
-	virtual ~Application_lock();
+	virtual ~application_lock();
 	/** lock_base is the file path, including a filename, that is supposed to
 	 *  be locked (in this case the database). Application_lock will add a
 	 *  .lock to lockBase and lock the resulting file.
 	 */
-	explicit Application_lock(string lock_base);
-	Application_lock(const Application_lock&) = delete;
-	Application_lock(const Application_lock&&) = delete;
-	Application_lock& operator=(const Application_lock&) = delete;
-	Application_lock& operator=(Application_lock&&) = delete;
+	explicit application_lock(string lock_base);
+	application_lock(const application_lock&) = delete;
+	application_lock(const application_lock&&) = delete;
+	application_lock& operator=(const application_lock&) = delete;
+	application_lock& operator=(application_lock&&) = delete;
 
 	[[nodiscard]] bool lock_acquired() const;
 private:

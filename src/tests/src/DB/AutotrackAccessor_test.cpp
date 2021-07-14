@@ -11,11 +11,11 @@ using namespace std;
 
 TEST (AutotrackAccessor, WorkspaceAccessor)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
-	Auto_track_accessor autotrackAccessor(tempdb);
-	Extended_task_accessor taskAccessor(tempdb);
-	int64_t taskId = taskAccessor.create(Task("Tjohopp", 0));
+	auto_track_accessor autotrackAccessor(tempdb);
+	extended_task_accessor taskAccessor(tempdb);
+	int64_t taskId = taskAccessor.create(task("Tjohopp", 0));
 	vector<unsigned> workspaces;
 	workspaces.push_back(1);
 	autotrackAccessor.set_workspaces(taskId, workspaces);
@@ -26,12 +26,11 @@ TEST (AutotrackAccessor, WorkspaceAccessor)
 
 TEST (AutotrackAccessor, getTaskIDs)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
-	Auto_track_accessor autotrackAccessor(tempdb);
-	Task_accessor taskAccessor(tempdb);
-	Task task("test");
-	int taskID = taskAccessor.create(task);
+	auto_track_accessor autotrackAccessor(tempdb);
+	task_accessor tasks(tempdb);
+	int taskID = tasks.create(task("test") );
 	vector<unsigned> workspaces;
 
 	workspaces.push_back(1);

@@ -40,7 +40,7 @@ int64_t SQLite3::id_of_last_insert()
 	return sqlite3_last_insert_rowid(db);
 }
 
-Statement SQLite3::prepare(const string& query)
+sql_statement SQLite3::prepare(const string& query)
 {
 	sqlite3_stmt* stmt{nullptr};
 	int rc = sqlite3_prepare_v2(db, query.c_str(), (int)strlen(query.c_str()), &stmt, nullptr);
@@ -53,12 +53,12 @@ Statement SQLite3::prepare(const string& query)
 		try_rollback();
 		throw db_exception(message.str(), rc);
 	}
-	return Statement(stmt, *this);
+	return sql_statement(stmt, *this);
 }
 
 Query_result SQLite3::execute(const string& query)
 {
-	Statement statement = prepare(query);
+	sql_statement statement = prepare(query);
 	return statement.execute();
 }
 
@@ -99,19 +99,19 @@ string SQLite3::last_error_message()
 	return sqlite3_errmsg(db);
 }
 
-Statement::Statement(Statement&& other):
+sql_statement::sql_statement(sql_statement&& other):
 		db(other.db),
 		stmt(std::move(other.stmt)),
         number_of_columns(other.number_of_columns)
 {
 }
 
-Statement::~Statement()
+sql_statement::~sql_statement()
 {
 	sqlite3_finalize(stmt);
 }
 
-Statement::Statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
+sql_statement::sql_statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
 	db(op_db),
 	stmt(op_stmt),
 	number_of_columns(sqlite3_column_count(stmt))
@@ -119,22 +119,22 @@ Statement::Statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
 
 }
 
-void Statement::bind_value(int index, int64_t value)
+void sql_statement::bind_value(int index, int64_t value)
 {
 	sqlite3_bind_int(stmt, index, (int)value);
 }
 
-void Statement::bind_value(int index, const std::string& text)
+void sql_statement::bind_value(int index, const std::string& text)
 {
 	sqlite3_bind_text(stmt, index, text.c_str(), -1, SQLITE_TRANSIENT); // NOLINT
 }
 
-void Statement::bind_null_value(int index)
+void sql_statement::bind_null_value(int index)
 {
 	sqlite3_bind_null(stmt, index);
 }
 
-Query_result Statement::execute()
+Query_result sql_statement::execute()
 {
 	Query_result rows;
 	while (true)
@@ -147,7 +147,7 @@ Query_result Statement::execute()
 		}
 		if (rc == SQLITE_ROW)
 		{
-			vector<Data_cell> row = get_row();
+			vector<data_cell> row = get_row();
 			rows.push_back(row);
 		}
 		else
@@ -165,9 +165,9 @@ Query_result Statement::execute()
 	return rows;
 }
 
-vector<Data_cell> Statement::get_row()
+vector<data_cell> sql_statement::get_row()
 {
-	vector<Data_cell> row;
+	vector<data_cell> row;
 	for (int c = 0; c < number_of_columns; c++)
 	{
 		int type = sqlite3_column_type(stmt, c);

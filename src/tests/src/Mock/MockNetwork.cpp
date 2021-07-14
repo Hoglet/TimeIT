@@ -21,8 +21,8 @@ void MockNetwork::setResponse(string uri, string response)
 	responses[uri] = response;
 }
 
-shared_ptr<asyncHTTPResponse> MockNetwork::request(string url, string , string , string ,
-		bool )
+shared_ptr<async_http_response> MockNetwork::request(string url, string , string , string ,
+													 bool )
 {
 	map<string, string>::iterator iter;
 	bool   statusOK = false;
@@ -49,10 +49,10 @@ shared_ptr<asyncHTTPResponse> MockNetwork::request(string url, string , string ,
 	}
 
 	string errorMessage;
-	shared_ptr<asyncHTTPResponse> result=make_shared<asyncHTTPResponse>();
+	shared_ptr<async_http_response> result=make_shared<async_http_response>();
 
 	auto f = [ url, response, statusOK, httpCode, errorMessage]() {
-		return HTTP_response(url, response, statusOK, httpCode, errorMessage);
+		return http_response(url, response, statusOK, httpCode, errorMessage);
 	};
 
 

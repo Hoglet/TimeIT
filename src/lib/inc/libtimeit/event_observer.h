@@ -15,17 +15,17 @@ enum class EventType
 	//INFO_MESSAGE
 };
 
-class Notifier;
+class notification_manager;
 
-class Event_observer
+class event_observer
 {
 public:
-	Event_observer(Notifier&);
-	virtual ~Event_observer();
-	Event_observer(const Event_observer&) = delete;
-	Event_observer(Event_observer&&) = delete;
-	Event_observer& operator=(const Event_observer&) = delete;
-	Event_observer& operator=(Event_observer&&) = delete;
+	event_observer(notification_manager&);
+	virtual ~event_observer();
+	event_observer(const event_observer&) = delete;
+	event_observer(event_observer&&) = delete;
+	event_observer& operator=(const event_observer&) = delete;
+	event_observer& operator=(event_observer&&) = delete;
 
 	virtual void on_message(EventType /*type*/, string /*headline*/, string /*message*/) const {};
 
@@ -40,7 +40,7 @@ public:
 	virtual void on_show_main_window()                  {}; //IPC request to show main window
 	virtual void on_time_entry_changed(Time_id /*id*/)  {};
 private:
-	Notifier& publisher;
+	notification_manager& publisher;
 };
 
 }

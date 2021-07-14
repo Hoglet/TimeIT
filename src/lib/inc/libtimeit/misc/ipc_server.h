@@ -13,23 +13,23 @@ namespace libtimeit
 using namespace std;
 using namespace libtimeit;
 
-class Ipc_server: public Ipc, public Timer_observer
+class ipc_server: public ipc, public timer_observer
 {
 public:
-	Ipc_server(string /*socket_name*/, Timer& /*timer*/, Notifier& /*notifier*/);
-	Ipc_server(const Ipc_server& ) = delete;
-	Ipc_server(Ipc_server&& ) = delete;
-	Ipc_server& operator=(const Ipc_server& ) = delete;
-	Ipc_server& operator=(Ipc_server&& ) = delete;
+	ipc_server(string /*socket_name*/, Timer& /*timer*/, notification_manager& /*notifier*/);
+	ipc_server(const ipc_server& ) = delete;
+	ipc_server(ipc_server&& ) = delete;
+	ipc_server& operator=(const ipc_server& ) = delete;
+	ipc_server& operator=(ipc_server&& ) = delete;
 
-	~Ipc_server() override;
+	~ipc_server() override;
 	void poll();
 	void on_signal_1_second() override;
 private:
 	void on_show_menu();
 	string socket_name;
 	int sock;
-	Notifier& notifier;
+	notification_manager& notifier;
 };
 
 } /* namespace libtimeit */

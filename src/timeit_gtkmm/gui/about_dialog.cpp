@@ -5,7 +5,7 @@
  *      Author: hoglet
  */
 
-#include "timeit_about_dialog.h"
+#include "about_dialog.h"
 #include <libtimeit/os_abstraction.h>
 #include <glibmm/i18n.h>
 #include <libtimeit/version.h>
@@ -13,12 +13,12 @@ namespace gui
 {
 using namespace libtimeit;
 
-void TimeItAboutDialog::on_link_clicked(AboutDialog& /*about_dialog*/, const Glib::ustring &link)
+void about_dialog::on_link_clicked(AboutDialog& /*about_dialog*/, const Glib::ustring &link)
 {
 	show_URL(link);
 }
 
-TimeItAboutDialog::TimeItAboutDialog(Images& images)
+about_dialog::about_dialog(image_cache& images)
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);
@@ -39,7 +39,7 @@ TimeItAboutDialog::TimeItAboutDialog(Images& images)
 	set_url_hook(
 			[](AboutDialog &dialog, const Glib::ustring& link)
 			{
-				TimeItAboutDialog::on_link_clicked(dialog, link);
+				about_dialog::on_link_clicked(dialog, link);
 			});
 	set_website("https://hoglet.github.io/TimeIT/");
 	set_website_label(_("TimeIT website"));

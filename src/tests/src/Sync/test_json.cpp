@@ -10,7 +10,7 @@ TEST( Json, simpleTaskTest )
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
 					"\"parent\":{\"id\" : \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
-	vector<Task> tasks = to_tasks(json_string);
+	vector<task> tasks = to_tasks(json_string);
 
 	std::string expectedName = "task1";
 	std::string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
@@ -20,16 +20,16 @@ TEST( Json, simpleTaskTest )
 
 	if (numberOfTasks == 1)
 	{
-		Task task = tasks.at(0);
+		task task1 = tasks.at(0);
 		bool expectedCompleted = false;
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQ( expectedName, task.name) << "Name: ";
-		ASSERT_EQ( expectedUUID, task.uuid.c_str()) << "UUID: ";
-		ASSERT_EQ( expectedParent, task.parent_uuid->c_str()) << "Parent: ";
-		ASSERT_EQ( expectedCompleted, task.completed) << "completed: ";
-		ASSERT_EQ( expectedDeleted, task.deleted) << "Deleted: ";
-		ASSERT_EQ( expectedChangeTime, task.last_changed) << "Expected change time: ";
+		ASSERT_EQ(expectedName, task1.name) << "Name: ";
+		ASSERT_EQ(expectedUUID, task1.uuid.c_str()) << "UUID: ";
+		ASSERT_EQ(expectedParent, task1.parent_uuid->c_str()) << "Parent: ";
+		ASSERT_EQ(expectedCompleted, task1.completed) << "completed: ";
+		ASSERT_EQ(expectedDeleted, task1.deleted) << "Deleted: ";
+		ASSERT_EQ(expectedChangeTime, task1.last_changed) << "Expected change time: ";
 	}
 }
 
@@ -38,7 +38,7 @@ TEST( Json, simpleTaskTest2 )
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
 					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"username\":\"tester\"}}]";
-	vector<Task> tasks = to_tasks(json_string);
+	vector<task> tasks = to_tasks(json_string);
 
 	string expectedName = "task1";
 	string expectedParent = "71cf62ec-afc6-4a72-95a3-93a5b9f10b2d";
@@ -48,16 +48,16 @@ TEST( Json, simpleTaskTest2 )
 
 	if (numberOfTasks == 1)
 	{
-		Task task = tasks.at(0);
+		task task1 = tasks.at(0);
 		bool expectedCompleted = true;
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
-		ASSERT_EQ( expectedName, task.name) << "Name: ";
-		ASSERT_EQ( expectedUUID, task.uuid.c_str()) << "UUID: ";
-		ASSERT_EQ( expectedParent, task.parent_uuid->c_str()) << "Parent: ";
-		ASSERT_EQ( expectedCompleted, task.completed) << "Completed: ";
-		ASSERT_EQ( expectedDeleted, task.deleted) << "Deleted: ";
-		ASSERT_EQ( expectedChangeTime, task.last_changed) << "Expected change time: ";
+		ASSERT_EQ(expectedName, task1.name) << "Name: ";
+		ASSERT_EQ(expectedUUID, task1.uuid.c_str()) << "UUID: ";
+		ASSERT_EQ(expectedParent, task1.parent_uuid->c_str()) << "Parent: ";
+		ASSERT_EQ(expectedCompleted, task1.completed) << "Completed: ";
+		ASSERT_EQ(expectedDeleted, task1.deleted) << "Deleted: ";
+		ASSERT_EQ(expectedChangeTime, task1.last_changed) << "Expected change time: ";
 	}
 }
 
@@ -66,12 +66,12 @@ TEST( Json, threeWayTaskTest )
 	std::string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
 					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": false, \"deleted\": false, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
-	vector<Task> tasks = to_tasks(json_string);
+	vector<task> tasks = to_tasks(json_string);
 	std::string result = to_json(tasks, "tester");
-	Task task1 = tasks.at(0);
+	task task1 = tasks.at(0);
 	//Convert once more to be able to compare
 	tasks = to_tasks(result);
-	Task task2 = tasks.at(0);
+	task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name, task2.name) << "Name ";
 	ASSERT_EQ(task1.uuid, task2.uuid) << "UUID: ";
@@ -87,12 +87,12 @@ TEST( Json, threeWayTaskTest2 )
 	string json_string =
 			"[{\"name\": \"task1\", \"id\": \"73cf62ec-afc6-4a72-95a3-93a5b9f10b2d\", "
 					"\"parent\":{\"id\": \"71cf62ec-afc6-4a72-95a3-93a5b9f10b2d\"}, \"completed\": true, \"deleted\": true, \"lastChange\": 1374263745, \"owner\":{\"user\":\"tester\"}}]";
-	vector<Task> tasks = to_tasks(json_string);
+	vector<task> tasks = to_tasks(json_string);
 	std::string result = to_json(tasks, "tester");
-	Task task1 = tasks.at(0);
+	task task1 = tasks.at(0);
 	//Convert once more to be able to compare
 	tasks = to_tasks(result);
-	Task task2 = tasks.at(0);
+	task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name, task2.name) << "Name ";
 	ASSERT_EQ(task1.uuid, task2.uuid) << "UUID: ";
@@ -229,9 +229,9 @@ TEST( Json, testTaskStringGenerationTest )
 	auto uuid = UUID::from_string("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	time_t changeTime = 1374263745;
 
-	Task task(name, 1, *uuid, false, 1, changeTime, parentID, false, 0, false);
-	vector<Task> tasks;
-	tasks.push_back(task);
+	task task1(name, 1, *uuid, false, 1, changeTime, parentID, false, 0, false);
+	vector<task> tasks;
+	tasks.push_back(task1);
 	string result = to_json(tasks, "tester");
 
 	json_t *root;
@@ -274,7 +274,7 @@ TEST( Json, Faulty_input)
 		},	"taskID": "00e1010f-00f2-40df-90b3-00f900ab009e",
 				"start": 1363339855,
 		)";
-	Json test = Json::from_json_string(json_string);
+	json test = json::from_json_string(json_string);
 }
 
 

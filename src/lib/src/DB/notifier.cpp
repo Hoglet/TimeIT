@@ -13,14 +13,14 @@ using namespace std;
 
 
 
-void Notifier::attach(Event_observer* observer)
+void notification_manager::attach(event_observer* observer)
 {
 	if (observer != nullptr)
 	{
 		observers.push_back(observer);
 	}
 }
-void Notifier::detach(Event_observer* observer)
+void notification_manager::detach(event_observer* observer)
 {
 	if (observer != nullptr)
 	{
@@ -28,28 +28,28 @@ void Notifier::detach(Event_observer* observer)
 	}
 }
 
-void Notifier::send(EventType type, string headline, string message)
+void notification_manager::send(EventType type, string headline, string message)
 {
-	for (Event_observer *observer : observers)
+	for (event_observer *observer : observers)
 	{
 		observer->on_message(type, headline, message);
 	}
 }
 
 
-void Notifier::send_message(Notification_message message)
+void notification_manager::send_message(notification_message message)
 {
 	switch(message.type)
 	{
 		case TASK_UPDATED:
-			this->notify_all( [message](Event_observer* observer)
+			this->notify_all( [message](event_observer* observer)
 							  {
 								  observer->on_task_updated(message.id);
 							  }
 							  );
 			break;
 		case  TASK_NAME_CHANGED:
-			this->notify_all( [message](Event_observer* observer)
+			this->notify_all( [message](event_observer* observer)
 								{
 									observer->on_task_name_changed(message.id);
 								}
@@ -57,7 +57,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case TASK_TIME_CHANGED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_task_time_changed(message.id);
 					}
@@ -65,7 +65,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case TASK_ADDED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_task_added(message.id);
 					}
@@ -73,7 +73,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case TASK_REMOVED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_task_removed(message.id);
 					}
@@ -81,7 +81,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case TASK_PARENT_CHANGED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_parent_changed(message.id);
 					}
@@ -89,7 +89,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case COMPLETE_UPDATE:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_complete_update();
 					}
@@ -97,7 +97,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case SETTINGS_CHANGED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_settings_changed( message.name );
 					}
@@ -105,7 +105,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case TIME_ENTRY_CHANGED:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_time_entry_changed( message.id );
 					}
@@ -113,7 +113,7 @@ void Notifier::send_message(Notification_message message)
 			break;
 		case SHOW_MAIN_WINDOW:
 			this->notify_all(
-					[message](Event_observer* observer)
+					[message](event_observer* observer)
 					{
 						observer->on_show_main_window();
 					}
@@ -124,7 +124,7 @@ void Notifier::send_message(Notification_message message)
 	}
 }
 
-void Notifier::is_enabled(bool enabled_)
+void notification_manager::is_enabled(bool enabled_)
 {
 	if (enabled_ != enabled)
 	{
@@ -137,13 +137,13 @@ void Notifier::is_enabled(bool enabled_)
 	}
 }
 
-void Notifier::send_notification(message_type type, int64_t item_id, string name)
+void notification_manager::send_notification(message_type type, int64_t item_id, string name)
 {
-	Notification_message message{type, item_id, name};
+	notification_message message{type, item_id, name};
 	send_message(message);
 }
 
-void Notifier::try_send_notification(message_type type, int64_t item_id, string name)
+void notification_manager::try_send_notification(message_type type, int64_t item_id, string name)
 {
 	if (enabled)
 	{
@@ -155,14 +155,14 @@ void Notifier::try_send_notification(message_type type, int64_t item_id, string 
 	}
 }
 
-unsigned long Notifier::size()
+unsigned long notification_manager::size()
 {
 	return observers.size();
 }
 
-void Notifier::notify_all(function<void(Event_observer*)> function)
+void notification_manager::notify_all(function<void(event_observer*)> function)
 {
-	for (Event_observer *observer : observers)
+	for (event_observer *observer : observers)
 	{
 		function(observer);
 	}

@@ -19,7 +19,7 @@ map<image_identifier, string> image_file_names{
 
 };
 
-Images::Images()
+image_cache::image_cache()
 {
 	create_image(image_identifier::STD_ICON,200,200);
 	create_image(image_identifier::RUNNING,24,24);
@@ -31,7 +31,7 @@ Images::Images()
 	create_image(image_identifier::RUNNING_BIG,200,200);
 }
 
-image_pointer Images::by_id(image_identifier id)
+image_pointer image_cache::by_id(image_identifier id)
 {
 	if(images.find(id)!=images.end())
 	{
@@ -40,7 +40,7 @@ image_pointer Images::by_id(image_identifier id)
 	return images.at(image_identifier::DEFAULT);
 }
 
-void Images::create_image(image_identifier id, int width, int height)
+void image_cache::create_image(image_identifier id, int width, int height)
 {
 	auto file_name=image_file_names.at(id);
 	string icon_path = build_filename(image_path, file_name );

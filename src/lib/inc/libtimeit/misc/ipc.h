@@ -14,10 +14,10 @@ namespace libtimeit
 {
 using namespace std;
 
-class Ipc
+class ipc
 {
 public:
-	Ipc() = default;
+	ipc() = default;
 protected:
 	static string prepare_socket_dir();
 };

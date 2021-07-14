@@ -18,21 +18,21 @@ namespace libtimeit
 
 using namespace std;
 
-class Auto_track_accessor
+class auto_track_accessor
 {
-	friend class Database;
+	friend class database;
 public:
-	Auto_track_accessor(Database& db);
+	auto_track_accessor(database& db);
 
-	Task_id_list     task_ids(unsigned workspace);
+	task_id_list     task_ids(unsigned workspace);
 	vector<unsigned> workspaces(int64_t task_ID);
 	void             set_workspaces(int64_t task_ID, vector<unsigned> workspaces);
 private:
-	Extended_task_accessor task_accessor;
-	Database&              database;
-	static void setup(Database& database);
-	static void create_table(Database& db);
-	static void upgrade(Database& db);
+	extended_task_accessor tasks;
+	database&              db;
+	static void setup(database& db);
+	static void create_table(database& db);
+	static void upgrade(database& db);
 };
 
 }

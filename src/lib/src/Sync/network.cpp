@@ -1,5 +1,5 @@
 #include "libtimeit/sync/network.h"
-#include "libtimeit/sync/HTTP_request.h"
+#include "libtimeit/sync/http_request.h"
 #include <stdexcept>
 #include <curl/curl.h>
 #include <future>
@@ -11,18 +11,18 @@ namespace libtimeit
 
 using namespace std;
 
-Network::Network()
+curl_network::curl_network()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 }
 
-Network::~Network()
+curl_network::~curl_network()
 {
 	curl_global_cleanup();
 }
 
 
-shared_ptr<asyncHTTPResponse> Network::request(
+shared_ptr<async_http_response> curl_network::request(
 		string url,
 		string data,
 		string username,
@@ -31,13 +31,13 @@ shared_ptr<asyncHTTPResponse> Network::request(
 {
 
 
-	shared_ptr<asyncHTTPResponse> result = make_shared<asyncHTTPResponse>();
+	shared_ptr<async_http_response> result = make_shared<async_http_response>();
 
 
 	result->future_response = async(
 			launch::async,
 			[url, data, username, password, ignore_certificate_errors]() {
-				HTTP_request request;
+				http_request request;
 				request.ignore_cert_errors(ignore_certificate_errors);
 				return request.put(url, data, username, password);
 			}

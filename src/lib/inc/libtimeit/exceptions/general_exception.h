@@ -10,10 +10,10 @@
 
 #include <exception>
 //LCOV_EXCL_START
-class General_exception: public std::exception
+class general_exception: public std::exception
 {
 public:
-	General_exception(const char* message);
+	general_exception(const char* message);
 	[[nodiscard]] const char* what() const noexcept override;
 private:
 	const char* message;

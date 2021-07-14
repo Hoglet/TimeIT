@@ -10,15 +10,15 @@ class Timer;
 
 using namespace std;
 
-class Timer_observer
+class timer_observer
 {
 public:
-	Timer_observer(Timer& publisher);
-	Timer_observer(const Timer_observer&) = delete;
-	Timer_observer(const Timer_observer&&) = delete;
-	Timer_observer& operator=(const Timer_observer&) = delete;
-	Timer_observer& operator=(const Timer_observer&&) = delete;
-	virtual ~Timer_observer();
+	timer_observer(Timer& publisher);
+	timer_observer(const timer_observer&) = delete;
+	timer_observer(const timer_observer&&) = delete;
+	timer_observer& operator=(const timer_observer&) = delete;
+	timer_observer& operator=(const timer_observer&&) = delete;
+	virtual ~timer_observer();
 
 	//LCOV_EXCL_START
 	virtual void on_signal_1_second();
@@ -30,16 +30,16 @@ private:
 
 class Timer
 {
-	friend class Timer_observer;
+	friend class timer_observer;
 public:
 	// Call this every second
 	bool on_signal_1_second();
 private:
-	void attach(Timer_observer *observer);
-	void detach(Timer_observer *observer);
+	void attach(timer_observer *observer);
+	void detach(timer_observer *observer);
 
 	void signal_sender();
-	list<Timer_observer*> observers = {};
+	list<timer_observer*> observers = {};
 	int ten_second_counter{10};  // NOLINT
 };
 }

@@ -8,12 +8,12 @@ namespace libtimeit
 {
 using namespace std;
 
-struct Data_cell
+struct data_cell
 {
 public:
-	Data_cell() = default;
-	Data_cell(int);
-	Data_cell(const char*);
+	data_cell() = default;
+	data_cell(int);
+	data_cell(const char*);
 
 	[[nodiscard]] bool     has_value() const;
 	[[nodiscard]] int64_t  integer()   const;

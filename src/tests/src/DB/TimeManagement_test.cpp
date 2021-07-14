@@ -6,14 +6,14 @@ namespace test
 {
 using namespace libtimeit;
 
-Extended_task getTask(time_t start = 0, time_t stop = 0)
+extended_task getTask(time_t start = 0, time_t stop = 0)
 {
-	Notifier notifier;
+	notification_manager notifier;
 	TempDB tempdb(notifier);
-	Extended_task_accessor taskAccessor(tempdb);
-	Time_accessor timeAccessor(tempdb);
-	auto taskID = taskAccessor.create(Task("task", 0));
-	auto subTaskID = taskAccessor.create(Task("subtask", taskID));
+	extended_task_accessor taskAccessor(tempdb);
+	time_accessor timeAccessor(tempdb);
+	auto taskID = taskAccessor.create(task("task", 0));
+	auto subTaskID = taskAccessor.create(task("subtask", taskID));
 	timeAccessor.create( Time_entry( taskID, 100, 200 ) );
 	timeAccessor.create( Time_entry( subTaskID, 150, 200 ) );
 	return *taskAccessor.by_id(taskID, start, stop);
@@ -21,38 +21,38 @@ Extended_task getTask(time_t start = 0, time_t stop = 0)
 
 TEST(TimeManagement, tasksTimeIs100)
 {
-	Extended_task task = getTask();
-	ASSERT_EQ(100, task.time);
+	extended_task task1 = getTask();
+	ASSERT_EQ(100, task1.time);
 }
 
 TEST(TimeManagement, tasksTotalTimeIs150)
 {
-	Extended_task task = getTask();
-	ASSERT_EQ(150, task.total_time);
+	extended_task task1 = getTask();
+	ASSERT_EQ(150, task1.total_time);
 }
 
 TEST(TimeManagement, staggerTest1RecordedTimePassesEnd)
 {
-	Extended_task task = getTask(0, 150);
-	ASSERT_EQ(50, task.time);
+	extended_task task1 = getTask(0, 150);
+	ASSERT_EQ(50, task1.time);
 }
 
 TEST(TimeManagement, staggerTest2RecordedTimeStartsBeforeStart)
 {
-	Extended_task task = getTask(150, 300);
-	ASSERT_EQ(50, task.time);
+	extended_task task1 = getTask(150, 300);
+	ASSERT_EQ(50, task1.time);
 }
 
 TEST(TimeManagement, staggerTest3RecordedTotalTimePassesEnd)
 {
-	Extended_task task = getTask(0, 150);
-	ASSERT_EQ(50, task.total_time);
+	extended_task task1 = getTask(0, 150);
+	ASSERT_EQ(50, task1.total_time);
 }
 
 TEST(TimeManagement, staggerTest3RecordedTotalTimeStartsBeforeStart)
 {
-	Extended_task task = getTask(150, 300);
-	ASSERT_EQ(100, task.total_time);
+	extended_task task1 = getTask(150, 300);
+	ASSERT_EQ(100, task1.total_time);
 }
 
 }

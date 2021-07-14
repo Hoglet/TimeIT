@@ -13,16 +13,16 @@ using namespace libtimeit;
 
 TEST( SyncManager, fullSyncEmptyClient )
 {
-	Notifier    notifier;
+	notification_manager    notifier;
 	TempDB      db (notifier);
 	MockNetwork network;
 
-	Settings_accessor settings(db);
+	settings_accessor settings(db);
 	settings.set_string("Username", "testman");
 	settings.set_string("URL", "localhost");
 
 	Timer timer;
-	Sync_manager syncManager(db, network, notifier, timer);
+	sync_manager syncManager(db, network, notifier, timer);
 
 	std::string taskKey = "/tasks/testman/0";
 	std::string taskResponse = "[{\"name\": \"Child\", "
@@ -58,27 +58,27 @@ TEST( SyncManager, fullSyncEmptyClient )
 		timer.on_signal_1_second();
 	}
 
-	Task_accessor taskAccessor(db);
-	vector<Task> tasks = taskAccessor.changed_since();
+	task_accessor taskAccessor(db);
+	vector<task> tasks = taskAccessor.changed_since();
 	ASSERT_EQ( 2, tasks.size()) << "Checking amount of tasks in database";
-	for (Task task : tasks)
+	for (task task1 : tasks)
 	{
-		if (task.name == "Parent")
+		if (task1.name == "Parent")
 		{
-			ASSERT_EQ( 1375358076, task.last_changed) << "Checking Parent's change time";
+			ASSERT_EQ(1375358076, task1.last_changed) << "Checking Parent's change time";
 		}
-		else if (task.name == "Child")
+		else if (task1.name == "Child")
 		{
 			string parentUUID = "013900e6-00dd-40f7-b0d6-00de00bf006b";
-			ASSERT_EQ( 1375358093, task.last_changed) << "Checking Child's change time";
-			ASSERT_EQ( parentUUID, task.parent_uuid->c_str()) << "Checking Child's parent ";
+			ASSERT_EQ(1375358093, task1.last_changed) << "Checking Child's change time";
+			ASSERT_EQ(parentUUID, task1.parent_uuid->c_str()) << "Checking Child's parent ";
 		}
 		else
 		{
 			FAIL( ) << "Unknown task in list";
 		}
 	}
-	Time_accessor timeAccessor(db);
+	time_accessor timeAccessor(db);
 	Time_list times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)

@@ -6,7 +6,7 @@
  */
 #include <X11/Xlib.h>
 #include <X11/extensions/scrnsaver.h>
-#include <libtimeit/logic/X11_idle_detector.h>
+#include <libtimeit/logic/x11_idle_detector.h>
 #include <iostream>
 #include <libtimeit/timer.h>
 #include <memory>
@@ -29,7 +29,7 @@ bool X11_idle_detector::available()
 	return (XScreenSaverQueryExtension(dsp, &event_base, &error_base)>0);
 }
 
-X11_idle_detector::X11_idle_detector(Timer &timer) : Timer_observer(timer)
+X11_idle_detector::X11_idle_detector(Timer &timer) : timer_observer(timer)
 {
 	if (!available())
 	{

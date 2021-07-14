@@ -13,10 +13,10 @@
 namespace gui
 {
 
-Preference_dialog::Preference_dialog(Database &database) :
+preference_dialog::preference_dialog(database &db) :
 		cancel_button(Gtk::StockID("gtk-cancel")),
 		ok_button(Gtk::StockID("gtk-apply")),
-		settings_accessor(database)
+		settings(db)
 
 {
 	//The compact layout option is reducing the size of the toolbar in the main window
@@ -29,19 +29,19 @@ Preference_dialog::Preference_dialog(Database &database) :
 	get_vbox()->pack_start(start_minimized_button, Gtk::PACK_EXPAND_WIDGET, 3);
 
 	/** Listeners **/
-	compact_layout_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	start_minimized_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	gz_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	gt_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	url_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	user_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	password_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	ignore_cert_error_button.signal_toggled().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	sync_interval_entry.signal_changed().connect(sigc::mem_fun(this, &Preference_dialog::on_data_changed));
-	gz_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &Preference_dialog::on_focus_changed));
-	gt_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &Preference_dialog::on_focus_changed));
-	signal_button_release_event().connect(sigc::mem_fun(this, &Preference_dialog::on_button_released));
-	signal_button_release_event().connect(sigc::mem_fun(this, &Preference_dialog::on_button_released));
+	compact_layout_button.signal_toggled().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	start_minimized_button.signal_toggled().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	gz_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	gt_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	url_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	user_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	password_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	ignore_cert_error_button.signal_toggled().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	sync_interval_entry.signal_changed().connect(sigc::mem_fun(this, &preference_dialog::on_data_changed));
+	gz_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &preference_dialog::on_focus_changed));
+	gt_entry.signal_focus_out_event().connect(sigc::mem_fun(this, &preference_dialog::on_focus_changed));
+	signal_button_release_event().connect(sigc::mem_fun(this, &preference_dialog::on_button_released));
+	signal_button_release_event().connect(sigc::mem_fun(this, &preference_dialog::on_button_released));
 	this->set_events(Gdk::BUTTON_RELEASE_MASK);
 
 	time_constant_table.set_border_width(2);
@@ -99,10 +99,10 @@ Preference_dialog::Preference_dialog(Database &database) :
 
 	/*******/
 	cancel_button.set_flags(Gtk::CAN_FOCUS);
-	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &Preference_dialog::on_cancel_button_clicked));
+	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &preference_dialog::on_cancel_button_clicked));
 	ok_button.set_sensitive(false);
 	ok_button.set_flags(Gtk::CAN_FOCUS);
-	ok_button.signal_clicked().connect(sigc::mem_fun(this, &Preference_dialog::on_ok_button_clicked));
+	ok_button.signal_clicked().connect(sigc::mem_fun(this, &preference_dialog::on_ok_button_clicked));
 
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
 	get_action_area()->pack_start(cancel_button);
@@ -114,17 +114,17 @@ Preference_dialog::Preference_dialog(Database &database) :
 }
 
 
-void Preference_dialog::set_values()
+void preference_dialog::set_values()
 {
-	old_compact_layout = settings_accessor.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
-	old_start_minimized = settings_accessor.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
-	old_gt = (unsigned)settings_accessor.get_int("Gt", DEFAULT_GT);
-	old_gz = (unsigned)settings_accessor.get_int("Gz", DEFAULT_GZ);
-	old_url = settings_accessor.get_string("URL", DEFAULT_URL);
-	old_user = settings_accessor.get_string("Username", DEFAULT_USER);
-	old_password = settings_accessor.get_string("Password", DEFAULT_PASSWORD);
-	old_ignore_cert_err = settings_accessor.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	old_sync_interval = (int)settings_accessor.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	old_compact_layout = settings.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
+	old_start_minimized = settings.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
+	old_gt = (unsigned)settings.get_int("Gt", DEFAULT_GT);
+	old_gz = (unsigned)settings.get_int("Gz", DEFAULT_GZ);
+	old_url = settings.get_string("URL", DEFAULT_URL);
+	old_user = settings.get_string("Username", DEFAULT_USER);
+	old_password = settings.get_string("Password", DEFAULT_PASSWORD);
+	old_ignore_cert_err = settings.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
+	old_sync_interval = (int)settings.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
 	gz_entry.set_value(old_gz);
 	gt_entry.set_value(old_gt);
 	compact_layout_button.set_active(old_compact_layout);
@@ -136,7 +136,7 @@ void Preference_dialog::set_values()
 	sync_interval_entry.set_value(old_sync_interval);
 }
 
-void Preference_dialog::get_values()
+void preference_dialog::get_values()
 {
 	compact_layout = compact_layout_button.get_active();
 	start_minimized = start_minimized_button.get_active();
@@ -157,7 +157,7 @@ void Preference_dialog::get_values()
 	sync_interval = sync_interval_entry.get_value_as_int();
 }
 
-void Preference_dialog::on_data_changed()
+void preference_dialog::on_data_changed()
 {
 	get_values();
 	if (gz < gt
@@ -182,54 +182,54 @@ void Preference_dialog::on_data_changed()
 	}
 }
 
-bool Preference_dialog::on_focus_changed(GdkEventFocus* /*par*/)
+bool preference_dialog::on_focus_changed(GdkEventFocus* /*par*/)
 {
 	on_data_changed();
 	return false;
 }
 
-bool Preference_dialog::on_button_released(GdkEventButton* /*par*/)
+bool preference_dialog::on_button_released(GdkEventButton* /*par*/)
 {
 	on_data_changed();
 	return false;
 }
 
-void Preference_dialog::on_cancel_button_clicked()
+void preference_dialog::on_cancel_button_clicked()
 {
 	hide();
 }
 
-void Preference_dialog::save()
+void preference_dialog::save()
 {
-	compact_layout = settings_accessor.set_bool("CompactLayout", compact_layout);
+	compact_layout = settings.set_bool("CompactLayout", compact_layout);
 	old_compact_layout = compact_layout;
 
-	settings_accessor.set_int("Gz", gz);
+	settings.set_int("Gz", gz);
 	old_gz = gz;
 
-	settings_accessor.set_int("Gt", gt);
+	settings.set_int("Gt", gt);
 	old_gt = gt;
 
-	settings_accessor.set_bool("StartMinimized", start_minimized);
+	settings.set_bool("StartMinimized", start_minimized);
 	old_start_minimized = start_minimized;
 
-	settings_accessor.set_string("Username", user);
+	settings.set_string("Username", user);
 	old_user = user;
 
-	settings_accessor.set_string("Password", password);
+	settings.set_string("Password", password);
 	old_password = password;
 
-	settings_accessor.set_string("URL", url);
+	settings.set_string("URL", url);
 	old_url = url;
 
-	settings_accessor.set_bool("IgnoreCertErr", ignore_cert_err);
+	settings.set_bool("IgnoreCertErr", ignore_cert_err);
 	old_ignore_cert_err = ignore_cert_err;
 
-	settings_accessor.set_int("SyncInterval", sync_interval);
+	settings.set_int("SyncInterval", sync_interval);
 	old_sync_interval = sync_interval;
 }
 
-void Preference_dialog::on_ok_button_clicked()
+void preference_dialog::on_ok_button_clicked()
 {
 	get_values();
 	save();

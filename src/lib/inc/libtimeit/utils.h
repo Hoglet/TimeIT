@@ -16,6 +16,8 @@ using namespace std;
 
 string ISO_639_language_string();
 time_t now();
+
+
 time_t to_time(int year, int month, int day, int hour = 0, int min = 0, int sec = 0);
 
 time_t beginning_of_day( time_t raw_time);

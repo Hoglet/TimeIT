@@ -1,4 +1,4 @@
-#include "libtimeit/sync/HTTP_request.h"
+#include "libtimeit/sync/http_request.h"
 #include <cstring>
 #include <stdexcept>
 
@@ -13,7 +13,7 @@ size_t receive_data(char* ptr, size_t size, size_t nmemb, stringstream* received
 }
 
 
-HTTP_request::HTTP_request()
+http_request::http_request()
 {
 	curl = curl_easy_init(); // NOLINT
 
@@ -31,13 +31,13 @@ HTTP_request::HTTP_request()
 
 }
 
-void HTTP_request::ignore_cert_errors(bool ignore)
+void http_request::ignore_cert_errors(bool ignore)
 {
 	ignore_certificate_errors = ignore;
 }
 
 
-size_t HTTP_request::send_data(char* dest, size_t i, size_t i1, HTTP_request* caller)
+size_t http_request::send_data(char* dest, size_t i, size_t i1, http_request* caller)
 {
 	size_t data_length = caller->send_buffer.size();
 	size_t buffer_length = i * i1;
@@ -53,13 +53,13 @@ size_t HTTP_request::send_data(char* dest, size_t i, size_t i1, HTTP_request* ca
 
 }
 
-HTTP_request::~HTTP_request()
+http_request::~http_request()
 {
 	curl_easy_cleanup(curl);
 	curl = nullptr;
 }
 
-HTTP_response HTTP_request::put(
+http_response http_request::put(
 		string url,
 		string data,
 		string username,
@@ -93,7 +93,7 @@ HTTP_response HTTP_request::put(
 	int http_code{0};
 	curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);             // NOLINT
 
-	HTTP_response result(
+	http_response result(
 			url,
 			receive_buffer.str(),
 			(res == CURLE_OK),

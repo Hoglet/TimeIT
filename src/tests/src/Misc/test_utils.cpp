@@ -2,8 +2,11 @@
 #include <ctime>
 #include <libtimeit/utils.h>
 #include <string>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
+
 
 TEST( Utils, testGetDaysInMonth )
 {
@@ -57,6 +60,7 @@ TEST( Utils, convertTimespanToString )
 	expected = "\u200311:00 → 2013-01-04 12:00";
 	ASSERT_EQ( expected, result ) << "Converting a time span of one year into a txt string";
 }
+
 
 TEST( Utils, dayEnd )
 {

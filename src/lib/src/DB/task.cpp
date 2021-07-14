@@ -7,13 +7,13 @@ namespace libtimeit
 {
 
 
-Task Task::with_name( string new_name) const
+task task::with_name(string new_name) const
 {
 	if(name == new_name)
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			new_name,
 			parent_id,
 			uuid,
@@ -27,13 +27,13 @@ Task Task::with_name( string new_name) const
 
 }
 
-Task Task::with_parent(Task_id new_parent_ID) const
+task task::with_parent(Task_id new_parent_ID) const
 {
 	if(parent_id == new_parent_ID)
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			name,
 			new_parent_ID,
 			uuid,
@@ -46,9 +46,9 @@ Task Task::with_parent(Task_id new_parent_ID) const
 			quiet);
 }
 
-Task::Task(string name_, Task_id parent_ID_)
+task::task(string name_, Task_id parent_ID_)
 	:
-	Task(
+		task(
 			name_,
 			parent_ID_,
 			UUID(),
@@ -63,7 +63,7 @@ Task::Task(string name_, Task_id parent_ID_)
 
 }
 
-Task::Task(
+task::task(
 		string               name_,
 		Task_id              parentID_,
 		class UUID           uuid_,
@@ -91,13 +91,13 @@ Task::Task(
 
 
 
-Task Task::with_completed(bool new_completed) const
+task task::with_completed(bool new_completed) const
 {
 	if(completed == new_completed )
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			name,
 			parent_id,
 			uuid,
@@ -110,13 +110,13 @@ Task Task::with_completed(bool new_completed) const
 			quiet);
 }
 
-Task Task::with_deleted(bool new_deleted) const
+task task::with_deleted(bool new_deleted) const
 {
 	if(deleted == new_deleted )
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			name,
 			parent_id,
 			uuid,
@@ -128,13 +128,13 @@ Task Task::with_deleted(bool new_deleted) const
 			idle,
 			quiet);
 }
-Task Task::with_idle(unsigned new_idle) const
+task task::with_idle(unsigned new_idle) const
 {
 	if(idle == new_idle )
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			name,
 			parent_id,
 			uuid,
@@ -147,13 +147,13 @@ Task Task::with_idle(unsigned new_idle) const
 			quiet);
 }
 
-Task Task::with_quiet(bool new_quiet) const
+task task::with_quiet(bool new_quiet) const
 {
 	if(quiet == new_quiet )
 	{
 		return *this;
 	}
-	return 	Task(
+	return 	task(
 			name,
 			parent_id,
 			uuid,
@@ -166,7 +166,7 @@ Task Task::with_quiet(bool new_quiet) const
 			new_quiet);
 }
 
-bool operator==(const Task &op1, const Task &op2)
+bool operator==(const task &op1, const task &op2)
 {
 	return (op1.name         == op2.name &&
 			op1.id == op2.id &&
@@ -182,7 +182,7 @@ bool operator==(const Task &op1, const Task &op2)
 	);
 }
 
-bool operator!=(const Task &op1, const Task &op2)
+bool operator!=(const task &op1, const task &op2)
 {
 	return !(op1 == op2);
 }

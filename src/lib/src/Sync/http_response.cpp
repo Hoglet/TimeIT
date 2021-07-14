@@ -1,7 +1,7 @@
 //
 // Created by hoglet on 16/11/2020.
 //
-#include <libtimeit/sync/HTTP_response.h>
+#include <libtimeit/sync/http_response.h>
 
 #include <utility>
 
@@ -11,7 +11,7 @@ namespace libtimeit
 
 using namespace std;
 
-HTTP_response::HTTP_response(
+http_response::http_response(
 			string url_,
 			string response_,
 			bool   status_OK_,

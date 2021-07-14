@@ -12,18 +12,18 @@
 namespace libtimeit
 {
 
-class Task_accessor
+class task_accessor
 {
-	friend class Database;
+	friend class database;
 public:
-	Task_accessor(Database& database);
+	task_accessor(database& database);
 
-	optional<Task> by_id(int64_t taskID);
-	vector<Task>   by_parent_id(int64_t parent = 0);
-	vector<Task>   changed_since(time_t timestamp = 0);
+	optional<task> by_id(int64_t taskID);
+	vector<task>   by_parent_id(int64_t parent = 0);
+	vector<task>   changed_since(time_t timestamp = 0);
 
-	Task_id        create(const Task &task);
-	bool           update(const Task &task);
+	Task_id        create(const task &item);
+	bool           update(const task &item);
 	void           remove(int64_t taskID);
 
 	Task_id  id(UUID uuid);
@@ -33,25 +33,25 @@ public:
 	void     set_task_expanded(Task_id taskID, bool expanded);
 
 protected:
-	Database& database; // NOLINT
+	database& db; // NOLINT
 
 private:
-	void notify(const Task &old_task, const Task &new_task);
-	void internal_update(const Task &task);
+	void notify(const task &old_task, const task &item);
+	void internal_update(const task &item);
 
 	optional<class UUID> uuid(Task_id id);
-	optional<Task>       get_task_unlimited(Task_id taskID);
+	optional<task>       get_task_unlimited(Task_id taskID);
 
-	Statement statement_uuid_to_id;
-	Statement statement_get_task;
-	Statement statement_id_to_uuid;
-	Statement statement_new_task;
+	sql_statement statement_uuid_to_id;
+	sql_statement statement_get_task;
+	sql_statement statement_id_to_uuid;
+	sql_statement statement_new_task;
 
-	static void  setup(Database& database);
-	static void  create_table(Database& db);
-	static void  upgrade(Database& db);
-	static void  upgrade_to_db_5(Database& db);
-	static void  internal_create(const Task &task, Statement &statement_new_task);
+	static void  setup(database& db);
+	static void  create_table(database& db);
+	static void  upgrade(database& db);
+	static void  upgrade_to_db_5(database& db);
+	static void  internal_create(const task &item, sql_statement &statement_new_task);
 };
 
 }

@@ -21,8 +21,8 @@ public:
 	virtual bool is_visible() = 0;
 	virtual void get_position(int &Window_x, int &Window_y) = 0;
 
-	virtual void attach(Action_observer* /*observer*/) 	{};
-	virtual void detach(Action_observer* /*observer*/) 	{};
+	virtual void attach(action_observer* /*observer*/) 	{};
+	virtual void detach(action_observer* /*observer*/) 	{};
 };
 
 }

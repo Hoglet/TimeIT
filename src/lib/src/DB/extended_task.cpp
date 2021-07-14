@@ -3,7 +3,7 @@
 namespace libtimeit
 {
 
-Extended_task::Extended_task(
+extended_task::extended_task(
 		int           ID,
 		UUID          uuid,
 		int           parent_ID,
@@ -13,7 +13,7 @@ Extended_task::Extended_task(
 		bool          running,
 		int           total_time_)
 		:
-		Task(
+		task(
 				name,
 				parent_ID,
 				uuid,

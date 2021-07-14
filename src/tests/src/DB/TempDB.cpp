@@ -11,7 +11,7 @@ namespace test
 {
 
 
-TempDB::TempDB(Notifier &notifier) : Database(":memory:", notifier)
+TempDB::TempDB(notification_manager &notifier) : database(":memory:", notifier)
 {
 }
 

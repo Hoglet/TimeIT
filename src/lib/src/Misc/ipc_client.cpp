@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <fcntl.h>
-#include <string.h>
+#include <cstring>
 #include <libtimeit/utils.h>
 #include <libtimeit/logging.h>
 
@@ -12,14 +12,14 @@ namespace libtimeit
 {
 using namespace std;
 
-Ipc_client::Ipc_client(string name)
+ipc_client::ipc_client(string name)
 {
 	socket_name = prepare_socket_dir() + name;
 
 }
 
 
-void Ipc_client::window_2_front()
+void ipc_client::window_2_front()
 {
 	struct sockaddr_un server{};
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);

@@ -1,8 +1,10 @@
-timeit (2.1.2) UNRELEASED; urgency=medium
+timeit (2.1.2) unstable; urgency=medium
 
   * Updating debian instructions.
+  * Class names in snake_case
+  * Remember selected task id between summary tabs
 
- -- Kent Asplund <hoglet@solit.se>  Mon, 05 Jul 2021 17:39:13 +0200
+ -- Kent Asplund <hoglet@solit.se>  Fri, 16 Jul 2021 08:54:10 +0200
 
 timeit (2.1.1) unstable; urgency=medium
 

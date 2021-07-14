@@ -84,3 +84,4 @@ src/version.h
 /src/cmake-build-debug-coverage/
 /src/lib/inc/libtimeit/version.h
 /obj-x86_64-linux-gnu/
+/.idea/dataSources*

@@ -11,10 +11,10 @@ namespace test
 {
 using namespace libtimeit;
 
-class Notify_observer : public Event_observer
+class Notify_observer : public event_observer
 {
 public:
-	Notify_observer(Notifier& notifier) : Event_observer(notifier)
+	Notify_observer(notification_manager& notifier) : event_observer(notifier)
 	{
 	}
 

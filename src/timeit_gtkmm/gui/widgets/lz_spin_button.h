@@ -6,7 +6,7 @@
 namespace gui
 {
 
-class LZSpinButton : public Gtk::SpinButton
+class ls_spin_button : public Gtk::SpinButton
 {
 public:
 	bool on_output() override;

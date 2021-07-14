@@ -5,23 +5,23 @@
 #include <string>
 #include <memory>
 #include <future>
-#include "HTTP_response.h"
-#include "HTTP_request.h"
+#include "http_response.h"
+#include "http_request.h"
 
 //LCOV_EXCL_START
 namespace libtimeit
 {
 using namespace std;
 
-struct asyncHTTPResponse
+struct async_http_response
 {
-	shared_future<HTTP_response> future_response;
+	shared_future<http_response> future_response;
 };
 
-class INetwork
+class abstract_network
 {
 public:
-	virtual shared_ptr<asyncHTTPResponse>
+	virtual shared_ptr<async_http_response>
 	request(
 			string url,
 			string data,
@@ -31,17 +31,17 @@ public:
 };
 
 
-class Network : public INetwork
+class curl_network : public abstract_network
 {
 public:
-	Network();
-	Network( const Network& ) = delete;
-	Network( Network&& )      = delete;
-	Network& operator=( const Network& ) = delete;
-	Network& operator=(  Network&& ) = delete;
+	curl_network();
+	curl_network(const curl_network& ) = delete;
+	curl_network(curl_network&& )      = delete;
+	curl_network& operator=(const curl_network& ) = delete;
+	curl_network& operator=(curl_network&& ) = delete;
 
-	virtual ~Network();
-	shared_ptr<asyncHTTPResponse> request(
+	virtual ~curl_network();
+	shared_ptr<async_http_response> request(
 			string url,
 			string data,
 			string username,

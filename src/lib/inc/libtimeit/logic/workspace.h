@@ -1,19 +1,19 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 #include <string>
-#include "libtimeit/X11.h"
+#include "libtimeit/x11_lib.h"
 
 namespace libtimeit
 {
 
 using namespace std;
 
-struct Layout
+struct workspace_layout
 {
 	const unsigned  number_of_workspaces;
 	const unsigned  rows;
 	const unsigned  columns;
-	Layout(
+	workspace_layout(
 			unsigned number_of_workspaces_,
 			unsigned rows_,
 			unsigned columns_)
@@ -23,15 +23,15 @@ struct Layout
 			columns(columns_)
 	{};
 };
-class Workspace
+class x11_workspace
 {
 public:
-	Workspace();
+	x11_workspace();
 
 	unsigned active();
 	string name(unsigned workspace_nr);
 
-	Layout layout();
+	workspace_layout layout();
 
 private:
 
@@ -40,7 +40,7 @@ private:
 
 	long  viewport_width  = 0;
 	long  viewport_height = 0;
-	X11  x11;
+	x11_lib  x11;
 
 };
 }

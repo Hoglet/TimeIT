@@ -5,8 +5,6 @@
  *      Author: hoglet
  */
 
-#include "main.h"
-
 #ifdef ENABLE_NLS
 #  include <libintl.h>
 #endif
@@ -17,7 +15,7 @@
 #include <window_manager.h>
 #include <controller.h>
 #include <MessageCenter.h>
-#include <GTK_timer.h>
+#include <gtk_timer.h>
 
 #include <libtimeit.h>
 #include <libtimeit/logic/auto_tracker.h>
@@ -28,11 +26,11 @@
 #include <libtimeit/os_abstraction.h>
 #include <libtimeit/sync/sync_manager.h>
 
-namespace gui
-{
-
 using namespace std;
 using namespace libtimeit;
+
+string db_name;
+string socket_name = "timeit.socket";
 
 extern "C" {
 void sighandler(int sig)
@@ -43,7 +41,23 @@ void sighandler(int sig)
 }
 }
 
-Main::Main(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
+void print_help()
+{
+	// Command line help, line1.
+	cout << _("Usage:") << endl;
+	// Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
+	cout << "timeit [" << _("OPTION...") << "]" << endl;
+	cout << endl;
+	// Command line help, Line3.
+	cout << _("Help Options:") << endl;
+	// Command line help, Line4. How to show help
+	cout << " -?, --help                                " << _("Show help") << endl;
+	// Command line help, Line6. Will expand to "--db=[FILENAME]"
+	cout << "--db=[" << _("FILENAME") << "]" << endl;
+}
+
+
+void init(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays,cppcoreguidelines-avoid-c-arrays)
 {
 	signal(SIGINT, &sighandler);
 
@@ -75,22 +89,8 @@ Main::Main(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 }
 
-void Main::print_help()
-{
-	// Command line help, line1.
-	cout << _("Usage:") << endl;
-	// Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
-	cout << "timeit [" << _("OPTION...") << "]" << endl;
-	cout << endl;
-	// Command line help, Line3.
-	cout << _("Help Options:") << endl;
-	// Command line help, Line4. How to show help
-	cout << " -?, --help                                " << _("Show help") << endl;
-	// Command line help, Line6. Will expand to "--db=[FILENAME]"
-	cout << "--db=[" << _("FILENAME") << "]" << endl;
-}
 
-int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
+int run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 {
 	try
 	{
@@ -98,34 +98,34 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 		textdomain(GETTEXT_PACKAGE);
 
-		Application_lock lock(db_name);
+		application_lock lock(db_name);
 		if (lock.lock_acquired())
 		{
 
 			Gtk::Main application(argc, argv);
 			Gtk::Main::init_gtkmm_internals();
 			libtimeit::init();
-			Notifier notifier;
+			notification_manager notifier;
 
 			//Create a database object
-			Database database(db_name, notifier);
+			database db(db_name, notifier);
 
 			//Initiate all logic
-			gui::Message_center message_center;
+			gui::message_center messages;
 
-			GTK_timer timer;
+			gui::gtk_timer timer;
 
 
-			Network network;
-			Sync_manager sync_manager(database, network, notifier, timer);
-			Ipc_server   ipc_server(socket_name, timer, notifier);
+			curl_network network;
+			sync_manager syncer(db, network, notifier, timer);
+			ipc_server   server(socket_name, timer, notifier);
 
-			Time_keeper  time_keeper(database, timer, notifier);
-			Auto_tracker auto_tracker(time_keeper, database, timer);
+			Time_keeper  time_keeper(db, timer, notifier);
+			auto_tracker auto_tracker(time_keeper, db, timer);
 
-			Images images;
-			Window_manager   gui_factory(time_keeper, database, timer, notifier, images);
-			Controller       controller(gui_factory, time_keeper, database, notifier, images);
+			gui::image_cache images;
+			gui::window_manager   gui_factory(time_keeper, db, timer, notifier, images);
+			gui::widget_controller       controller(gui_factory, time_keeper, db, notifier, images);
 
 			controller.start();
 
@@ -135,8 +135,8 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 		}
 		else
 		{
-			Ipc_client ipc_client(socket_name);
-			ipc_client.window_2_front();
+			ipc_client client(socket_name);
+			client.window_2_front();
 		}
 	}
 	catch (exception &e)
@@ -148,10 +148,9 @@ int Main::run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 }
 
-} // namespace GUI
 
 int main(int argc, char *argv[])
 {
-	gui::Main program(argc, argv);
-	return program.run(argc, argv);
+	init(argc, argv);
+	return run(argc, argv);
 }

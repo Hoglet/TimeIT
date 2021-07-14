@@ -7,7 +7,7 @@ namespace gui
 
 static const int YEAR_ZERO = 1900;
 
-Timestamp_edit::Timestamp_edit(string title)
+timestamp_edit::timestamp_edit(string title)
 {
 	set_label(title);
 	set_behaviour();
@@ -16,7 +16,7 @@ Timestamp_edit::Timestamp_edit(string title)
 
 
 }
-void Timestamp_edit::set_values(time_t timestamp)
+void timestamp_edit::set_values(time_t timestamp)
 {
 	struct tm *time_info = localtime(&timestamp);
 	hour.set_value(time_info->tm_hour);
@@ -27,7 +27,7 @@ void Timestamp_edit::set_values(time_t timestamp)
 	day.set_value(time_info->tm_mday);
 }
 
-void Timestamp_edit::connect_signals()
+void timestamp_edit::connect_signals()
 {
 	auto slot =
 			[this]()
@@ -41,7 +41,7 @@ void Timestamp_edit::connect_signals()
 	minute.signal_changed().connect(slot);
 }
 
-void Timestamp_edit::do_layout()
+void timestamp_edit::do_layout()
 {
 	set_border_width(7);
 	add(padding_box);
@@ -68,7 +68,7 @@ void Timestamp_edit::do_layout()
 	}
 }
 
-void Timestamp_edit::set_behaviour()
+void timestamp_edit::set_behaviour()
 {
 	hour.set_range(0, 23);             // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	hour.set_increments(1, 1);
@@ -83,12 +83,12 @@ void Timestamp_edit::set_behaviour()
 	day.set_increments(1, 1);
 }
 
-void Timestamp_edit::on_change()
+void timestamp_edit::on_change()
 {
 	signal_changed.emit();
 }
 
-time_t Timestamp_edit::timestamp()
+time_t timestamp_edit::timestamp()
 {
 	auto y = year.get_value_as_int();
 	auto m = month.get_value_as_int() - 1;
@@ -99,10 +99,10 @@ time_t Timestamp_edit::timestamp()
 	int max_day = libtimeit::days_in_month(active_day);
 	day.set_range(1, max_day);
 
-	int hour_ = hour.get_value_as_int();
-	int min_ = minute.get_value_as_int();
+	int h = hour.get_value_as_int();
+	int mm = minute.get_value_as_int();
 
-	return libtimeit::to_time(y, m, d, hour_, min_);
+	return libtimeit::to_time(y, m, d, h, mm);
 }
 
 }

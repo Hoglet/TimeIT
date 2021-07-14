@@ -19,14 +19,14 @@ namespace gui
 using namespace::std;
 using namespace libtimeit;
 
-Idle_dialog::Idle_dialog(
+idle_dialog::idle_dialog(
 		Timer& timer,
-		Database& database,
+		database& db,
 		Time_keeper& time_keeper_)
 		:
-		Timer_observer(timer),
-		task_accessor(database ),
-		time_accessor( database ),
+		timer_observer(timer),
+		tasks(db ),
+		times(db ),
 		time_keeper(time_keeper_)
 {
 
@@ -46,34 +46,34 @@ Idle_dialog::Idle_dialog(
 	add_button(_("Continue"), RESPONSE_CONTINUE);
 
 
-	signal_response().connect(sigc::mem_fun(this, &Idle_dialog::response_handler));
+	signal_response().connect(sigc::mem_fun(this, &idle_dialog::response_handler));
 
 	//set_type_hint(Gdk::WindowTypeHint::WINDOW_TYPE_HINT_DIALOG);
 	show_all_children();
 	set_keep_above(true);
 }
 
-void Idle_dialog::set_time_id(Time_id id)
+void idle_dialog::set_time_id(Time_id id)
 {
-	auto time_entry = time_accessor.by_id(id);
+	auto time_entry = times.by_id(id);
 	if ( time_entry.has_value())
 	{
 		idle_start_time = time_entry->stop;
-		auto task = task_accessor.by_id(time_entry->task_id);
-		if(task.has_value())
+		auto idle_task = tasks.by_id(time_entry->task_id);
+		if(idle_task.has_value())
 		{
-			task_string = task->name;
+			task_string = idle_task->name;
 			time_entry_id = id;
 		}
 	}
 }
 
-void Idle_dialog::on_signal_10_seconds()
+void idle_dialog::on_signal_10_seconds()
 {
 	set_text();
 }
 
-void Idle_dialog::show()
+void idle_dialog::show()
 {
 	set_text();
 	Gtk::Dialog::show();
@@ -81,7 +81,7 @@ void Idle_dialog::show()
 
 static const int SECONDS_PER_MINUTE = 60;
 
-void Idle_dialog::set_text()
+void idle_dialog::set_text()
 {
 	std::stringstream str;
 	auto minutes_idle = (libtimeit::now() - idle_start_time) / SECONDS_PER_MINUTE;
@@ -103,7 +103,7 @@ void Idle_dialog::set_text()
 	text.set_text(str.str());
 }
 
-void Idle_dialog::response_handler(int result)
+void idle_dialog::response_handler(int result)
 {
 	switch (result)
 	{
@@ -123,18 +123,18 @@ void Idle_dialog::response_handler(int result)
 	hide();
 }
 
-void Idle_dialog::action_continue(Time_id id)
+void idle_dialog::action_continue(Time_id id)
 {
-	auto time_entry = time_accessor.by_id(id);
+	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{
-		time_accessor.update(time_entry->with(RUNNING).with_stop(libtimeit::now()));
+		times.update(time_entry->with(RUNNING).with_stop(libtimeit::now()));
 	}
 }
 
-void Idle_dialog::revert_and_stop(Time_id id)
+void idle_dialog::revert_and_stop(Time_id id)
 {
-	auto time_entry = time_accessor.by_id(id);
+	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_keeper.stop_time(id);
@@ -142,9 +142,9 @@ void Idle_dialog::revert_and_stop(Time_id id)
 	}
 }
 
-void Idle_dialog::revert_and_continue(Time_id id)
+void idle_dialog::revert_and_continue(Time_id id)
 {
-	auto time_entry = time_accessor.by_id(id);
+	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{
 		time_keeper.stop_time(id);
