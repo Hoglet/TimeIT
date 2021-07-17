@@ -20,9 +20,10 @@ public:
 	bool operator!=(const UUID &rhs) const;
 	[[nodiscard]] const char *c_str() const;
 	[[nodiscard]] string to_string() const;
+	explicit operator std::string() const;
 private:
-	string uuid;
-	UUID(string basic_string);
+	string id;
+	explicit UUID(string basic_string);
 };
 
 }

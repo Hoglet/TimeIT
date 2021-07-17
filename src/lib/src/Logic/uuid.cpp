@@ -130,12 +130,12 @@ UUID::UUID()
 	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
 	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
 
-	uuid = uuid_string_stream.str();
+	id = uuid_string_stream.str();
 }
 
 bool UUID::operator==(const UUID &rhs) const
 {
-	return uuid == rhs.uuid;
+	return id == rhs.id;
 }
 
 bool UUID::operator!=(const UUID &rhs) const
@@ -145,16 +145,21 @@ bool UUID::operator!=(const UUID &rhs) const
 
 const char *UUID::c_str() const
 {
-	return uuid.c_str();
+	return id.c_str();
 }
 
 string UUID::to_string() const
 {
-	return uuid;
+	return id;
 }
 
-UUID::UUID(string basic_string) : uuid(std::move(basic_string))
+UUID::UUID(string basic_string) : id(std::move(basic_string))
 {
+}
+
+UUID::operator std::string() const
+{
+	return id;
 }
 
 }
