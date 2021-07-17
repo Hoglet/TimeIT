@@ -4,6 +4,7 @@
 #include <libtimeit/db/task.h>
 #include <libtimeit/sync/json.h>
 
+
 namespace libtimeit
 {
 using namespace std;
@@ -45,7 +46,7 @@ string to_json(const Time_list& times)
 	for (auto time : times)
 	{
 		json item;
-		item.set("id", json( time.uuid.to_string()));
+		item.set("id", json( static_cast<string>(time.uuid)));
 		item.set("task", json(time.task_uuid->to_string()));
 		item.set("start", json(time.start));
 		item.set("stop", json(time.stop));
@@ -107,7 +108,6 @@ Time_list to_times(const string &input)
 
 	for (json item: json_document.objects())
 	{
-		int64_t id            = 0;
 		string uuid_string    = item.text("id");
 		string task_id_string = item.by_name("task").text("id");
 		time_t start          = item.integer("start");
@@ -125,7 +125,7 @@ Time_list to_times(const string &input)
 		auto task_id= UUID::from_string(task_id_string);
 		if(uuid.has_value() && task_id.has_value())
 		{
-			Time_entry time_item(id, *uuid, 0, *task_id, start, stop, state, changed, comment);
+			Time_entry time_item( time_id(*uuid), 0, *task_id, start, stop, state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

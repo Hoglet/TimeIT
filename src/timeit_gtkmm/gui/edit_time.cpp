@@ -16,7 +16,7 @@ edit_time_dialog::edit_time_dialog(
 		times(db),
 		tasks(db)
 {
-	if(time_entry_.id!=0)
+	if(time_entry_.task_uuid.has_value())
 	{
 		task_name_label.set_text(_("Editing time belonging to: "));
 	}
@@ -88,7 +88,8 @@ void edit_time_dialog::on_response(int response_id)
 		time_t start_time = start_timestamp_edit.timestamp();
 		time_t stop_time  = stop_timestamp_edit.timestamp();
 		auto   comment    = comment_buffer->get_text();
-		if(time_entry.id>0)
+		auto existing_time_entry = times.by_id(time_entry.uuid);
+		if(existing_time_entry.has_value())
 		{
 			times.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
 		}

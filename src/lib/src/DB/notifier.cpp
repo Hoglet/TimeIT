@@ -42,21 +42,21 @@ void notification_manager::send_message(notification_message message)
 	switch(message.type)
 	{
 		case TASK_UPDATED:
-			this->notify_all( [message](event_observer* observer)
+			this->broadcast( [message](event_observer* observer)
 							  {
 								  observer->on_task_updated(message.id);
 							  }
 							  );
 			break;
 		case  TASK_NAME_CHANGED:
-			this->notify_all( [message](event_observer* observer)
+			this->broadcast( [message](event_observer* observer)
 								{
 									observer->on_task_name_changed(message.id);
 								}
 							);
 			break;
 		case TASK_TIME_CHANGED:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_task_time_changed(message.id);
@@ -64,7 +64,7 @@ void notification_manager::send_message(notification_message message)
 					);
 			break;
 		case TASK_ADDED:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_task_added(message.id);
@@ -72,7 +72,7 @@ void notification_manager::send_message(notification_message message)
 					);
 			break;
 		case TASK_REMOVED:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_task_removed(message.id);
@@ -80,7 +80,7 @@ void notification_manager::send_message(notification_message message)
 			);
 			break;
 		case TASK_PARENT_CHANGED:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_parent_changed(message.id);
@@ -88,7 +88,7 @@ void notification_manager::send_message(notification_message message)
 			);
 			break;
 		case COMPLETE_UPDATE:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_complete_update();
@@ -96,23 +96,15 @@ void notification_manager::send_message(notification_message message)
 			);
 			break;
 		case SETTINGS_CHANGED:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_settings_changed( message.name );
 					}
 			);
 			break;
-		case TIME_ENTRY_CHANGED:
-			this->notify_all(
-					[message](event_observer* observer)
-					{
-						observer->on_time_entry_changed( message.id );
-					}
-			);
-			break;
 		case SHOW_MAIN_WINDOW:
-			this->notify_all(
+			this->broadcast(
 					[message](event_observer* observer)
 					{
 						observer->on_show_main_window();
@@ -160,7 +152,7 @@ unsigned long notification_manager::size()
 	return observers.size();
 }
 
-void notification_manager::notify_all(function<void(event_observer*)> function)
+void notification_manager::broadcast(function<void(event_observer*)> function)
 {
 	for (event_observer *observer : observers)
 	{

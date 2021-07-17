@@ -11,6 +11,7 @@
 #include <list>
 #include <string>
 #include <functional>
+#include <variant>
 #include <libtimeit/event_observer.h>
 #include <libtimeit/db/message_type.h>
 
@@ -20,9 +21,9 @@ using namespace std;
 
 struct notification_message
 {
-	message_type type;
-	int64_t      id;
-	string       name;
+	message_type        type;
+	int64_t             id;
+	string              name;
 };
 
 class notification_manager
@@ -33,6 +34,7 @@ public:
 	void             send_notification(message_type type, int64_t item_id, string name = "");
 	void             is_enabled(bool enabled_);
 	void             send(EventType type, string headline, string message);
+	void             broadcast(function<void(event_observer*)>);
 	unsigned long    size();
 protected:
 	void attach(event_observer*);
@@ -44,8 +46,6 @@ private:
 	bool missed_notification = false;
 
 	list<event_observer*> observers = {};
-
-	void notify_all(function<void(event_observer*)>);
 };
 
 }

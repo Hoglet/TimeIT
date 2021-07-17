@@ -24,7 +24,7 @@ class idle_dialog : public Gtk::Dialog, public timer_observer, public IWidget
 {
 public:
 	idle_dialog(Timer& timer, database& db, Time_keeper& time_keeper);
-	void set_time_id(Time_id id);
+	void set_time_id(const time_id& id);
 	// IWidget interface
 	void show() override;
 	void hide() override { Gtk::Dialog::hide(); }
@@ -43,13 +43,13 @@ private:
 	time_accessor times;
 	Time_keeper&  time_keeper;
 
-	Time_id       time_entry_id{0};
+	time_id       time_entry_id;
 	time_t        idle_start_time{0};
 
 	void response_handler(int result);
-	void action_continue(Time_id id);
-	void revert_and_stop(Time_id id);
-	void revert_and_continue(Time_id id);
+	void action_continue(const time_id& id);
+	void revert_and_stop(const time_id& id);
+	void revert_and_continue(const time_id& id);
 };
 
 }

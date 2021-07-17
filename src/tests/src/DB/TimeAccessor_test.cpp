@@ -34,8 +34,9 @@ TEST(TimeAccessor, ChangeEndTime)
 	task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
 	time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
-	auto te = timeAccessor.by_id(timeId);
+	Time_entry original = Time_entry( taskId, 0, 1000 );
+	timeAccessor.create( original );
+	auto te = timeAccessor.by_id( original.uuid );
 	if (te)
 	{
 		timeAccessor.update(te->with_stop(1300));
@@ -52,8 +53,9 @@ TEST(TimeAccessor, ChangeStartTime)
 	task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
 	time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
-	auto te = timeAccessor.by_id(timeId);
+	Time_entry original( taskId, 0, 1000 );
+	timeAccessor.create( original );
+	auto te = timeAccessor.by_id(original.uuid);
 	timeAccessor.update(te->with_start(300));
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(700, result);
@@ -69,9 +71,10 @@ TEST(TimeAccessor, UpdateTime)
 	task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
 	time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ) );
+	Time_entry first( taskId, 0, 1000 );
+	timeAccessor.create( first );
 	observer.task_id_time = 0;
-	auto original = timeAccessor.by_id(timeId).value();
+	auto original = timeAccessor.by_id(first.uuid).value();
 	timeAccessor.update( original.with_start(300).with_stop(700));
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(400, result);
@@ -86,9 +89,10 @@ TEST(TimeAccessor, RemoveTime)
 	task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
 	time_accessor timeAccessor(tempdb);
-	int64_t timeId = timeAccessor.create( Time_entry( taskId, 0, 1000 ));
+	Time_entry te = Time_entry( taskId, 0, 1000 );
+	timeAccessor.create( te );
 	timeAccessor.create( Time_entry( taskId, 2000, 2300 ));
-	timeAccessor.remove(timeId);
+	timeAccessor.remove( te );
 	int result = timeAccessor.duration_time(taskId, 0, 0);
 	ASSERT_EQ(300, result);
 }
@@ -131,13 +135,35 @@ TEST(TimeAccessor, testGetByID)
 	time_accessor timeAccessor(tempdb);
 	extended_task_accessor taskAccessor(tempdb);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
-	int64_t timeEntryID = timeAccessor.create( Time_entry(taskId, 10, 100) );
-	auto te = timeAccessor.by_id(timeEntryID);
+	Time_entry original(taskId, 10, 100);
+	timeAccessor.create( original );
+	auto te = timeAccessor.by_id(original.uuid);
 	ASSERT_EQ(taskId, te->task_id) << "Check task id";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
 
 }
+
+TEST(TimeAccessor, testGetByUUID)
+{
+	notification_manager notifier;
+	TempDB tempdb(notifier);
+	time_accessor timeAccessor(tempdb);
+	extended_task_accessor taskAccessor(tempdb);
+	const int64_t taskId = taskAccessor.create(task("test", 0));
+	Time_entry original = Time_entry(taskId, 10, 100);
+	timeAccessor.create( original );
+
+	auto te = timeAccessor.by_id(original.uuid);
+	ASSERT_EQ(taskId, te->task_id) << "Check task id";
+	ASSERT_EQ(10, te->start) << "Check start";
+	ASSERT_EQ(100, te->stop) << "Check stop";
+	ASSERT_EQ(original.uuid, te->uuid) << "Check uuid";
+
+}
+
+
+
 
 TEST(TimeAccessor, newItem)
 {
@@ -146,10 +172,10 @@ TEST(TimeAccessor, newItem)
 	time_accessor timeAccessor(db);
 	extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
-	Time_entry item1(0, UUID(), taskId, {}, 100, 200, STOPPED, 200, comment);
+	Time_entry item1( {}, taskId, {}, 100, 200, STOPPED, 200, comment);
 
-	int64_t timeEntryID = timeAccessor.create(item1);
-	auto item2 = timeAccessor.by_id(timeEntryID);
+	timeAccessor.create(item1);
+	auto item2 = timeAccessor.by_id(item1.uuid);
 
 	ASSERT_EQ(item1.uuid, item2->uuid) << "UUID: ";
 	ASSERT_EQ(item1.task_id, item2->task_id) << "Task_ID: ";
@@ -193,9 +219,11 @@ TEST(TimeAccessor, getTimesChangedSince)
 	task_accessor taskAccessor(tempdb);
 
 	const int64_t taskId = taskAccessor.create(task("test", 0));
-	int64_t timeid = timeAccessor.create( Time_entry(taskId, 0, 1000) );
 
-	auto item = timeAccessor.by_id(timeid);
+	Time_entry original(taskId, 0, 1000);
+	timeAccessor.create( original );
+
+	auto item = timeAccessor.by_id( original.uuid );
 	vector<Time_entry> result = timeAccessor.times_changed_since(0);
 	ASSERT_EQ(1, result.size());
 	result = timeAccessor.times_changed_since(item->changed);
@@ -211,7 +239,7 @@ TEST(TimeAccessor, getActiveTasks)
 	time_accessor timeAccessor (db);
 	extended_task_accessor taskAccessor(db);
 	const int64_t taskId = taskAccessor.create(task("test", 0));
-	Time_entry item(0, UUID(), taskId, {}, 100, 600, STOPPED, 200, comment);
+	Time_entry item( {}, taskId, {}, 100, 600, STOPPED, 200, comment);
 
 	timeAccessor.create(item);
 

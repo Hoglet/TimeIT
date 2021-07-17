@@ -53,7 +53,7 @@ idle_dialog::idle_dialog(
 	set_keep_above(true);
 }
 
-void idle_dialog::set_time_id(Time_id id)
+void idle_dialog::set_time_id(const time_id& id)
 {
 	auto time_entry = times.by_id(id);
 	if ( time_entry.has_value())
@@ -123,7 +123,7 @@ void idle_dialog::response_handler(int result)
 	hide();
 }
 
-void idle_dialog::action_continue(Time_id id)
+void idle_dialog::action_continue(const time_id& id)
 {
 	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
@@ -132,22 +132,22 @@ void idle_dialog::action_continue(Time_id id)
 	}
 }
 
-void idle_dialog::revert_and_stop(Time_id id)
+void idle_dialog::revert_and_stop(const time_id& id)
 {
 	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{
-		time_keeper.stop_time(id);
+		time_keeper.stop_time(time_entry.value());
 		time_keeper.stop(time_entry->task_id);
 	}
 }
 
-void idle_dialog::revert_and_continue(Time_id id)
+void idle_dialog::revert_and_continue(const time_id& id)
 {
 	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{
-		time_keeper.stop_time(id);
+		time_keeper.stop_time(time_entry.value());
 		time_keeper.start(time_entry->task_id);
 	}
 }

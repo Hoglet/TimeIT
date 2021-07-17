@@ -24,11 +24,12 @@ class time_accessor
 public:
 	time_accessor(database& database);
 
-	Time_id                 create(Time_entry item);
-	optional<Time_entry>    by_id(Time_id id);
+	int64_t                 create(const Time_entry& item);
+	optional<Time_entry>    by_id(time_id id);
+
 	[[nodiscard]] Time_list by_state(Time_entry_state state) const;
-	bool                    update(Time_entry item);
-	void                    remove(Time_id id);
+	bool                    update(const Time_entry& item);
+	void                    remove(const Time_entry& item);
 
 	task_id_list            latest_active_tasks(int amount);
 
@@ -36,8 +37,6 @@ public:
 	Time_list               time_list(Task_id task_ID, time_t start, time_t stop);
 	Duration                duration_time(Task_id task_ID, time_t start, time_t stop);
 	Time_list               times_changed_since(time_t timestamp= 0);
-	Time_id                 uuid_to_id(UUID uuid);
-
 
 	Duration                total_cumulative_time(Task_id taskID, time_t start, time_t stop);
 	task_id_list            currently_running();
@@ -57,8 +56,7 @@ private:
     Duration        time_completely_within_limits(Task_id & id, time_t & start, time_t & stop);
     task_id_list    children_id_list(Task_id id);
 
-	sql_statement statement_uuid_to_id;
-	sql_statement by_id_statement;
+	sql_statement by_uuid_statement;
 	sql_statement statement_update_time;
 	sql_statement statement_new_entry;
 	static void setup(database& db);

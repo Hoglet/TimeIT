@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 #include <utility>
-#include <libtimeit/db/uuid.h>
+#include <libtimeit/datatypes/uuid.h>
 
 namespace libtimeit
 {

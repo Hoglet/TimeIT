@@ -54,7 +54,7 @@ void widget_controller::start()
 	}
 	for( auto time_entry: times.by_state(PAUSED))
 	{
-		show_idle_dialog(time_entry.id);
+		show_idle_dialog(time_entry.uuid);
 	}
 
 }
@@ -164,16 +164,12 @@ void widget_controller::on_action_remove_task()
 	//ENHANCEMENT Move code from main window (or?)
 }
 
-void widget_controller::on_idle_detected(Time_id id)
+void widget_controller::on_idle_detected( const Time_entry& te)
 {
 	on_idle_changed();
 
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
-	{
-		times.update(time_entry->with(PAUSED));
-		show_idle_dialog(id);
-	}
+	times.update(te.with(PAUSED));
+	show_idle_dialog(te.uuid);
 }
 
 void widget_controller::on_idle_changed()
@@ -216,7 +212,7 @@ void widget_controller::on_show_details_clicked(int64_t taskId, time_t startTime
 	}
 }
 
-void widget_controller::on_time_entry_changed(Time_id /*id*/)
+void widget_controller::on_time_entry_changed(const Time_entry& /*te*/)
 {
 	auto currently_running = times.currently_running();
 	if(currently_running != old_running)
@@ -237,7 +233,7 @@ void widget_controller::on_selection_changed(int64_t /*task_id*/, time_t /*start
 {
 }
 
-void widget_controller::show_idle_dialog(Time_id id)
+void widget_controller::show_idle_dialog(const time_id& id)
 {
 	auto dialog = dynamic_pointer_cast<idle_dialog>(windows.get_widget(gui::IDLE_DIALOG));
 	dialog->set_time_id(id);

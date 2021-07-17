@@ -2,7 +2,7 @@
 #define TIMEIT_TIME_ID_H
 
 #include <string>
-#include <libtimeit/db/uuid.h>
+#include <libtimeit/datatypes/uuid.h>
 
 namespace libtimeit
 {
@@ -11,11 +11,11 @@ using namespace std;
 class time_id
 {
 public:
-	time_id();
-	explicit time_id(const UUID&);
-	explicit operator string() const;
+	time_id() noexcept;
+	explicit time_id(const UUID&) noexcept;
+	explicit operator string() const noexcept;
 private:
-	const string id;
+	string id;
 };
 
 bool operator==(const time_id& id_1, const time_id& id_2);

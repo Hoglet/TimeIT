@@ -26,7 +26,7 @@ using namespace std;
 
 struct row_data
 {
-	Time_id time_id;
+	time_id id;
 	time_t  prev_start;
 	time_t  start;
 	time_t  stop;
@@ -58,17 +58,17 @@ public:
 	void on_task_removed(Task_id task_id) override;
 	void on_complete_update() override;
 	void on_task_name_changed(Task_id task_id) override;
-	void on_time_entry_changed(Time_id id) override;
+	void on_time_entry_changed(const Time_entry& /*te*/) override;
 	//Summary_observer interface
 	void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) override;
 	//
-	Time_id get_selected_id();
-	vector<Time_id> get_selected_and_next_id();
+	optional<time_id>   get_selected();
+	list<time_id>       get_selected_and_next();
 	//
 private:
 	void update_row(Gtk::TreeModel::Row& row, row_data ) const;
 
-	optional<Gtk::TreeModel::Row> find_row(Time_id id);
+	optional<Gtk::TreeModel::Row> find_row(time_id id);
 
 	list<row_data> create_row_data(time_t start, time_t stop);
 	void           populate();
@@ -92,7 +92,7 @@ private:
 			add(col_comment);
 		}
 		;
-		Gtk::TreeModelColumn<Time_id>       col_id;
+		Gtk::TreeModelColumn<time_id>       col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_date;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;
 		Gtk::TreeModelColumn<Glib::ustring> col_time_amount;
@@ -113,7 +113,7 @@ private:
 	settings_accessor           settings;
 	window_manager&             windows;
 	database&                   db;
-	void edit_time_entry(Time_id i);
+	void edit_time_entry(time_id /*id*/);
 };
 }
 

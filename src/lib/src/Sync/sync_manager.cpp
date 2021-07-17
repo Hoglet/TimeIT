@@ -237,21 +237,17 @@ void sync_manager::sync_times_to_database()
 		{
 			continue;
 		}
-		auto uuid = item.uuid;
-		auto id = times.uuid_to_id(uuid);
 		time_t changed = item.changed;
 		bool deleted = item.state == DELETED;
 		time_t start = item.start;
 		time_t stop = item.stop;
 		bool running = false;
 		auto comment = item.comment;
-		if (id > 0)
+
+		auto original_item = times.by_id(item.uuid);
+		if(original_item)
 		{
-			auto original_item = times.by_id(id);
-			if(original_item)
-			{
-				running = (original_item->state == RUNNING);
-			}
+			running = (original_item->state == RUNNING);
 		}
 
 		Time_entry_state item_state = STOPPED;
@@ -264,8 +260,8 @@ void sync_manager::sync_times_to_database()
 			item_state = DELETED;
 		}
 
-		Time_entry te(id, uuid, task_id, task_uuid, start, stop, item_state, changed, comment);
-		if (id > 0)
+		Time_entry te( item.uuid, task_id, task_uuid, start, stop, item_state, changed, comment);
+		if (original_item.has_value())
 		{
 			times.update(te);
 		}

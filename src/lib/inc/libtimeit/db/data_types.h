@@ -11,7 +11,6 @@ struct Time_entry;
 
 using Time_list    = vector<Time_entry>;
 using Task_id      = int64_t;
-using Time_id      = int64_t;
 using task_id_list = vector<Task_id>;
 
 using Duration = int;      //Duration in seconds

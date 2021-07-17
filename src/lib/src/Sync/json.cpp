@@ -91,7 +91,7 @@ vector<json> json::objects() const
 	for (size_t i = 0; i < json_array_size(object); i++)
 	{
 		json_t *item = json_array_get(object, i);
-		return_value.emplace_back(json(item));
+		return_value.push_back(json(item));
 	}
 	return return_value;
 }

@@ -4,7 +4,7 @@
 #include <string>
 #include <optional>
 #include <libtimeit/db/data_types.h>
-#include <libtimeit/db/uuid.h>
+#include <libtimeit/datatypes/uuid.h>
 
 
 namespace libtimeit

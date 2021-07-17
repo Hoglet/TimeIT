@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <string>
 #include <libtimeit/db/data_types.h>
-#include <libtimeit/db/uuid.h>
+#include <libtimeit/datatypes/time_id.h>
+
 
 namespace libtimeit
 {
@@ -20,8 +21,7 @@ enum Time_entry_state
 
 struct Time_entry
 {
-	const Time_id              id;
-	const class UUID           uuid;
+	const time_id              uuid;
 	const Task_id              task_id;
 	const time_t               start;
 	const time_t               stop;
@@ -43,8 +43,7 @@ struct Time_entry
 	);
 
 	Time_entry(
-			Time_id          id,
-			UUID             uuid,
+			time_id          uuid,
 			Task_id          task_id,
 			optional<UUID>   task_uuid,
 			time_t           start,

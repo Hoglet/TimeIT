@@ -83,8 +83,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)
 	{
-		ASSERT_EQ( 1, item.id) << "TimeEntry id";
-		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", item.uuid.c_str()) << "TimeEntry UUID";
+		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", static_cast<string>(item.uuid).c_str()) << "TimeEntry UUID";
 		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", item.task_uuid->c_str()) << "TimeEntry taskUUD";
 		ASSERT_EQ( 1363597429, item.start) << "TimeEntry start";
 		ASSERT_EQ( 1363597541, item.stop) << "TimeEntry stop";

@@ -179,4 +179,9 @@ int64_t database::id_of_last_insert()
 	}
 }
 
+void database::broadcast(function<void(event_observer*)> func) const
+{
+	notifier.broadcast(func);
+}
+
 }

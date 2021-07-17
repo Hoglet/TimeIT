@@ -59,36 +59,36 @@ details::details(
 }
 
 
-Time_id details::get_selected_id()
+optional<time_id> details::get_selected()
 {
-	Time_id return_value = 0;
 	Glib::RefPtr<TreeSelection> ref_tree_selection = get_selection();
 	TreeModel::iterator iter;
 	iter = ref_tree_selection->get_selected();
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		return_value = row[columns.col_id];
+		return row[columns.col_id];
+
 	}
-	return return_value;
+	return {};
 }
 
-vector<Time_id> details::get_selected_and_next_id()
+list<time_id> details::get_selected_and_next()
 {
-	vector<Time_id> return_value(2, 0);
+	list<time_id> return_value;
 	Glib::RefPtr<TreeSelection> ref_tree_selection = get_selection();
 	TreeModel::iterator iter;
 	iter = ref_tree_selection->get_selected();
 	if (iter) // if anything is selected
 	{
 		TreeModel::Row row = *iter;
-		return_value[0] = row[columns.col_id];
+		return_value.push_back( row[columns.col_id]);
 		//std::cout << "one row" << std::endl;
 		++iter;
 		if (iter) // if there is a next row
 		{
 			TreeModel::Row next_row = *iter;
-			return_value[1] = next_row[columns.col_id];
+			return_value.push_back(next_row[columns.col_id]);
 			//std::cout << "two rows" << std::endl;
 		}
 	}
@@ -98,10 +98,10 @@ vector<Time_id> details::get_selected_and_next_id()
 
 void details::on_menu_file_popup_remove()
 {
-	Time_id selected_id = get_selected_id();
-	if (selected_id > 0)
+	auto selected = get_selected();
+	if (selected.has_value() )
 	{
-		optional<Time_entry> optional_time_entry = times.by_id(selected_id);
+		optional<Time_entry> optional_time_entry = times.by_id(selected.value());
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
@@ -139,7 +139,7 @@ void details::on_menu_file_popup_remove()
 				}
 				else
 				{
-					times.remove(selected_id);
+					times.remove(time_entry);
 				}
 				populate( );
 				break;
@@ -161,11 +161,11 @@ bool offer_to_merge(optional<Time_entry> &optional_time_entry, optional<Time_ent
 
 void details::on_menu_file_popup_merge()
 {
-	vector<Time_id> selected_id_list = get_selected_and_next_id();
-	if (selected_id_list[0] > 0 && selected_id_list[1] > 0)
+	auto selected_list = get_selected_and_next();
+	if (selected_list.size()>1)
 	{
-		optional<Time_entry> optional_time_entry_0 = times.by_id(selected_id_list[0]);
-		optional<Time_entry> optional_time_entry_1 = times.by_id(selected_id_list[1]);
+		optional<Time_entry> optional_time_entry_0 = times.by_id(selected_list.front());
+		optional<Time_entry> optional_time_entry_1 = times.by_id(selected_list.back());
 		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
 			Time_entry time_entry_0 = optional_time_entry_0.value();
@@ -211,7 +211,7 @@ void details::on_menu_file_popup_merge()
 			{
 				// coded considering time_entry_1 could be currently running
 				time_t new_start = time_entry_0.start;
-				times.remove(time_entry_0.id);
+				times.remove(time_entry_0);
 				times.update(time_entry_1.with_start(new_start) );
 				populate( );
 				break;
@@ -237,10 +237,10 @@ bool offer_to_split(Time_entry &time_entry)
 
 void details::on_menu_file_popup_split()
 {
-	int64_t selected_id = get_selected_id();
-	if (selected_id > 0)
+	auto selected = get_selected();
+	if (selected.has_value())
 	{
-		optional<Time_entry> optional_time_entry = times.by_id(selected_id);
+		optional<Time_entry> optional_time_entry = times.by_id(selected.value());
 		if (optional_time_entry)
 		{
 			Time_entry time_entry = optional_time_entry.value();
@@ -286,11 +286,11 @@ bool details::on_button_press_event(GdkEventButton *event)
 	//Then do our custom stuff:
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		vector<int64_t> selected_ids = get_selected_and_next_id();
-		int64_t selected_id = selected_ids[0];
-		int64_t next_id = selected_ids[1];
-		if (selected_id > 0)
+		auto selected_ids = get_selected_and_next();
+		if(selected_ids.size()==2)
 		{
+			auto selected_id = selected_ids.front();
+			auto next_id = selected_ids.back();
 			optional<Time_entry> optional_time_entry = times.by_id(selected_id);
 			optional<Time_entry> optional_next_time_entry = times.by_id(next_id);
 			if (optional_time_entry)
@@ -319,14 +319,18 @@ bool details::on_button_press_event(GdkEventButton *event)
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
-		edit_time_entry(get_selected_id());
-		return_value = true;
+		auto selected = get_selected();
+		if(selected.has_value())
+		{
+			edit_time_entry(selected.value());
+			return_value = true;
+		}
 	}
 
 	return return_value;
 }
 
-optional<Gtk::TreeModel::Row> details::find_row(Time_id id)
+optional<Gtk::TreeModel::Row> details::find_row(time_id id)
 {
 	TreeModel::Children children = tree_model->children();
 	TreeIter iter;
@@ -349,12 +353,12 @@ void details::on_task_name_changed(Task_id /*id*/)
 	populate( );
 }
 
-void details::on_time_entry_changed(Time_id id)
+void details::on_time_entry_changed(const Time_entry& te)
 {
-	auto row = find_row(id);
+	auto row = find_row(te.uuid);
 	if ( row.has_value() )
 	{
-		auto time_entry = times.by_id(id);
+		auto time_entry = times.by_id(te.uuid);
 		if(time_entry.has_value())
 		{
 			auto day = time_entry->start;
@@ -408,7 +412,7 @@ void details::on_selection_changed(int64_t id, time_t start, time_t stop)
 
 void details::update_row(TreeModel::Row& row, row_data data ) const
 {
-	row[columns.col_id]          = data.time_id;
+	row[columns.col_id]          = data.id;
 	row[columns.col_morning]     = data.first_in_day ? day_of_week_abbreviation(data.start) : "";
 	row[columns.col_date]        = data.first_in_day ? date_string(data.start) : "";
 	row[columns.col_time]        = time_span_string(data.start, data.stop);
@@ -453,7 +457,7 @@ list<row_data> details::create_row_data(time_t start, time_t stop)
 		auto time_entry = *iter;
 		row_data data{};
 
-		data.time_id      = time_entry.id;
+		data.id           = time_entry.uuid;
 		data.prev_start   = prev_start;
 		data.start        = time_entry.start;
 		prev_start            = data.start;
@@ -511,7 +515,7 @@ void details::update(list<row_data> data_rows)
 	for (auto data: data_rows )
 	{
 		//auto treeIter = m_treeModel->append();
-		auto row = find_row(data.time_id);
+		auto row = find_row(data.id);
 		if ( row.has_value() )
 		{
 			update_row(*row, data);
@@ -528,21 +532,17 @@ void details::update(list<row_data> data_rows)
 
 void details::on_menu_file_popup_edit()
 {
-	auto selected_id = get_selected_id();
-	if (selected_id > 0)
+	auto selected = get_selected();
+	if (selected.has_value())
 	{
-		edit_time_entry(selected_id);
+		edit_time_entry(selected.value());
 	}
 }
 
 
 
-void details::edit_time_entry(Time_id id)
+void details::edit_time_entry(time_id id)
 {
-	if(id==0)
-	{
-		return;
-	}
 	auto time_entry = times.by_id(id);
 	if(time_entry.has_value())
 	{

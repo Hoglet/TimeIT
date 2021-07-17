@@ -59,7 +59,7 @@ void Time_keeper::on_signal_10_seconds()
 void Time_keeper::start(Task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
-	for (auto item: running_items)
+	for (const auto& item: running_items)
 	{
 		if(item.task_id == id)
 		{
@@ -75,30 +75,26 @@ void Time_keeper::start(Task_id id)
 void Time_keeper::toggle(int64_t id)
 {
 	auto running_items = times.by_state(RUNNING);
-	for (auto item: running_items)
+	for (const auto& item: running_items)
 	{
 		if(item.task_id == id)
 		{
-			stop_time(item.id);
+			stop_time(item);
 			return;
 		}
 	}
 	start(id);
 }
 
-void Time_keeper::stop_time(Time_id id)
+void Time_keeper::stop_time(const Time_entry& time_entry)
 {
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
+	if( time_entry.stop -time_entry.start < idle_gz )
 	{
-		if( time_entry->stop -time_entry->start < idle_gz )
-		{
-			times.update(time_entry->with (DELETED));
-		}
-		else
-		{
-			times.update(time_entry->with(STOPPED));
-		}
+		times.update(time_entry.with (DELETED));
+	}
+	else
+	{
+		times.update(time_entry.with(STOPPED));
 	}
 	notify_running_changed();
 }
@@ -106,11 +102,11 @@ void Time_keeper::stop_time(Time_id id)
 void Time_keeper::stop(Task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
-	for (auto item: running_items)
+	for (const auto& item: running_items)
 	{
 		if(item.task_id == id)
 		{
-			stop_time(item.id);
+			stop_time(item);
 			return;
 		}
 	}
@@ -119,11 +115,11 @@ void Time_keeper::stop(Task_id id)
 void Time_keeper::on_task_removed(Task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
-	for (auto item: running_items)
+	for (const auto& item: running_items)
 	{
 		if(item.task_id == id)
 		{
-			stop_time(item.id);
+			stop_time(item);
 		}
 	}
 }
@@ -143,9 +139,9 @@ bool Time_keeper::has_running_tasks()
 void Time_keeper::stop_all()
 {
 	auto running_items = times.by_state(RUNNING);
-	for (auto item: running_items)
+	for (const auto& item: running_items)
 	{
-		stop_time(item.id);
+		stop_time(item);
 	}
 }
 
@@ -171,11 +167,11 @@ void Time_keeper::notify_running_changed()
 	}
 }
 
-void Time_keeper::notify_idle_detected(Time_id id)
+void Time_keeper::notify_idle_detected(const Time_entry& te)
 {
 	for (auto* observer: observers)
 	{
-		observer->on_idle_detected(id);
+		observer->on_idle_detected(te);
 	}
 }
 
@@ -197,12 +193,10 @@ void Time_keeper::check_for_status_change()
 	}
 	old_running = currently_running;
 }
-void Time_keeper::on_time_entry_changed(Time_id /*id*/)
+void Time_keeper::on_time_entry_changed(const Time_entry& /*id*/)
 {
 	check_for_status_change();
 }
-
-
 
 bool Time_keeper::user_is_active()
 {
@@ -212,7 +206,7 @@ bool Time_keeper::user_is_active()
 void Time_keeper::update_running_entries()
 {
 	auto running = times.by_state(RUNNING);
-	for (auto time_entry: running)
+	for (const auto& time_entry: running)
 	{
 		auto updated_time_entry = time_entry.with_stop(libtimeit::now());
 		times.update(updated_time_entry );
@@ -223,9 +217,9 @@ void Time_keeper::update_running_entries()
 void Time_keeper::check_if_tasks_should_be_stopped()
 {
 	auto now = libtimeit::now();
-	list<Time_id> times_to_stop {};
+	list<Time_entry> times_to_stop {};
 	auto running_time_items = times.by_state(RUNNING);
-	for (auto time_item: running_time_items)
+	for (const auto& time_item: running_time_items)
 	{
 		auto owner = tasks.by_id(time_item.task_id);
 		auto idle_time = owner->idle;
@@ -236,20 +230,16 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 		auto time_inactive = now - time_item.stop;
 		if( time_inactive > idle_time * MINUTE )
 		{
-			times_to_stop.emplace_back(time_item.id );
+			times_to_stop.push_back( time_item );
 			if( ! owner->quiet )
 			{
-				notify_idle_detected(time_item.id );
+				notify_idle_detected( time_item );
 			}
 		}
 	}
-	for ( auto time_id: times_to_stop )
+	for ( const auto& time_to_stop: times_to_stop )
 	{
-		auto time_entry = times.by_id(time_id);
-		if ( time_entry.has_value() && time_entry->state == RUNNING )
-		{
-			stop_time(time_id);
-		}
+		stop_time(time_to_stop);
 	}
 }
 

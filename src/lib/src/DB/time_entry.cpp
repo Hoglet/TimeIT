@@ -5,8 +5,7 @@
 namespace libtimeit
 {
 Time_entry::Time_entry(
-		Time_id               id_,
-		class UUID            uuid_,
+		time_id               uuid_,
 		int64_t               task_ID_,
 		optional<class UUID>  taskUUID_,
 		time_t                start_,
@@ -15,7 +14,6 @@ Time_entry::Time_entry(
 		time_t                changed_,
 		string                comment_)
 		:
-		id(id_),
 		uuid(move(move(uuid_))),
 		task_id(task_ID_),
 		start(start_),
@@ -34,7 +32,6 @@ Time_entry::Time_entry(
 		time_t  start_,
 		time_t  stop_)
 			:
-		id(0),
 		uuid(UUID() ),
 		task_id(task_ID_ ),
 		start(start_ ),
@@ -51,7 +48,6 @@ Time_entry::Time_entry(
 		time_t           stop_,
 		Time_entry_state state_)
 		:
-		id(0),
 		uuid(UUID() ),
 		task_id(task_ID_ ),
 		start(start_ ),
@@ -71,7 +67,6 @@ Time_entry Time_entry::with_start(time_t start_) const
 		return *this;
 	}
 	return Time_entry(
-			id,
 			uuid,
 			task_id,
 			task_uuid,
@@ -89,7 +84,6 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 		return *this;
 	}
 	return Time_entry(
-			id,
 			uuid,
 			task_id,
 			task_uuid,
@@ -108,7 +102,6 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 		return *this;
 	}
 	return Time_entry(
-			id,
 			uuid,
 			task_id,
 			task_uuid,
@@ -126,7 +119,6 @@ Time_entry Time_entry::with_comment(string new_comment)
 		return *this;
 	}
 	return Time_entry(
-			id,
 			uuid,
 			task_id,
 			task_uuid,
@@ -141,7 +133,6 @@ Time_entry Time_entry::with_comment(string new_comment)
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
 	return (
-			op1.id        == op2.id        &&
 			op1.changed   == op2.changed   &&
 			op1.state     == op2.state     &&
 			op1.start     == op2.start     &&

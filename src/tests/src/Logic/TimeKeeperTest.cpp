@@ -14,7 +14,7 @@ class TKObserver: public time_keeper_observer
 {
 public:
 	TKObserver(Time_keeper& tk): time_keeper_observer(tk) {};
-	virtual void on_idle_detected(Time_id /*id*/)
+	virtual void on_idle_detected(const Time_entry& /*te*/)
 	{
 		idleDetected = true;
 	}
@@ -82,7 +82,7 @@ TEST( TimeKeeper, update )
 	timeKeeper.start(taskID);
 
 	vector<Time_entry> entries = times.time_list(taskID, 0, now + 1000);
-	int64_t teID = entries.at(0).id;
+	auto teID = entries.at(0).uuid;
 	auto te = times.by_id(teID);
 	times.update(te->with_start(0).with_start(10));
 

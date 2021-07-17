@@ -38,6 +38,7 @@ public:
 	bool                table_exists(string name);
 	[[nodiscard]] int   current_db_version() const;
 	[[nodiscard]] bool  column_exists( string_view table, string_view column);
+	void broadcast(function<void(event_observer*)> func) const;
 private:
 	int        db_version{0};
 	notification_manager&  notifier;

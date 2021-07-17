@@ -29,7 +29,7 @@ public:
 	time_keeper_observer& operator=(time_keeper_observer&& )      = delete;
 	~time_keeper_observer();
 
-	virtual void on_idle_detected(Time_id /*id*/) {};
+	virtual void on_idle_detected(const Time_entry& /*id*/) {};
 	virtual void on_running_changed()       {};
 private:
 	Time_keeper& time_keeper;
@@ -68,8 +68,8 @@ public:
 	void on_signal_10_seconds() override;
 
 	//Time_observer
-	void on_time_entry_changed(Time_id id) override;
-	void stop_time(Time_id id);
+	void on_time_entry_changed(const Time_entry& /*te*/) override;
+	void stop_time(const Time_entry& te);
 private:
 	//
 	void attach(time_keeper_observer *);
@@ -85,7 +85,7 @@ private:
 	unsigned default_idle_time{0};
 
 	void notify_running_changed();
-	void notify_idle_detected(Time_id /*id*/);
+	void notify_idle_detected(const Time_entry& /*id*/);
 
 	list<time_keeper_observer *> observers;
 

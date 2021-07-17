@@ -51,30 +51,30 @@ public:
 	void on_selection_changed(Task_id id, time_t start, time_t stop) override;
 
 	//
-	void on_idle_detected(Time_id id ) override;
+	void on_idle_detected(const Time_entry& /*te*/ ) override;
 	void on_idle_changed();
 
-	void on_time_entry_changed(Time_id id) override;
+	void on_time_entry_changed(const Time_entry& /*te*/) override;
 	void on_running_changed() override;
 	void on_action_toggle_main_window() override;
 	void on_show_main_window() override;
 	void on_action_stop_timers() override;
 
 private:
-	window_manager&     windows;
-	Time_keeper&        time_keeper;
-	time_accessor       times;
-	settings_accessor   settings;
-	database&           db;
-	notification_manager&           notifier;
+	window_manager&          windows;
+	Time_keeper&             time_keeper;
+	time_accessor            times;
+	settings_accessor        settings;
+	database&                db;
+	notification_manager&    notifier;
 	image_cache&             images;
 
 	int main_window_x = 0;
 	int main_window_y = 0;
 	Task_id selected_task_id = 0;
-	vector<Time_id> old_running{};
+	vector<int64_t> old_running{};
 
-	void show_idle_dialog(Time_id id);
+	void show_idle_dialog(const time_id& id);
 };
 }
 #endif /* CONTROLLER_H_ */

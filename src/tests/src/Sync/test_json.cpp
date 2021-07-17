@@ -121,7 +121,7 @@ TEST( Json, simpleTimeTest )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		bool expectedState = STOPPED;
-		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "id: ";
+		ASSERT_EQ( expectedUUID, static_cast<string>(item.uuid)) << "id: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
@@ -149,7 +149,7 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		auto expectedState = DELETED;
-		ASSERT_EQ( expectedUUID, item.uuid.c_str()) << "id: ";
+		ASSERT_EQ( expectedUUID, static_cast<string>(item.uuid).c_str()) << "id: ";
 		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
