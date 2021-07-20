@@ -152,8 +152,8 @@ vector<unsigned> edit_task_dialog::get_ticked_workspaces()
 
 void edit_task_dialog::set_task_id(Task_id ID)
 {
-	task_id = ID;
-	auto task_to_edit = tasks.by_id(task_id);
+	id = ID;
+	auto task_to_edit = tasks.by_id(id);
 	if (task_to_edit.has_value())
 	{
 		name = task_to_edit->name;
@@ -214,14 +214,14 @@ void edit_task_dialog::on_ok_button_clicked()
 	auto new_name = task_name_entry.get_text();
 	parent_id = parent_chooser.get_parent_id();
 
-	if (task_id < 1)
+	if (id < 1)
 	{
-		task_id = tasks.create({new_name, parent_id});
+		id = tasks.create({new_name, parent_id});
 	}
 	else
 	{
-		tasks.set_parent_id(task_id, parent_id);
-		auto current_task = tasks.by_id(task_id);
+		tasks.set_parent_id(id, parent_id);
+		auto current_task = tasks.by_id(id);
 		if (current_task.has_value())
 		{
 			auto new_idle_time = (unsigned)idle_time_entry.get_value_as_int();
@@ -237,14 +237,14 @@ void edit_task_dialog::on_ok_button_clicked()
 			tasks.update(updated_task);
 		}
 	}
-	auto_track_table.set_workspaces(task_id, workspace_list);
-	task_id = -1;
+	auto_track_table.set_workspaces(id, workspace_list);
+	id = -1;
 	parent_id = 0;
 	hide();
 }
 void edit_task_dialog::on_cancel_button_clicked()
 {
-	task_id = -1;
+	id = -1;
 	parent_id = 0;
 	hide();
 }

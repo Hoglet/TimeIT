@@ -61,7 +61,7 @@ void Time_keeper::start(Task_id id)
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
 	{
-		if(item.task_id == id)
+		if(item.owner == id)
 		{
 			return; //Already running
 		}
@@ -77,7 +77,7 @@ void Time_keeper::toggle(int64_t id)
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
 	{
-		if(item.task_id == id)
+		if(item.owner == id)
 		{
 			stop_time(item);
 			return;
@@ -104,7 +104,7 @@ void Time_keeper::stop(Task_id id)
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
 	{
-		if(item.task_id == id)
+		if(item.owner == id)
 		{
 			stop_time(item);
 			return;
@@ -117,7 +117,7 @@ void Time_keeper::on_task_removed(Task_id id)
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
 	{
-		if(item.task_id == id)
+		if(item.owner == id)
 		{
 			stop_time(item);
 		}
@@ -221,7 +221,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 	auto running_time_items = times.by_state(RUNNING);
 	for (const auto& time_item: running_time_items)
 	{
-		auto owner = tasks.by_id(time_item.task_id);
+		auto owner = tasks.by_id(time_item.owner);
 		auto idle_time = owner->idle;
 		if(idle_time == 0)
 		{

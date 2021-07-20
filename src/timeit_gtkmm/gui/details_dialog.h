@@ -71,10 +71,10 @@ private:
 	Gtk::ScrolledWindow scrolled_window;
 
 
-	time_t  range_start   {0};
-	time_t  range_stop    {0};
-	int64_t task_id       {0};
-	int64_t time_entry_id {0};
+	time_t  range_start    {0};
+	time_t  range_stop     {0};
+	int64_t presented_task {0};
+	int64_t time_entry_id  {0};
 	time_accessor          times;
 	extended_task_accessor tasks;
 	settings_accessor      settings;

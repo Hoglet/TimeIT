@@ -102,7 +102,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_comment;
 	};
 	model_columns columns;
-	Task_id      task_id {0};
+	Task_id      presented_task {0};
 
 	time_t start_time {0};
 	time_t stop_time  {0};

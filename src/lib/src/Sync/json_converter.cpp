@@ -122,10 +122,10 @@ Time_list to_times(const string &input)
 		}
 
 		auto uuid= UUID::from_string(uuid_string);
-		auto task_id= UUID::from_string(task_id_string);
-		if(uuid.has_value() && task_id.has_value())
+		auto id= UUID::from_string(task_id_string);
+		if(uuid.has_value() && id.has_value())
 		{
-			Time_entry time_item( time_id(*uuid), 0, *task_id, start, stop, state, changed, comment);
+			Time_entry time_item( time_id(*uuid), 0, *id, start, stop, state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

@@ -232,8 +232,8 @@ void sync_manager::sync_times_to_database()
 	for (auto item : times_to_sync)
 	{
 		auto task_uuid = item.task_uuid;
-		auto task_id = tasks.id(*task_uuid);
-		if(task_id==0)
+		auto owner = tasks.id(*task_uuid);
+		if(owner == 0)
 		{
 			continue;
 		}
@@ -260,7 +260,7 @@ void sync_manager::sync_times_to_database()
 			item_state = DELETED;
 		}
 
-		Time_entry te( item.uuid, task_id, task_uuid, start, stop, item_state, changed, comment);
+		Time_entry te(item.uuid, owner, task_uuid, start, stop, item_state, changed, comment);
 		if (original_item.has_value())
 		{
 			times.update(te);

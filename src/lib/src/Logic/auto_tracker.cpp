@@ -41,12 +41,12 @@ void auto_tracker::check_for_changes()
 	auto user_is_active = time_keeper.user_is_active();
 	if( user_is_active && old_user_is_active != user_is_active )
 	{
-		for(auto task_id : auto_track.task_ids(new_workspace))
+		for(auto id : auto_track.task_ids(new_workspace))
 		{
-			auto item = tasks.by_id(task_id);
+			auto item = tasks.by_id(id);
 			if(item.has_value() && item->quiet)
 			{
-				time_keeper.start(task_id);
+				time_keeper.start(id);
 			}
 		}
 	}
@@ -62,18 +62,18 @@ void auto_tracker::do_task_switching(unsigned new_workspace)
 {
 	vector<Task_id> tasks_to_stop  = auto_track.task_ids(old_workspace);
 	vector<Task_id> tasks_to_start = auto_track.task_ids(new_workspace);
-	for (auto task_id : tasks_to_stop)
+	for (auto id : tasks_to_stop)
 	{
-		if (!contains(tasks_to_start, task_id))
+		if (!contains(tasks_to_start, id))
 		{
-			time_keeper.stop(task_id);
+			time_keeper.stop(id);
 		}
 	}
-	for (auto task_id : tasks_to_start)
+	for (auto id : tasks_to_start)
 	{
 		try
 		{
-			time_keeper.start(task_id);
+			time_keeper.start(id);
 		}
 		catch (...)
 		{

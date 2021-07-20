@@ -22,7 +22,7 @@ edit_time_dialog::edit_time_dialog(
 	}
 	set_deletable(false);
 
-	auto owning_task = tasks.by_id(time_entry.task_id);
+	auto owning_task = tasks.by_id(time_entry.owner);
 	if (owning_task.has_value())
 	{
 		task_name.set_text(owning_task->name);

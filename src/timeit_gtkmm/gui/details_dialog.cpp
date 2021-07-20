@@ -91,7 +91,7 @@ void details_dialog::on_task_name_changed(int64_t task_ID)
 void details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
 {
 	time_entry_id = 0;
-	task_id = taskID;
+	presented_task = taskID;
 	range_start = startTime;
 	range_stop = stopTime;
 
@@ -118,7 +118,7 @@ void details_dialog::on_running_changed()
 		set_title("TimeIT ⌚");
 		for (auto id : running_tasks)
 		{
-			if (task_id == id)
+			if (presented_task == id)
 			{
 				running_this_task_id = true;
 				break;
@@ -144,9 +144,9 @@ void details_dialog::on_running_changed()
 
 void details_dialog::on_task_name_updated(int64_t id)
 {
-	if (task_id == id)
+	if (presented_task == id)
 	{
-		auto updated_task = tasks.by_id(task_id);
+		auto updated_task = tasks.by_id(presented_task);
 		if (updated_task.has_value())
 		{
 			task_name.set_text(updated_task->name);
@@ -165,15 +165,15 @@ void details_dialog::on_task_name_updated(int64_t id)
 
 void details_dialog::on_task_total_time_updated(int64_t id)
 {
-	if (task_id == id)
+	if (presented_task == id)
 	{
 		if (difftime(range_stop, range_start) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto updated_task = tasks.by_id(task_id);
+			auto updated_task = tasks.by_id(presented_task);
 			if (updated_task.has_value())
 			{
-				time_t total_time = times.total_cumulative_time(task_id, range_start, range_stop);
+				time_t total_time = times.total_cumulative_time(presented_task, range_start, range_stop);
 				task_total_time.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else

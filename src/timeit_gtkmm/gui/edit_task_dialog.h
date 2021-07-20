@@ -69,7 +69,7 @@ private:
 	string        name;
 	unsigned      idle_time {0};
 	bool          quiet     {false};
-	Task_id       task_id   {0};
+	Task_id       id   {0};
 	Task_id       parent_id {0};
 
 	vector<unsigned> workspaces;

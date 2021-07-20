@@ -211,8 +211,8 @@ Gtk::TreeModel::iterator task_list_widget::sub_search(Task_id id, TreeModel::Chi
 
 void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_task &task_)
 {
-	Task_id task_id = task_.id;
-	row[columns.col_id] = task_id;
+	Task_id id = task_.id;
+	row[columns.col_id] = id;
 	if (task_.running)
 	{
 		if (!time_keeper.tasks_are_running())

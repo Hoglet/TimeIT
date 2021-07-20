@@ -22,7 +22,7 @@ enum Time_entry_state
 struct Time_entry
 {
 	const time_id              uuid;
-	const Task_id              task_id;
+	const Task_id              owner;
 	const time_t               start;
 	const time_t               stop;
 	const Time_entry_state     state;

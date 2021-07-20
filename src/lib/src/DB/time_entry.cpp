@@ -15,7 +15,7 @@ Time_entry::Time_entry(
 		string                comment_)
 		:
 		uuid(move(move(uuid_))),
-		task_id(task_ID_),
+		owner(task_ID_),
 		start(start_),
 		stop(stop_),
 		state(state_),
@@ -33,7 +33,7 @@ Time_entry::Time_entry(
 		time_t  stop_)
 			:
 		uuid(UUID() ),
-		task_id(task_ID_ ),
+		owner(task_ID_ ),
 		start(start_ ),
 		stop(stop_ ),
 		state(STOPPED ),
@@ -49,7 +49,7 @@ Time_entry::Time_entry(
 		Time_entry_state state_)
 		:
 		uuid(UUID() ),
-		task_id(task_ID_ ),
+		owner(task_ID_ ),
 		start(start_ ),
 		stop(stop_ ),
 		state(state_ ),
@@ -68,7 +68,7 @@ Time_entry Time_entry::with_start(time_t start_) const
 	}
 	return Time_entry(
 			uuid,
-			task_id,
+			owner,
 			task_uuid,
 			start_,
 			stop,
@@ -85,7 +85,7 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 	}
 	return Time_entry(
 			uuid,
-			task_id,
+			owner,
 			task_uuid,
 			start,
 			stop_,
@@ -103,7 +103,7 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 	}
 	return Time_entry(
 			uuid,
-			task_id,
+			owner,
 			task_uuid,
 			start,
 			stop,
@@ -120,7 +120,7 @@ Time_entry Time_entry::with_comment(string new_comment)
 	}
 	return Time_entry(
 			uuid,
-			task_id,
+			owner,
 			task_uuid,
 			start,
 			stop,
@@ -133,12 +133,12 @@ Time_entry Time_entry::with_comment(string new_comment)
 bool operator==(const Time_entry &op1, const Time_entry &op2)
 {
 	return (
-			op1.changed   == op2.changed   &&
-			op1.state     == op2.state     &&
-			op1.start     == op2.start     &&
-			op1.stop      == op2.stop      &&
-			op1.task_id   == op2.task_id   &&
-			op1.uuid      == op2.uuid      &&
+			op1.changed   == op2.changed &&
+			op1.state     == op2.state &&
+			op1.start     == op2.start &&
+			op1.stop      == op2.stop &&
+			op1.owner == op2.owner &&
+			op1.uuid      == op2.uuid &&
 			op1.task_uuid == op2.task_uuid &&
 			op1.comment   == op2.comment
 			);

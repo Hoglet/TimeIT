@@ -138,7 +138,7 @@ TEST(TimeAccessor, testGetByID)
 	Time_entry original(taskId, 10, 100);
 	timeAccessor.create( original );
 	auto te = timeAccessor.by_id(original.uuid);
-	ASSERT_EQ(taskId, te->task_id) << "Check task id";
+	ASSERT_EQ(taskId, te->owner) << "Check task id";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
 
@@ -155,7 +155,7 @@ TEST(TimeAccessor, testGetByUUID)
 	timeAccessor.create( original );
 
 	auto te = timeAccessor.by_id(original.uuid);
-	ASSERT_EQ(taskId, te->task_id) << "Check task id";
+	ASSERT_EQ(taskId, te->owner) << "Check task id";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
 	ASSERT_EQ(original.uuid, te->uuid) << "Check uuid";
@@ -178,7 +178,7 @@ TEST(TimeAccessor, newItem)
 	auto item2 = timeAccessor.by_id(item1.uuid);
 
 	ASSERT_EQ(item1.uuid, item2->uuid) << "UUID: ";
-	ASSERT_EQ(item1.task_id, item2->task_id) << "Task_ID: ";
+	ASSERT_EQ(item1.owner, item2->owner) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2->start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";

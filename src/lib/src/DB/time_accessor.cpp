@@ -50,7 +50,7 @@ optional<Time_entry> time_accessor::by_id(time_id uuid)
 	for ( auto row: rows )
 	{
 		int column{0};
-		auto    task_id    = static_cast<Task_id>(row[column++].integer());
+		auto    task    = static_cast<Task_id>(row[column++].integer());
 		time_t  start     = row[column++].integer();
 		time_t  stop      = row[column++].integer();
 		time_t  changed   = row[column++].integer();
@@ -63,7 +63,7 @@ optional<Time_entry> time_accessor::by_id(time_id uuid)
 		{
 			return Time_entry(
 					time_id(*uuid),
-					task_id,
+					task,
 					*task_uuid,
 					start,
 					stop,
@@ -264,7 +264,7 @@ Time_list time_accessor::times_changed_since(time_t timestamp)
 	for (vector<data_cell> row : rows)
 	{
 		int column{0};
-		Task_id task_id = row[column++].integer();
+		Task_id task = row[column++].integer();
 		time_t start    = row[column++].integer();
 		time_t stop     = row[column++].integer();
 		auto   state    = static_cast<Time_entry_state>(row[column++].integer());
@@ -277,7 +277,7 @@ Time_list time_accessor::times_changed_since(time_t timestamp)
 		{
 			result.emplace_back(
 					time_id(*uuid),
-					task_id,
+					task,
 					*task_uuid,
 					start,
 					stop,
@@ -310,7 +310,7 @@ bool time_accessor::update(const Time_entry& item )
 				break;
 		}
 		auto index{1};
-		statement_update_time.bind_value(index++, item.task_id);
+		statement_update_time.bind_value(index++, item.owner);
 		statement_update_time.bind_value(index++, item.start);
 		statement_update_time.bind_value(index++, item.stop);
 		statement_update_time.bind_value(index++, (int64_t)running);
@@ -322,7 +322,7 @@ bool time_accessor::update(const Time_entry& item )
 
 		statement_update_time.execute();
 
-		db.send_notification(TASK_TIME_CHANGED, item.task_id);
+		db.send_notification(TASK_TIME_CHANGED, item.owner);
 
 		db.broadcast(
 				[item](event_observer* observer)
@@ -367,7 +367,7 @@ int64_t time_accessor::create(const Time_entry& item)
 
 	if (item.start != item.stop)
 	{
-		db.send_notification(TASK_UPDATED, item.task_id);
+		db.send_notification(TASK_UPDATED, item.owner);
 	}
 	db.broadcast(
 			[item](event_observer* observer)
@@ -395,7 +395,7 @@ void time_accessor::internal_create(const Time_entry &item, sql_statement& state
 	}
 	auto index{1};
 	statement_new_entry.bind_value(index++, static_cast<string>(item.uuid).c_str());
-	statement_new_entry.bind_value(index++, item.task_id);
+	statement_new_entry.bind_value(index++, item.owner);
 	statement_new_entry.bind_value(index++, item.start);
 	statement_new_entry.bind_value(index++, item.stop);
 	statement_new_entry.bind_value(index++, item.changed);
@@ -420,11 +420,11 @@ void time_accessor::upgrade_to_db_5(database& db)
 	Query_result rows = statement.execute();
 	for (vector<data_cell> row : rows)
 	{
-		int64_t task_id = row[1].integer();
+		int64_t owner  = row[1].integer();
 		time_t  start  = row[2].integer();
 		time_t  stop   = row[3].integer();
 
-		Time_entry item( {}, task_id, {}, start, stop, STOPPED, now, "");
+		Time_entry item({}, owner, {}, start, stop, STOPPED, now, "");
 		internal_create(item, statement_new_entry);
 	}
 	db.execute("DROP TABLE IF EXISTS times_backup");
@@ -592,7 +592,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 	for (auto row: rows)
 	{
 		auto column{0};
-		Task_id task_id    = row[column++].integer();
+		Task_id owner      = row[column++].integer();
 		time_t  start      = row[column++].integer();
 		time_t  stop       = row[column++].integer();
 		auto    item_state = static_cast<Time_entry_state>(row[column++].integer());
@@ -605,7 +605,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 		{
 			time_list.emplace_back(
 					time_id(*uuid),
-					task_id,
+					owner,
 					*task_uuid,
 					start,
 					stop,
