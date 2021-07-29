@@ -54,7 +54,7 @@ void widget_controller::start()
 	}
 	for( auto time_entry: times.by_state(PAUSED))
 	{
-		show_idle_dialog(time_entry.uuid);
+		show_idle_dialog(time_entry.id);
 	}
 
 }
@@ -126,12 +126,18 @@ void widget_controller::on_action_help()
 //LCOV_EXCL_STOP
 void widget_controller::on_action_start_task()
 {
-	time_keeper.start(selected_task_id);
+	if(selected_task_id.has_value())
+	{
+		time_keeper.start(selected_task_id.value());
+	}
 }
 
 void widget_controller::on_action_stop_task()
 {
-	time_keeper.stop(selected_task_id);
+	if(selected_task_id.has_value())
+	{
+		time_keeper.stop(selected_task_id.value());
+	}
 }
 
 void widget_controller::on_action_edit_task()
@@ -139,20 +145,20 @@ void widget_controller::on_action_edit_task()
 	//EditTaskDialog* dialog;
 
 	//m_refXML->get_widget_derived("EditTaskDialog", dialog);
-	if (selected_task_id > 0)
+	if (selected_task_id.has_value())
 	{
 		WidgetPtr edit_task = windows.get_widget(EDIT_TASK_DIALOG);
-		dynamic_pointer_cast<edit_task_dialog>(edit_task)->set_task_id(selected_task_id);
+		dynamic_pointer_cast<edit_task_dialog>(edit_task)->set_task_id(selected_task_id.value());
 		edit_task->show();
 	}
 }
 
 void widget_controller::on_action_add_time()
 {
-	if (selected_task_id > 0)
+	if (selected_task_id.has_value())
 	{
 		auto now = libtimeit::now();
-		Time_entry time_entry(selected_task_id, now, now);
+		Time_entry time_entry(selected_task_id.value(), now, now);
 		auto dialog = make_shared<gui::edit_time_dialog>(time_entry, db);
 		windows.manage_lifespan(dialog);
 		dialog->show();
@@ -169,7 +175,7 @@ void widget_controller::on_idle_detected( const Time_entry& te)
 	on_idle_changed();
 
 	times.update(te.with(PAUSED));
-	show_idle_dialog(te.uuid);
+	show_idle_dialog(te.id);
 }
 
 void widget_controller::on_idle_changed()
@@ -183,9 +189,9 @@ void widget_controller::on_action_stop_timers()
 	time_keeper.stop_all();
 }
 
-void widget_controller::on_action_task_selection_changed(Task_id selected_task_ID)
+void widget_controller::on_action_task_selection_changed(optional<task_id> selected_task_id)
 {
-	this->selected_task_id = selected_task_ID;
+	this->selected_task_id = selected_task_id;
 }
 
 void widget_controller::on_action_add_task()
@@ -201,7 +207,7 @@ void widget_controller::on_action_preferences()
 	dialog->show();
 }
 
-void widget_controller::on_show_details_clicked(int64_t taskId, time_t startTime, time_t stopTime)
+void widget_controller::on_show_details_clicked(const task_id& taskId, time_t startTime, time_t stopTime)
 {
 	auto dialog = make_shared<details_dialog>(db, time_keeper, notifier, windows, images);
 	if (dialog)
@@ -229,7 +235,7 @@ void widget_controller::on_running_changed()
 	window->on_running_tasks_changed();
 }
 
-void widget_controller::on_selection_changed(int64_t /*task_id*/, time_t /*start*/, time_t /*stop*/)
+void widget_controller::on_selection_changed(optional<task_id> /*task_id*/, time_t /*start*/, time_t /*stop*/)
 {
 }
 

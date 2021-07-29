@@ -24,8 +24,12 @@ public:
 	friend class time_accessor;
 	extended_task_accessor(database& db);
 
-	optional<extended_task> by_id(int64_t taskID, time_t start = 0, time_t stop = 0);
-	vector<extended_task>   by_parent_id(int64_t parentID = 0, time_t start = 0, time_t stop = 0);
+	optional<extended_task> by_id(const task_id& id);
+	//optional<extended_task> by_id(const task_id& id, time_t start = 0, time_t stop = 0);
+	vector<extended_task>   by_parent_id(optional<task_id> id);
+
+	void     set_task_expanded(const task_id& id, bool expanded);
+
 private:
 	static void setup(database& db);
 	static void create_table(database& /*db*/)  {};
@@ -33,10 +37,14 @@ private:
 	static void create_views(database& db);
 	static void upgrade(database& db);
 
-	vector<extended_task> get_extended_tasks(int64_t taskID, int64_t parentID = 0, bool onlyRunning = false, time_t start = 0, time_t stop = 0);
-	Duration get_total_child_time(int64_t id, time_t start = 0, time_t stop = 0);
+	vector<extended_task> get_extended_tasks(task_id id, optional<task_id> parent_id = {}, time_t start = 0, time_t stop = 0);
 	time_accessor times;
 
+	extended_task from_task( const task &item, vector <task_id> vector1 );
+	vector<extended_task> from_tasks(const vector<task>& items);
+	bool is_expanded(const task& task);
+
+	sql_statement expanded_statement;
 };
 
 }

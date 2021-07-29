@@ -15,47 +15,41 @@ task task::with_name(string new_name) const
 	}
 	return 	task(
 			new_name,
-			parent_id,
-			uuid,
-			completed,
 			id,
+			completed,
 			time(nullptr),
-			parent_uuid,
+			parent_id,
 			deleted,
 			idle,
 			quiet);
 
 }
 
-task task::with_parent(Task_id new_parent_ID) const
+task task::with_parent(optional<task_id> new_parent_id) const
 {
-	if(parent_id == new_parent_ID)
+	if( parent_id == new_parent_id)
 	{
 		return *this;
 	}
 	return 	task(
 			name,
-			new_parent_ID,
-			uuid,
-			completed,
 			id,
+			completed,
 			time(nullptr),
-			parent_uuid,
+			new_parent_id,
 			deleted,
 			idle,
 			quiet);
 }
 
-task::task(string name_, Task_id parent_ID_)
+task::task(string name_, optional<task_id> parent_ID_)
 	:
 		task(
 			name_,
-			parent_ID_,
-			UUID(),
+			task_id(),
 			false,
-			0,
 			time( nullptr ),
-			{},
+			parent_ID_,
 			false,
 			0,
 			false)
@@ -65,23 +59,19 @@ task::task(string name_, Task_id parent_ID_)
 
 task::task(
 		string               name_,
-		Task_id              parentID_,
-		class UUID           uuid_,
+		task_id              uuid_,
 		bool                 completed_,
-		Task_id              ID_,
 		time_t               last_change_,
-		optional<class UUID> parent_uuid_,
+		optional<task_id>    parent_uuid_,
 		bool                 deleted_,
 		unsigned             idle_,
 		bool                 quiet_)
 	:
-		id(ID_),
 		name(move(name_)),
-		uuid(move(uuid_)),
-		parent_uuid(move(parent_uuid_)),
+		id( move( uuid_)),
+		parent_id( move( parent_uuid_)),
 		completed(completed_),
 		deleted(deleted_),
-		parent_id(parentID_),
 		last_changed(last_change_),
 		idle(idle_),
 		quiet(quiet_)
@@ -99,12 +89,10 @@ task task::with_completed(bool new_completed) const
 	}
 	return 	task(
 			name,
-			parent_id,
-			uuid,
-			new_completed,
 			id,
+			new_completed,
 			time(nullptr),
-			parent_uuid,
+			parent_id,
 			deleted,
 			idle,
 			quiet);
@@ -118,12 +106,10 @@ task task::with_deleted(bool new_deleted) const
 	}
 	return 	task(
 			name,
-			parent_id,
-			uuid,
-			completed,
 			id,
+			completed,
 			time(nullptr),
-			parent_uuid,
+			parent_id,
 			new_deleted,
 			idle,
 			quiet);
@@ -136,12 +122,10 @@ task task::with_idle(unsigned new_idle) const
 	}
 	return 	task(
 			name,
-			parent_id,
-			uuid,
-			completed,
 			id,
+			completed,
 			time(nullptr),
-			parent_uuid,
+			parent_id,
 			deleted,
 			new_idle,
 			quiet);
@@ -155,12 +139,10 @@ task task::with_quiet(bool new_quiet) const
 	}
 	return 	task(
 			name,
-			parent_id,
-			uuid,
-			completed,
 			id,
+			completed,
 			time(nullptr),
-			parent_uuid,
+			parent_id,
 			deleted,
 			idle,
 			new_quiet);
@@ -171,14 +153,11 @@ bool operator==(const task &op1, const task &op2)
 	return (op1.name         == op2.name &&
 			op1.id == op2.id &&
 			op1.parent_id == op2.parent_id &&
-			op1.uuid         == op2.uuid &&
-			op1.parent_uuid == op2.parent_uuid &&
 			op1.completed    == op2.completed &&
 			op1.deleted      == op2.deleted &&
 			op1.last_changed == op2.last_changed &&
 			op1.idle         == op2.idle &&
 			op1.quiet        == op2.quiet
-
 	);
 }
 

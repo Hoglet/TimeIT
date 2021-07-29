@@ -52,12 +52,11 @@ task_list_widget::task_list_widget(
 
 task_list_widget::~task_list_widget()
 {
-	Task_id selected_id = 0;
 	std::list<action_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
 		action_observer* observer = *iter;
-		observer->on_action_task_selection_changed(selected_id);
+		observer->on_action_task_selection_changed({});
 	}
 }
 
@@ -91,43 +90,43 @@ void task_list_widget::on_row_collapsed(const TreeModel::iterator &iter, const T
 	tasks.set_task_expanded(id, false);
 }
 
-void task_list_widget::on_task_added(int64_t /*id*/)
+void task_list_widget::on_task_added(const task& /*item*/)
 {
 	do_update();
 }
 
-void task_list_widget::on_task_updated(int64_t taskID)
+void task_list_widget::on_task_updated(const task_id& id)
 {
-	auto updated_task = tasks.by_id(taskID);
+	auto updated_task = tasks.by_id(id);
 	if (updated_task.has_value())
 	{
-		Gtk::TreeIter iter = find_row(taskID);
+		Gtk::TreeIter iter = find_row(id);
 		if (iter != tree_model->children().end())
 		{
 			TreeModel::Row row = *iter;
 			assign_values_to_row(row, *updated_task);
 		}
 
-		if (updated_task->parent_id > 0)
+		if (updated_task->parent_id.has_value())
 		{
-			on_task_updated(updated_task->parent_id);
+			on_task_updated(updated_task->parent_id.value());
 		}
 	}
 }
 
-void task_list_widget::on_task_name_changed(int64_t taskID)
+void task_list_widget::on_task_name_changed(const task& item)
 {
-	on_task_updated(taskID);
+	on_task_updated(item.id);
 }
 
-void task_list_widget::on_task_time_changed(int64_t taskID)
+void task_list_widget::on_task_time_changed(const task_id& id)
 {
-	on_task_updated(taskID);
+	on_task_updated(id);
 }
 
-void task_list_widget::on_task_removed(int64_t taskID)
+void task_list_widget::on_task_removed(const task& item)
 {
-	Gtk::TreeIter iter = find_row(taskID);
+	Gtk::TreeIter iter = find_row(item.id);
 	if (iter != tree_model->children().end())
 	{
 		tree_model->erase(iter);
@@ -143,7 +142,7 @@ void task_list_widget::on_selection_changed()
 	}
 }
 
-void task_list_widget::on_parent_changed(int64_t /*id*/)
+void task_list_widget::on_parent_changed(const task& /*item*/)
 {
 	do_update();
 }
@@ -164,28 +163,27 @@ void task_list_widget::empty()
 	tree_model->clear();
 }
 
-Task_id task_list_widget::selected_id()
+optional<task_id> task_list_widget::selected_id()
 {
-	Task_id return_value = 0;
 	auto ref_tree_selection = get_selection();
 	TreeModel::iterator iter;
 	iter = ref_tree_selection->get_selected();
 	if (iter) //If anything is selected
 	{
 		TreeModel::Row row = *iter;
-		return_value = row[columns.col_id];
+		return row[columns.col_id];
 		//Do something with the row.
 	}
-	return return_value;
+	return {};
 }
 
-Gtk::TreeModel::iterator task_list_widget::find_row(Task_id id)
+Gtk::TreeModel::iterator task_list_widget::find_row(const task_id& id)
 {
 	TreeModel::Children children = tree_model->children();
 	return sub_search(id, children);
 }
 
-Gtk::TreeModel::iterator task_list_widget::sub_search(Task_id id, TreeModel::Children children)
+Gtk::TreeModel::iterator task_list_widget::sub_search(const task_id& id, TreeModel::Children children)
 {
 	TreeIter iter;
 
@@ -211,7 +209,7 @@ Gtk::TreeModel::iterator task_list_widget::sub_search(Task_id id, TreeModel::Chi
 
 void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_task &task_)
 {
-	Task_id id = task_.id;
+	auto id = task_.id;
 	row[columns.col_id] = id;
 	if (task_.running)
 	{
@@ -240,7 +238,7 @@ void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_
 	}
 }
 
-void task_list_widget::populate(TreeModel::Row* parent, Task_id parentID)
+void task_list_widget::populate(TreeModel::Row* parent, optional<task_id> parentID)
 {
 	auto child_tasks = tasks.by_parent_id(parentID);
 

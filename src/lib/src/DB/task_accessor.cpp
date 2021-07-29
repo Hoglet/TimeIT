@@ -1,27 +1,42 @@
 #include <sstream>
 #include <fmt/core.h>
 #include <libtimeit/db/task_accessor.h>
+#include <libtimeit/utils.h>
+
 
 namespace libtimeit
 {
 
 using namespace std;
 
-const string CREATE_TASK_QUERY = R"Query(
+const string CREATE_TASK_V5 = R"Query(
 				INSERT INTO
 					tasks (name,parent,changed,uuid,completed,deleted,idle,quiet)
 				VALUES (?,?,?,?,?,?,?,?);
 				)Query";
 
+const string GET_TASK_QUERY = R"(
+				SELECT
+					parent,
+					name,
+					completed,
+					changed,
+					deleted,
+					idle,
+					quiet
+				FROM
+					tasks
+				WHERE
+					uuid=?)";
 
 
 task_accessor::task_accessor(database& op_database )
 		:
 		db(op_database),
 		statement_uuid_to_id(db.prepare("SELECT id FROM tasks WHERE uuid=?;")),
+		statement_get_by_id(db.prepare(GET_TASK_QUERY)),
 		statement_get_task(db.prepare(R"(
 				SELECT
-					id,
 					parent,
 					name,
 					completed,
@@ -35,7 +50,7 @@ task_accessor::task_accessor(database& op_database )
 				WHERE
 					id=?)")),
 		statement_id_to_uuid(db.prepare("SELECT uuid FROM tasks WHERE id=?;")),
-		statement_new_task(db.prepare(CREATE_TASK_QUERY ))
+		statement_new_task(db.prepare(CREATE_TASK_V5 ))
 {
 }
 
@@ -47,7 +62,7 @@ void task_accessor::create_table(database& db)
 		CREATE TABLE IF NOT EXISTS
  			tasks
 			 (
-				id         INTEGER PRIMARY KEY,
+				id          INTEGER PRIMARY KEY,
 				name        VARCHAR,
 				parent      INTEGER,
 				changed     INTEGER,
@@ -69,18 +84,19 @@ void task_accessor::enable_notifications(bool state)
 	db.enable_notifications(state);
 }
 
-vector<task> task_accessor::by_parent_id(int64_t parent)
+vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 {
 	vector<task> return_value;
 	stringstream statement;
 
-	statement << "SELECT id, parent, name, completed, uuid, changed, idle, quiet"
+	statement << "SELECT name, completed, uuid, changed, idle, quiet"
 			"  FROM "
 			"    tasks"
 			"  WHERE deleted=0";
-	if (parent > 0)
+	if (parent.has_value())
 	{
-		statement << " AND parent=" << parent;
+		auto parent_id( to_id (parent.value()));
+		statement << " AND parent=" << parent_id;
 	}
 	else
 	{
@@ -90,16 +106,10 @@ vector<task> task_accessor::by_parent_id(int64_t parent)
 	Query_result rows = db.execute(statement.str());
 	for (vector<data_cell> row : rows)
 	{
-		auto id = row[0].integer();
-		parent = 0;
-		if (row[1].has_value())
-		{
-			parent = row[1].integer();
-		}
-		auto column{2};
+		auto column{0};
 		string name        = row[column++].text();
 		bool   completed   = row[column++].boolean();
-		auto   l_uuid      = UUID::from_string(row[column++].text());
+		auto   l_uuid      = libtimeit::optional_task_id(row[column++].text());
 		time_t last_change = row[column++].integer();
 		auto   idle        = (unsigned)row[column++].integer();
 		bool   quiet       = row[column].boolean();
@@ -107,12 +117,10 @@ vector<task> task_accessor::by_parent_id(int64_t parent)
 		{
 			return_value.emplace_back(
 					name,
-					parent,
 					*l_uuid,
 					completed,
-					id,
 					last_change,
-					uuid(parent),
+					parent,
 					false,
 					idle,
 					quiet);
@@ -121,41 +129,45 @@ vector<task> task_accessor::by_parent_id(int64_t parent)
 	return return_value;
 }
 
-optional<task> task_accessor::by_id(int64_t taskID)
+optional<task> task_accessor::by_id(task_id id)
 {
-	statement_get_task.bind_value(1, taskID);
-	Query_result rows = statement_get_task.execute();
+	statement_get_by_id.bind_value(1, static_cast<string>(id));
+	Query_result rows = statement_get_by_id.execute();
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
-		int64_t id = row[0].integer();
 		int64_t parent = 0;
-		if (row[1].has_value())
+		if (row[0].has_value())
 		{
-			parent = row[1].integer();
+			parent = row[0].integer();
 		}
-		auto column{2};
+		auto column{1};
 		string name        = row[column++].text();
 		bool   completed   = row[column++].boolean();
-		auto   l_uuid      = UUID::from_string(row[column++].text());
 		time_t last_change = row[column++].integer();
 		bool   deleted     = row[column++].boolean();
 		auto   idle        = (unsigned)row[column++].integer();
 		bool   quiet       = row[column].boolean();
-		if(l_uuid.has_value())
-		{
-			auto parent_uuid = uuid(parent);
-			return task(name, parent, *l_uuid, completed, id, last_change, parent_uuid, deleted, idle, quiet);
-		}
+		auto   parent_uuid = to_task_id(parent);
+
+		return task(
+				name,
+				id,
+				completed,
+				last_change,
+				parent_uuid,
+				deleted,
+				idle,
+				quiet);
 	}
 	return {};
 }
 
-optional<task> task_accessor::get_task_unlimited(Task_id taskID)
+optional<task> task_accessor::get_task_unlimited(task_id id)
 {
+	auto taskID = to_id(id);
 	sql_statement statement_get_complete_task = db.prepare(R"(
 		SELECT
-			id,
 			parent,
 			name,
 			completed,
@@ -174,13 +186,12 @@ optional<task> task_accessor::get_task_unlimited(Task_id taskID)
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
-		int64_t id = row[0].integer();
 		int64_t parent = 0;
-		if (row[1].has_value())
+		if (row[0].has_value())
 		{
-			parent = row[1].integer();
+			parent = row[0].integer();
 		}
-		auto column{2};
+		auto column{1};
 		string   name        = row[column++].text();
 		bool     completed   = row[column++].boolean();
 		auto     l_uuid      = UUID::from_string(row[column++].text());
@@ -190,7 +201,15 @@ optional<task> task_accessor::get_task_unlimited(Task_id taskID)
 		bool     quiet       = row[column].boolean();
 		if(l_uuid.has_value())
 		{
-			return {task(name, parent, *l_uuid, completed, id, last_change, uuid(parent), deleted, idle, quiet)};
+			return task(
+					name,
+					task_id(*l_uuid),
+					completed,
+					last_change,
+					to_task_id(parent),
+					deleted,
+					idle,
+					quiet);
 		}
 	}
 	return {};
@@ -203,7 +222,6 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 
 	statement << R"(
 			SELECT
-				id,
 				parent,
 				name,
 				completed,
@@ -222,7 +240,6 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 	for (std::vector<data_cell> row : rows)
 	{
 		auto column{0};
-		auto id = (Task_id)row[column++].integer();
 		Task_id parent = 0;
 		if (row[column].has_value())
 		{
@@ -231,20 +248,18 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 		column++;
 		string  name        = row[column++].text();
 		bool    completed   = row[column++].boolean();
-		auto    l_uuid      = UUID::from_string(row[column++].text());
+		auto    l_uuid      = libtimeit::optional_task_id(row[column++].text());
 		time_t  last_change = row[column++].integer();
 		bool    deleted     = row[column++].boolean();
 		auto    idle        = (unsigned)row[column++].integer();
 		bool    quiet       = row[column].boolean();
 		if (l_uuid.has_value())
 		{
-			auto parent_uuid= uuid(parent);
+			auto parent_uuid= optional_task_id(parent);
 			return_value.emplace_back(
 					name,
-					parent,
 					*l_uuid,
 					completed,
-					id,
 					last_change,
 					parent_uuid,
 					deleted,
@@ -255,7 +270,20 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 	return return_value;
 }
 
-Task_id task_accessor::id(UUID uuid)
+Task_id task_accessor::to_id(task_id id)
+{
+
+	Task_id old_id = 0;
+	statement_uuid_to_id.bind_value(1, static_cast<string>(id));
+	Query_result rows = statement_uuid_to_id.execute();
+	for (vector<data_cell> row : rows)
+	{
+		old_id = row[0].integer();
+	}
+	return old_id;
+}
+
+Task_id task_accessor::to_id(UUID uuid)
 {
 
 	Task_id id = 0;
@@ -266,6 +294,25 @@ Task_id task_accessor::id(UUID uuid)
 		id = row[0].integer();
 	}
 	return id;
+}
+
+optional<task_id> task_accessor::optional_task_id(Task_id id)
+{
+	if( id>0 )
+	{
+		statement_id_to_uuid.bind_value(1, id);
+		Query_result rows = statement_id_to_uuid.execute();
+		for (vector<data_cell> row : rows)
+		{
+			auto uuid = row[0].text();
+			auto optional_uuid = UUID::from_string(uuid);
+			if(optional_uuid.has_value())
+			{
+				return task_id(optional_uuid.value());
+			}
+		}
+	}
+	return {};
 }
 
 optional<class UUID> task_accessor::uuid(Task_id id)
@@ -282,6 +329,22 @@ optional<class UUID> task_accessor::uuid(Task_id id)
 	}
 	return {};
 }
+
+optional<task_id> task_accessor::to_task_id(Task_id id)
+{
+	if( id>0 )
+	{
+		statement_id_to_uuid.bind_value(1, id);
+		Query_result rows = statement_id_to_uuid.execute();
+		for (vector<data_cell> row : rows)
+		{
+			auto uuid = row[0].text();
+			return task_id(UUID::from_string(uuid).value());
+		}
+	}
+	return {};
+}
+
 
 void task_accessor::internal_update(const task &item)
 {
@@ -301,9 +364,11 @@ void task_accessor::internal_update(const task &item)
 						);
 	auto index{1};
 	statement_update_task.bind_value(index++, item.name);
-	if (item.parent_id > 0)
+
+	if (item.parent_id.has_value())
 	{
-		statement_update_task.bind_value(index++, item.parent_id);
+		auto parent_id = to_id(item.parent_id.value());
+		statement_update_task.bind_value(index++, parent_id);
 	}
 	else
 	{
@@ -314,41 +379,51 @@ void task_accessor::internal_update(const task &item)
 	statement_update_task.bind_value(index++, (int64_t)item.completed);
 	statement_update_task.bind_value(index++, item.idle);
 	statement_update_task.bind_value(index++, (int64_t)item.quiet);
-	statement_update_task.bind_value(index, item.id);
+	auto old_id = to_id(item.id);
+	statement_update_task.bind_value(index, old_id);
 
 	statement_update_task.execute();
 }
 
 void task_accessor::notify(const task &existingTask, const task &item)
 {
-	bool parent_changed = (existingTask.parent_id != item.parent_id);
+	bool parent_changed = ( existingTask.parent_id != item.parent_id);
 	bool task_deleted   = ((existingTask.deleted != item.deleted) && item.deleted);
 	bool name_changed   = (existingTask.name != item.name);
 
 	if (name_changed)
 	{
-		db.send_notification(TASK_NAME_CHANGED, item.id);
+		db.broadcast(
+				[item](event_observer* observer)
+				{
+					observer->on_task_name_changed( item );
+				});
 	}
 	if (parent_changed)
 	{
-		db.send_notification(TASK_PARENT_CHANGED, item.id);
+		db.broadcast(
+				[item](event_observer* observer)
+				{
+					observer->on_parent_changed( item );
+				});
 	}
 	if (task_deleted)
 	{
-		db.send_notification(TASK_REMOVED, item.id);
+		db.broadcast(
+				[item](event_observer* observer)
+				{
+					observer->on_task_removed( item );
+				});
 	}
 }
 
 bool task_accessor::update(const task &item)
 {
-	if (item.id == 0)
+	if ( to_id(item.id) == 0)
 	{
-		if (id(item.uuid) == 0)
-		{
-			stringstream message;
-			message << "Unable to find task with UUID=" << item.uuid.c_str();
-			throw db_exception(message.str());
-		}
+		stringstream message;
+		message << "Unable to find task with UUID=" << static_cast<string>(item.id);
+		throw db_exception(message.str());
 	}
 	auto existing_task = get_task_unlimited(item.id);
 	if (existing_task.has_value() && item != *existing_task && item.last_changed >= existing_task->last_changed)
@@ -360,30 +435,51 @@ bool task_accessor::update(const task &item)
 	return false;
 }
 
-Task_id task_accessor::create(const task &item)
+void task_accessor::create(const task &item)
 {
 
-	internal_create(item, statement_new_task);
-	Task_id id = db.id_of_last_insert();
-
-	db.send_notification(TASK_ADDED, id);
-	return id;
-}
-
-void task_accessor::internal_create(const task &item, sql_statement &statement_new_task)
-{
 	auto index{1};
 	statement_new_task.bind_value(index++, item.name);
-	if (item.parent_id > 0)
+	if (item.parent_id.has_value())
 	{
-		statement_new_task.bind_value(index++, item.parent_id);
+		auto parent_id = to_id(item.parent_id.value());
+		statement_new_task.bind_value(index++, parent_id);
 	}
 	else
 	{
 		statement_new_task.bind_null_value(index++);
 	}
 	statement_new_task.bind_value(index++, item.last_changed);
-	statement_new_task.bind_value(index++, item.uuid.c_str());
+	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
+	statement_new_task.bind_value(index++, (int64_t)item.completed);
+	statement_new_task.bind_value(index++, (int64_t)item.deleted);
+	statement_new_task.bind_value(index++, item.idle);
+	statement_new_task.bind_value(index,   (int64_t)item.quiet);
+
+	statement_new_task.execute();
+
+	db.broadcast(
+			[item](event_observer* observer)
+			{
+				observer->on_task_added(item);
+			});
+}
+
+void task_accessor::internal_create(const task &item, sql_statement &statement_new_task)
+{
+	auto index{1};
+	statement_new_task.bind_value(index++, item.name);
+	if (item.parent_id.has_value())
+	{
+		auto parent_id = to_id(item.parent_id.value());
+		statement_new_task.bind_value(index++, parent_id);
+	}
+	else
+	{
+		statement_new_task.bind_null_value(index++);
+	}
+	statement_new_task.bind_value(index++, item.last_changed);
+	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
 	statement_new_task.bind_value(index++, (int64_t)item.completed);
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
 	statement_new_task.bind_value(index++, item.idle);
@@ -392,118 +488,17 @@ void task_accessor::internal_create(const task &item, sql_statement &statement_n
 	statement_new_task.execute();
 }
 
-void task_accessor::set_parent_id(Task_id taskID, Task_id parentID)
+void task_accessor::remove(const task_id& id)
 {
-	time_t now = time(nullptr);
-	stringstream statement;
-	if (parentID == 0)
-	{
-		statement << "UPDATE tasks SET parent = NULL ";
-	}
-	else
-	{
-		statement << "UPDATE tasks SET parent = " << parentID;
-	}
-	statement << " , changed = " << now;
-	statement << " WHERE id=" << taskID;
-	db.execute(statement.str());
-	db.send_notification(TASK_PARENT_CHANGED, taskID);
-}
-
-void task_accessor::remove(int64_t taskID)
-{
-	time_t now = time(nullptr);
-	stringstream statement;
-	statement << "UPDATE tasks SET deleted = " << true;
-	statement << " ,changed = " << now;
-	statement << " WHERE id = " << taskID;
-	db.execute(statement.str());
-	db.send_notification(TASK_REMOVED, taskID);
-}
-
-void task_accessor::upgrade_to_db_5(database& db)
-{
-	time_t now = time(nullptr);
-//Update Tasks to new design
-	db.execute("ALTER TABLE tasks RENAME TO tasks_backup");
-	task_accessor::create_table(db);
-	auto statement_new_task(db.prepare(CREATE_TASK_QUERY ));
-
-	db.execute("UPDATE tasks_backup SET deleted = 0 WHERE deleted != 1");
-	db.execute("UPDATE tasks_backup SET parent = NULL WHERE parent = 0");
-	sql_statement statement = db.prepare("SELECT id, parent, name, deleted FROM  tasks_backup");
-	Query_result rows = statement.execute();
-	for (vector<data_cell> row : rows)
-	{
-		int64_t id = row[0].integer();
-		int64_t parent = 0;
-		if (row[1].has_value())
-		{
-			parent = row[1].integer();
-		}
-		string name      = row[2].text();
-		bool   deleted   = row[3].boolean();
-		bool   completed = false;
-		time_t changed   = now;
-
-		task item(name, parent, UUID(), completed, id, changed, {}, deleted, 0, false);
-		internal_create(item, statement_new_task);
-	}
-	db.execute("DROP TABLE tasks_backup");
-
-}
-
-void task_accessor::upgrade(database& db)
-{
-	if (db.current_db_version() < 5 ) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	{
-		upgrade_to_db_5(db);
-	}
-	if( ! db.column_exists("tasks", "idle") )
-	{
-		const auto *query = R"Query(
-			ALTER TABLE
-				tasks
-			ADD
-				idle        INTEGER
-			DEFAULT 0
-				;
-			)Query";
-		db.execute(query );
-
-		const auto *query2 = R"Query(
-			ALTER TABLE
-				tasks
-			ADD
-				quiet      BOOL
-			DEFAULT 0
-				;
-			)Query";
-		db.execute(query2 );
-	}
+	auto item = by_id(id);
+	update(item->with_deleted(true));
 }
 
 
-
-void task_accessor::set_task_expanded(Task_id taskID, bool expanded)
-{
-	auto statement = fmt::format(
-			R"Query(
-				UPDATE
-					tasks
-				SET
-					expanded = {}
-				WHERE
-					id= {} ;
-			)Query"
-					, expanded, taskID);
-	db.execute(statement);
-}
 
 void task_accessor::setup(database& db)
 {
 	task_accessor::create_table(db);
-	task_accessor::upgrade(db);
 }
 
 }

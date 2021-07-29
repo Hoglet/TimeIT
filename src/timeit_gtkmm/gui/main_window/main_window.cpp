@@ -326,10 +326,10 @@ void main_window::set_calendar()
 	calendar.select_day(day);
 }
 
-void main_window::on_action_task_selection_changed(Task_id selected_task_id)
+void main_window::on_action_task_selection_changed(optional<task_id> selected_task_id)
 {
-	toolbar.set_task_is_selected(selected_task_id > 0);
-	menubar.set_task_is_selected(selected_task_id > 0);
+	toolbar.set_task_is_selected(selected_task_id.has_value());
+	menubar.set_task_is_selected(selected_task_id.has_value());
 }
 
 void main_window::on_action_remove_task()
@@ -349,7 +349,10 @@ void main_window::on_action_remove_task()
 	{
 		case (Gtk::RESPONSE_OK):
 			//Remove task
-			tasks.remove(selected_task_id);
+			if(selected_task_id.has_value())
+			{
+				tasks.remove(selected_task_id.value());
+			}
 			break;
 		case (Gtk::RESPONSE_CANCEL):
 			break;

@@ -13,12 +13,12 @@ namespace libtimeit
 
 using namespace std;
 
-bool rangeTestG4(const char &c)
+constexpr bool rangeTestG4(const char &c)
 {
 	return  (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B');
 }
 
-bool is_valid_uuid(const string &uuid) // NOLINT(readability-function-cognitive-complexity)
+constexpr bool is_valid_uuid( string_view uuid ) // NOLINT(readability-function-cognitive-complexity)
 {
 
 	if (36 != uuid.length()) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)

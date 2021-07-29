@@ -48,9 +48,9 @@ public:
 			);
 
 
-	void start(Task_id id);
-	void stop(Task_id id);
-	void toggle(Task_id id);
+	void start(task_id id);
+	void stop(task_id id);
+	void toggle(task_id id);
 
 	bool has_running_tasks();
 	bool user_is_active();
@@ -77,7 +77,7 @@ private:
 
 	void check_for_status_change();
 
-	void on_task_removed(Task_id /*id*/) override;
+	void on_task_removed(const task&  /*id*/) override;
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
@@ -97,7 +97,7 @@ private:
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
 
-	vector<Task_id> old_running{};
+	vector<task_id> old_running{};
 };
 }
 

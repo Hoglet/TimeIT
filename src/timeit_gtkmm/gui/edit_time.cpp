@@ -16,15 +16,12 @@ edit_time_dialog::edit_time_dialog(
 		times(db),
 		tasks(db)
 {
-	if(time_entry_.task_uuid.has_value())
-	{
-		task_name_label.set_text(_("Editing time belonging to: "));
-	}
 	set_deletable(false);
 
-	auto owning_task = tasks.by_id(time_entry.owner);
+	auto owning_task = tasks.by_id(time_entry.owner_id);
 	if (owning_task.has_value())
 	{
+		task_name_label.set_text(_("Editing time belonging to: "));
 		task_name.set_text(owning_task->name);
 	}
 	comment_buffer =Gtk:: TextBuffer::create();
@@ -88,7 +85,7 @@ void edit_time_dialog::on_response(int response_id)
 		time_t start_time = start_timestamp_edit.timestamp();
 		time_t stop_time  = stop_timestamp_edit.timestamp();
 		auto   comment    = comment_buffer->get_text();
-		auto existing_time_entry = times.by_id(time_entry.uuid);
+		auto existing_time_entry = times.by_id(time_entry.id);
 		if(existing_time_entry.has_value())
 		{
 			times.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));

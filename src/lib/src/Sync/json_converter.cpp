@@ -3,6 +3,7 @@
 #include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/task.h>
 #include <libtimeit/sync/json.h>
+#include <libtimeit/utils.h>
 
 
 namespace libtimeit
@@ -16,11 +17,11 @@ string to_json(vector<task> tasks, string username)
 	{
 		json item;
 		item.set("name", json(node.name));
-		item.set("id", json(node.uuid.to_string()));
-		if (node.parent_uuid)
+		item.set("id", json( static_cast<string>(node.id) ));
+		if (node.parent_id.has_value())
 		{
 			json parent;
-			parent.set( "id", json(node.parent_uuid->to_string()));
+			parent.set( "id", json( static_cast<string>(node.parent_id.value()) ));
 			item.set( "parent", parent);
 		}
 		item.set("completed", json(node.completed));
@@ -46,8 +47,8 @@ string to_json(const Time_list& times)
 	for (auto time : times)
 	{
 		json item;
-		item.set("id", json( static_cast<string>(time.uuid)));
-		item.set("task", json(time.task_uuid->to_string()));
+		item.set("id", json( static_cast<string>(time.id)));
+		item.set("task", json(static_cast<string>(time.owner_id)));
 		item.set("start", json(time.start));
 		item.set("stop", json(time.stop));
 		item.set( "deleted",json(time.state == DELETED));
@@ -55,7 +56,7 @@ string to_json(const Time_list& times)
 		item.set("state", json((int64_t)time.state));
 		item.set("comment", json(time.comment));
 		json node;
-		node.set("id", json(time.task_uuid->to_string()));
+		node.set("id", json(static_cast<string>(time.owner_id)));
 		item.set("task", node);
 
 		items.emplace_back(item);
@@ -83,13 +84,16 @@ vector<task> to_tasks(const string &text)
 		auto uuid= UUID::from_string(uuid_string);
 		if(uuid)
 		{
-			auto parent = UUID::from_string(parent_string);
+			optional<task_id> parent = {};
+			auto parent_uuid = UUID::from_string(parent_string);
+			if(parent_uuid.has_value())
+			{
+				parent = task_id(parent_uuid.value());
+			}
 			return_value.emplace_back(
 					name,
-					0,
-					*uuid,
+					task_id(uuid.value()),
 					completed,
-					0,
 					last_changed,
 					parent,
 					deleted,
@@ -122,10 +126,10 @@ Time_list to_times(const string &input)
 		}
 
 		auto uuid= UUID::from_string(uuid_string);
-		auto id= UUID::from_string(task_id_string);
-		if(uuid.has_value() && id.has_value())
+		auto owner= optional_task_id(task_id_string);
+		if(uuid.has_value() && owner.has_value())
 		{
-			Time_entry time_item( time_id(*uuid), 0, *id, start, stop, state, changed, comment);
+			Time_entry time_item( time_id(*uuid), *owner, start, stop, state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

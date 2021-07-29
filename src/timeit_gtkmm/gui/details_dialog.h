@@ -34,7 +34,7 @@ public:
 	details_dialog& operator=(const details_dialog&) = delete;
 	details_dialog& operator=(details_dialog&&) = delete;
 	~details_dialog() override ;
-	void set(int64_t ID,time_t startTime,time_t stopTime);
+	void set(optional<task_id> item,time_t startTime,time_t stopTime);
 
 
 	// IWidget interface
@@ -45,18 +45,18 @@ public:
 	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
 
 	void on_running_changed() override;
-	void on_task_name_updated(int64_t task_id);
-	void on_task_total_time_updated(int64_t task_id);
+	void on_task_name_updated(const task_id& id);
+	void on_task_total_time_updated(const task_id& task_id);
 
 private:
 
 	//SummaryObserver
-	void on_selection_changed(int64_t ID,time_t startTime,time_t stopTime) override;
-	void on_show_details_clicked(Task_id /*id*/, time_t /*start*/, time_t /*stop*/) override {};
+	void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) override;
+	void on_show_details_clicked(const task_id& /*id*/, time_t /*start*/, time_t /*stop*/) override {};
 
 	//EventObserver
-	void on_task_time_changed(int64_t task_ID) override;
-	void on_task_name_changed(int64_t task_ID) override;
+	void on_task_time_changed(const task_id& id) override;
+	void on_task_name_changed(const task& item) override;
 
 
 	Gtk::Table table1;
@@ -71,10 +71,12 @@ private:
 	Gtk::ScrolledWindow scrolled_window;
 
 
-	time_t  range_start    {0};
-	time_t  range_stop     {0};
-	int64_t presented_task {0};
-	int64_t time_entry_id  {0};
+	time_t  range_start              {0};
+	time_t  range_stop               {0};
+
+	optional<task_id> presented_task;
+	optional<time_id> time_entry_id;
+
 	time_accessor          times;
 	extended_task_accessor tasks;
 	settings_accessor      settings;

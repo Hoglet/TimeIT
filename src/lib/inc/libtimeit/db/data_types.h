@@ -2,6 +2,7 @@
 #define TIMEIT_DATA_TYPES_H
 #include <vector>
 #include <cstdint>
+#include <libtimeit/datatypes/task_id.h>
 
 namespace libtimeit
 {
@@ -11,7 +12,7 @@ struct Time_entry;
 
 using Time_list    = vector<Time_entry>;
 using Task_id      = int64_t;
-using task_id_list = vector<Task_id>;
+using task_id_list = vector<task_id>;
 
 using Duration = int;      //Duration in seconds
 

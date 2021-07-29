@@ -2,6 +2,7 @@
 #include <libtimeit/sync/json_converter.h>
 #include <libtimeit/db/task.h>
 #include <libtimeit/sync/json.h>
+#include <libtimeit/utils.h>
 
 using namespace libtimeit;
 
@@ -25,8 +26,8 @@ TEST( Json, simpleTaskTest )
 		bool expectedDeleted = false;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQ(expectedName, task1.name) << "Name: ";
-		ASSERT_EQ(expectedUUID, task1.uuid.c_str()) << "UUID: ";
-		ASSERT_EQ(expectedParent, task1.parent_uuid->c_str()) << "Parent: ";
+		ASSERT_EQ(expectedUUID, static_cast<string>(task1.id)) << "UUID: ";
+		ASSERT_EQ(expectedParent, static_cast<string>(task1.parent_id.value())) << "Parent: ";
 		ASSERT_EQ(expectedCompleted, task1.completed) << "completed: ";
 		ASSERT_EQ(expectedDeleted, task1.deleted) << "Deleted: ";
 		ASSERT_EQ(expectedChangeTime, task1.last_changed) << "Expected change time: ";
@@ -53,8 +54,8 @@ TEST( Json, simpleTaskTest2 )
 		bool expectedDeleted = true;
 		time_t expectedChangeTime = 1374263745;
 		ASSERT_EQ(expectedName, task1.name) << "Name: ";
-		ASSERT_EQ(expectedUUID, task1.uuid.c_str()) << "UUID: ";
-		ASSERT_EQ(expectedParent, task1.parent_uuid->c_str()) << "Parent: ";
+		ASSERT_EQ(expectedUUID, static_cast<string>(task1.id)) << "UUID: ";
+		ASSERT_EQ(expectedParent, static_cast<string>(task1.parent_id.value())) << "Parent: ";
 		ASSERT_EQ(expectedCompleted, task1.completed) << "Completed: ";
 		ASSERT_EQ(expectedDeleted, task1.deleted) << "Deleted: ";
 		ASSERT_EQ(expectedChangeTime, task1.last_changed) << "Expected change time: ";
@@ -74,8 +75,8 @@ TEST( Json, threeWayTaskTest )
 	task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name, task2.name) << "Name ";
-	ASSERT_EQ(task1.uuid, task2.uuid) << "UUID: ";
-	ASSERT_EQ(*task1.parent_uuid, *task2.parent_uuid) << "Parent: ";
+	ASSERT_EQ( task1.id, task2.id) << "UUID: ";
+	ASSERT_EQ( *task1.parent_id, *task2.parent_id) << "Parent: ";
 	ASSERT_EQ( task1.completed, task2.completed) << "Completed: ";
 	ASSERT_EQ( task1.deleted, task2.deleted) << "Deleted: ";
 	ASSERT_EQ(task1.last_changed, task2.last_changed) << "Expected change time: ";
@@ -95,8 +96,8 @@ TEST( Json, threeWayTaskTest2 )
 	task task2 = tasks.at(0);
 
 	ASSERT_EQ( task1.name, task2.name) << "Name ";
-	ASSERT_EQ(task1.uuid, task2.uuid) << "UUID: ";
-	ASSERT_EQ(*task1.parent_uuid, *task2.parent_uuid) << "Parent: ";
+	ASSERT_EQ( task1.id, task2.id) << "UUID: ";
+	ASSERT_EQ( *task1.parent_id, *task2.parent_id) << "Parent: ";
 	ASSERT_EQ( task1.completed, task2.completed) << "Completed: ";
 	ASSERT_EQ( task1.deleted, task2.deleted) << "Deleted: ";
 	ASSERT_EQ(task1.last_changed, task2.last_changed) << "Expected change time: ";
@@ -121,8 +122,8 @@ TEST( Json, simpleTimeTest )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		bool expectedState = STOPPED;
-		ASSERT_EQ( expectedUUID, static_cast<string>(item.uuid)) << "id: ";
-		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
+		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";
+		ASSERT_EQ( expectedTaskID, static_cast<string>(item.owner_id)) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop) << "Stop: ";
@@ -149,8 +150,8 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedChange = 1376059170;
 		Time_entry item = times.at(0);
 		auto expectedState = DELETED;
-		ASSERT_EQ( expectedUUID, static_cast<string>(item.uuid).c_str()) << "id: ";
-		ASSERT_EQ( expectedTaskID, item.task_uuid->c_str()) << "Task_ID: ";
+		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";
+		ASSERT_EQ( expectedTaskID, static_cast<string>(item.owner_id)) << "Task_ID: ";
 		ASSERT_EQ( expectedState, item.state) << "State: ";
 		ASSERT_EQ( expectedStart, item.start) << "Start: ";
 		ASSERT_EQ( expectedStop, item.stop) << "Stop: ";
@@ -182,8 +183,8 @@ TEST( Json, threeWayTimeTest )
 	items = to_times(result);
 	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ(item1.uuid, item2.uuid) << "id ";
-	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
+	ASSERT_EQ( item1.id, item2.id) << "id ";
+	ASSERT_EQ( item1.owner_id, item2.owner_id) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2.state) << "Deleted: ";
@@ -213,8 +214,8 @@ TEST( Json, threeWayTimeTest2 )
 	items = to_times(result);
 	Time_entry item2 = items.at(0);
 
-	ASSERT_EQ(item1.uuid, item2.uuid) << "id ";
-	ASSERT_EQ(item1.task_uuid, item2.task_uuid) << "Task_ID: ";
+	ASSERT_EQ( item1.id, item2.id) << "id ";
+	ASSERT_EQ( item1.owner_id, item2.owner_id) << "Task_ID: ";
 	ASSERT_EQ(item1.start, item2.start) << "Start: ";
 	ASSERT_EQ(item1.stop, item2.stop) << "Stop: ";
 	ASSERT_EQ(item1.state, item2.state) << "Deleted: ";
@@ -225,11 +226,11 @@ TEST( Json, threeWayTimeTest2 )
 TEST( Json, testTaskStringGenerationTest )
 {
 	string name = "task1";
-	auto parentID = UUID::from_string("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
+	auto parentID = optional_task_id("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	auto uuid = UUID::from_string("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	time_t changeTime = 1374263745;
 
-	task task1(name, 1, *uuid, false, 1, changeTime, parentID, false, 0, false);
+	task task1(name, task_id(*uuid), false, changeTime, parentID, false, 0, false);
 	vector<task> tasks;
 	tasks.push_back(task1);
 	string result = to_json(tasks, "tester");
@@ -255,7 +256,7 @@ TEST( Json, testTaskStringGenerationTest )
 
 	ASSERT_EQ( name, json_string_value(j_name)) << "Name is incorrect";
 	ASSERT_STREQ( uuid->c_str(), json_string_value(j_id)) << "id is incorrect";
-	ASSERT_STREQ( parentID->c_str(), json_string_value(json_object_get(j_parent, "id"))) << "Parent id is incorrect";
+	ASSERT_EQ( static_cast<string>(parentID.value()), json_string_value(json_object_get(j_parent, "id"))) << "Parent id is incorrect";
 	ASSERT_EQ( false, json_is_true(j_completed)) << "Completed is incorrect";
 	ASSERT_EQ( changeTime, json_integer_value(j_lastChanged)) << "Last changed is incorrect";
 	ASSERT_EQ( false, json_is_true(j_deleted)) << "Deleted is incorrect";

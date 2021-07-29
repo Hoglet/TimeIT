@@ -31,9 +31,9 @@ public:
 	summary_observer &operator=(const summary_observer &) = delete;
 	summary_observer &operator=(summary_observer &&) = delete;
 	virtual ~summary_observer();
-	virtual void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) = 0;
+	virtual void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) = 0;
 
-	virtual void on_show_details_clicked(int64_t /*task_id*/, time_t /*start_time*/, time_t /*stop_time*/)
+	virtual void on_show_details_clicked(const task_id& /*task_id*/, time_t /*start_time*/, time_t /*stop_time*/)
 	{};
 	void attach(summary* subject);
 	void detach(summary* subject);
@@ -48,7 +48,7 @@ class summary : public Gtk::TreeView, public event_observer
 public:
 	summary(database &db, notification_manager &notifier);
 	void set_references(Gtk::Calendar &calendar);
-	Task_id selected_id();
+	optional<task_id> selected_id();
 
 	time_t get_start_time() const
 	{
@@ -71,7 +71,7 @@ protected:
 	time_t stop_time = 0;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
 private:
-	Gtk::TreeModel::Row add(int64_t id);
+	Gtk::TreeModel::Row add(const task_id& id);
 	Gtk::Menu menu_popup;
 
 	bool on_button_press_event(GdkEventButton* event) override;
@@ -83,16 +83,16 @@ private:
 	void connect_signals();
 	void on_date_changed();
 	void on_menu_show_details();
-	void on_task_updated(Task_id id) override;
-	void on_task_removed(Task_id id) override;
+	void on_task_updated(const task_id& id) override;
+	void on_task_removed(const task& /*item*/) override;
 	void on_complete_update() override;
-	void on_task_name_changed(Task_id id) override;
-	void on_task_time_changed(Task_id id) override;
+	void on_task_name_changed(const task& /*item*/) override;
+	void on_task_time_changed(const task_id& id) override;
 	void populate();
 	void empty();
 	virtual void calculate_time_span() = 0;
-	Gtk::TreeModel::iterator find_row(Task_id id);
-	Gtk::TreeModel::iterator sub_search(Task_id id, Gtk::TreeModel::Children children);
+	Gtk::TreeModel::iterator find_row(const task_id& id);
+	Gtk::TreeModel::iterator sub_search(const task_id& id, Gtk::TreeModel::Children children);
 	void assign_values_to_row(Gtk::TreeModel::Row &row, task &task_, time_t total_time) const;
 
 	Glib::RefPtr<Gtk::TreeStore> tree_model;
@@ -107,7 +107,7 @@ private:
 			add(col_name);
 			add(col_time);
 		};
-		Gtk::TreeModelColumn<Task_id> col_id;
+		Gtk::TreeModelColumn<task_id> col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_name;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;
 	};
@@ -124,7 +124,7 @@ private:
 	bool is_visible();
 	bool needs_re_population = true;
 
-	inline static Task_id global_id = 0;
+	inline static optional<task_id> global_id;
 	void try_set_selection();
 };
 

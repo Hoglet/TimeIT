@@ -73,7 +73,7 @@ public:
 
 private:
 	//Action observer
-	void on_action_task_selection_changed(Task_id selected_task_id) override;
+	void on_action_task_selection_changed(optional<task_id> selected_task_id) override;
 	void on_action_remove_task() override;
 
 	virtual void on_settings_changed(string name);

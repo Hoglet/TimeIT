@@ -5,6 +5,7 @@
 #include <string>
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/time_entry.h>
+#include <libtimeit/db/task.h>
 
 namespace libtimeit
 {
@@ -30,12 +31,12 @@ public:
 
 	virtual void on_message(EventType /*type*/, string /*headline*/, string /*message*/) const {};
 
-	virtual void on_parent_changed(Task_id /*id*/ )       {}; // Parent of task changed
-	virtual void on_task_added(Task_id /*id*/ )           {};
-	virtual void on_task_updated(Task_id /*id*/ )         {};
-	virtual void on_task_removed(Task_id /*id*/ )         {};
-	virtual void on_task_name_changed(Task_id /*id*/ )    {};
-	virtual void on_task_time_changed(Task_id /*id*/ )    {}; // Time connected to this task has changed
+	virtual void on_parent_changed(const task&  /*id*/ )       {}; // Parent of task changed
+	virtual void on_task_added(const task&  /*id*/ )           {};
+	virtual void on_task_updated(const task_id&  /*id*/ )      {};
+	virtual void on_task_removed(const task& /*id*/ )         {};
+	virtual void on_task_name_changed(const task&  /*id*/ )    {};
+	virtual void on_task_time_changed(const task_id&  /*id*/ )    {}; // Time connected to this task has changed
 	virtual void on_complete_update()                     {}; // Database have many changes, re populate views
 	virtual void on_settings_changed( string /*name*/ )   {};
 	virtual void on_show_main_window()                    {}; //IPC request to show main window

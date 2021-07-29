@@ -8,6 +8,7 @@
 #include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/database.h>
 #include <fmt/core.h>
+#include "db_updater.h"
 
 namespace libtimeit
 {
@@ -33,12 +34,22 @@ database::database(
 
 		find_db_version();
 
+		task_accessor::create_table(*this);
+		time_accessor::create_table(*this);
+		auto_track_accessor::create_table(*this);
+		settings_accessor::create_table(*this);
+
+
+		db_updater updater(*this);
+		updater.upgrade();
 
 		task_accessor::setup(*this);
 		time_accessor::setup(*this);
 		auto_track_accessor::setup(*this);
 		settings_accessor::setup(*this);
 		extended_task_accessor::setup(*this);
+
+
 
 		begin_transaction();
 		//db.execute("PRAGMA foreign_keys = OFF");

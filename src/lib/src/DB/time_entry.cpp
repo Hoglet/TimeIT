@@ -6,21 +6,19 @@ namespace libtimeit
 {
 Time_entry::Time_entry(
 		time_id               uuid_,
-		int64_t               task_ID_,
-		optional<class UUID>  taskUUID_,
+		task_id               owner_id,
 		time_t                start_,
 		time_t                stop_,
 		Time_entry_state      state_,
 		time_t                changed_,
 		string                comment_)
 		:
-		uuid(move(move(uuid_))),
-		owner(task_ID_),
+		id( move( uuid_)),
 		start(start_),
 		stop(stop_),
 		state(state_),
 		changed(changed_),
-		task_uuid(move(move(taskUUID_))),
+		owner_id( owner_id),
 		comment(std::move(comment_))
 {
 }
@@ -28,32 +26,32 @@ Time_entry::Time_entry(
 
 
 Time_entry::Time_entry(
-		Task_id task_ID_,
+		task_id owner_id,
 		time_t  start_,
 		time_t  stop_)
 			:
-		uuid(UUID() ),
-		owner(task_ID_ ),
+		id( UUID() ),
 		start(start_ ),
 		stop(stop_ ),
 		state(STOPPED ),
 		changed(time(nullptr)),
+		owner_id( owner_id),
 		comment()
 {
 }
 
 Time_entry::Time_entry(
-		Task_id          task_ID_,
+		task_id          owner_id,
 		time_t           start_,
 		time_t           stop_,
 		Time_entry_state state_)
 		:
-		uuid(UUID() ),
-		owner(task_ID_ ),
-		start(start_ ),
-		stop(stop_ ),
-		state(state_ ),
-		changed(time(nullptr)),
+		id( UUID() ),
+		start( start_ ),
+		stop( stop_ ),
+		state( state_ ),
+		changed( time(nullptr) ),
+		owner_id( owner_id),
 		comment()
 {
 }
@@ -67,9 +65,8 @@ Time_entry Time_entry::with_start(time_t start_) const
 		return *this;
 	}
 	return Time_entry(
-			uuid,
-			owner,
-			task_uuid,
+			id,
+			owner_id,
 			start_,
 			stop,
 			state,
@@ -84,9 +81,8 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 		return *this;
 	}
 	return Time_entry(
-			uuid,
-			owner,
-			task_uuid,
+			id,
+			owner_id,
 			start,
 			stop_,
 			state,
@@ -102,9 +98,8 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 		return *this;
 	}
 	return Time_entry(
-			uuid,
-			owner,
-			task_uuid,
+			id,
+			owner_id,
 			start,
 			stop,
 			new_state,
@@ -119,9 +114,8 @@ Time_entry Time_entry::with_comment(string new_comment)
 		return *this;
 	}
 	return Time_entry(
-			uuid,
-			owner,
-			task_uuid,
+			id,
+			owner_id,
 			start,
 			stop,
 			state,
@@ -137,9 +131,8 @@ bool operator==(const Time_entry &op1, const Time_entry &op2)
 			op1.state     == op2.state &&
 			op1.start     == op2.start &&
 			op1.stop      == op2.stop &&
-			op1.owner == op2.owner &&
-			op1.uuid      == op2.uuid &&
-			op1.task_uuid == op2.task_uuid &&
+			op1.id == op2.id &&
+			op1.owner_id == op2.owner_id &&
 			op1.comment   == op2.comment
 			);
 }

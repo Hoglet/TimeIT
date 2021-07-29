@@ -25,8 +25,8 @@ public:
 	auto_track_accessor(database& db);
 
 	task_id_list     task_ids(unsigned workspace);
-	vector<unsigned> workspaces(int64_t task_ID);
-	void             set_workspaces(int64_t task_ID, vector<unsigned> workspaces);
+	vector<unsigned> workspaces(task_id id);
+	void             set_workspaces(task_id task_ID, vector<unsigned> workspaces);
 private:
 	extended_task_accessor tasks;
 	database&              db;

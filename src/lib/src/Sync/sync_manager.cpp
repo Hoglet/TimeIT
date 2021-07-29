@@ -153,18 +153,18 @@ void sync_manager::sync_tasks_to_database()
 	vector<task> tasks_to_update;
 	for (task item : tasks_to_sync)
 	{
-		int64_t id = tasks.id(item.uuid);
-		auto parent_uuid = item.parent_uuid;
+		int64_t id = tasks.to_id(item.id);
+		auto parent_uuid = item.parent_id;
 		bool completed = item.completed;
 		int64_t parent = 0;
 		time_t last_changed = item.last_changed;
 		string name  = item.name;
-		auto uuid    = item.uuid;
+		auto uuid    = item.id;
 		bool deleted = item.deleted;
 		auto idle    = item.idle;
 		bool quiet   = item.quiet;
 
-		auto  original_task = tasks.by_id(id);
+		auto  original_task = tasks.by_id(item.id);
 		if( original_task.has_value() )
 		{
 			//These are only to be stored locally
@@ -173,14 +173,14 @@ void sync_manager::sync_tasks_to_database()
 		}
 		if (parent_uuid)
 		{
-			parent = tasks.id(*parent_uuid);
+			parent = tasks.to_id(*parent_uuid);
 			if (parent == 0)
 			{
 				tasks_to_update.push_back(item);
 				continue;
 			}
 		}
-		task temp_task(name, parent, uuid, completed, id, last_changed, parent_uuid, deleted, idle, quiet);
+		task temp_task(name, uuid, completed, last_changed, parent_uuid, deleted, idle, quiet);
 		if (id > 0)
 		{
 			tasks.update(temp_task);
@@ -196,19 +196,19 @@ void sync_manager::sync_tasks_to_database()
 //Update tasks that had missing parent earlier
 	for (task item : tasks_to_update)
 	{
-		auto parent_uuid = item.parent_uuid;
+		auto parent_uuid = item.parent_id;
 		if (parent_uuid)
 		{
-			int64_t id         = tasks.id(item.uuid);
-			int64_t parent     = tasks.id(*parent_uuid);
-			bool    completed  = item.completed;
-			time_t last_changed = item.last_changed;
-			string name        = item.name;
-			auto   uuid        = item.uuid;
-			bool   deleted     = item.deleted;
-			auto   idle        = item.idle;
-			bool   quiet       = item.quiet;
-			task temp_task(name, parent, uuid, completed, id, last_changed, parent_uuid, deleted, idle, quiet );
+			int64_t id           = tasks.to_id(item.id);
+			bool    completed    = item.completed;
+			time_t  last_changed = item.last_changed;
+			string  name         = item.name;
+			auto    uuid         = item.id;
+			bool    deleted      = item.deleted;
+			auto    idle         = item.idle;
+			bool    quiet        = item.quiet;
+
+			task temp_task(name, uuid, completed, last_changed, parent_uuid, deleted, idle, quiet );
 			if (id > 0)
 			{
 				tasks.update(temp_task);
@@ -231,8 +231,8 @@ void sync_manager::sync_times_to_database()
 
 	for (auto item : times_to_sync)
 	{
-		auto task_uuid = item.task_uuid;
-		auto owner = tasks.id(*task_uuid);
+		auto task_uuid = item.owner_id;
+		auto owner = tasks.to_id(task_uuid);
 		if(owner == 0)
 		{
 			continue;
@@ -244,7 +244,7 @@ void sync_manager::sync_times_to_database()
 		bool running = false;
 		auto comment = item.comment;
 
-		auto original_item = times.by_id(item.uuid);
+		auto original_item = times.by_id(item.id);
 		if(original_item)
 		{
 			running = (original_item->state == RUNNING);
@@ -260,7 +260,7 @@ void sync_manager::sync_times_to_database()
 			item_state = DELETED;
 		}
 
-		Time_entry te(item.uuid, owner, task_uuid, start, stop, item_state, changed, comment);
+		Time_entry te( item.id, task_uuid, start, stop, item_state, changed, comment);
 		if (original_item.has_value())
 		{
 			times.update(te);

@@ -3,6 +3,7 @@
 #include <libtimeit/timer.h>
 #include <libtimeit/logic/auto_tracker.h>
 #include <libtimeit/logic/time_keeper.h>
+#include <libtimeit/misc/contains.h>
 
 namespace libtimeit
 {
@@ -53,15 +54,11 @@ void auto_tracker::check_for_changes()
 	old_user_is_active = user_is_active;
 }
 
-bool contains(vector<Task_id> vec, Task_id item)
-{
-	return (find(vec.begin(), vec.end(), item) != vec.end());
-}
 
 void auto_tracker::do_task_switching(unsigned new_workspace)
 {
-	vector<Task_id> tasks_to_stop  = auto_track.task_ids(old_workspace);
-	vector<Task_id> tasks_to_start = auto_track.task_ids(new_workspace);
+	auto tasks_to_stop  = auto_track.task_ids(old_workspace);
+	auto tasks_to_start = auto_track.task_ids(new_workspace);
 	for (auto id : tasks_to_stop)
 	{
 		if (!contains(tasks_to_start, id))

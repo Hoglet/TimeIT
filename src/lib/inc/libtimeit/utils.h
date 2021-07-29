@@ -9,6 +9,8 @@
 #define UTILS_H_
 #include <iostream>
 #include <string>
+#include <libtimeit/datatypes/task_id.h>
+#include <optional>
 
 namespace libtimeit
 {
@@ -51,6 +53,8 @@ string_view trim_right(string_view str);
 string_view trim(string_view str);
 
 string abbreviate_string(string_view basic_string, long unsigned i);
+
+optional<task_id> optional_task_id(string basic_string);
 
 }
 

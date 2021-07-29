@@ -33,7 +33,7 @@ public:
 	void start();
 
 	//Action observers
-	void on_action_task_selection_changed(Task_id selectedTaskID) override;
+	void on_action_task_selection_changed(optional<task_id> selected_task_id) override;
 	void on_action_add_task() override;
 	void on_action_remove_task() override;
 	void on_action_add_time() override;
@@ -47,8 +47,8 @@ public:
 	void on_action_report_bug() override;
 
 	//SummaryObserver
-	void on_show_details_clicked(Task_id task_id, time_t start, time_t stop) override;
-	void on_selection_changed(Task_id id, time_t start, time_t stop) override;
+	void on_show_details_clicked(const task_id& task_id, time_t start, time_t stop) override;
+	void on_selection_changed(optional<task_id> id, time_t start, time_t stop) override;
 
 	//
 	void on_idle_detected(const Time_entry& /*te*/ ) override;
@@ -71,8 +71,8 @@ private:
 
 	int main_window_x = 0;
 	int main_window_y = 0;
-	Task_id selected_task_id = 0;
-	vector<int64_t> old_running{};
+	optional<task_id> selected_task_id {};
+	vector<task_id> old_running{};
 
 	void show_idle_dialog(const time_id& id);
 };

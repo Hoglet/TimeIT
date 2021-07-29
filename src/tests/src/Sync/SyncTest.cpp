@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "libtimeit/sync/network.h"
 #include "libtimeit/sync/json_converter.h"
 #include "../Mock/MockNetwork.h"
 #include "libtimeit/timer.h"
@@ -71,7 +70,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 		{
 			string parentUUID = "013900e6-00dd-40f7-b0d6-00de00bf006b";
 			ASSERT_EQ(1375358093, task1.last_changed) << "Checking Child's change time";
-			ASSERT_EQ(parentUUID, task1.parent_uuid->c_str()) << "Checking Child's parent ";
+			ASSERT_EQ(parentUUID, static_cast<string>(task1.parent_id.value())) << "Checking Child's parent ";
 		}
 		else
 		{
@@ -83,8 +82,8 @@ TEST( SyncManager, fullSyncEmptyClient )
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)
 	{
-		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", static_cast<string>(item.uuid).c_str()) << "TimeEntry UUID";
-		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", item.task_uuid->c_str()) << "TimeEntry taskUUD";
+		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", static_cast<string>(item.id).c_str()) << "TimeEntry UUID";
+		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", static_cast<string>(item.owner_id).c_str()) << "TimeEntry taskUUD";
 		ASSERT_EQ( 1363597429, item.start) << "TimeEntry start";
 		ASSERT_EQ( 1363597541, item.stop) << "TimeEntry stop";
 		ASSERT_EQ( 1376388171, item.changed) << "TimeEntry changed";

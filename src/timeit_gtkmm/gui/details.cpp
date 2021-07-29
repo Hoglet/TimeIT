@@ -266,7 +266,7 @@ void details::on_menu_file_popup_split()
 				}
 
 				times.update(time_entry.with_start(split_start_time).with_stop(stop) );
-				times.create(Time_entry(time_entry.owner, start, split_stop_time) );
+				times.create(Time_entry( time_entry.owner_id, start, split_stop_time) );
 				populate( create_row_data(start, stop) );
 			}
 			else
@@ -343,22 +343,22 @@ optional<Gtk::TreeModel::Row> details::find_row(time_id id)
 	}
 	return {};
 }
-void details::on_task_updated(Task_id /*id*/)
+void details::on_task_updated(const task_id& /*item*/)
 {
 	populate( );
 }
 
-void details::on_task_name_changed(Task_id /*id*/)
+void details::on_task_name_changed(const task& /*item*/)
 {
 	populate( );
 }
 
 void details::on_time_entry_changed(const Time_entry& te)
 {
-	auto row = find_row(te.uuid);
+	auto row = find_row(te.id);
 	if ( row.has_value() )
 	{
-		auto time_entry = times.by_id(te.uuid);
+		auto time_entry = times.by_id(te.id);
 		if(time_entry.has_value())
 		{
 			auto day = time_entry->start;
@@ -373,7 +373,7 @@ void details::on_time_entry_changed(const Time_entry& te)
 	}
 }
 
-void details::on_task_removed(Task_id /*id*/)
+void details::on_task_removed(const task& /*id*/)
 {
 	populate();
 }
@@ -383,12 +383,12 @@ void details::on_complete_update()
 	populate( );
 }
 
-void details::set(int64_t ID, time_t start, time_t stop)
+void details::set(optional<task_id> id, time_t start, time_t stop)
 {
-	if (ID > 0)
+	if (id.has_value())
 	{
 		set_headers_visible(true);
-		presented_task = ID;
+		presented_task = id.value();
 		start_time = start;
 		stop_time = stop;
 		populate( );
@@ -396,14 +396,14 @@ void details::set(int64_t ID, time_t start, time_t stop)
 	else
 	{
 		set_headers_visible(false);
-		presented_task = 0;
+		presented_task = {};
 		start_time = 0;
 		stop_time = 0;
 		tree_model->clear();
 	}
 }
 
-void details::on_selection_changed(int64_t id, time_t start, time_t stop)
+void details::on_selection_changed(optional<task_id> id, time_t start, time_t stop)
 {
 	set(id, start, stop);
 }
@@ -447,7 +447,11 @@ void details::update_row(TreeModel::Row& row, row_data data ) const
 
 list<row_data> details::create_row_data(time_t start, time_t stop)
 {
-	Time_list time_list = times.time_list(presented_task, start, stop);
+	if( !presented_task.has_value() )
+	{
+		return {};
+	}
+	Time_list time_list = times.time_list(presented_task.value(), start, stop);
 	time_t prev_start   = 0;
 	auto iter = time_list.begin();
 	list<row_data> data_rows = {};
@@ -457,7 +461,7 @@ list<row_data> details::create_row_data(time_t start, time_t stop)
 		auto time_entry = *iter;
 		row_data data{};
 
-		data.id           = time_entry.uuid;
+		data.id           = time_entry.id;
 		data.prev_start   = prev_start;
 		data.start        = time_entry.start;
 		prev_start            = data.start;

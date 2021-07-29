@@ -72,33 +72,35 @@ details_dialog::~details_dialog()
 }
 
 
-void details_dialog::on_selection_changed(int64_t taskID, time_t startTime, time_t stopTime)
+void details_dialog::on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime)
 {
-	set(taskID, startTime, stopTime);
+	set(id, startTime, stopTime);
 }
 
-void details_dialog::on_task_time_changed(int64_t task_ID)
+void details_dialog::on_task_time_changed(const task_id& id)
 {
-	on_task_total_time_updated(task_ID);
+	on_task_total_time_updated(id);
 }
 
-void details_dialog::on_task_name_changed(int64_t task_ID)
+void details_dialog::on_task_name_changed(const task& item)
 {
-	on_task_name_updated(task_ID);
+	on_task_name_updated(item.id);
 }
 
 
-void details_dialog::set(int64_t taskID, time_t startTime, time_t stopTime)
+void details_dialog::set(optional<task_id> id, time_t startTime, time_t stopTime)
 {
-	time_entry_id = 0;
-	presented_task = taskID;
+	time_entry_id = {};
+	presented_task = id;
 	range_start = startTime;
 	range_stop = stopTime;
 
-	on_task_name_updated(taskID);
-	on_task_total_time_updated(taskID);
-
-	detail_list.set(taskID, range_start, range_stop);
+	if(id.has_value())
+	{
+		on_task_name_updated(id.value());
+		on_task_total_time_updated(id.value());
+	}
+	detail_list.set(id, range_start, range_stop);
 	on_running_changed();
 }
 
@@ -142,11 +144,11 @@ void details_dialog::on_running_changed()
 	}
 }
 
-void details_dialog::on_task_name_updated(int64_t id)
+void details_dialog::on_task_name_updated(const task_id& id)
 {
 	if (presented_task == id)
 	{
-		auto updated_task = tasks.by_id(presented_task);
+		auto updated_task = tasks.by_id(presented_task.value());
 		if (updated_task.has_value())
 		{
 			task_name.set_text(updated_task->name);
@@ -163,17 +165,17 @@ void details_dialog::on_task_name_updated(int64_t id)
 }
 
 
-void details_dialog::on_task_total_time_updated(int64_t id)
+void details_dialog::on_task_total_time_updated(const task_id& id)
 {
 	if (presented_task == id)
 	{
 		if (difftime(range_stop, range_start) > COMPLETE_DAY)
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
-			auto updated_task = tasks.by_id(presented_task);
+			auto updated_task = tasks.by_id(presented_task.value());
 			if (updated_task.has_value())
 			{
-				time_t total_time = times.total_cumulative_time(presented_task, range_start, range_stop);
+				time_t total_time = times.total_cumulative_time(presented_task.value(), range_start, range_stop);
 				task_total_time.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else

@@ -15,14 +15,24 @@ struct extended_task : public task
 	const int  total_time;
 
 	extended_task(
-			int           ID,
-			UUID          uuid,
-			int           parent_ID,
-			const string& name,
-			int           time = 0,
-			bool          expanded = false,
-			bool          running = false,
-			int           total_time = 0);
+			const task&       source,
+			int               time,
+			int               total_time,
+			bool              expanded,
+			bool              running
+			);
+
+
+
+	extended_task(
+			task_id           uuid,
+			optional<task_id> parent_ID,
+			const string&     name,
+			int               time = 0,
+			bool              expanded = false,
+			bool              running = false,
+			int               total_time = 0
+	);
 
 //	Extended_task with_total(int i) const;
 };

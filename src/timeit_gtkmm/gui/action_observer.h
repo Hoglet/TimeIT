@@ -17,7 +17,7 @@ using namespace libtimeit;
 class action_observer
 {
 public:
-	virtual void on_action_task_selection_changed(Task_id /*selectedTaskID*/) {};
+	virtual void on_action_task_selection_changed(optional<task_id> /*selected_task_id*/) {};
 	virtual void on_action_add_task()           {};
 	virtual void on_action_remove_task()        {};
 	virtual void on_action_add_time()           {};
@@ -30,7 +30,7 @@ public:
 	virtual void on_action_preferences()        {};
 	virtual void on_action_toggle_main_window() {};
 	virtual void on_action_show_main_window()   {};
-	virtual void on_action_stop_timers()         {};
+	virtual void on_action_stop_timers()        {};
 	virtual void on_action_report_bug()         {};
 };
 }

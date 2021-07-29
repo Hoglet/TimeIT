@@ -27,8 +27,8 @@ public:
 	void on_ok_button_clicked();
 	void on_cancel_button_clicked();
 	void on_data_changed();
-	void set_task_id(Task_id ID);
-	void set_parent(Task_id ID);
+	void set_task_id(const task_id& id);
+	void set_parent(optional<task_id> id);
 
 	// IWidget interface
 	void show() override;
@@ -66,18 +66,18 @@ private:
 	Gtk::Label    parent_label   {_("Parent: ")};
 	parent_chooser_widget parent_chooser;
 
-	string        name;
-	unsigned      idle_time {0};
-	bool          quiet     {false};
-	Task_id       id   {0};
-	Task_id       parent_id {0};
+	string                  name;
+	unsigned                idle_time {0};
+	bool                    quiet     {false};
+	optional<task_id>       id;
+	optional<task_id>       parent_id;
 
 	vector<unsigned> workspaces;
 
 	auto_track_accessor auto_track_table;
 	task_accessor       tasks;
 	settings_accessor   settings;
-	x11_workspace           workspace;
+	x11_workspace       workspace;
 
 	vector<shared_ptr<Gtk::CheckButton>> check_button;
 };

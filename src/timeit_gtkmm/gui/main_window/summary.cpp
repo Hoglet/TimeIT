@@ -82,9 +82,12 @@ bool summary::on_button_press_event(GdkEventButton* event)
 void summary::on_menu_show_details()
 {
 	auto id = selected_id();
-	for (auto* observer: observers)
+	if(id.has_value())
 	{
-		observer->on_show_details_clicked(id, start_time, stop_time);
+		for (auto* observer: observers)
+		{
+			observer->on_show_details_clicked(id.value(), start_time, stop_time);
+		}
 	}
 }
 
@@ -99,7 +102,7 @@ void summary::on_selection_changed()
 	{
 		observer->on_selection_changed(id, start_time, stop_time);
 	}
-	if (id != 0)
+	if ( id.has_value() )
 	{
 		global_id = id;
 	}
@@ -117,9 +120,8 @@ void summary::detach(summary_observer* observer)
 	observers.remove(observer);
 }
 
-Task_id summary::selected_id()
+optional<task_id> summary::selected_id()
 {
-	Task_id ret_val = 0;
 	auto tree_selection = get_selection();
 	TreeModel::iterator iter;
 	iter = tree_selection->get_selected();
@@ -127,9 +129,9 @@ Task_id summary::selected_id()
 	{
 		TreeModel::Row row;
 		row = *iter;
-		ret_val = row[columns.col_id];
+		return row[columns.col_id];
 	}
-	return ret_val;
+	return {};
 }
 
 void summary::set_references(Gtk::Calendar &cal)
@@ -154,7 +156,7 @@ void summary::calculate_time_span()
 {
 }
 
-void summary::on_task_updated(Task_id taskID)
+void summary::on_task_updated(const task_id& taskID)
 {
 	if (is_visible())
 	{
@@ -165,10 +167,9 @@ void summary::on_task_updated(Task_id taskID)
 			TreeModel::Row row = *iter;
 			time_t total_time = times.total_cumulative_time(taskID, start_time, stop_time);
 			assign_values_to_row(row, *updated_task, total_time);
-			int64_t parent_id = updated_task->parent_id;
-			if (parent_id > 0)
+			if (updated_task->parent_id.has_value())
 			{
-				on_task_updated(parent_id);
+				on_task_updated(updated_task->parent_id.value());
 			}
 		}
 		else
@@ -183,12 +184,12 @@ void summary::on_task_updated(Task_id taskID)
 	}
 }
 
-void summary::on_task_name_changed(int64_t id)
+void summary::on_task_name_changed(const task& item)
 {
-	on_task_updated(id);
+	on_task_updated(item.id);
 }
 
-void summary::on_task_time_changed(int64_t id)
+void summary::on_task_time_changed(const task_id& id)
 {
 	on_task_updated(id);
 }
@@ -206,9 +207,9 @@ void summary::on_complete_update()
 	}
 }
 
-void summary::on_task_removed(int64_t taskID)
+void summary::on_task_removed(const task& item)
 {
-	Gtk::TreeIter iter = find_row(taskID);
+	Gtk::TreeIter iter = find_row(item.id);
 	if (iter != tree_model->children().end())
 	{
 		tree_model->erase(iter);
@@ -277,21 +278,21 @@ bool summary::is_visible()
 	return true;
 }
 
-TreeModel::Row summary::add(int64_t id)
+TreeModel::Row summary::add(const task_id& id)
 {
 	auto task_to_add = tasks.by_id(id);
 	TreeModel::Row row;
 
-	if (task_to_add->parent_id > 0)
+	if (task_to_add->parent_id.has_value() )
 	{
-		Gtk::TreeIter iter = find_row(task_to_add->parent_id);
+		Gtk::TreeIter iter = find_row(task_to_add->parent_id.value());
 		if (iter != tree_model->children().end())
 		{
 			row = *iter;
 		}
 		else
 		{
-			row = add(task_to_add->parent_id);
+			row = add(task_to_add->parent_id.value());
 		}
 		row = *(tree_model->append((row).children()));
 	}
@@ -330,13 +331,13 @@ void summary::assign_values_to_row(TreeModel::Row &row, task &task_, time_t tota
 	row[columns.col_time] = libtimeit::seconds_2_hhmm(total_time);
 }
 
-Gtk::TreeModel::iterator summary::find_row(Task_id id)
+Gtk::TreeModel::iterator summary::find_row(const task_id& id)
 {
 	TreeModel::Children children = tree_model->children();
 	return sub_search(id, children);
 }
 
-Gtk::TreeModel::iterator summary::sub_search(Task_id id, TreeModel::Children children)
+Gtk::TreeModel::iterator summary::sub_search(const task_id& id, TreeModel::Children children)
 {
 	TreeIter iter;
 	for (iter = children.begin(); iter != children.end(); iter++)
@@ -361,16 +362,17 @@ Gtk::TreeModel::iterator summary::sub_search(Task_id id, TreeModel::Children chi
 
 void summary::try_set_selection()
 {
-	auto row = find_row(global_id);
 	auto tree_selection = get_selection();
-	if (row != tree_model->children().end())
+	if( global_id.has_value())
 	{
-		tree_selection->select(row);
+		auto row = find_row(global_id.value());
+		if (row != tree_model->children().end())
+		{
+			tree_selection->select(row);
+			return;
+		}
 	}
-	else
-	{
-		tree_selection->unselect_all();
-	}
+	tree_selection->unselect_all();
 }
 
 }

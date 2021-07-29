@@ -150,10 +150,10 @@ vector<unsigned> edit_task_dialog::get_ticked_workspaces()
 }
 
 
-void edit_task_dialog::set_task_id(Task_id ID)
+void edit_task_dialog::set_task_id(const task_id& ID)
 {
 	id = ID;
-	auto task_to_edit = tasks.by_id(id);
+	auto task_to_edit = tasks.by_id(ID);
 	if (task_to_edit.has_value())
 	{
 		name = task_to_edit->name;
@@ -176,7 +176,7 @@ void edit_task_dialog::set_task_id(Task_id ID)
 	}
 }
 
-void edit_task_dialog::set_parent(Task_id ID)
+void edit_task_dialog::set_parent(optional<task_id> ID)
 {
 	parent_id = ID;
 	parent_chooser.set_parent(parent_id);
@@ -214,14 +214,9 @@ void edit_task_dialog::on_ok_button_clicked()
 	auto new_name = task_name_entry.get_text();
 	parent_id = parent_chooser.get_parent_id();
 
-	if (id < 1)
+	if (id.has_value())
 	{
-		id = tasks.create({new_name, parent_id});
-	}
-	else
-	{
-		tasks.set_parent_id(id, parent_id);
-		auto current_task = tasks.by_id(id);
+		auto current_task = tasks.by_id(id.value());
 		if (current_task.has_value())
 		{
 			auto new_idle_time = (unsigned)idle_time_entry.get_value_as_int();
@@ -233,19 +228,26 @@ void edit_task_dialog::on_ok_button_clicked()
 			auto updated_task = current_task->
 					with_name(new_name).
 					with_idle(new_idle_time).
-					with_quiet(quiet_button.get_active());
+					with_quiet(quiet_button.get_active()).
+					with_parent(parent_id);
 			tasks.update(updated_task);
 		}
 	}
-	auto_track_table.set_workspaces(id, workspace_list);
-	id = -1;
-	parent_id = 0;
+	else
+	{
+		task new_task(new_name, parent_id);
+		tasks.create(new_task);
+		id = new_task.id;
+	}
+	auto_track_table.set_workspaces(id.value(), workspace_list);
+	id = {};
+	parent_id = {};
 	hide();
 }
 void edit_task_dialog::on_cancel_button_clicked()
 {
-	id = -1;
-	parent_id = 0;
+	id = {};
+	parent_id = {};
 	hide();
 }
 void edit_task_dialog::check_for_changes()

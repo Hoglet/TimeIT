@@ -38,29 +38,30 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	task_accessor tasks(db);
 	time_accessor times(db);
 
-	int64_t taskID = tasks.create(task("Test", 0));
+	task test_task(task("Test", {}));
+	tasks.create(test_task);
 	TKObserver observer(timeKeeper);
 	observer.runningChanged = false;
-	vector<int64_t> runningTasks = times.currently_running();
+	auto runningTasks = times.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks before starting ";
-	timeKeeper.start(taskID);
+	timeKeeper.start(test_task.id);
 	runningTasks = times.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
-	timeKeeper.stop(taskID);
+	timeKeeper.stop(test_task.id);
 	runningTasks = times.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after stopping ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
 	observer.runningChanged = false;
-	timeKeeper.toggle(taskID);
+	timeKeeper.toggle(test_task.id);
 	runningTasks = times.currently_running();
 	ASSERT_EQ( 1, runningTasks.size()) << "Checking number of running tasks after toggling ";
 	ASSERT_EQ( true, observer.runningChanged) << "Notification supplied ";
 
-	timeKeeper.toggle(taskID);
+	timeKeeper.toggle(test_task.id);
 	runningTasks = times.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after toggling ";
 
@@ -76,13 +77,14 @@ TEST( TimeKeeper, update )
 	time_accessor times(db);
 
 	time_t now = time(nullptr);
-	int64_t taskID = tasks.create(task("Test", 0));
+	task test_task("Test", {});
+	tasks.create(test_task);
 	TKObserver observer(timeKeeper);
 
-	timeKeeper.start(taskID);
+	timeKeeper.start(test_task.id);
 
-	vector<Time_entry> entries = times.time_list(taskID, 0, now + 1000);
-	auto teID = entries.at(0).uuid;
+	vector<Time_entry> entries = times.time_list( test_task.id, 0, now + 1000);
+	auto teID = entries.at(0).id;
 	auto te = times.by_id(teID);
 	times.update(te->with_start(0).with_start(10));
 
@@ -102,13 +104,14 @@ TEST( TimeKeeper, Stop_all)
 	task_accessor tasks(db);
 	time_accessor times(db);
 
-	int64_t taskID = tasks.create(task("Test", 0));
+	task test_task( "Test", {} );
+	tasks.create( test_task );
 	TKObserver observer(time_keeper);
 
-	time_keeper.start(taskID);
+	time_keeper.start(test_task.id);
 	observer.runningChanged = false;
 	time_keeper.stop_all();
-	vector<int64_t> runningTasks = times.currently_running();
+	auto runningTasks = times.currently_running();
 	ASSERT_EQ( 0, runningTasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_TRUE( observer.runningChanged) << "Notification supplied ";
 }

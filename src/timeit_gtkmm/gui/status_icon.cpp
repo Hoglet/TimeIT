@@ -52,12 +52,12 @@ void status_icon_widget::populate_context_menu()
 	menu_list.clear();
 
 	latest_tasks = times.latest_active_tasks(5);
-	std::vector<int64_t> running_tasks = times.currently_running();
+	auto running_tasks = times.currently_running();
 	for (int i = 0; i < (int) latest_tasks.size(); i++)
 	{
 		try
 		{
-			int64_t id = latest_tasks[i];
+			auto id = latest_tasks[i];
 			auto task = tasks.by_id(id);
 			string menu_line = complete_task_path(latest_tasks[i]);
 
@@ -112,16 +112,16 @@ void status_icon_widget::populate_context_menu()
 
 }
 
-std::string status_icon_widget::complete_task_path(int64_t id)
+std::string status_icon_widget::complete_task_path(const task_id& id)
 {
 	std::string task_name;
 	auto task = tasks.by_id(id);
 	if (task.has_value())
 	{
 		task_name = task->name;
-		if (task->parent_id > 0)
+		if (task->parent_id.has_value() )
 		{
-			task_name = complete_task_path(task->parent_id) + " / " + task_name;
+			task_name = complete_task_path(task->parent_id.value()) + " / " + task_name;
 		}
 	}
 	return task_name;
@@ -152,7 +152,7 @@ void status_icon_widget::on_menu_toggle_task5()
 	toggle_task(latest_tasks[4]);
 }
 
-void status_icon_widget::toggle_task(int64_t id)
+void status_icon_widget::toggle_task(const task_id& id)
 {
 	m_time_keeper.toggle(id);
 }
@@ -217,19 +217,19 @@ void status_icon_widget::on_popup_menu(guint button, guint32 activate_time)
 	menu_popup.popup(button, activate_time);
 }
 
-void status_icon_widget::on_task_updated(Task_id /*id*/)
+void status_icon_widget::on_task_updated(const task_id& /*id*/)
 {
 	set_tooltip();
 	populate_context_menu();
 }
 
-void status_icon_widget::on_task_name_changed(Task_id /*id*/)
+void status_icon_widget::on_task_name_changed(const task& /*id*/)
 {
 	set_tooltip();
 	populate_context_menu();
 }
 
-void status_icon_widget::on_task_time_changed(Task_id /*id*/)
+void status_icon_widget::on_task_time_changed(const task_id& /*id*/)
 {
 	set_tooltip();
 	populate_context_menu();
@@ -261,7 +261,7 @@ void status_icon_widget::set_tooltip()
 		//Figure out start and end of today
 		auto start_time = libtimeit::beginning_of_day(time(nullptr));
 		auto stop_time  = libtimeit::end_of_day(time(nullptr));
-		for (int64_t id : currently_running)
+		for (auto id : currently_running)
 		{
 			auto task = tasks.by_id(id);
 			message << setw(15) << setiosflags(ios::left) << task->name;

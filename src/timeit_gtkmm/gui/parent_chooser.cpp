@@ -7,6 +7,8 @@ using namespace std;
 namespace gui
 {
 
+const task_id NO_PARENT( UUID::from_string("85d66103-41e6-4ea0-a204-f1d07990de70").value() );
+
 using namespace std;
 parent_chooser_widget::parent_chooser_widget(database &db) :
 		tasks(db)
@@ -18,11 +20,11 @@ parent_chooser_widget::parent_chooser_widget(database &db) :
 
 	//Fill the ComboBox's Tree Model:
 	Gtk::TreeModel::Row row = *(model->append());
-	row[columns.col_id] = 0;
+	row[columns.col_id] = NO_PARENT;
 	row[columns.col_name] = "-";
 
 	string base_string;
-	populate(base_string, 0);
+	populate(base_string, {} );
 
 	//Add the model columns to the Combo (which is a kind of view),
 	//rendering them in the default way:
@@ -35,7 +37,7 @@ parent_chooser_widget::parent_chooser_widget(database &db) :
 
 }
 
-void parent_chooser_widget::set_id(Task_id id)
+void parent_chooser_widget::set_id(const task_id& id)
 {
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
@@ -46,31 +48,32 @@ void parent_chooser_widget::set_id(Task_id id)
 	}
 }
 
-void parent_chooser_widget::set_parent(Task_id id)
+void parent_chooser_widget::set_parent(optional<task_id> id)
 {
-	if (id >= 0)
-	{
-		this->parent_id = id;
-	}
-	else
-	{
-		this->parent_id = 0;
-	}
+	this->parent_id = id;
+
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
-	iter = find_row(id);
-	if (iter != children.end())
+	if(id.has_value())
 	{
-		set_active(iter);
+		iter = find_row(id.value());
+		if (iter != children.end())
+		{
+			set_active(iter);
+		}
 	}
 }
 
-Task_id parent_chooser_widget::get_parent_id() const
+optional<task_id> parent_chooser_widget::get_parent_id() const
 {
+	if ( parent_id == NO_PARENT)
+	{
+		return {};
+	}
 	return parent_id;
 }
 
-Gtk::TreeModel::iterator parent_chooser_widget::find_row(Task_id id)
+Gtk::TreeModel::iterator parent_chooser_widget::find_row(const task_id& id)
 {
 	Gtk::TreeIter iter;
 	Gtk::TreeModel::Children children = model->children();
@@ -78,7 +81,7 @@ Gtk::TreeModel::iterator parent_chooser_widget::find_row(Task_id id)
 	for (iter = children.begin(); iter != children.end(); iter++)
 	{
 		Gtk::TreeModel::Row row = *iter;
-		if (row[columns.col_id] == id)
+		if ( row[columns.col_id] == id)
 		{
 			break;
 		}
@@ -86,7 +89,7 @@ Gtk::TreeModel::iterator parent_chooser_widget::find_row(Task_id id)
 	return iter;
 }
 
-void parent_chooser_widget::populate(std::string &base_string, Task_id parent_id_)
+void parent_chooser_widget::populate(std::string &base_string, optional<task_id> parent_id_)
 {
 	vector<task> child_tasks = tasks.by_parent_id(parent_id_);
 

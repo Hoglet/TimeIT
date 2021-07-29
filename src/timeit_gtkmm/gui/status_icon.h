@@ -54,12 +54,12 @@ private:
 	void on_menu_toggle_task4();
 	void on_menu_toggle_task5();
 	void populate_context_menu();
-	void toggle_task(int64_t id);
-	string complete_task_path(int64_t id);
+	void toggle_task(const task_id& id);
+	string complete_task_path(const task_id& id);
 
-	void on_task_updated(Task_id id) override;
-	void on_task_name_changed(Task_id id) override;
-	void on_task_time_changed(Task_id id) override;
+	void on_task_updated(const task_id& id) override;
+	void on_task_name_changed(const task& item) override;
+	void on_task_time_changed(const task_id& item) override;
 
 	void on_complete_update() override;
 	Glib::RefPtr<Gtk::StatusIcon> status_icon_instance;
@@ -74,7 +74,7 @@ private:
 	time_accessor times;
 
 	std::list<action_observer*> observers;
-	std::vector<Task_id> latest_tasks;
+	std::vector<task_id> latest_tasks;
 
 };
 

@@ -47,20 +47,20 @@ class details: public Gtk::TreeView, public event_observer, public summary_obser
 {
 public:
 	details(database &database, notification_manager& notifier, window_manager&  window_manager);
-	void set(Task_id id, time_t start, time_t stop);
+	void set(optional<task_id> id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
 	void on_menu_file_popup_remove();
 	void on_menu_file_popup_merge();
 	void on_menu_file_popup_split();
 	//EventObserver interface
-	void on_task_updated(Task_id task_id) override;
-	void on_task_removed(Task_id task_id) override;
+	void on_task_updated(const task_id& id) override;
+	void on_task_removed(const task& item) override;
 	void on_complete_update() override;
-	void on_task_name_changed(Task_id task_id) override;
+	void on_task_name_changed(const task& item) override;
 	void on_time_entry_changed(const Time_entry& /*te*/) override;
 	//Summary_observer interface
-	void on_selection_changed(int64_t id, time_t startTime, time_t stopTime) override;
+	void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) override;
 	//
 	optional<time_id>   get_selected();
 	list<time_id>       get_selected_and_next();
@@ -102,7 +102,7 @@ private:
 		Gtk::TreeModelColumn<Glib::ustring> col_comment;
 	};
 	model_columns columns;
-	Task_id      presented_task {0};
+	optional<task_id>      presented_task;
 
 	time_t start_time {0};
 	time_t stop_time  {0};

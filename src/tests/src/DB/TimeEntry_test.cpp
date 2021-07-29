@@ -8,8 +8,7 @@ Time_entry getTestTimeEntry()
 	auto uuid = UUID::from_string("00a600df-00da-414c-8078-0182005b0109");
 	return Time_entry(
 			time_id(*uuid),
-			1,
-			UUID::from_string("00a600df-00da-414c-8078-0182005b0107"),
+			task_id(UUID::from_string("00a600df-00da-414c-8078-0182005b0107").value()),
 			100,
 			1100,
 			STOPPED,

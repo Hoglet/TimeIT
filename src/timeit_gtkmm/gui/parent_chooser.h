@@ -22,17 +22,18 @@ using namespace std;
 class parent_chooser_widget: public Gtk::ComboBox
 {
 public:
-	parent_chooser_widget(database& db);
+	explicit parent_chooser_widget(database& db);
 
-	void    set_id(Task_id id);
-	void    set_parent(Task_id id);
-	Task_id get_parent_id() const;
+	void              set_id(const task_id& id);
+	void              set_parent(optional<task_id> id);
+	optional<task_id> get_parent_id() const;
 private:
 	//Signal handlers:
 	virtual void on_combo_changed();
-	void populate(string& base_string, Task_id parent_id);
 
-	Gtk::TreeModel::iterator find_row(Task_id id);
+	void populate(string& base_string, optional<task_id> parent_id);
+
+	Gtk::TreeModel::iterator find_row(const task_id& id);
 
 	//Tree model columns:
 	class model_columns : public Gtk::TreeModel::ColumnRecord
@@ -45,8 +46,8 @@ private:
 			add(col_name);
 		}
 
-		Gtk::TreeModelColumn<Task_id>       col_id;
-		Gtk::TreeModelColumn<Glib::ustring> col_name;
+		Gtk::TreeModelColumn<task_id>        col_id;
+		Gtk::TreeModelColumn<Glib::ustring>  col_name;
 	};
 
 	model_columns columns;
@@ -54,7 +55,7 @@ private:
 	Glib::RefPtr<Gtk::ListStore> model;
 
 	task_accessor tasks;
-	Task_id       parent_id{0};
+	optional<task_id>       parent_id;
 };
 
 }

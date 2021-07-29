@@ -1,109 +1,46 @@
 #include <iostream>
 #include <sstream>
 #include <libtimeit/db/extended_task_accessor.h>
+#include <libtimeit/misc/contains.h>
 
 using namespace std;
 namespace libtimeit
 {
 
+const auto EXPANDED_QUERY = R"(
+		SELECT
+			expanded
+		FROM
+			tasks
+		WHERE uuid=?)";
+
+
+
 extended_task_accessor::extended_task_accessor(database& db )
 		:
 		task_accessor(db),
-		times(db)
+		times(db),
+		expanded_statement(db.prepare(EXPANDED_QUERY))
 {
 }
 
 
 
 
-vector<extended_task> extended_task_accessor::by_parent_id(int64_t parentID, time_t start,
-														   time_t stop)
+vector<extended_task> extended_task_accessor::by_parent_id(optional<task_id> id)
 {
-	return get_extended_tasks(0, parentID, false, start, stop);
+	auto tasks = task_accessor::by_parent_id(id);
+
+	return from_tasks(tasks);
 }
 
-
-Duration extended_task_accessor::get_total_child_time(int64_t id, time_t start, time_t stop)
+optional<extended_task> extended_task_accessor::by_id(const task_id& id)
 {
-	auto children = get_extended_tasks(0, id, false, start, stop);
-	int total_time = 0;
-	for (auto child : children)
+	auto possible_item = task_accessor::by_id(id);
+	if(possible_item.has_value())
 	{
-		total_time += child.time;
-		total_time += get_total_child_time(child.id, start, stop);
-	}
-	return total_time;
-}
-
-vector<extended_task> extended_task_accessor::get_extended_tasks(int64_t taskID, int64_t parentID,
-																 bool onlyRunning, time_t start, time_t stop)
-{
-	vector<extended_task> return_value;
-	stringstream statement;
-
-	statement << "SELECT id, parent, name, expanded, running, uuid"
-			"  FROM "
-			"    v_tasks"
-			"  WHERE deleted=0";
-
-	if (taskID > 0)
-	{
-		statement << " AND id=" << taskID;
-	}
-	else if (onlyRunning)
-	{
-		statement << " AND running=1";
-	}
-	else
-	{
-		if (parentID > 0)
-		{
-			statement << " AND parent=" << parentID;
-		}
-		else
-		{
-			statement << " AND parent IS NULL ";
-		}
-	}
-
-	Query_result rows = db.execute(statement.str());
-	for (vector<data_cell> row : rows)
-	{
-		int id = (int)row[0].integer();
-		int parent = 0;
-		if (row[1].has_value())
-		{
-			parent = (int)row[1].integer();
-		}
-		string name = row[2].text();
-		bool expanded = row[3].boolean();
-		bool running = row[4].boolean();
-		int time = times.duration_time(id, start, stop);
-		int total_time = times.total_cumulative_time(id, start, stop);
-		auto opt_uuid=UUID::from_string(row[5].text());
-
-		if(opt_uuid.has_value())
-		{
-			return_value.emplace_back(
-					id,
-					opt_uuid.value(),
-					parent,
-					name,
-					time,
-					expanded,
-					running,
-					total_time);
-		}
-	}
-	return return_value;
-}
-
-optional<extended_task> extended_task_accessor::by_id(int64_t taskID, time_t start, time_t stop)
-{
-	vector<extended_task> tasks = get_extended_tasks(taskID, 0, false, start, stop);
-	if (tasks.size() == 1)
-	{
-		return tasks.at(0);
+		auto running_tasks = times.currently_running();
+		return from_task( possible_item.value(), running_tasks );
 	}
 	return {};
 }
@@ -155,6 +92,65 @@ void extended_task_accessor::setup(database& db)
 	extended_task_accessor::drop_views(db);
 	extended_task_accessor::upgrade(db);
 	extended_task_accessor::create_views(db);
+}
+
+
+extended_task extended_task_accessor::from_task( const task &item, vector<task_id> running_tasks )
+{
+	int time = times.duration_time( item.id, 0, 0);
+	int total_time = times.total_cumulative_time( item.id, 0, 0);
+
+	bool running = contains( running_tasks, item.id);
+	bool expanded = is_expanded( item );
+
+	return {
+			item,
+			time,
+			total_time,
+			expanded,
+			running
+	};
+
+}
+
+vector<extended_task> extended_task_accessor::from_tasks(const vector<task>& tasks)
+{
+	vector<extended_task> return_value = {};
+	auto running_tasks = times.currently_running();
+	for (auto item: tasks)
+	{
+		return_value.emplace_back( from_task( item, running_tasks ) );
+	}
+	return return_value;
+}
+
+bool extended_task_accessor::is_expanded(const task& task)
+{
+	expanded_statement.bind_value(1, static_cast<string>(task.id));
+	auto rows = expanded_statement.execute();
+	for ( auto row: rows )
+	{
+		return static_cast<bool>(row[0].integer());
+	}
+	return false;
+}
+
+
+void extended_task_accessor::set_task_expanded(const task_id& id, bool expanded)
+{
+	auto statement = db.prepare(
+			R"Query(
+				UPDATE
+					tasks
+				SET
+					expanded = ?
+				WHERE
+					uuid= ? ;
+			)Query"
+			);
+	statement.bind_value(1, static_cast<int64_t>(expanded));
+	statement.bind_value(2, static_cast<string>( id ) );
+	statement.execute();
 }
 
 

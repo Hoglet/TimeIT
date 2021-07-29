@@ -41,52 +41,6 @@ void notification_manager::send_message(notification_message message)
 {
 	switch(message.type)
 	{
-		case TASK_UPDATED:
-			this->broadcast( [message](event_observer* observer)
-							  {
-								  observer->on_task_updated(message.id);
-							  }
-							  );
-			break;
-		case  TASK_NAME_CHANGED:
-			this->broadcast( [message](event_observer* observer)
-								{
-									observer->on_task_name_changed(message.id);
-								}
-							);
-			break;
-		case TASK_TIME_CHANGED:
-			this->broadcast(
-					[message](event_observer* observer)
-					{
-						observer->on_task_time_changed(message.id);
-					}
-					);
-			break;
-		case TASK_ADDED:
-			this->broadcast(
-					[message](event_observer* observer)
-					{
-						observer->on_task_added(message.id);
-					}
-					);
-			break;
-		case TASK_REMOVED:
-			this->broadcast(
-					[message](event_observer* observer)
-					{
-						observer->on_task_removed(message.id);
-					}
-			);
-			break;
-		case TASK_PARENT_CHANGED:
-			this->broadcast(
-					[message](event_observer* observer)
-					{
-						observer->on_parent_changed(message.id);
-					}
-			);
-			break;
 		case COMPLETE_UPDATE:
 			this->broadcast(
 					[message](event_observer* observer)

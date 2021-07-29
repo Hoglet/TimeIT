@@ -27,15 +27,15 @@ public:
 	task_list_widget &operator=(const task_list_widget &) = delete;
 	task_list_widget &operator=(task_list_widget &&) = delete;
 
-	void populate(Gtk::TreeModel::Row* parent = nullptr, Task_id parent_id = 0);
-	Task_id selected_id();
-	void on_task_added(Task_id id) override;
-	void on_task_updated(Task_id id) override;
-	void on_task_removed(Task_id id) override;
-	void on_parent_changed(Task_id id) override;
+	void populate(Gtk::TreeModel::Row* parent = nullptr, optional<task_id> parent_id = {});
+	optional<task_id> selected_id();
+	void on_task_added(const task& item) override;
+	void on_task_updated(const task_id& id) override;
+	void on_task_removed(const task& item) override;
+	void on_parent_changed(const task& item) override;
 	void on_complete_update() override;
-	void on_task_name_changed(Task_id id) override;
-	void on_task_time_changed(Task_id id) override;
+	void on_task_name_changed(const task& item) override;
+	void on_task_time_changed(const task_id& id) override;
 
 	void on_row_expanded(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path) override;
 	void on_row_collapsed(const Gtk::TreeModel::iterator &iter, const Gtk::TreeModel::Path &path) override;
@@ -44,8 +44,8 @@ public:
 private:
 	void on_selection_changed();
 	void empty();
-	Gtk::TreeModel::iterator sub_search(Task_id id, Gtk::TreeModel::Children children);
-	Gtk::TreeModel::iterator find_row(Task_id id);
+	Gtk::TreeModel::iterator sub_search(const task_id& id, Gtk::TreeModel::Children children);
+	Gtk::TreeModel::iterator find_row(const task_id& id);
 	Glib::RefPtr<Gtk::TreeStore> tree_model;
 
 	class model_columns : public Gtk::TreeModel::ColumnRecord
@@ -59,7 +59,7 @@ private:
 			add(col_pixbuf);
 			add(col_time);
 		};
-		Gtk::TreeModelColumn<Task_id> col_id;
+		Gtk::TreeModelColumn<task_id> col_id;
 		Gtk::TreeModelColumn<Glib::ustring> col_name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > col_pixbuf;
 		Gtk::TreeModelColumn<Glib::ustring> col_time;

@@ -15,11 +15,12 @@ TEST (AutotrackAccessor, WorkspaceAccessor)
 	TempDB tempdb(notifier);
 	auto_track_accessor autotrackAccessor(tempdb);
 	extended_task_accessor taskAccessor(tempdb);
-	int64_t taskId = taskAccessor.create(task("Tjohopp", 0));
+	task test_task( "Tjohopp", {} );
+	taskAccessor.create( test_task );
 	vector<unsigned> workspaces;
 	workspaces.push_back(1);
-	autotrackAccessor.set_workspaces(taskId, workspaces);
-	vector<unsigned> result = autotrackAccessor.workspaces(1);
+	autotrackAccessor.set_workspaces( test_task.id, workspaces);
+	vector<unsigned> result = autotrackAccessor.workspaces(test_task.id);
 	ASSERT_EQ(result, workspaces);
 }
 
@@ -30,21 +31,19 @@ TEST (AutotrackAccessor, getTaskIDs)
 	TempDB tempdb(notifier);
 	auto_track_accessor autotrackAccessor(tempdb);
 	task_accessor tasks(tempdb);
-	int taskID = tasks.create(task("test") );
+
+	task test_task("test");
+	tasks.create( test_task );
 	vector<unsigned> workspaces;
 
 	workspaces.push_back(1);
-	autotrackAccessor.set_workspaces(taskID, workspaces);
-	vector<int64_t> result = autotrackAccessor.task_ids(0);
+	autotrackAccessor.set_workspaces( test_task.id, workspaces);
+	auto result = autotrackAccessor.task_ids(0);
 	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 0 ";
 	result = autotrackAccessor.task_ids(1);
 	ASSERT_EQ(1, result.size()) << "Number of ids on workspace 1 ";
 
-	stringstream statement;
-	statement << "UPDATE tasks SET deleted = 1 ";
-	statement << " ,changed = 0";
-	statement << " WHERE id = " << taskID;
-	tempdb.execute(statement.str());
+	tasks.remove(test_task.id);
 
 	result = autotrackAccessor.task_ids(1);
 	ASSERT_EQ(0, result.size()) << "Number of ids on workspace 1 when task is deleted ";
