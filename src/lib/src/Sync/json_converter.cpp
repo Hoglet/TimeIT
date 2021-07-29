@@ -24,7 +24,6 @@ string to_json(vector<task> tasks, string username)
 			parent.set( "id", json( static_cast<string>(node.parent_id.value()) ));
 			item.set( "parent", parent);
 		}
-		item.set("completed", json(node.completed));
 		item.set("lastChange", json(node.last_changed));
 		item.set("deleted", json(node.deleted));
 
@@ -76,7 +75,6 @@ vector<task> to_tasks(const string &text)
 		string   name            = json_object.text("name");
 		string   uuid_string     = json_object.text("id");
 		string   parent_string   = json_object.by_name("parent").text("id");
-		bool     completed       = json_object.boolean("completed");
 		time_t   last_changed    = json_object.integer("lastChange");
 		bool     deleted         = json_object.boolean("deleted");
 		auto     idle            = (unsigned)json_object.integer("idle");
@@ -93,7 +91,6 @@ vector<task> to_tasks(const string &text)
 			return_value.emplace_back(
 					name,
 					task_id(uuid.value()),
-					completed,
 					last_changed,
 					parent,
 					deleted,

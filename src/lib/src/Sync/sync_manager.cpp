@@ -155,7 +155,6 @@ void sync_manager::sync_tasks_to_database()
 	{
 		int64_t id = tasks.to_id(item.id);
 		auto parent_uuid = item.parent_id;
-		bool completed = item.completed;
 		int64_t parent = 0;
 		time_t last_changed = item.last_changed;
 		string name  = item.name;
@@ -180,7 +179,7 @@ void sync_manager::sync_tasks_to_database()
 				continue;
 			}
 		}
-		task temp_task(name, uuid, completed, last_changed, parent_uuid, deleted, idle, quiet);
+		task temp_task(name, uuid, last_changed, parent_uuid, deleted, idle, quiet);
 		if (id > 0)
 		{
 			tasks.update(temp_task);
@@ -200,7 +199,6 @@ void sync_manager::sync_tasks_to_database()
 		if (parent_uuid)
 		{
 			int64_t id           = tasks.to_id(item.id);
-			bool    completed    = item.completed;
 			time_t  last_changed = item.last_changed;
 			string  name         = item.name;
 			auto    uuid         = item.id;
@@ -208,7 +206,7 @@ void sync_manager::sync_tasks_to_database()
 			auto    idle         = item.idle;
 			bool    quiet        = item.quiet;
 
-			task temp_task(name, uuid, completed, last_changed, parent_uuid, deleted, idle, quiet );
+			task temp_task(name, uuid, last_changed, parent_uuid, deleted, idle, quiet );
 			if (id > 0)
 			{
 				tasks.update(temp_task);

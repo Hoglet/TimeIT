@@ -19,7 +19,6 @@ struct [[nodiscard]]  task
 	const string               name;
 	const task_id              id;
 	const optional<task_id>    parent_id;
-	const bool                 completed    {false};
 	const bool                 deleted      {false};
 	const time_t               last_changed {0};
 	const unsigned             idle         {0};
@@ -31,7 +30,6 @@ struct [[nodiscard]]  task
 	task(
 			string            name_,
 			task_id           uuid_,
-			bool              completed_,
 			time_t            last_change_,
 			optional<task_id> parent_uuid_,
 			bool              deleted_,
@@ -40,7 +38,6 @@ struct [[nodiscard]]  task
 
 	task       with_name(string /*new_name*/)        const;
 	task       with_parent(optional<task_id> /*id*/) const;
-	task       with_completed(bool /*completed*/)    const;
 	task       with_deleted(bool  /*deleted*/)       const;
 	task       with_idle(unsigned /*idle*/)          const;
 	task       with_quiet(bool /*quiet*/)            const;

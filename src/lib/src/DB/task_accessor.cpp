@@ -9,17 +9,16 @@ namespace libtimeit
 
 using namespace std;
 
-const string CREATE_TASK_V5 = R"Query(
+const string CREATE_TASK_V6 = R"Query(
 				INSERT INTO
-					tasks (name,parent,changed,uuid,completed,deleted,idle,quiet)
-				VALUES (?,?,?,?,?,?,?,?);
+					tasks (name,parent,changed,uuid, deleted,idle,quiet)
+				VALUES (?,?,?,?,?,?,?);
 				)Query";
 
 const string GET_TASK_QUERY = R"(
 				SELECT
 					parent,
 					name,
-					completed,
 					changed,
 					deleted,
 					idle,
@@ -39,7 +38,6 @@ task_accessor::task_accessor(database& op_database )
 				SELECT
 					parent,
 					name,
-					completed,
 					uuid,
 					changed,
 					deleted,
@@ -50,7 +48,7 @@ task_accessor::task_accessor(database& op_database )
 				WHERE
 					id=?)")),
 		statement_id_to_uuid(db.prepare("SELECT uuid FROM tasks WHERE id=?;")),
-		statement_new_task(db.prepare(CREATE_TASK_V5 ))
+		statement_new_task(db.prepare(CREATE_TASK_V6 ))
 {
 }
 
@@ -89,7 +87,7 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 	vector<task> return_value;
 	stringstream statement;
 
-	statement << "SELECT name, completed, uuid, changed, idle, quiet"
+	statement << "SELECT name, uuid, changed, idle, quiet"
 			"  FROM "
 			"    tasks"
 			"  WHERE deleted=0";
@@ -108,7 +106,6 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 	{
 		auto column{0};
 		string name        = row[column++].text();
-		bool   completed   = row[column++].boolean();
 		auto   l_uuid      = libtimeit::optional_task_id(row[column++].text());
 		time_t last_change = row[column++].integer();
 		auto   idle        = (unsigned)row[column++].integer();
@@ -118,7 +115,6 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 			return_value.emplace_back(
 					name,
 					*l_uuid,
-					completed,
 					last_change,
 					parent,
 					false,
@@ -143,7 +139,6 @@ optional<task> task_accessor::by_id(task_id id)
 		}
 		auto column{1};
 		string name        = row[column++].text();
-		bool   completed   = row[column++].boolean();
 		time_t last_change = row[column++].integer();
 		bool   deleted     = row[column++].boolean();
 		auto   idle        = (unsigned)row[column++].integer();
@@ -153,7 +148,6 @@ optional<task> task_accessor::by_id(task_id id)
 		return task(
 				name,
 				id,
-				completed,
 				last_change,
 				parent_uuid,
 				deleted,
@@ -170,7 +164,6 @@ optional<task> task_accessor::get_task_unlimited(task_id id)
 		SELECT
 			parent,
 			name,
-			completed,
 			uuid,
 			changed,
 			deleted,
@@ -193,7 +186,6 @@ optional<task> task_accessor::get_task_unlimited(task_id id)
 		}
 		auto column{1};
 		string   name        = row[column++].text();
-		bool     completed   = row[column++].boolean();
 		auto     l_uuid      = UUID::from_string(row[column++].text());
 		time_t   last_change = row[column++].integer();
 		bool     deleted     = row[column++].boolean();
@@ -204,7 +196,6 @@ optional<task> task_accessor::get_task_unlimited(task_id id)
 			return task(
 					name,
 					task_id(*l_uuid),
-					completed,
 					last_change,
 					to_task_id(parent),
 					deleted,
@@ -224,7 +215,6 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 			SELECT
 				parent,
 				name,
-				completed,
 				uuid,
 				changed,
 				deleted,
@@ -247,7 +237,6 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 		}
 		column++;
 		string  name        = row[column++].text();
-		bool    completed   = row[column++].boolean();
 		auto    l_uuid      = libtimeit::optional_task_id(row[column++].text());
 		time_t  last_change = row[column++].integer();
 		bool    deleted     = row[column++].boolean();
@@ -259,7 +248,6 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 			return_value.emplace_back(
 					name,
 					*l_uuid,
-					completed,
 					last_change,
 					parent_uuid,
 					deleted,
@@ -357,7 +345,6 @@ void task_accessor::internal_update(const task &item)
 					parent = ? ,
 					changed = ? ,
 					deleted = ?,
-					completed = ?,
 					idle = ?,
 					quiet = ?
 				WHERE id=?;)"
@@ -376,7 +363,6 @@ void task_accessor::internal_update(const task &item)
 	}
 	statement_update_task.bind_value(index++, item.last_changed);
 	statement_update_task.bind_value(index++, (int64_t)item.deleted);
-	statement_update_task.bind_value(index++, (int64_t)item.completed);
 	statement_update_task.bind_value(index++, item.idle);
 	statement_update_task.bind_value(index++, (int64_t)item.quiet);
 	auto old_id = to_id(item.id);
@@ -451,7 +437,6 @@ void task_accessor::create(const task &item)
 	}
 	statement_new_task.bind_value(index++, item.last_changed);
 	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
-	statement_new_task.bind_value(index++, (int64_t)item.completed);
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
 	statement_new_task.bind_value(index++, item.idle);
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);
@@ -480,7 +465,6 @@ void task_accessor::internal_create(const task &item, sql_statement &statement_n
 	}
 	statement_new_task.bind_value(index++, item.last_changed);
 	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
-	statement_new_task.bind_value(index++, (int64_t)item.completed);
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
 	statement_new_task.bind_value(index++, item.idle);
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);

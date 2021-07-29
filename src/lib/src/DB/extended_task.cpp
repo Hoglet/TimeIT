@@ -15,7 +15,6 @@ extended_task::extended_task(
 		task(
 				name,
 				uuid,
-				false,
 				0,
 				parent_ID,
 				false,
@@ -40,7 +39,6 @@ extended_task::extended_task(
 		task(
 				source.name,
 				source.id,
-				source.completed,
 				source.last_changed,
 				source.parent_id,
 				source.deleted,

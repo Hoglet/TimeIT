@@ -201,7 +201,7 @@ TEST(TaskAccessor, lastChanged)
 	TempDB tempdb(notifier);
 	task_accessor taskAccessor(tempdb);
 	string originalName = "Test";
-	task original_task(originalName, task_id(), false, 500, {}, false, 0, false);
+	task original_task(originalName, task_id(), 500, {}, false, 0, false);
 	taskAccessor.create(original_task);
 
 	vector<task> tasks = taskAccessor.changed_since(0);
@@ -215,7 +215,6 @@ TEST(TaskAccessor, lastChanged)
 	task updated_task(
 			newName,
 			task1.id,
-			task1.completed,
 			495,
 			task1.parent_id,
 			false,
