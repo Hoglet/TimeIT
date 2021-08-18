@@ -3,7 +3,7 @@
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/task.h>
 #include <libtimeit/db/notifier.h>
 #include <libtimeit/datatypes/task_id.h>
 #include <string>

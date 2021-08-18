@@ -1,5 +1,5 @@
 
-#include <libtimeit/db/time_entry.h>
+#include <libtimeit/datatypes/time_entry.h>
 #include <utility>
 
 namespace libtimeit

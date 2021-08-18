@@ -6,7 +6,7 @@ static const int MINUTE = 60;
 
 #include <list>
 #include <map>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/task.h>
 #include <libtimeit/timer.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/logic/x11_idle_detector.h>

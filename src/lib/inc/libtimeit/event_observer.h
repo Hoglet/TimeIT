@@ -4,8 +4,8 @@
 #include <cstdint>
 #include <string>
 #include <libtimeit/db/data_types.h>
-#include <libtimeit/db/time_entry.h>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/time_entry.h>
+#include <libtimeit/datatypes/task.h>
 
 namespace libtimeit
 {

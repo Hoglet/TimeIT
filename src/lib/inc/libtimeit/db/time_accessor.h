@@ -12,7 +12,7 @@
 #include <libtimeit/db/database.h>
 #include "sqlite3.h"
 #include "notifier.h"
-#include "time_entry.h"
+#include "libtimeit/datatypes/time_entry.h"
 
 namespace libtimeit
 {

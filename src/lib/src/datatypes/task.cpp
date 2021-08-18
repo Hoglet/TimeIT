@@ -1,7 +1,7 @@
 
 #include <stdexcept>
 #include <utility>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/task.h>
 
 namespace libtimeit
 {

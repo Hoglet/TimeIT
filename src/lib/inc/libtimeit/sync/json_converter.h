@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/task.h>
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/exceptions/general_exception.h>
 

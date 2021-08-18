@@ -1,7 +1,7 @@
 #ifndef TIMEIT_EXTENDED_TASK_H
 #define TIMEIT_EXTENDED_TASK_H
 
-#include "task.h"
+#include "libtimeit/datatypes/task.h"
 
 namespace libtimeit
 {

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <libtimeit/db/task.h>
+#include <libtimeit/datatypes/task.h>
 
 using namespace libtimeit;
 
