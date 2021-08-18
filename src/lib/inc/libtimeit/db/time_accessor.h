@@ -6,6 +6,7 @@
 #include <list>
 #include <string>
 #include <memory>
+#include <chrono>
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
@@ -17,6 +18,7 @@ namespace libtimeit
 {
 class notification_manager;
 using namespace std;
+using namespace std::chrono;
 
 class time_accessor
 {
@@ -34,9 +36,22 @@ public:
 	task_id_list            latest_active_tasks(int amount);
 
 
-	Time_list               time_list(const task_id& task_ID, time_t start, time_t stop);
+	Time_list               time_list( const task_id& owner, time_t start, time_t stop);
+
+	seconds  duration_time(
+			const task_id& id,
+			time_point<system_clock> start = time_point<system_clock>::min(),
+			time_point<system_clock> stop  = time_point<system_clock>::max()
+					);
+	seconds  total_cumulative_time(
+			const task_id&           owner,
+			time_point<system_clock> start = time_point<system_clock>::min(),
+			time_point<system_clock> stop  = time_point<system_clock>::max()
+					);
+
 	Duration                duration_time(const task_id& task_ID, time_t start, time_t stop);
 	Time_list               times_changed_since(time_t timestamp= 0);
+
 
 	Duration                total_cumulative_time(const task_id& owner, time_t start, time_t stop);
 	task_id_list            currently_running();
@@ -51,9 +66,10 @@ protected:
 private:
 	database&       db;
 
-    Duration        time_passing_start_limit(const task_id& id, time_t start, time_t stop);
-    Duration        time_passing_end_limit(const task_id & id, time_t & start, time_t & stop);
-    Duration        time_completely_within_limits(const task_id& id, time_t & start, time_t & stop);
+	seconds         time_passing_start_limit(      const task_id& id, time_point<system_clock> start, time_point<system_clock> stop );
+	seconds         time_passing_end_limit(        const task_id& id, time_point<system_clock> start, time_point<system_clock> stop );
+	seconds         time_completely_within_limits( const task_id& id, time_point<system_clock> start, time_point<system_clock> stop );
+
     task_id_list    children_id_list(const task_id& id);
 
 	sql_statement by_uuid_statement;

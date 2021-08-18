@@ -13,7 +13,7 @@ namespace test
 using namespace libtimeit;
 using namespace std;
 
-const string comment = "Just a comment";
+const string COMMENT = "Just a comment";
 
 TEST(TimeAccessor, simpleTest)
 {
@@ -24,8 +24,8 @@ TEST(TimeAccessor, simpleTest)
 	task test_task( "test" );
 	taskAccessor.create(test_task);
 	timeAccessor.create( Time_entry( test_task.id, 0, 1000 ) );
-	int result = timeAccessor.duration_time( test_task.id, 0, 0);
-	ASSERT_EQ(1000, result);
+	auto result = timeAccessor.duration_time( test_task.id);
+	ASSERT_EQ(1000, result.count());
 }
 
 TEST(TimeAccessor, ChangeEndTime)
@@ -43,8 +43,8 @@ TEST(TimeAccessor, ChangeEndTime)
 	{
 		timeAccessor.update(te->with_stop(1300));
 	}
-	int result = timeAccessor.duration_time( test_task.id, 0, 0);
-	ASSERT_EQ(1300, result);
+	auto result = timeAccessor.duration_time( test_task.id);
+	ASSERT_EQ(1300, result.count());
 
 }
 
@@ -60,8 +60,8 @@ TEST(TimeAccessor, ChangeStartTime)
 	timeAccessor.create( original );
 	auto te = timeAccessor.by_id(original.id);
 	timeAccessor.update(te->with_start(300));
-	int result = timeAccessor.duration_time( test_task.id, 0, 0);
-	ASSERT_EQ(700, result);
+	auto result = timeAccessor.duration_time( test_task.id);
+	ASSERT_EQ(700, result.count());
 
 }
 
@@ -80,8 +80,8 @@ TEST(TimeAccessor, UpdateTime)
 	observer.task_id_time = {};
 	auto original = timeAccessor.by_id(first.id).value();
 	timeAccessor.update( original.with_start(300).with_stop(700));
-	int result = timeAccessor.duration_time( test_task.id, 0, 0);
-	ASSERT_EQ(400, result);
+	auto result = timeAccessor.duration_time( test_task.id);
+	ASSERT_EQ(400, result.count() );
 	ASSERT_TRUE( observer.task_id_time.has_value());
 	ASSERT_EQ(observer.task_id_time.value(), test_task.id );
 
@@ -99,8 +99,8 @@ TEST(TimeAccessor, RemoveTime)
 	timeAccessor.create( te );
 	timeAccessor.create( Time_entry( test_task.id, 2000, 2300 ));
 	timeAccessor.remove( te );
-	int result = timeAccessor.duration_time( test_task.id, 0, 0);
-	ASSERT_EQ(300, result);
+	auto result = timeAccessor.duration_time( test_task.id );
+	ASSERT_EQ(300, result.count());
 }
 
 TEST(TimeAccessor, GetLatestTasks)
@@ -187,7 +187,7 @@ TEST(TimeAccessor, newItem)
 
 	task test_task( "test" );
 	taskAccessor.create( test_task );
-	Time_entry item1( time_id(), test_task.id, 100, 200, STOPPED, 200, comment);
+	Time_entry item1( time_id(), test_task.id, 100, 200, STOPPED, 200, COMMENT);
 
 	timeAccessor.create(item1);
 	auto item2 = timeAccessor.by_id(item1.id);
@@ -225,9 +225,9 @@ TEST(TimeAccessor, GetTotalTimeWithChildren)
 	taskAccessor.create( child );
 	auto taskId = child.id;
 	timeAccessor.create( Time_entry(taskId, 4000, 5000) );
-	int parentTotalTime = timeAccessor.total_cumulative_time(parentId, 0, 0);
+	int parentTotalTime = timeAccessor.total_cumulative_time(parentId).count();
 	ASSERT_EQ(1000, parentTotalTime);
-	int childTotalTime = timeAccessor.total_cumulative_time(taskId, 0, 0);
+	int childTotalTime = timeAccessor.total_cumulative_time(taskId).count();
 	ASSERT_EQ(1000, childTotalTime);
 }
 
@@ -265,7 +265,7 @@ TEST(TimeAccessor, getActiveTasks)
 	task test_task( "test" );
 	auto taskId = test_task.id;
 	taskAccessor.create( test_task );
-	Time_entry item( time_id(), taskId, 100, 600, STOPPED, 200, comment);
+	Time_entry item( time_id(), taskId, 100, 600, STOPPED, 200, COMMENT);
 
 	timeAccessor.create(item);
 

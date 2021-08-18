@@ -54,16 +54,16 @@ optional<Time_entry> time_accessor::by_id(time_id uuid)
 		time_t  start     = row[column++].integer();
 		time_t  stop      = row[column++].integer();
 		time_t  changed   = row[column++].integer();
-		auto    uuid      = UUID::from_string(row[column++].text());
+		auto    possible_uuid      = UUID::from_string( row[column++].text());
 		auto    task_uuid = optional_task_id(row[column++].text());
 		auto    state     = static_cast<Time_entry_state>(row[column++].integer());
 		auto    comment   = row[column].text();
 
-		if( uuid && task_uuid )
+		if( possible_uuid.has_value() && task_uuid.has_value() )
 		{
 			return Time_entry(
-					time_id(*uuid),
-					*task_uuid,
+					time_id(possible_uuid.value()),
+					task_uuid.value(),
 					start,
 					stop,
 					state,
@@ -75,56 +75,70 @@ optional<Time_entry> time_accessor::by_id(time_id uuid)
 	return {};
 }
 
-Duration time_accessor::duration_time(const task_id& task_ID, time_t start, time_t stop)
+Duration time_accessor::duration_time(const task_id& id, time_t raw_start, time_t raw_stop)
 {
-	Duration time = time_completely_within_limits(task_ID, start, stop);
-	if (stop > 0)
+	auto start  = system_clock::from_time_t(raw_start);
+	auto stop   = system_clock::from_time_t(raw_stop);
+
+	auto result = duration_time(id, start, stop);
+	return result.count();
+}
+
+seconds  time_accessor::duration_time(const task_id& id, time_point<system_clock> start, time_point<system_clock> stop)
+{
+	auto time = time_completely_within_limits(id, start, stop);
+	if (stop < time_point<system_clock>::max())
 	{
-		time += time_passing_end_limit(task_ID, start, stop);
-		time += time_passing_start_limit(task_ID, start, stop);
+		time += time_passing_end_limit(id, start, stop);
+		time += time_passing_start_limit(id, start, stop);
 	}
 	return time;
 }
 
-Duration time_accessor::time_completely_within_limits(const task_id& owner_id, time_t& start, time_t& stop)
+
+
+seconds time_accessor::time_completely_within_limits(const task_id& owner_id, time_point<system_clock> start, time_point<system_clock> stop)
 {
-	Duration time = 0;
+	seconds time(0);
 	Query_result rows;
-	auto taskID = legacy_db_helper::new_task_id_to_old(owner_id, db);
-	if (stop > 0)
+	auto task_id = legacy_db_helper::new_task_id_to_old( owner_id, db);
+	if (stop < time_point<system_clock>::max() )
 	{
 		sql_statement statement_time_completely_within_limits = db.prepare("SELECT SUM(stop-start) AS time "
 				" FROM times  WHERE taskID = ? AND start>=? AND stop<=? AND state IS NOT 3;");
-		statement_time_completely_within_limits.bind_value(1, taskID);
-		statement_time_completely_within_limits.bind_value(2, start);
-		statement_time_completely_within_limits.bind_value(3, stop);
+		statement_time_completely_within_limits.bind_value( 1, task_id);
+		statement_time_completely_within_limits.bind_value(2, system_clock::to_time_t(start) );
+		statement_time_completely_within_limits.bind_value(3, system_clock::to_time_t(stop) );
 		rows = statement_time_completely_within_limits.execute();
 	}
 	else
 	{
 		sql_statement statement_get_time = db.prepare("SELECT SUM(stop-start) AS time  FROM times WHERE taskID = ? AND deleted=0;");
-		statement_get_time.bind_value(1, taskID);
+		statement_get_time.bind_value( 1, task_id);
 		rows = statement_get_time.execute();
 	}
 	for (auto row: rows)
 	{
 		if (row[0].has_value())
 		{
-			time = (Duration)row[0].integer();
+			time = seconds(row[0].integer());
 		}
 		break;
 	}
 	return time;
 }
 
-Duration time_accessor::time_passing_end_limit(const task_id& owner_id, time_t& start, time_t& stop)
+seconds time_accessor::time_passing_end_limit( const task_id& owner, time_point<system_clock> start_point, time_point<system_clock> stop_point)
 {
-	int64_t taskID = legacy_db_helper::new_task_id_to_old(owner_id, db);
-	Duration time = 0;
+	auto start = duration_cast<seconds>( start_point.time_since_epoch() ).count();
+	auto stop  = duration_cast<seconds>(  stop_point.time_since_epoch() ).count();
+
+	int64_t owner_id = legacy_db_helper::new_task_id_to_old( owner, db);
+	seconds time( 0 );
 	stringstream statement;
 	statement << " SELECT SUM(" << stop << "-start) AS time  ";
 	statement << " FROM times ";
-	statement << " WHERE taskID = " << taskID;
+	statement << " WHERE taskID = " << owner_id;
 	statement << " AND start < " << stop;
 	statement << " AND stop  > " << stop;
 	statement << " AND start > " << start;
@@ -135,20 +149,27 @@ Duration time_accessor::time_passing_end_limit(const task_id& owner_id, time_t& 
 		vector<data_cell> row = rows.at(0);
 		if (row[0].has_value())
 		{
-			time = (Duration)row[0].integer();
+			time = seconds(  row[0].integer() );
 		}
 	}
 	return time;
 }
 
-Duration time_accessor::time_passing_start_limit(const task_id& owner_id, time_t start, time_t stop)
+seconds time_accessor::time_passing_start_limit(
+		const task_id& owner_id,
+		time_point<system_clock> start_point,
+		time_point<system_clock> stop_point )
 {
-	auto taskID = legacy_db_helper::new_task_id_to_old(owner_id,db);
-	Duration time = 0;
+	auto start = duration_cast<seconds>( start_point.time_since_epoch() ).count();
+	auto stop  = duration_cast<seconds>(  stop_point.time_since_epoch() ).count();
+
+	auto task_id = legacy_db_helper::new_task_id_to_old( owner_id, db);
+
+	seconds time( 0 );
 	stringstream statement;
 	statement << "SELECT SUM(stop-" << start << ") AS time ";
 	statement << " FROM times";
-	statement << " WHERE taskID = " << taskID;
+	statement << " WHERE taskID = " << task_id;
 	statement << " AND start <  " << start;
 	statement << " AND stop  >  " << start;
 	statement << " AND stop  <  " << stop;
@@ -159,7 +180,7 @@ Duration time_accessor::time_passing_start_limit(const task_id& owner_id, time_t
 		vector<data_cell> row = rows.at(0);
 		if (row[0].has_value())
 		{
-			time = (Duration)row[0].integer();
+			time = seconds(row[0].integer());
 		}
 	}
 	return time;
@@ -226,15 +247,15 @@ task_id_list time_accessor::currently_running()
 	return result_list;
 }
 
-Time_list time_accessor::time_list(const task_id& owner_id, time_t startTime, time_t stopTime)
+Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time_t stopTime)
 {
-	int64_t taskId = legacy_db_helper::new_task_id_to_old(owner_id, db);
+	int64_t id = legacy_db_helper::new_task_id_to_old( owner, db);
 	Time_list result_list;
 	stringstream statement;
 	statement << "SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times ";
 	statement << " WHERE stop > " << startTime;
 	statement << " AND start <" << stopTime;
-	statement << " AND taskID = " << taskId;
+	statement << " AND taskID = " << id;
 	statement << " AND deleted=0 ";
 	statement << " ORDER BY start";
 
@@ -255,7 +276,7 @@ Time_list time_accessor::time_list(const task_id& owner_id, time_t startTime, ti
 			result_list.push_back(
 					Time_entry(
 							time_id(uuid.value()),
-							task_id(task_uuid.value()),
+							task_id( task_uuid.value()),
 							start,
 							stop,
 							state,
@@ -371,15 +392,27 @@ task_id_list time_accessor::children_id_list(const task_id& owner_id)
 	return result;
 }
 
-Duration time_accessor::total_cumulative_time(const task_id& taskID, time_t start, time_t stop)
+seconds  time_accessor::total_cumulative_time(
+		const task_id&           id,
+		time_point<system_clock> start,
+		time_point<system_clock> stop
+				)
 {
-	Duration total_time = duration_time(taskID, start, stop);
-	task_id_list children = children_id_list(taskID);
+	auto total_time = duration_time( id, start, stop);
+	task_id_list children = children_id_list( id );
 	for (auto child : children)
 	{
 		total_time += total_cumulative_time(child, start, stop);
 	}
 	return total_time;
+
+}
+
+Duration time_accessor::total_cumulative_time(const task_id& id, time_t raw_start, time_t raw_stop)
+{
+	auto start = system_clock::from_time_t( raw_start );
+	auto stop  = system_clock::from_time_t( raw_stop );
+	return total_cumulative_time( id, start, stop ).count();
 }
 
 int64_t time_accessor::create(const Time_entry& item)
@@ -421,7 +454,7 @@ void time_accessor::internal_create(const Time_entry &item, sql_statement& state
 	}
 	auto index{1};
 	auto owner_old_id = legacy_db_helper::new_task_id_to_old( item.owner_id, db);
-	statement_new_entry.bind_value(index++, static_cast<string>(item.id).c_str());
+	statement_new_entry.bind_value(index++, static_cast<string>(item.id));
 	statement_new_entry.bind_value(index++, owner_old_id);
 	statement_new_entry.bind_value(index++, item.start);
 	statement_new_entry.bind_value(index++, item.stop);

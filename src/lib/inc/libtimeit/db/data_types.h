@@ -14,7 +14,7 @@ using Time_list    = vector<Time_entry>;
 using Task_id      = int64_t;
 using task_id_list = vector<task_id>;
 
-using Duration = int;      //Duration in seconds
+using Duration = long;      //Duration in seconds
 
 }
 

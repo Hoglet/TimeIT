@@ -7,10 +7,10 @@ extended_task::extended_task(
 		task_id           uuid,
 		optional<task_id> parent_ID,
 		const string&     name,
-		int               time,
+		long              time,
 		bool              expanded,
 		bool              running,
-		int               total_time_)
+		long              total_time_)
 		:
 		task(
 				name,
@@ -30,8 +30,8 @@ extended_task::extended_task(
 
 extended_task::extended_task(
 		const task&       source,
-		int               time,
-		int               total_time_,
+		long              time,
+		long              total_time_,
 		bool              expanded,
 		bool              running
 		)

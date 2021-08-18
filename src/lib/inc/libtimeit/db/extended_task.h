@@ -11,13 +11,13 @@ struct extended_task : public task
 
 	const bool expanded;
 	const bool running;
-	const int  time;
-	const int  total_time;
+	const long time;
+	const long total_time;
 
 	extended_task(
 			const task&       source,
-			int               time,
-			int               total_time,
+			long              time,
+			long              total_time,
 			bool              expanded,
 			bool              running
 			);
@@ -28,10 +28,10 @@ struct extended_task : public task
 			task_id           uuid,
 			optional<task_id> parent_ID,
 			const string&     name,
-			int               time = 0,
+			long              time = 0,
 			bool              expanded = false,
 			bool              running = false,
-			int               total_time = 0
+			long              total_time = 0
 	);
 
 //	Extended_task with_total(int i) const;

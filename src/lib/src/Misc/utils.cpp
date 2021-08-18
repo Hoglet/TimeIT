@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <cstring>
+#include <fmt/core.h>
+#include <fmt/ranges.h>
 
 //using namespace Glib;
 using namespace std;
@@ -24,24 +26,44 @@ string ISO_639_language_string()
 	return return_value;
 }
 
-time_t beginning_of_day( time_t raw_time)
+time_point<system_clock> beginning_of_day( time_point<system_clock> time_stamp)
 {
+	auto raw_time = system_clock::to_time_t(time_stamp);
 	struct tm *time_info = localtime(&raw_time);
 	time_info->tm_sec = 0;
 	time_info->tm_min = 0;
 	time_info->tm_hour = 0;
 	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	auto result = mktime(time_info);
+	return system_clock::from_time_t(result);
 }
+
+time_t beginning_of_day( time_t raw_time)
+{
+	auto time_stamp = system_clock::from_time_t(raw_time);
+	auto result     = beginning_of_day(time_stamp);
+	return system_clock::to_time_t(result);
+}
+
 time_t end_of_day( time_t raw_time)
 {
+	auto time_stamp = system_clock::from_time_t(raw_time);
+	auto result     = end_of_day(time_stamp);
+	return system_clock::to_time_t(result);
+}
+
+time_point<system_clock> end_of_day( time_point<system_clock> time_stamp)
+{
+	auto raw_time = system_clock::to_time_t(time_stamp);
 	struct tm * time_info = localtime(&raw_time);
 	time_info->tm_sec = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	time_info->tm_min = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	time_info->tm_hour = 23; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	auto result = mktime(time_info);
+	return system_clock::from_time_t(result);
 }
+
 
 int get_day_of_week(time_t raw_time)
 {
@@ -60,7 +82,7 @@ int get_day_of_week(time_t raw_time)
 
 time_t beginning_of_week( time_t raw_time)
 {
-	int day_of_week = get_day_of_week(raw_time);
+	long day_of_week = get_day_of_week(raw_time);
 	time_t bow = raw_time - (day_of_week) * SECOND_PER_DAY;
 	struct tm * time_info = localtime(&bow);
 	time_info->tm_sec = 0;
@@ -74,7 +96,7 @@ time_t beginning_of_week( time_t raw_time)
 time_t end_of_week( time_t raw_time)
 {
 
-	int day_of_week = get_day_of_week(raw_time);
+	long day_of_week = get_day_of_week(raw_time);
 	time_t eow = raw_time + (6 - day_of_week) * SECOND_PER_DAY;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	struct tm * time_info = localtime(&eow);
 	time_info->tm_sec = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
@@ -104,8 +126,11 @@ time_t end_of_month( time_t raw_time)
 	return mktime(time_info);
 }
 
-time_t beginning_of_year( time_t raw_time)
+
+
+time_point<system_clock> beginning_of_year( time_point<system_clock> time_stamp)
 {
+	auto raw_time = system_clock::to_time_t(time_stamp);
 	struct tm *time_info = localtime(&raw_time);
 	time_info->tm_sec = 0;
 	time_info->tm_min = 0;
@@ -113,7 +138,14 @@ time_t beginning_of_year( time_t raw_time)
 	time_info->tm_mday = 1;
 	time_info->tm_mon = 0;
 	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	auto temp_result = mktime(time_info);
+	return system_clock::from_time_t( temp_result );
+}
+
+time_t beginning_of_year( time_t raw_time)
+{
+	auto result = beginning_of_year( system_clock::from_time_t(raw_time) );
+	return system_clock::to_time_t( result );
 }
 time_t end_of_year( time_t raw_time)
 {
@@ -190,6 +222,18 @@ string day_of_week_abbreviation( time_t raw_time)
 	return length>0 ? abbreviation.data() : "☼";
 }
 
+
+string hh_mm( seconds time_span )
+{
+	if( time_span >= minutes( 1) )
+	{
+		auto hh = duration_cast<hours>(time_span);
+		auto mm = duration_cast<minutes>( time_span - hh );
+		return fmt::format("{:02}:{:02}", hh.count(), mm.count());
+	}
+	return "";
+}
+
 string seconds_2_hhmm(int64_t s)
 {
 	stringstream return_value;
@@ -210,7 +254,7 @@ string seconds_2_hhmm(int64_t s)
 	return return_value.str();
 }
 
-string small_numbers(string s)
+string small_numbers(const string& s)
 {
 	stringstream return_value;
 	for (auto c: s)
@@ -232,16 +276,26 @@ string small_numbers(string s)
 	}
 	return return_value.str();
 }
-string date_string(time_t time_stamp)
+
+
+string date_string(time_point<system_clock> time_stamp)
 {
-	struct tm day = *localtime(&time_stamp);
+	auto raw_time = system_clock::to_time_t(time_stamp);
+	auto day = *localtime(&raw_time);
 	stringstream date_string;
 	date_string << (day.tm_year + YEAR_ZERO)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-		<< "-"
-				<< setfill('0') << setw(2) << day.tm_mon + 1
-				<< "-"
-				<< setfill('0') << setw(2) << day.tm_mday;
+	<< "-"
+	<< setfill('0') << setw(2) << day.tm_mon + 1
+	<< "-"
+	<< setfill('0') << setw(2) << day.tm_mday;
 	return date_string.str();
+}
+
+
+string date_string(time_t raw_time)
+{
+	auto time_stamp = system_clock::from_time_t(raw_time);
+	return  date_string(time_stamp);
 }
 
 string time_span_string( time_t from, time_t to)
@@ -354,14 +408,14 @@ string abbreviate_string(string_view original, long unsigned i)
 	return result;
 }
 
-optional<task_id> optional_task_id(string basic_string)
+optional<task_id> optional_task_id(const string& basic_string)
 {
 	auto optional_uuid = UUID::from_string(basic_string);
 	if( optional_uuid.has_value())
 	{
 		return task_id(optional_uuid.value());
 	}
-	return optional<task_id>();
+	return {};
 }
 
 }
