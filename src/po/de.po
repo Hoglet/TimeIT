@@ -34,7 +34,7 @@ msgstr "Zeit hinzufügen zu:"
 #. Confirm dialog when removing task, headline!
 #: src/GUI/MainWindow/MainWindow.cpp:305
 msgid "Are you sure you want to delete this task?"
-msgstr "Sind sie sicher das sie diese Aufgabe löschen wollen?"
+msgstr "Möchten Sie diese Aufgabe wirklich löschen?"
 
 #. The compact layout option is reducing the size of the toolbar in the main window
 #: src/GUI/PreferenceDialog.cpp:22
@@ -53,7 +53,7 @@ msgstr "Tag"
 
 #: src/GUI/Details.cpp:69
 msgid "Do you really want to remove this?"
-msgstr "Sind sie sicher das sie dies entfernen wollen?"
+msgstr "Möchten Sie diesen Eintrag wirklich entfernen?"
 
 #: src/GUI/MainWindow/Menu.cpp:27
 msgid "Edit"
@@ -76,7 +76,7 @@ msgstr "Verbindung zu %s fehlgeschlagen:\n"
 
 #: src/GUI/Details.cpp:71
 msgid "Gone, gone will not come again..."
-msgstr "Weg, es ist weg und es wird nicht wiederkommen..."
+msgstr "Weg ist weg und kommt nicht wieder..."
 
 #: src/Sync/SyncManager.cpp:311
 msgid "HTTP error "
@@ -85,7 +85,7 @@ msgstr "HTTP Fehler "
 #. Command line help, Line3.
 #: src/Main.cpp:94
 msgid "Help Options:"
-msgstr "Hilfsoptionen:"
+msgstr "Hilfe Optionen:"
 
 #: src/GUI/PreferenceDialog.cpp:55
 msgid "Idle time (m)"
@@ -93,7 +93,7 @@ msgstr "Pausenzeit (m)"
 
 #: src/GUI/PreferenceDialog.cpp:78
 msgid "Ignore certificate errors"
-msgstr "Ignoriere Zertifikat Fehler"
+msgstr "Ignoriere Zertifikatsfehler"
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Month"
@@ -109,7 +109,7 @@ msgstr "Name: "
 
 #: src/Sync/SyncManager.cpp:320
 msgid "Network error"
-msgstr "Netzwerk Fehler"
+msgstr "Netzwerkfehler"
 
 #. %d represents the time
 #: src/GUI/IdleDialog.cpp:100
@@ -117,9 +117,9 @@ msgstr "Netzwerk Fehler"
 msgid "No activity has been detected for %d minute. What should we do?"
 msgid_plural "No activity has been detected for %d minutes. What should we do?"
 msgstr[0] ""
-"Keine Aktivitäten wurde für %d Minute entdeckt. Was sollen wir machen?"
+"Es wurde seit %d Minute keine Aktivität festgestellt. Wie sollen wir vorgehen?"
 msgstr[1] ""
-"Keine Aktivitäten wurde für %d Minuten entdeckt. Was sollen wir machen?"
+"Es wurde seit %d Minuten keine Aktivität festgestellt. Wie sollen wir vorgehen?"
 
 #. Command line help, Line2. Showing how to call the program. Will expand into "timeit [OPTION...]"
 #: src/Main.cpp:91
@@ -131,7 +131,7 @@ msgstr "OPTIONEN..."
 #. Parent task and child task.
 #: src/GUI/EditTaskDialog.cpp:26
 msgid "Parent: "
-msgstr "Haptordner: "
+msgstr "Hauptordner: "
 
 #: src/GUI/PreferenceDialog.cpp:77
 msgid "Password: "
@@ -143,41 +143,41 @@ msgstr "Leisemodus"
 
 #: src/GUI/MainWindow/Menu.cpp:41 src/GUI/MainWindow/TaskList.cpp:46
 msgid "Remove task"
-msgstr "Entferne Aufgabe"
+msgstr "Aufgabe entfernen"
 
 #: src/GUI/MainWindow/Menu.cpp:45
 msgid "Report bug"
-msgstr "Melde Fehler"
+msgstr "Fehler melden"
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
 #: src/GUI/IdleDialog.cpp:34
 msgid "Revert and continue"
-msgstr "Zurückgreifen und fortsetzen"
+msgstr "Verwerfen und fortsetzen"
 
 #. This is one answer to the question "No activity have
 #. been detected for X minutes. What should we do?"
 #: src/GUI/IdleDialog.cpp:31
 msgid "Revert and stop"
-msgstr "Zurückgreifen und Stoppen"
+msgstr "Verwerfen und anhalten"
 
 #. Command line help, how to run internal test
 #: src/Main.cpp:98
 msgid "Run tests and exit"
-msgstr "Führe Tests und schließe"
+msgstr "Tests ausführen und beenden"
 
 #: src/GUI/MainWindow/Summary.cpp:54
 msgid "Show details"
-msgstr "Zeige Details"
+msgstr "Details anzeigen"
 
 #. Command line help, Line4. How to show help
 #: src/Main.cpp:96
 msgid "Show help"
-msgstr "Zeige Hilfe"
+msgstr "Hilfe anzeigen"
 
 #: src/GUI/MainWindow/TaskList.cpp:35
 msgid "Start"
-msgstr "Starte"
+msgstr "Starten"
 
 #. This option will make that no window is opened on first start of application. Only an icon in the system tray will be visible
 #: src/GUI/PreferenceDialog.cpp:24
@@ -186,23 +186,23 @@ msgstr "Starte minimiert"
 
 #: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:25
 msgid "Start time"
-msgstr "Starte Zeit"
+msgstr "Startzeit"
 
 #: src/GUI/MainWindow/Menu.cpp:22 src/GUI/MainWindow/TaskList.cpp:36
 msgid "Stop"
-msgstr "Stopp"
+msgstr "Anhalten"
 
 #: src/GUI/MainWindow/Menu.cpp:25
 msgid "Stop all"
-msgstr "Stoppe Alles"
+msgstr "Alles anhalten"
 
 #: src/GUI/StatusIcon.cpp:121
 msgid "Stop all timers"
-msgstr "Stoppe alle Timer"
+msgstr "Alle Timer anhalten"
 
 #: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:26
 msgid "Stop time"
-msgstr "Stoppe Zeit"
+msgstr "Endzeit"
 
 #: src/GUI/PreferenceDialog.cpp:79
 msgid "Sync interval (minutes)"
@@ -211,7 +211,7 @@ msgstr "Synchronisierungsinterval (Minuten)"
 #. **The title for the TimeIT server related settings**
 #: src/GUI/PreferenceDialog.cpp:71
 msgid "Sync server:"
-msgstr "Synchronisierungs-server:"
+msgstr "Synchronisierungsserver:"
 
 #. Context: Before this string will be "No activity has been detected for %d minutes. What should we do?" and after this text it will be a list of tasks
 #: src/GUI/IdleDialog.cpp:109
@@ -223,19 +223,19 @@ msgstr[1] "Betroffene Aufgaben: "
 #. Tagline
 #: src/GUI/TimeItAboutDialog.cpp:33
 msgid "The unobtrusive time tracker\n"
-msgstr "Der unauffällige Zeit Tracker\n"
+msgstr "Der unauffällige Zeit-Tracker\n"
 
 #. Line after "Are you sure you want to delete this task?" inside the dialog
 #: src/GUI/MainWindow/MainWindow.cpp:308
 msgid "There is no undelete function"
-msgstr "Hier gibt es keine Wiederherstellensfunktion"
+msgstr "Hier gibt es keine Wiederherstellungsfunktion"
 
 #. This is the licence text
 #: src/GUI/TimeItAboutDialog.cpp:35
 msgid ""
 "This program is licenced under GNU General Public Licence (GPL) version 2."
 msgstr ""
-"Dieser Programm ist lizenziert unter der GNU General Public Licence (GPL) "
+"Dieses Programm ist lizenziert unter der GNU General Public Licence (GPL) "
 "Version 2."
 
 #: src/GUI/MainWindow/TaskList.cpp:23
@@ -249,11 +249,11 @@ msgstr "TimeIT Webseite"
 #. Tagline
 #: src/GUI/StatusIcon.cpp:285
 msgid "TimeIT. the unobtrusive time tracker"
-msgstr "TimeIT. Der unauffälligste Zeit Tracker"
+msgstr "TimeIT. Der unauffällige Zeit-Tracker"
 
 #: src/GUI/StatusIcon.cpp:118
 msgid "Toggle main window"
-msgstr "Schalte Hauptfenster um"
+msgstr "Hauptfenster ein-/ausblenden"
 
 #: src/GUI/PreferenceDialog.cpp:75
 msgid "URI: "
@@ -266,11 +266,11 @@ msgstr "Verwendung:"
 
 #: src/GUI/PreferenceDialog.cpp:76
 msgid "User: "
-msgstr "User:"
+msgstr "Benutzer:"
 
 #: src/Sync/SyncManager.cpp:314
 msgid "Username or password is wrong."
-msgstr "Username oder Passwort ist falsch."
+msgstr "Benutzername oder Passwort ist falsch."
 
 #: src/GUI/MainWindow/MainWindow.cpp:47
 msgid "Week"
@@ -280,7 +280,7 @@ msgstr "Woche"
 #. on what workspace the task should be automatically started
 #: src/GUI/EditTaskDialog.cpp:30
 msgid "Workspace tracking"
-msgstr "Workspace verfolgung"
+msgstr "Arbeitsflächen zuordnen"
 
 #: src/GUI/MainWindow/MainWindow.cpp:47 src/GUI/AddTime.cpp:19
 msgid "Year"
@@ -297,7 +297,7 @@ msgstr "_Bearbeiten"
 
 #: src/GUI/MainWindow/Menu.cpp:48
 msgid "_File"
-msgstr "_Dateiordner"
+msgstr "_Datei"
 
 #: src/GUI/MainWindow/Menu.cpp:52
 msgid "_Help"
