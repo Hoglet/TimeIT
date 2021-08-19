@@ -5,14 +5,17 @@ using namespace libtimeit;
 
 TEST(ExtendedTask, testTime)
 {
-	extended_task task1(task_id(), {}, "Test");
-	ASSERT_EQ(0, task1.time);
+	task temp_task("Hej");
+	extended_task task_1( temp_task, 4, 0, false, false);
+	ASSERT_EQ(4, task_1.time);
 }
 
 TEST(ExtendedTask, testRunning)
 {
-	extended_task task1( task_id(), {}, "Test", 0, 0, false);
-	extended_task task2( task_id(), {}, "Test2", 0, 0, true);
-	ASSERT_EQ(false, task1.running);
-	ASSERT_EQ(true, task2.running);
+	task temp_task_1("task1");
+	task temp_task_2("task2");
+	extended_task task_1( temp_task_1, 0, 0, false, false);
+	extended_task task_2( temp_task_2, 0, 0, false, true);
+	ASSERT_EQ(false, task_1.running);
+	ASSERT_EQ(true, task_2.running);
 }

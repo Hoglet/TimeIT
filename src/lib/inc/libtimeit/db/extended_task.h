@@ -21,20 +21,6 @@ struct extended_task : public task
 			bool              expanded,
 			bool              running
 			);
-
-
-[[deprecated]]
-	extended_task(
-			task_id           uuid,
-			optional<task_id> parent_ID,
-			const string&     name,
-			long              time = 0,
-			bool              expanded = false,
-			bool              running = false,
-			long              total_time = 0
-	);
-
-//	Extended_task with_total(int i) const;
 };
 }
 
