@@ -309,7 +309,7 @@ msgstr "_Entfernen"
 
 #: src/GUI/MainWindow/Menu.cpp:19
 msgid "_Start"
-msgstr "_Start"
+msgstr "_Starten"
 
 #: src/GUI/MainWindow/Menu.cpp:50
 msgid "_Task"
