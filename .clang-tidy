@@ -5,7 +5,8 @@ Checks: '
   bugprone-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
-  -cppcoreguidelines-avoid-magic-numbers
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-owning-memory
   '
 CheckOptions:
   - key: readability-function-cognitive-complexity.Threshold
