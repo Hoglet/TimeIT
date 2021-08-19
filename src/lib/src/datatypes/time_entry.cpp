@@ -26,7 +26,7 @@ Time_entry::Time_entry(
 
 
 Time_entry::Time_entry(
-		task_id owner_id,
+		task_id owner,
 		time_t  start_,
 		time_t  stop_)
 			:
@@ -35,7 +35,7 @@ Time_entry::Time_entry(
 		stop(stop_ ),
 		state(STOPPED ),
 		changed(time(nullptr)),
-		owner_id( owner_id),
+		owner_id( owner),
 		comment()
 {
 }

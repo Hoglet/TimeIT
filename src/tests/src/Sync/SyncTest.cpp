@@ -64,12 +64,12 @@ TEST( SyncManager, fullSyncEmptyClient )
 	{
 		if (task1.name == "Parent")
 		{
-			ASSERT_EQ(1375358076, task1.last_changed) << "Checking Parent's change time";
+			ASSERT_EQ(system_clock::from_time_t(1375358076), task1.last_changed) << "Checking Parent's change time";
 		}
 		else if (task1.name == "Child")
 		{
 			string parentUUID = "013900e6-00dd-40f7-b0d6-00de00bf006b";
-			ASSERT_EQ(1375358093, task1.last_changed) << "Checking Child's change time";
+			ASSERT_EQ(system_clock::from_time_t(1375358093), task1.last_changed) << "Checking Child's change time";
 			ASSERT_EQ(parentUUID, static_cast<string>(task1.parent_id.value())) << "Checking Child's parent ";
 		}
 		else

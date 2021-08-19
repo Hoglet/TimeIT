@@ -15,10 +15,10 @@ extended_task::extended_task(
 		task(
 				name,
 				uuid,
-				0,
+				system_clock::now(),
 				parent_ID,
 				false,
-				0,
+				0min,
 				false
 				),
 		expanded(expanded),

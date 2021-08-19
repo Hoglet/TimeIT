@@ -201,13 +201,21 @@ TEST(TaskAccessor, lastChanged)
 	TempDB tempdb(notifier);
 	task_accessor taskAccessor(tempdb);
 	string originalName = "Test";
-	task original_task(originalName, task_id(), 500, {}, false, 0, false);
+	task original_task(
+			originalName,
+			task_id(),
+			system_clock::from_time_t(500),
+			{},
+			false,
+			0min,
+			false);
+
 	taskAccessor.create(original_task);
 
 	vector<task> tasks = taskAccessor.changed_since(0);
 	ASSERT_EQ(1, tasks.size()) << "Asking for all tasks";
 	task task1 = tasks.at(0);
-	ASSERT_EQ(500, task1.last_changed) << "Checking change time";
+	ASSERT_EQ(system_clock::from_time_t(500), task1.last_changed) << "Checking change time";
 	tasks = taskAccessor.changed_since(600);
 	ASSERT_EQ(0, tasks.size()) << "Asking for all tasks after last inserted";
 
@@ -215,10 +223,10 @@ TEST(TaskAccessor, lastChanged)
 	task updated_task(
 			newName,
 			task1.id,
-			495,
+			system_clock::from_time_t(495),
 			task1.parent_id,
 			false,
-			0,
+			0min,
 			false);
 
 	taskAccessor.update(updated_task);

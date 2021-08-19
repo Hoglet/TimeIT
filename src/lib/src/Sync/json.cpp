@@ -6,6 +6,7 @@
 
 namespace libtimeit
 {
+using namespace std::chrono;
 
 json::json() : object(json_object())
 {
@@ -14,6 +15,19 @@ json::json() : object(json_object())
 json::json(string text) : object(json_string(text.c_str()))
 {
 }
+
+json::json(time_point<system_clock> time_stamp) : object(json_integer(system_clock::to_time_t(time_stamp)))
+{
+}
+
+json::json(seconds duration): object(json_integer(duration.count()))
+{
+}
+
+json::json(minutes duration): object(json_integer(duration.count()))
+{
+}
+
 
 json::json(int64_t number) : object(json_integer(number))
 {

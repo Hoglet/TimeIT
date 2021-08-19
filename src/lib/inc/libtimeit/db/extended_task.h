@@ -23,7 +23,7 @@ struct extended_task : public task
 			);
 
 
-
+[[deprecated]]
 	extended_task(
 			task_id           uuid,
 			optional<task_id> parent_ID,

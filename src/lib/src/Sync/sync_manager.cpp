@@ -153,15 +153,15 @@ void sync_manager::sync_tasks_to_database()
 	vector<task> tasks_to_update;
 	for (task item : tasks_to_sync)
 	{
-		int64_t id = tasks.to_id(item.id);
-		auto parent_uuid = item.parent_id;
-		int64_t parent = 0;
-		time_t last_changed = item.last_changed;
-		string name  = item.name;
-		auto uuid    = item.id;
-		bool deleted = item.deleted;
-		auto idle    = item.idle;
-		bool quiet   = item.quiet;
+		int64_t id           = tasks.to_id(item.id);
+		auto    parent_uuid  = item.parent_id;
+		int64_t parent       = 0;
+		auto    last_changed = item.last_changed;
+		string  name         = item.name;
+		auto    uuid         = item.id;
+		bool    deleted      = item.deleted;
+		auto    idle         = item.idle;
+		bool    quiet        = item.quiet;
 
 		auto  original_task = tasks.by_id(item.id);
 		if( original_task.has_value() )
@@ -199,7 +199,7 @@ void sync_manager::sync_tasks_to_database()
 		if (parent_uuid)
 		{
 			int64_t id           = tasks.to_id(item.id);
-			time_t  last_changed = item.last_changed;
+			auto    last_changed = item.last_changed;
 			string  name         = item.name;
 			auto    uuid         = item.id;
 			bool    deleted      = item.deleted;

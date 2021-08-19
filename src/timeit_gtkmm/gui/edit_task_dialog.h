@@ -67,7 +67,7 @@ private:
 	parent_chooser_widget parent_chooser;
 
 	string                  name;
-	unsigned                idle_time {0};
+	minutes                 idle_time {0min};
 	bool                    quiet     {false};
 	optional<task_id>       id;
 	optional<task_id>       parent_id;

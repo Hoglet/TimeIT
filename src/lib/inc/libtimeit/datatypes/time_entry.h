@@ -30,7 +30,7 @@ struct Time_entry
 	const string               comment;
 
 	Time_entry(
-			task_id          owner_id,
+			task_id          owner,
 			time_t           start,
 			time_t           stop
 	);

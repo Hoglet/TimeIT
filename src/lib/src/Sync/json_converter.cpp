@@ -27,8 +27,9 @@ string to_json(vector<task> tasks, string username)
 		item.set("lastChange", json(node.last_changed));
 		item.set("deleted", json(node.deleted));
 
-		item.set("idle", json((int64_t)node.idle));
+		item.set("idle", json(node.idle));
 		item.set("quiet", json(node.quiet));
+		item.set("completed", json(false)); // Legacy, needed for TimeIT server 1.0.
 
 		json owner;
 		owner.set("username", json(username));
@@ -75,9 +76,9 @@ vector<task> to_tasks(const string &text)
 		string   name            = json_object.text("name");
 		string   uuid_string     = json_object.text("id");
 		string   parent_string   = json_object.by_name("parent").text("id");
-		time_t   last_changed    = json_object.integer("lastChange");
+		auto     last_changed    = system_clock::from_time_t(json_object.integer("lastChange"));
 		bool     deleted         = json_object.boolean("deleted");
-		auto     idle            = (unsigned)json_object.integer("idle");
+		auto     idle            = minutes(json_object.integer("idle"));
 		bool     quiet           = json_object.boolean("quiet");
 		auto uuid= UUID::from_string(uuid_string);
 		if(uuid)

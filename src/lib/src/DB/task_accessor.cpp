@@ -8,6 +8,7 @@ namespace libtimeit
 {
 
 using namespace std;
+using namespace std::chrono;
 
 const string CREATE_TASK_V6 = R"Query(
 				INSERT INTO
@@ -107,8 +108,8 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 		auto column{0};
 		string name        = row[column++].text();
 		auto   l_uuid      = libtimeit::optional_task_id(row[column++].text());
-		time_t last_change = row[column++].integer();
-		auto   idle        = (unsigned)row[column++].integer();
+		auto   last_change = system_clock::from_time_t(row[column++].integer());
+		auto   idle        = minutes(row[column++].integer());
 		bool   quiet       = row[column].boolean();
 		if(l_uuid.has_value())
 		{
@@ -139,9 +140,9 @@ optional<task> task_accessor::by_id(task_id id)
 		}
 		auto column{1};
 		string name        = row[column++].text();
-		time_t last_change = row[column++].integer();
+		auto   last_change = system_clock::from_time_t( row[column++].integer());
 		bool   deleted     = row[column++].boolean();
-		auto   idle        = (unsigned)row[column++].integer();
+		auto   idle        = minutes(row[column++].integer());
 		bool   quiet       = row[column].boolean();
 		auto   parent_uuid = to_task_id(parent);
 
@@ -187,9 +188,9 @@ optional<task> task_accessor::get_task_unlimited(task_id id)
 		auto column{1};
 		string   name        = row[column++].text();
 		auto     l_uuid      = UUID::from_string(row[column++].text());
-		time_t   last_change = row[column++].integer();
+		auto     last_change = system_clock::from_time_t(row[column++].integer());
 		bool     deleted     = row[column++].boolean();
-		auto     idle        = (unsigned)row[column++].integer();
+		auto     idle        = minutes(row[column++].integer());
 		bool     quiet       = row[column].boolean();
 		if(l_uuid.has_value())
 		{
@@ -238,9 +239,9 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 		column++;
 		string  name        = row[column++].text();
 		auto    l_uuid      = libtimeit::optional_task_id(row[column++].text());
-		time_t  last_change = row[column++].integer();
+		auto    last_change = system_clock::from_time_t(row[column++].integer());
 		bool    deleted     = row[column++].boolean();
-		auto    idle        = (unsigned)row[column++].integer();
+		auto    idle        = minutes(row[column++].integer());
 		bool    quiet       = row[column].boolean();
 		if (l_uuid.has_value())
 		{
@@ -361,9 +362,9 @@ void task_accessor::internal_update(const task &item)
 	{
 		statement_update_task.bind_null_value(index++);
 	}
-	statement_update_task.bind_value(index++, item.last_changed);
+	statement_update_task.bind_value(index++, system_clock::to_time_t(item.last_changed));
 	statement_update_task.bind_value(index++, (int64_t)item.deleted);
-	statement_update_task.bind_value(index++, item.idle);
+	statement_update_task.bind_value(index++, item.idle.count());
 	statement_update_task.bind_value(index++, (int64_t)item.quiet);
 	auto old_id = to_id(item.id);
 	statement_update_task.bind_value(index, old_id);
@@ -435,10 +436,10 @@ void task_accessor::create(const task &item)
 	{
 		statement_new_task.bind_null_value(index++);
 	}
-	statement_new_task.bind_value(index++, item.last_changed);
+	statement_new_task.bind_value(index++, system_clock::to_time_t(item.last_changed));
 	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
-	statement_new_task.bind_value(index++, item.idle);
+	statement_new_task.bind_value(index++, item.idle.count());
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);
 
 	statement_new_task.execute();
@@ -463,10 +464,10 @@ void task_accessor::internal_create(const task &item, sql_statement &statement_n
 	{
 		statement_new_task.bind_null_value(index++);
 	}
-	statement_new_task.bind_value(index++, item.last_changed);
+	statement_new_task.bind_value(index++, system_clock::to_time_t(item.last_changed));
 	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
-	statement_new_task.bind_value(index++, item.idle);
+	statement_new_task.bind_value(index++, item.idle.count());
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);
 
 	statement_new_task.execute();

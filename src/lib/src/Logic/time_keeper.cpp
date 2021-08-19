@@ -31,14 +31,14 @@ Time_keeper::Time_keeper(
 
 {
 	idle_gz = (int)settings.get_int("Gz", DEFAULT_GZ);
-	default_idle_time = (unsigned)settings.get_int("Gt", DEFAULT_GT);
+	default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
 }
 
 void Time_keeper::on_settings_changed(string name)
 {
 	if ( name == "Gt")
 	{
-		default_idle_time = (unsigned)settings.get_int("Gt", DEFAULT_GT);
+		default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
 	}
 	if ( name == "Gz")
 	{
@@ -223,12 +223,12 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 	{
 		auto owner = tasks.by_id(time_item.owner_id);
 		auto idle_time = owner->idle;
-		if(idle_time == 0)
+		if(idle_time == 0min)
 		{
 			idle_time = default_idle_time;
 		}
-		auto time_inactive = now - time_item.stop;
-		if( time_inactive > idle_time * MINUTE )
+		auto time_inactive = seconds(now - time_item.stop);
+		if( time_inactive > duration_cast<seconds>(idle_time) )
 		{
 			times_to_stop.push_back( time_item );
 			if( ! owner->quiet )

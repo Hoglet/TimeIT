@@ -6,10 +6,12 @@
 #include <jansson.h>
 #include <list>
 #include <vector>
+#include <chrono>
 
 namespace libtimeit
 {
 using namespace std;
+using namespace std::chrono;
 
 class json
 {
@@ -23,6 +25,9 @@ public:
 	json(string  text);
 	json(int64_t number);
 	json(bool state);
+	json(seconds /*duration*/);
+	json(minutes /*duration*/);
+	json(time_point<system_clock> time_stamp);
 	json(vector<json>);
 	json& operator=(json&&);
 	json& operator=(const json&) = delete;

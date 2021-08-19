@@ -82,7 +82,7 @@ private:
 	void on_complete_update() override;
 
 	int idle_gz;
-	unsigned default_idle_time{0};
+	minutes default_idle_time{0min};
 
 	void notify_running_changed();
 	void notify_idle_detected(const Time_entry& /*id*/);
