@@ -238,12 +238,11 @@ TEST( Json, testTaskStringGenerationTest )
 
 	json_t *object = json_array_get(root, 0);
 
-	ASSERT_EQ( 8, json_object_size(object)) << "Number of fields are wrong ";
+	ASSERT_EQ( 9, json_object_size(object)) << "Number of fields are wrong ";
 
 	json_t *j_name = json_object_get(object, "name");
 	json_t *j_id = json_object_get(object, "id");
 	json_t *j_parent = json_object_get(object, "parent");
-	json_t *j_completed = json_object_get(object, "completed");
 	json_t *j_lastChanged = json_object_get(object, "lastChange");
 	json_t *j_deleted = json_object_get(object, "deleted");
 	json_t *j_owner = json_object_get(object, "owner");
@@ -251,7 +250,6 @@ TEST( Json, testTaskStringGenerationTest )
 	ASSERT_EQ( name, json_string_value(j_name)) << "Name is incorrect";
 	ASSERT_STREQ( uuid->c_str(), json_string_value(j_id)) << "id is incorrect";
 	ASSERT_EQ( static_cast<string>(parentID.value()), json_string_value(json_object_get(j_parent, "id"))) << "Parent id is incorrect";
-	ASSERT_EQ( false, json_is_true(j_completed)) << "Completed is incorrect";
 	ASSERT_EQ( changeTime, system_clock::from_time_t(json_integer_value(j_lastChanged))) << "Last changed is incorrect";
 	ASSERT_EQ( false, json_is_true(j_deleted)) << "Deleted is incorrect";
 	ASSERT_STREQ( "tester", json_string_value(json_object_get(j_owner, "username"))) << "Owner id is incorrect";
