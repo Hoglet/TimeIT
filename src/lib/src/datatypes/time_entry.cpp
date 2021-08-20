@@ -5,7 +5,7 @@
 namespace libtimeit
 {
 Time_entry::Time_entry(
-		time_id               uuid_,
+		time_id               id_,
 		task_id               owner_id,
 		time_t                start_,
 		time_t                stop_,
@@ -13,12 +13,12 @@ Time_entry::Time_entry(
 		time_t                changed_,
 		string                comment_)
 		:
-		id( move( uuid_)),
+		id( move( id_)),
 		start(start_),
 		stop(stop_),
 		state(state_),
 		changed(changed_),
-		owner_id( owner_id),
+		owner_id(std::move( owner_id)),
 		comment(std::move(comment_))
 {
 }
@@ -35,7 +35,7 @@ Time_entry::Time_entry(
 		stop(stop_ ),
 		state(STOPPED ),
 		changed(time(nullptr)),
-		owner_id( owner),
+		owner_id(std::move( owner)),
 		comment()
 {
 }
@@ -51,7 +51,7 @@ Time_entry::Time_entry(
 		stop( stop_ ),
 		state( state_ ),
 		changed( time(nullptr) ),
-		owner_id( owner_id),
+		owner_id(std::move( owner_id)),
 		comment()
 {
 }
@@ -64,14 +64,14 @@ Time_entry Time_entry::with_start(time_t start_) const
 	{
 		return *this;
 	}
-	return Time_entry(
+	return {
 			id,
 			owner_id,
 			start_,
 			stop,
 			state,
 			time(nullptr),
-			comment);
+			comment};
 }
 
 Time_entry Time_entry::with_stop(time_t stop_) const
@@ -80,14 +80,14 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 	{
 		return *this;
 	}
-	return Time_entry(
+	return {
 			id,
 			owner_id,
 			start,
 			stop_,
 			state,
 			time(nullptr),
-			comment);
+			comment};
 }
 
 
@@ -97,14 +97,14 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 	{
 		return *this;
 	}
-	return Time_entry(
+	return {
 			id,
 			owner_id,
 			start,
 			stop,
 			new_state,
 			time(nullptr),
-			comment);
+			comment};
 }
 
 Time_entry Time_entry::with_comment(string new_comment)
@@ -113,7 +113,7 @@ Time_entry Time_entry::with_comment(string new_comment)
 	{
 		return *this;
 	}
-	return Time_entry(
+	return {
 			id,
 			owner_id,
 			start,
@@ -121,7 +121,7 @@ Time_entry Time_entry::with_comment(string new_comment)
 			state,
 			time(nullptr),
 			new_comment
-			);
+			};
 }
 
 bool operator==(const Time_entry &op1, const Time_entry &op2)

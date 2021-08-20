@@ -105,7 +105,7 @@ vector<json> json::objects() const
 	for (size_t i = 0; i < json_array_size(object); i++)
 	{
 		json_t *item = json_array_get(object, i);
-		return_value.push_back(json(item));
+		return_value.emplace_back(item);
 	}
 	return return_value;
 }
@@ -151,9 +151,9 @@ json json::by_name(string key) const
 	json_t *value  = json_object_get(object, key.c_str());
 	if (json_is_object(value))
 	{
-		return json(value);
+		return {value};
 	}
-	return json(nullptr);
+	return {nullptr};
 }
 
 json::json(vector<json> items) : object(json_array())

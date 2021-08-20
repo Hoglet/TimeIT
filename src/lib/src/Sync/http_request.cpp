@@ -7,7 +7,7 @@ namespace libtimeit
 
 size_t receive_data(char* ptr, size_t size, size_t nmemb, stringstream* received_data)
 {
-	auto length = size * nmemb;
+	auto length = static_cast<std::streamsize>(size * nmemb);
 	(*received_data).write(ptr, length);
 	return size * nmemb;
 }
@@ -46,7 +46,7 @@ size_t http_request::send_data(char* dest, size_t i, size_t i1, http_request* ca
 	{
 		characters_to_send = buffer_length;
 	}
-	auto read_pointer=&(caller->send_buffer.c_str()[caller->cur_send_position]);
+	const auto *read_pointer=&(caller->send_buffer.c_str()[caller->cur_send_position]);
 	memcpy(dest, read_pointer , characters_to_send); // NOLINT
 	caller->cur_send_position += characters_to_send;
 	return characters_to_send;

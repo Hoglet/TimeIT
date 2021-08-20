@@ -7,7 +7,6 @@
 
 #include <sstream>
 #include "libtimeit/db/autotrack_accessor.h"
-#include "libtimeit/db/extended_task_accessor.h"
 #include "legacy_db_helper.h"
 
 namespace libtimeit
@@ -62,12 +61,12 @@ task_id_list auto_track_accessor::task_ids(unsigned workspace)
 	return return_value;
 }
 
-vector<unsigned> auto_track_accessor::workspaces(task_id id)
+vector<unsigned> auto_track_accessor::workspaces(const task_id& id)
 {
-	auto taskID = legacy_db_helper::new_task_id_to_old( id, db);
+	auto task_id = legacy_db_helper::new_task_id_to_old( id, db);
 	vector<unsigned> return_value;
 	stringstream     statement;
-	statement << "SELECT workspace FROM autotrack where taskID =" << taskID;
+	statement << "SELECT workspace FROM autotrack where taskID =" << task_id;
 	Query_result rows = db.execute(statement.str());
 	for (auto row : rows)
 	{
@@ -77,17 +76,17 @@ vector<unsigned> auto_track_accessor::workspaces(task_id id)
 	return return_value;
 }
 
-void auto_track_accessor::set_workspaces(task_id id, vector<unsigned> workspaces)
+void auto_track_accessor::set_workspaces(const task_id& id, const vector<unsigned>& workspaces)
 {
-	auto task_ID = legacy_db_helper::new_task_id_to_old( id, db);
+	auto task_id = legacy_db_helper::new_task_id_to_old( id, db);
 	stringstream statement;
-	statement << "DELETE FROM autotrack WHERE taskID = " << task_ID;
+	statement << "DELETE FROM autotrack WHERE taskID = " << task_id;
 	db.execute(statement.str());
 
 	for (auto workspace : workspaces)
 	{
 		statement.str("");
-		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << task_ID << ", " << workspace << ")";
+		statement << "INSERT INTO autotrack (taskID,workspace) VALUES (" << task_id << ", " << workspace << ")";
 		db.execute(statement.str());
 	}
 }

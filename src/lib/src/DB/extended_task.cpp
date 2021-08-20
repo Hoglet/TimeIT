@@ -4,31 +4,6 @@ namespace libtimeit
 {
 
 extended_task::extended_task(
-		task_id           uuid,
-		optional<task_id> parent_ID,
-		const string&     name,
-		long              time,
-		bool              expanded,
-		bool              running,
-		long              total_time_)
-		:
-		task(
-				name,
-				uuid,
-				system_clock::now(),
-				parent_ID,
-				false,
-				0min,
-				false
-				),
-		expanded(expanded),
-		running(running),
-		time(time),
-		total_time(total_time_)
-{
-}
-
-extended_task::extended_task(
 		const task&       source,
 		long              time,
 		long              total_time_,

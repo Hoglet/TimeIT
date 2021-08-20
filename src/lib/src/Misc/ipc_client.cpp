@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <unistd.h>
 #include <fcntl.h>
-#include <cstring>
 #include <libtimeit/utils.h>
 #include <libtimeit/logging.h>
 
@@ -34,12 +33,12 @@ void ipc_client::window_2_front()
 	{
 		server.sun_family = AF_UNIX;
 
-		if(safe_strcpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)))
+		if( safe_strcpy(server.sun_path, socket_name.c_str(), sizeof(server.sun_path)) != 0 )
 		{
 			logg("Path to socket is too long");
 			return;
 		}
-		if (connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0) // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
+		if ( connect(sock, (struct sockaddr*) &server, sizeof(struct sockaddr_un)) < 0 ) // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 		{
 			close(sock);
 			perror("connecting stream socket");

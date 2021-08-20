@@ -28,7 +28,7 @@ struct [[nodiscard]]  task
 
 
 
-	task(string name_, optional<task_id> parent_ID = {});
+	explicit task( string name_, optional<task_id> parent_ID = {});
 	task(
 			string                    name_,
 			task_id                   uuid_,
@@ -38,8 +38,8 @@ struct [[nodiscard]]  task
 			minutes                   idle_,
 			bool                      quiet_);
 
-	task       with_name(string /*new_name*/)        const;
-	task       with_parent(optional<task_id> /*id*/) const;
+	task       with_name(const string& /*new_name*/)        const;
+	task       with_parent(const optional<task_id>& /*id*/) const;
 	task       with_deleted(bool  /*deleted*/)       const;
 	task       with_idle(minutes /*idle*/)          const;
 	task       with_quiet(bool /*quiet*/)            const;

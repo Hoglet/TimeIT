@@ -7,46 +7,46 @@ namespace libtimeit
 {
 
 
-task task::with_name(string new_name) const
+task task::with_name(const string& new_name) const
 {
 	if(name == new_name)
 	{
 		return *this;
 	}
-	return 	task(
+	return 	{
 			new_name,
 			id,
 			system_clock::now(),
 			parent_id,
 			deleted,
 			idle,
-			quiet);
+			quiet };
 
 }
 
-task task::with_parent(optional<task_id> new_parent_id) const
+task task::with_parent(const optional<task_id>& new_parent_id) const
 {
 	if( parent_id == new_parent_id)
 	{
 		return *this;
 	}
-	return 	task(
+	return 	{
 			name,
 			id,
 			system_clock::now(),
 			new_parent_id,
 			deleted,
 			idle,
-			quiet);
+			quiet};
 }
 
 task::task(string name_, optional<task_id> parent_ID_)
 	:
 		task(
-			name_,
+			std::move(name_),
 			task_id(),
 			system_clock::now(),
-			parent_ID_,
+			std::move(parent_ID_),
 			false,
 			0min,
 			false)
@@ -82,14 +82,14 @@ task task::with_deleted(bool new_deleted) const
 	{
 		return *this;
 	}
-	return 	task(
+	return 	{
 			name,
 			id,
 			system_clock::now(),
 			parent_id,
 			new_deleted,
 			idle,
-			quiet);
+			quiet};
 }
 task task::with_idle(minutes new_idle) const
 {
@@ -97,14 +97,14 @@ task task::with_idle(minutes new_idle) const
 	{
 		return *this;
 	}
-	return 	task(
+	return 	{
 			name,
 			id,
 			system_clock::now(),
 			parent_id,
 			deleted,
 			new_idle,
-			quiet);
+			quiet};
 }
 
 task task::with_quiet(bool new_quiet) const
@@ -113,14 +113,14 @@ task task::with_quiet(bool new_quiet) const
 	{
 		return *this;
 	}
-	return 	task(
+	return 	{
 			name,
 			id,
 			system_clock::now(),
 			parent_id,
 			deleted,
 			idle,
-			new_quiet);
+			new_quiet};
 }
 
 bool operator==(const task &op1, const task &op2)

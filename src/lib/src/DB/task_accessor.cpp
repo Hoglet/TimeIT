@@ -1,5 +1,4 @@
 #include <sstream>
-#include <fmt/core.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/utils.h>
 
@@ -126,7 +125,7 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 	return return_value;
 }
 
-optional<task> task_accessor::by_id(task_id id)
+optional<task> task_accessor::by_id(const task_id& id)
 {
 	statement_get_by_id.bind_value(1, static_cast<string>(id));
 	Query_result rows = statement_get_by_id.execute();
@@ -158,9 +157,9 @@ optional<task> task_accessor::by_id(task_id id)
 	return {};
 }
 
-optional<task> task_accessor::get_task_unlimited(task_id id)
+optional<task> task_accessor::get_task_unlimited(const task_id& id)
 {
-	auto taskID = to_id(id);
+	auto old_task_id = to_id( id);
 	sql_statement statement_get_complete_task = db.prepare(R"(
 		SELECT
 			parent,
@@ -175,7 +174,7 @@ optional<task> task_accessor::get_task_unlimited(task_id id)
 		WHERE
 			id=?;
 		)");
-	statement_get_complete_task.bind_value(1, taskID);
+	statement_get_complete_task.bind_value( 1, old_task_id);
 	Query_result rows = statement_get_complete_task.execute();
 	if (rows.size() == 1)
 	{
@@ -259,7 +258,7 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 	return return_value;
 }
 
-Task_id task_accessor::to_id(task_id id)
+Task_id task_accessor::to_id(const task_id& id)
 {
 
 	Task_id old_id = 0;
@@ -272,7 +271,7 @@ Task_id task_accessor::to_id(task_id id)
 	return old_id;
 }
 
-Task_id task_accessor::to_id(UUID uuid)
+Task_id task_accessor::to_id(const UUID& uuid)
 {
 
 	Task_id id = 0;
@@ -437,7 +436,7 @@ void task_accessor::create(const task &item)
 		statement_new_task.bind_null_value(index++);
 	}
 	statement_new_task.bind_value(index++, system_clock::to_time_t(item.last_changed));
-	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
+	statement_new_task.bind_value(index++, static_cast<string>(item.id));
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
 	statement_new_task.bind_value(index++, item.idle.count());
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);
@@ -451,7 +450,7 @@ void task_accessor::create(const task &item)
 			});
 }
 
-void task_accessor::internal_create(const task &item, sql_statement &statement_new_task)
+void task_accessor::internal_create( const task &item )
 {
 	auto index{1};
 	statement_new_task.bind_value(index++, item.name);
@@ -465,7 +464,7 @@ void task_accessor::internal_create(const task &item, sql_statement &statement_n
 		statement_new_task.bind_null_value(index++);
 	}
 	statement_new_task.bind_value(index++, system_clock::to_time_t(item.last_changed));
-	statement_new_task.bind_value(index++, static_cast<string>(item.id).c_str());
+	statement_new_task.bind_value(index++, static_cast<string>(item.id));
 	statement_new_task.bind_value(index++, (int64_t)item.deleted);
 	statement_new_task.bind_value(index++, item.idle.count());
 	statement_new_task.bind_value(index,   (int64_t)item.quiet);

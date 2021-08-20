@@ -80,7 +80,7 @@ workspace_layout x11_workspace::layout()
 	{
 		cerr << e.what();
 	}
-	return workspace_layout(number_of_workspaces, rows, columns);
+	return {number_of_workspaces, rows, columns};
 }
 
 unsigned x11_workspace::active()
@@ -130,7 +130,7 @@ string x11_workspace::name(unsigned workspace_nr)
 	{
 		cerr << e.what();
 	}
-	return string();
+	return {};
 }
 
 }

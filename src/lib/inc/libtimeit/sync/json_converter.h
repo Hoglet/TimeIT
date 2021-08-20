@@ -15,7 +15,7 @@ using namespace std;
 vector<task>       to_tasks(const string& json);
 vector<Time_entry> to_times(const string& json);
 
-string to_json(vector<task> tasks, string username);
+string to_json(const vector<task>& tasks, const string& username);
 string to_json(const vector<Time_entry>& times);
 }
 

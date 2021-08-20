@@ -42,7 +42,7 @@ struct Time_entry
 	);
 
 	Time_entry(
-			time_id           id,
+			time_id           id_,
 			task_id           owner_id,
 			time_t            start,
 			time_t            stop,

@@ -53,7 +53,7 @@ sql_statement SQLite3::prepare(const string& query)
 		try_rollback();
 		throw db_exception(message.str(), rc);
 	}
-	return sql_statement(stmt, *this);
+	return {stmt, *this};
 }
 
 Query_result SQLite3::execute(const string& query)
@@ -119,9 +119,20 @@ sql_statement::sql_statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
 
 }
 
+
+void sql_statement::bind_value(int index, bool value)
+{
+	sqlite3_bind_int(stmt, index, static_cast<int>(value));
+}
+
+void sql_statement::bind_value(int index, int value)
+{
+	sqlite3_bind_int(stmt, index, value);
+}
+
 void sql_statement::bind_value(int index, int64_t value)
 {
-	sqlite3_bind_int(stmt, index, (int)value);
+	sqlite3_bind_int(stmt, index, static_cast<int>(value));
 }
 
 void sql_statement::bind_value(int index, const std::string& text)

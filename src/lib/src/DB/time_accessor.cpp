@@ -354,7 +354,7 @@ bool time_accessor::update(const Time_entry& item )
 		statement_update_time.bind_value(index++, static_cast<int64_t>(running) );
 		statement_update_time.bind_value(index++, item.changed);
 		statement_update_time.bind_value(index++, static_cast<int64_t>(deleted) );
-		statement_update_time.bind_value(index++, item.state);
+		statement_update_time.bind_value(index++, static_cast<int64_t>(item.state));
 		statement_update_time.bind_value(index++, item.comment);
 		statement_update_time.bind_value(index,   static_cast<string>(item.id) );
 
@@ -459,9 +459,9 @@ void time_accessor::internal_create(const Time_entry &item, sql_statement& state
 	statement_new_entry.bind_value(index++, item.start);
 	statement_new_entry.bind_value(index++, item.stop);
 	statement_new_entry.bind_value(index++, item.changed);
-	statement_new_entry.bind_value(index++, (int64_t)deleted);
-	statement_new_entry.bind_value(index++, (int64_t)running);
-	statement_new_entry.bind_value(index++, item.state);
+	statement_new_entry.bind_value(index++, deleted);
+	statement_new_entry.bind_value(index++, running);
+	statement_new_entry.bind_value(index++, static_cast<int64_t>(item.state));
 	statement_new_entry.bind_value(index,   item.comment);
 	statement_new_entry.execute();
 }
@@ -573,7 +573,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 		WHERE
 			state = ?
 		)Query");
-	statement.bind_value(1, state);
+	statement.bind_value(1, static_cast<int>(state));
 
 	Query_result rows = statement.execute();
 	for (auto row: rows)

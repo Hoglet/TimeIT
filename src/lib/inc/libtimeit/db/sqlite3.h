@@ -26,6 +26,8 @@ public:
 	sql_statement& operator=(sql_statement&&) = delete;
 
 	~sql_statement();
+	void bind_value(int index, bool value);
+	void bind_value(int index, int  value);
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
 	void bind_null_value(int index);

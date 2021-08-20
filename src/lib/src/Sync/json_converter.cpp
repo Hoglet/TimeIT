@@ -10,10 +10,10 @@ namespace libtimeit
 {
 using namespace std;
 
-string to_json(vector<task> tasks, string username)
+string to_json(const vector<task>& tasks, const string& username)
 {
 	vector<json> items{};
-	for (task node : tasks)
+	for (const task& node : tasks)
 	{
 		json item;
 		item.set("name", json(node.name));
@@ -44,7 +44,7 @@ string to_json(vector<task> tasks, string username)
 string to_json(const Time_list& times)
 {
 	vector<json> items{};
-	for (auto time : times)
+	for (const auto& time : times)
 	{
 		json item;
 		item.set("id", json( static_cast<string>(time.id)));
@@ -71,7 +71,7 @@ vector<task> to_tasks(const string &text)
 
 	json json_document=json::from_json_string(text);
 
-	for (auto json_object: json_document.objects())
+	for (const auto& json_object: json_document.objects())
 	{
 		string   name            = json_object.text("name");
 		string   uuid_string     = json_object.text("id");
@@ -108,7 +108,7 @@ Time_list to_times(const string &input)
 
 	json json_document=json::from_json_string(input);
 
-	for (json item: json_document.objects())
+	for (const json& item: json_document.objects())
 	{
 		string uuid_string    = item.text("id");
 		string task_id_string = item.by_name("task").text("id");
