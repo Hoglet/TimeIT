@@ -3,7 +3,7 @@
 
 namespace libtimeit
 {
-extern bool is_valid_uuid( std::string_view uuid );
+extern bool is_valid_uuid( std::string_view id );
 }
 
 using namespace libtimeit;

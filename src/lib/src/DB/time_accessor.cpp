@@ -43,9 +43,9 @@ void time_accessor::remove(const Time_entry& item)
 	update(item.with(DELETED));
 }
 
-optional<Time_entry> time_accessor::by_id(time_id uuid)
+optional<Time_entry> time_accessor::by_id(time_id id)
 {
-	by_uuid_statement.bind_value(1, static_cast<string>(uuid));
+	by_uuid_statement.bind_value(1, static_cast<string>(id));
 
 	Query_result rows = by_uuid_statement.execute();
 	for ( auto row: rows )
@@ -54,7 +54,7 @@ optional<Time_entry> time_accessor::by_id(time_id uuid)
 		time_t  start     = row[column++].integer();
 		time_t  stop      = row[column++].integer();
 		time_t  changed   = row[column++].integer();
-		auto    possible_uuid      = UUID::from_string( row[column++].text());
+		auto    possible_uuid      = uuid::from_string( row[column++].text());
 		auto    task_uuid = optional_task_id(row[column++].text());
 		auto    state     = static_cast<Time_entry_state>(row[column++].integer());
 		auto    comment   = row[column].text();
@@ -212,7 +212,7 @@ task_id_list time_accessor::latest_active_tasks(int amount)
 
 	for (auto row : rows)
 	{
-		auto id = task_id(UUID::from_string(row[0].text()).value());
+		auto id = task_id( uuid::from_string( row[0].text()).value());
 		result_list.push_back(id);
 	}
 	return result_list;
@@ -239,7 +239,7 @@ task_id_list time_accessor::currently_running()
 		Query_result rows2 = statement_get_uuid.execute();
 		for (auto row2 : rows2)
 		{
-			auto id = task_id(UUID::from_string(row2[0].text()).value());
+			auto id = task_id( uuid::from_string( row2[0].text()).value());
 			result_list.push_back(id);
 		}
 		/* end temp fix */
@@ -249,13 +249,13 @@ task_id_list time_accessor::currently_running()
 
 Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time_t stopTime)
 {
-	int64_t id = legacy_db_helper::new_task_id_to_old( owner, db);
+	int64_t owner_id = legacy_db_helper::new_task_id_to_old( owner, db);
 	Time_list result_list;
 	stringstream statement;
 	statement << "SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times ";
 	statement << " WHERE stop > " << startTime;
 	statement << " AND start <" << stopTime;
-	statement << " AND taskID = " << id;
+	statement << " AND taskID = " << owner_id;
 	statement << " AND deleted=0 ";
 	statement << " ORDER BY start";
 
@@ -267,8 +267,8 @@ Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time
 		time_t stop      = row[column++].integer();
 		auto   state     = static_cast<Time_entry_state>(row[column++].integer());
 		time_t changed   = row[column++].integer();
-		auto   uuid      = UUID::from_string(row[column++].text());
-		auto   task_uuid = UUID::from_string(row[column++].text());
+		auto   uuid      = uuid::from_string( row[column++].text());
+		auto   task_uuid = uuid::from_string( row[column++].text());
 		auto   comment   = row[column].text();
 
 		if (uuid.has_value() && task_uuid.has_value())
@@ -303,8 +303,8 @@ Time_list time_accessor::times_changed_since(time_t timestamp)
 		time_t stop      = row[column++].integer();
 		auto   state     = static_cast<Time_entry_state>(row[column++].integer());
 		time_t changed   = row[column++].integer();
-		auto   uuid      = UUID::from_string(row[column++].text());
-		auto   task_uuid = UUID::from_string(row[column++].text());
+		auto   uuid      = uuid::from_string( row[column++].text());
+		auto   task_uuid = uuid::from_string( row[column++].text());
 		auto   comment   = row[column].text();
 
 		if(uuid && task_uuid)
@@ -549,7 +549,7 @@ task_id_list time_accessor::active_tasks(time_t start, time_t stop)
 
 	for (auto row : rows)
 	{
-		auto id = task_id(UUID::from_string(row[0].text()).value());
+		auto id = task_id( uuid::from_string( row[0].text()).value());
 		result_list.push_back(id);
 	}
 	return result_list;
@@ -583,15 +583,15 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 		time_t  stop       = row[column++].integer();
 		auto    item_state = static_cast<Time_entry_state>(row[column++].integer());
 		int64_t changed    = row[column++].integer();
-		auto    uuid       = UUID::from_string(row[column++].text());
-		auto    task_uuid  = UUID::from_string(row[column++].text());
+		auto    id       = uuid::from_string( row[column++].text());
+		auto    task_uuid  = uuid::from_string( row[column++].text());
 		auto    comment    = row[column].text();
 
-		if (uuid && task_uuid)
+		if ( id && task_uuid)
 		{
 			auto owner_id = task_id(task_uuid.value());
 			time_list.emplace_back(
-					time_id(*uuid),
+					time_id(*id),
 					owner_id,
 					start,
 					stop,

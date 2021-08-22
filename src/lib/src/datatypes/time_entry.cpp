@@ -30,7 +30,7 @@ Time_entry::Time_entry(
 		time_t  start_,
 		time_t  stop_)
 			:
-		id( UUID() ),
+		id( uuid() ),
 		start(start_ ),
 		stop(stop_ ),
 		state(STOPPED ),
@@ -46,7 +46,7 @@ Time_entry::Time_entry(
 		time_t           stop_,
 		Time_entry_state state_)
 		:
-		id( UUID() ),
+		id( uuid() ),
 		start( start_ ),
 		stop( stop_ ),
 		state( state_ ),

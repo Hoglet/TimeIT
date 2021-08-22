@@ -186,7 +186,7 @@ optional<task> task_accessor::get_task_unlimited(const task_id& id)
 		}
 		auto column{1};
 		string   name        = row[column++].text();
-		auto     l_uuid      = UUID::from_string(row[column++].text());
+		auto     l_uuid      = uuid::from_string( row[column++].text());
 		auto     last_change = system_clock::from_time_t(row[column++].integer());
 		bool     deleted     = row[column++].boolean();
 		auto     idle        = minutes(row[column++].integer());
@@ -271,17 +271,15 @@ Task_id task_accessor::to_id(const task_id& id)
 	return old_id;
 }
 
-Task_id task_accessor::to_id(const UUID& uuid)
+Task_id task_accessor::to_id(const uuid& id)
 {
-
-	Task_id id = 0;
-	statement_uuid_to_id.bind_value(1, uuid.to_string());
+	statement_uuid_to_id.bind_value(1, id.to_string());
 	Query_result rows = statement_uuid_to_id.execute();
 	for (vector<data_cell> row : rows)
 	{
-		id = row[0].integer();
+		return row[0].integer();
 	}
-	return id;
+	return 0;
 }
 
 optional<task_id> task_accessor::optional_task_id(Task_id id)
@@ -292,27 +290,11 @@ optional<task_id> task_accessor::optional_task_id(Task_id id)
 		Query_result rows = statement_id_to_uuid.execute();
 		for (vector<data_cell> row : rows)
 		{
-			auto uuid = row[0].text();
-			auto optional_uuid = UUID::from_string(uuid);
+			auto optional_uuid = uuid::from_string( row[0].text() );
 			if(optional_uuid.has_value())
 			{
 				return task_id(optional_uuid.value());
 			}
-		}
-	}
-	return {};
-}
-
-optional<class UUID> task_accessor::uuid(Task_id id)
-{
-	if( id>0 )
-	{
-		statement_id_to_uuid.bind_value(1, id);
-		Query_result rows = statement_id_to_uuid.execute();
-		for (vector<data_cell> row : rows)
-		{
-			auto uuid = row[0].text();
-			return UUID::from_string(uuid);
 		}
 	}
 	return {};
@@ -326,8 +308,7 @@ optional<task_id> task_accessor::to_task_id(Task_id id)
 		Query_result rows = statement_id_to_uuid.execute();
 		for (vector<data_cell> row : rows)
 		{
-			auto uuid = row[0].text();
-			return task_id(UUID::from_string(uuid).value());
+			return task_id( uuid::from_string( row[0].text()).value());
 		}
 	}
 	return {};

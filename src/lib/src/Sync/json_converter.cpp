@@ -80,18 +80,18 @@ vector<task> to_tasks(const string &text)
 		bool     deleted         = json_object.boolean("deleted");
 		auto     idle            = minutes(json_object.integer("idle"));
 		bool     quiet           = json_object.boolean("quiet");
-		auto uuid= UUID::from_string(uuid_string);
-		if(uuid)
+		auto id= uuid::from_string( uuid_string);
+		if( id.has_value() )
 		{
 			optional<task_id> parent = {};
-			auto parent_uuid = UUID::from_string(parent_string);
+			auto parent_uuid = uuid::from_string( parent_string);
 			if(parent_uuid.has_value())
 			{
 				parent = task_id(parent_uuid.value());
 			}
 			return_value.emplace_back(
 					name,
-					task_id(uuid.value()),
+					task_id( id.value()),
 					last_changed,
 					parent,
 					deleted,
@@ -123,11 +123,11 @@ Time_list to_times(const string &input)
 			state = {DELETED};
 		}
 
-		auto uuid= UUID::from_string(uuid_string);
+		auto id= uuid::from_string( uuid_string);
 		auto owner= optional_task_id(task_id_string);
-		if(uuid.has_value() && owner.has_value())
+		if( id.has_value() && owner.has_value())
 		{
-			Time_entry time_item( time_id(*uuid), *owner, start, stop, state, changed, comment);
+			Time_entry time_item( time_id( id.value() ), *owner, start, stop, state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

@@ -18,10 +18,10 @@ constexpr bool rangeTestG4(const char &c)
 	return  (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B');
 }
 
-constexpr bool is_valid_uuid( string_view uuid ) // NOLINT(readability-function-cognitive-complexity)
+constexpr bool is_valid_uuid( string_view id ) // NOLINT(readability-function-cognitive-complexity)
 {
 
-	if (36 != uuid.length()) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( 36 != id.length()) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
@@ -29,64 +29,64 @@ constexpr bool is_valid_uuid( string_view uuid ) // NOLINT(readability-function-
 	//"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
 	for (int position = 0; position < 8; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == 0)
+		if ( isxdigit( id[position]) == 0)
 		{
 			return false;
 		}
 	}
-	if ('-' != uuid[8])  // NOLINT
+	if ( '-' != id[8])  // NOLINT
 	{
 		return false;
 	}
 
 	for (int position = 9; position < 13; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (isxdigit(uuid[position]) == 0)
+		if ( isxdigit( id[position]) == 0)
 		{
 			return false;
 		}
 	}
 
-	if ('-' != uuid[13])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( '-' != id[13])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 
 	for (int position = 14; position < 18; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (libtimeit::isxdigit(uuid[position]) == 0)
+		if ( libtimeit::isxdigit( id[position]) == 0)
 		{
 			return false;
 		}
 	}
 
-	if ('4' != uuid[14])// NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( '4' != id[14])// NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 
-	if ('-' != uuid[18]) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( '-' != id[18]) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 	for (int position = 19; position < 23; position++)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (libtimeit::isxdigit(uuid[position]) == 0)
+		if ( libtimeit::isxdigit( id[position]) == 0)
 		{
 			return false;
 		}
 	}
-	if ( ! rangeTestG4(uuid[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( ! rangeTestG4( id[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
-	if ('-' != uuid[23])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( '-' != id[23])  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
 	for (int position = 24; position < 36; position++) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
-		if (libtimeit::isxdigit(uuid[position]) == 0)
+		if ( libtimeit::isxdigit( id[position]) == 0)
 		{
 			return false;
 		}
@@ -94,11 +94,11 @@ constexpr bool is_valid_uuid( string_view uuid ) // NOLINT(readability-function-
 	return true;
 }
 
-optional<UUID> UUID::from_string(string uuid)
+optional<uuid> uuid::from_string( string id)
 {
-	if (is_valid_uuid(uuid))
+	if (is_valid_uuid( id))
 	{
-		return UUID(uuid);
+		return uuid( id);
 	}
 	return {};
 }
@@ -113,7 +113,7 @@ int randomBetween8and11()
 	return (rand() % 4) + 8;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
-UUID::UUID()
+uuid::uuid()
 {
 	stringstream uuid_string_stream;
 	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
@@ -133,31 +133,31 @@ UUID::UUID()
 	id = uuid_string_stream.str();
 }
 
-bool UUID::operator==(const UUID &rhs) const
+bool uuid::operator==( const uuid &rhs) const
 {
 	return id == rhs.id;
 }
 
-bool UUID::operator!=(const UUID &rhs) const
+bool uuid::operator!=( const uuid &rhs) const
 {
 	return !(rhs == *this);
 }
 
-const char *UUID::c_str() const
+const char *uuid::c_str() const
 {
 	return id.c_str();
 }
 
-string UUID::to_string() const
+string uuid::to_string() const
 {
 	return id;
 }
 
-UUID::UUID(string basic_string) : id(std::move(basic_string))
+uuid::uuid( string basic_string) : id( std::move( basic_string))
 {
 }
 
-UUID::operator std::string() const
+uuid::operator std::string() const
 {
 	return id;
 }

@@ -1,10 +1,3 @@
-/*
- * X11Property.h
- *
- *  Created on: May 10, 2010
- *      Author: hoglet
- */
-
 #ifndef X11PROPERTY_H_
 #define X11PROPERTY_H_
 #include <vector>

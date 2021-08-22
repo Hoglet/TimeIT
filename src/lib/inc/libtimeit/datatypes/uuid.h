@@ -10,20 +10,20 @@ namespace libtimeit
 {
 using namespace std;
 
-class UUID
+class uuid
 {
 public:
-	UUID();
-	static optional<UUID> from_string(string uuid);
+	uuid();
+	static optional<uuid> from_string( string /*id_string*/);
 
-	bool operator==(const UUID &rhs) const;
-	bool operator!=(const UUID &rhs) const;
+	bool operator==(const uuid &rhs) const;
+	bool operator!=(const uuid &rhs) const;
 	[[nodiscard]] const char *c_str() const;
 	[[nodiscard]] string to_string() const;
 	explicit operator std::string() const;
 private:
 	string id;
-	explicit UUID(string basic_string);
+	explicit uuid( string basic_string);
 };
 
 }

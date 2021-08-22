@@ -12,7 +12,7 @@ class time_id
 {
 public:
 	time_id() noexcept;
-	explicit time_id(const UUID&) noexcept;
+	explicit time_id(const uuid&) noexcept;
 	explicit operator string() const noexcept;
 private:
 	string id;

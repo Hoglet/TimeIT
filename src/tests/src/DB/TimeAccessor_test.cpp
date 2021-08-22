@@ -171,7 +171,7 @@ TEST(TimeAccessor, testGetByUUID)
 	ASSERT_EQ( test_task.id, te->owner_id ) << "Check task id";
 	ASSERT_EQ(10, te->start) << "Check start";
 	ASSERT_EQ(100, te->stop) << "Check stop";
-	ASSERT_EQ( original.id, te->id) << "Check uuid";
+	ASSERT_EQ( original.id, te->id) << "Check id";
 
 }
 
@@ -201,13 +201,6 @@ TEST(TimeAccessor, newItem)
 	ASSERT_EQ(item1.comment, item2->comment) << "Comment: ";
 
 	ASSERT_THROW(timeAccessor.create(item1), db_exception);
-//	ASSERT_EQUALM("Updating with identical item ", false, timeAccessor->update(item1));
-
-//	TimeEntry(	int64_t id, std::string uuid, int64_t taskID, std::string task_UUID, time_t start, time_t stop, bool deleted, bool running, int64_t changed);
-
-//	TimeEntry item2( item1.getID(), item1.get_UUID(), item1.getTaskID(), item1.getTaskUUID(), item1.getStart(),   )
-
-	//TimeEntry faultyItem1(0, uuidManager.randomUUID(), taskId + 1, "", 100, 200, false, false, 200);
 
 }
 

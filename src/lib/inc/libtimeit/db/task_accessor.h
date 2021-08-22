@@ -27,7 +27,7 @@ public:
 	void           remove(const task_id& id);
 
 	Task_id  to_id(const task_id& id);
-	Task_id  to_id(const UUID& uuid);
+	Task_id  to_id(const uuid& id);
 	void     enable_notifications(bool);
 
 protected:
@@ -38,7 +38,6 @@ private:
 	void internal_update(const task &item);
 
 	optional<task_id>    optional_task_id(Task_id id);
-	optional<class UUID> uuid(Task_id id);
 	optional<task_id>    to_task_id(Task_id id);
 	optional<task>       get_task_unlimited(const task_id& id);
 

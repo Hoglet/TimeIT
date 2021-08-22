@@ -7,7 +7,7 @@ using namespace std;
 namespace gui
 {
 
-const task_id NO_PARENT( UUID::from_string("85d66103-41e6-4ea0-a204-f1d07990de70").value() );
+const task_id NO_PARENT( uuid::from_string( "85d66103-41e6-4ea0-a204-f1d07990de70").value() );
 
 using namespace std;
 parent_chooser_widget::parent_chooser_widget(database &db) :

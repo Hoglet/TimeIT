@@ -3,10 +3,10 @@
 namespace libtimeit
 {
 
-task_id::task_id() noexcept: id(static_cast<string>(UUID()))
+task_id::task_id() noexcept: id(static_cast<string>(uuid()))
 {}
 
-task_id::task_id(const UUID& uid) noexcept: id(static_cast<string>(uid))
+task_id::task_id(const uuid& uid) noexcept: id( static_cast<string>(uid))
 {}
 
 task_id::operator string() const noexcept

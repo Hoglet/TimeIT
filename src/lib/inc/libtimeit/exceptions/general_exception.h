@@ -1,10 +1,3 @@
-/*
- * GeneralException.h
- *
- *  Created on: May 15, 2010
- *      Author: hoglet
- */
-
 #ifndef GENERAL_EXCEPTION_H_
 #define GENERAL_EXCEPTION_H_
 

@@ -1,10 +1,3 @@
-/*
- * X11Property.cpp
- *
- *  Created on: May 10, 2010
- *      Author: hoglet
- */
-
 #include "libtimeit/x11_lib.h"
 
 #include <X11/Xlib.h>

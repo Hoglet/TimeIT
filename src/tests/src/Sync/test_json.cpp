@@ -221,10 +221,10 @@ TEST( Json, testTaskStringGenerationTest )
 {
 	string name = "task1";
 	auto parentID = optional_task_id("71cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
-	auto uuid = UUID::from_string("73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
+	auto id = uuid::from_string( "73cf62ec-afc6-4a72-95a3-93a5b9f10b2d");
 	auto changeTime = system_clock::from_time_t(1374263745);
 
-	task task1(name, task_id(*uuid), changeTime, parentID, false, 0min, false);
+	task task1( name, task_id(*id), changeTime, parentID, false, 0min, false);
 	vector<task> tasks;
 	tasks.push_back(task1);
 	string result = to_json(tasks, "tester");
@@ -248,7 +248,7 @@ TEST( Json, testTaskStringGenerationTest )
 	json_t *j_owner = json_object_get(object, "owner");
 
 	ASSERT_EQ( name, json_string_value(j_name)) << "Name is incorrect";
-	ASSERT_STREQ( uuid->c_str(), json_string_value(j_id)) << "id is incorrect";
+	ASSERT_STREQ( id->c_str(), json_string_value( j_id)) << "id is incorrect";
 	ASSERT_EQ( static_cast<string>(parentID.value()), json_string_value(json_object_get(j_parent, "id"))) << "Parent id is incorrect";
 	ASSERT_EQ( changeTime, system_clock::from_time_t(json_integer_value(j_lastChanged))) << "Last changed is incorrect";
 	ASSERT_EQ( false, json_is_true(j_deleted)) << "Deleted is incorrect";

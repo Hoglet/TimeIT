@@ -1,4 +1,4 @@
-src/Logic/UUID.cpp
+src/Logic/uuid.cpp
 src/Logic/Workspace.cpp
 src/Logic/TimeKeeper.cpp
 src/Logic/AutoTracker.cpp

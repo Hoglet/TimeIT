@@ -410,7 +410,7 @@ string abbreviate_string(string_view original, long unsigned i)
 
 optional<task_id> optional_task_id(const string& basic_string)
 {
-	auto optional_uuid = UUID::from_string(basic_string);
+	auto optional_uuid = uuid::from_string( basic_string);
 	if( optional_uuid.has_value())
 	{
 		return task_id(optional_uuid.value());

@@ -36,10 +36,10 @@ optional<task_id> old_task_id_to_new(int64_t owner_id, database& db)
 	auto rows = statement.execute();
 	for( auto row: rows)
 	{
-		auto uuid = UUID::from_string(row[0].text());
-		if( uuid.has_value() )
+		auto id = uuid::from_string( row[0].text());
+		if( id.has_value() )
 		{
-			return task_id(uuid.value());
+			return task_id( id.value());
 		}
 	}
 	return {};

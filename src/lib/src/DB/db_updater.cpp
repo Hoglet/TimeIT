@@ -114,7 +114,7 @@ void db_updater::update_tasks_to_db_5()
 		}
 		statement_new_task.bind_value( 3, parent);
 		statement_new_task.bind_value( 4, now);
-		statement_new_task.bind_value( 5, static_cast<string>(UUID()));
+		statement_new_task.bind_value( 5, static_cast<string>(uuid()));
 		statement_new_task.bind_value( 6, false);
 		statement_new_task.bind_value( 7, row[3].boolean());
 		statement_new_task.execute();
