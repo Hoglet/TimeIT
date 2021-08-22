@@ -17,6 +17,7 @@
       <option name="SPACE_AFTER_POINTER_IN_DECLARATION" value="true" />
       <option name="ADD_GETTER_PREFIX" value="false" />
       <option name="ADD_SETTER_PREFIX" value="false" />
+      <option name="HEADER_GUARD_STYLE_PATTERN" value="${FILE_NAME}_${EXT}" />
     </Objective-C>
     <Objective-C-extensions>
       <rules>
