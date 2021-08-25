@@ -74,19 +74,24 @@ void status_icon_widget::populate_context_menu()
 			switch (i)
 			{
 			case 0:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this, &status_icon_widget::on_menu_toggle_task1)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
+																												  &status_icon_widget::on_menu_toggle_task_1)));
 				break;
 			case 1:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this, &status_icon_widget::on_menu_toggle_task2)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
+																												  &status_icon_widget::on_menu_toggle_task_2)));
 				break;
 			case 2:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this, &status_icon_widget::on_menu_toggle_task3)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
+																												  &status_icon_widget::on_menu_toggle_task_3)));
 				break;
 			case 3:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this, &status_icon_widget::on_menu_toggle_task4)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
+																												  &status_icon_widget::on_menu_toggle_task_4)));
 				break;
 			case 4:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this, &status_icon_widget::on_menu_toggle_task5)));
+				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
+																												  &status_icon_widget::on_menu_toggle_task_5)));
 				break;
 			default:
 				break;
@@ -127,27 +132,27 @@ std::string status_icon_widget::complete_task_path(const task_id& id)
 	return task_name;
 }
 
-void status_icon_widget::on_menu_toggle_task1()
+void status_icon_widget::on_menu_toggle_task_1()
 {
 	toggle_task(latest_tasks[0]);
 }
 
-void status_icon_widget::on_menu_toggle_task2()
+void status_icon_widget::on_menu_toggle_task_2()
 {
 	toggle_task(latest_tasks[1]);
 }
 
-void status_icon_widget::on_menu_toggle_task3()
+void status_icon_widget::on_menu_toggle_task_3()
 {
 	toggle_task(latest_tasks[2]);
 }
 
-void status_icon_widget::on_menu_toggle_task4()
+void status_icon_widget::on_menu_toggle_task_4()
 {
 	toggle_task(latest_tasks[3]);
 }
 
-void status_icon_widget::on_menu_toggle_task5()
+void status_icon_widget::on_menu_toggle_task_5()
 {
 	toggle_task(latest_tasks[4]);
 }

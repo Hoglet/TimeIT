@@ -1,9 +1,5 @@
-//
-// Created by hoglet on 24/03/2021.
-//
-
-#ifndef TIMEIT_QUERY_RESULT_H
-#define TIMEIT_QUERY_RESULT_H
+#ifndef QUERY_RESULT_H
+#define QUERY_RESULT_H
 
 #include <vector>
 #include <libtimeit/db/data_cell.h>
@@ -16,4 +12,4 @@ using Query_result = vector<vector<data_cell>>;
 
 }
 
-#endif //TIMEIT_QUERY_RESULT_H
+#endif //QUERY_RESULT_H

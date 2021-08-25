@@ -1,5 +1,5 @@
-#ifndef IPC_SERVER_H_
-#define IPC_SERVER_H_
+#ifndef IPC_SERVER_H
+#define IPC_SERVER_H
 
 #include <string>
 #include <memory>
@@ -35,4 +35,4 @@ private:
 } /* namespace libtimeit */
 
 
-#endif /* IPC_SERVER_H_ */
+#endif /* IPC_SERVER_H */

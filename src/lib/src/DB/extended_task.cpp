@@ -6,7 +6,7 @@ namespace libtimeit
 extended_task::extended_task(
 		const task&       source,
 		long              time,
-		long              total_time_,
+		long              op_total_time,
 		bool              expanded,
 		bool              running
 		)
@@ -23,7 +23,7 @@ extended_task::extended_task(
 		expanded(expanded),
 		running(running),
 		time(time),
-		total_time(total_time_)
+		total_time( op_total_time)
 {
 
 }

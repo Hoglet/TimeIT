@@ -1,5 +1,5 @@
-#ifndef TIMEIT_DB_UPDATER_H
-#define TIMEIT_DB_UPDATER_H
+#ifndef DB_UPDATER_H
+#define DB_UPDATER_H
 
 #include <libtimeit/db/database.h>
 
@@ -23,4 +23,4 @@ private:
 
 }
 
-#endif //TIMEIT_DB_UPDATER_H
+#endif //DB_UPDATER_H

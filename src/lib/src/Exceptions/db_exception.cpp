@@ -8,9 +8,9 @@ namespace libtimeit
 
 using namespace std;
 
-db_exception::db_exception(string message_, int return_code_):
-	message(move(message_)),
-	return_code(return_code_)
+db_exception::db_exception( string op_message, int op_return_code):
+	message(move( op_message)),
+	return_code( op_return_code)
 {
 }
 

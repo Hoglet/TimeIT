@@ -44,7 +44,7 @@ bool file_exists(string filename)
 
 //LCOV_EXCL_START
 
-void show_URL(string url)
+void show_url( string url )
 {
 	stringstream command;
 	command << "xdg-open " << url << endl;

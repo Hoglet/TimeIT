@@ -1,4 +1,4 @@
-#include "MessageCenter.h"
+#include "message_center.h"
 
 #include <utility>
 #include "libtimeit/utils.h"
@@ -8,7 +8,7 @@ namespace gui
 {
 using namespace std;
 
-Message::Message(MessageType type_, string header_, string message_) : type(type_), header(std::move(header_)), message(std::move(message_))
+Message::Message( MessageType op_type, string header_text, string message_text) : type( op_type), header( std::move( header_text)), message( std::move( message_text))
 {
 
 }

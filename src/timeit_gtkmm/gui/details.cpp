@@ -17,15 +17,15 @@ namespace gui
 static const int SECONDS_PER_MINUTE = 60;
 
 details::details(
-		database& database_,
+		database&             db,
 		notification_manager& notifier,
-		window_manager&  gui_factory_)
+		window_manager&       gui_factory)
 		:
 		event_observer(notifier),
-		times(database_),
-		settings(database_),
-		windows(gui_factory_),
-		db(database_)
+		times( db),
+		settings( db),
+		windows( gui_factory),
+		db( db)
 {
 	tree_model = ListStore::create(columns);
 	set_model(tree_model);
@@ -101,13 +101,13 @@ void details::on_menu_file_popup_remove()
 	auto selected = get_selected();
 	if (selected.has_value() )
 	{
-		optional<Time_entry> optional_time_entry = times.by_id(selected.value());
+		optional<time_entry> optional_time_entry = times.by_id( selected.value());
 		if (optional_time_entry)
 		{
-			Time_entry time_entry = optional_time_entry.value();
+			time_entry item = optional_time_entry.value();
 			auto idle_gt = settings.get_int("Gt", DEFAULT_GT);
 			auto idle_gz = settings.get_int("Gz", DEFAULT_GZ);
-			int64_t minutes_to_lose = (int64_t)difftime(time_entry.stop, time_entry.start) / SECONDS_PER_MINUTE;
+			int64_t minutes_to_lose = (int64_t)difftime( item.stop, item.start) / SECONDS_PER_MINUTE;
 			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose);
 			std::string secondary_text;
 			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0)
@@ -132,14 +132,14 @@ void details::on_menu_file_popup_remove()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry could be currently running
-				if ( time_entry.state == RUNNING )
+				if ( item.state == RUNNING )
 				{
 					// if running then keep running, starting over with zero length
-					times.update(time_entry.with_start(time_entry.stop));
+					times.update( item.with_start( item.stop));
 				}
 				else
 				{
-					times.remove(time_entry);
+					times.remove( item);
 				}
 				populate( );
 				break;
@@ -154,7 +154,7 @@ void details::on_menu_file_popup_remove()
 	}
 }
 
-bool offer_to_merge(optional<Time_entry> &optional_time_entry, optional<Time_entry> &optional_next_time_entry)
+bool offer_to_merge( optional<time_entry> &optional_time_entry, optional<time_entry> &optional_next_time_entry)
 {
 	return optional_time_entry.has_value() && optional_next_time_entry.has_value();
 }
@@ -164,12 +164,12 @@ void details::on_menu_file_popup_merge()
 	auto selected_list = get_selected_and_next();
 	if (selected_list.size()>1)
 	{
-		optional<Time_entry> optional_time_entry_0 = times.by_id(selected_list.front());
-		optional<Time_entry> optional_time_entry_1 = times.by_id(selected_list.back());
+		optional<time_entry> optional_time_entry_0 = times.by_id( selected_list.front());
+		optional<time_entry> optional_time_entry_1 = times.by_id( selected_list.back());
 		if (offer_to_merge(optional_time_entry_0, optional_time_entry_1))
 		{
-			Time_entry time_entry_0 = optional_time_entry_0.value();
-			Time_entry time_entry_1 = optional_time_entry_1.value();
+			time_entry time_entry_0 = optional_time_entry_0.value();
+			time_entry time_entry_1 = optional_time_entry_1.value();
 			auto idle_gt = settings.get_int("Gt", DEFAULT_GT);
 			auto idle_gz = settings.get_int("Gz", DEFAULT_GZ);
 
@@ -225,10 +225,10 @@ void details::on_menu_file_popup_merge()
 	}
 }
 
-bool offer_to_split(Time_entry &time_entry)
+bool offer_to_split( time_entry &item)
 {
-	time_t start_time = time_entry.start;
-	time_t stop_time = time_entry.stop;
+	time_t start_time = item.start;
+	time_t stop_time = item.stop;
 	auto seconds_to_split = (long)difftime(stop_time, start_time);
 	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
@@ -240,17 +240,17 @@ void details::on_menu_file_popup_split()
 	auto selected = get_selected();
 	if (selected.has_value())
 	{
-		optional<Time_entry> optional_time_entry = times.by_id(selected.value());
+		optional<time_entry> optional_time_entry = times.by_id( selected.value());
 		if (optional_time_entry)
 		{
-			Time_entry time_entry = optional_time_entry.value();
-			time_t start = time_entry.start;
-			time_t stop = time_entry.stop;
+			time_entry item = optional_time_entry.value();
+			time_t start = item.start;
+			time_t stop = item.stop;
 			bool across_days = is_on_different_days(start, stop);
 
 			// coded considering time_entry could be currently running
 
-			if (offer_to_split(time_entry))
+			if (offer_to_split( item))
 			{
 				time_t split_stop_time  = (start + (stop - start) / 2 - 1);
 				time_t split_start_time = split_stop_time + 2;
@@ -265,8 +265,8 @@ void details::on_menu_file_popup_split()
 					split_start_time = split_stop_time + 6; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 				}
 
-				times.update(time_entry.with_start(split_start_time).with_stop(stop) );
-				times.create(Time_entry( time_entry.owner_id, start, split_stop_time) );
+				times.update( item.with_start( split_start_time).with_stop( stop) );
+				times.create( time_entry( item.owner_id, start, split_stop_time) );
 				populate( create_row_data(start, stop) );
 			}
 			else
@@ -291,8 +291,8 @@ bool details::on_button_press_event(GdkEventButton *event)
 		{
 			auto selected_id = selected_ids.front();
 			auto next_id = selected_ids.back();
-			optional<Time_entry> optional_time_entry = times.by_id(selected_id);
-			optional<Time_entry> optional_next_time_entry = times.by_id(next_id);
+			optional<time_entry> optional_time_entry = times.by_id( selected_id);
+			optional<time_entry> optional_next_time_entry = times.by_id( next_id);
 			if (optional_time_entry)
 			{
 				if (offer_to_merge(optional_time_entry, optional_next_time_entry))
@@ -353,15 +353,15 @@ void details::on_task_name_changed(const task& /*item*/)
 	populate( );
 }
 
-void details::on_time_entry_changed(const Time_entry& te)
+void details::on_time_entry_changed(const time_entry& te)
 {
 	auto row = find_row(te.id);
 	if ( row.has_value() )
 	{
-		auto time_entry = times.by_id(te.id);
-		if(time_entry.has_value())
+		auto item = times.by_id( te.id);
+		if(item.has_value())
 		{
-			auto day = time_entry->start;
+			auto day = item->start;
 			auto start = beginning_of_day(day);
 			auto stop = end_of_day(day);
 			update( create_row_data( start, stop) );
@@ -403,9 +403,9 @@ void details::set(optional<task_id> id, time_t start, time_t stop)
 	}
 }
 
-void details::on_selection_changed(optional<task_id> id, time_t start, time_t stop)
+void details::on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time)
 {
-	set(id, start, stop);
+	set( id, start_time, stop_time);
 }
 
 
@@ -451,29 +451,29 @@ list<row_data> details::create_row_data(time_t start, time_t stop)
 	{
 		return {};
 	}
-	Time_list time_list = times.time_list(presented_task.value(), start, stop);
+	time_list times_in_range = times.by_activity( presented_task.value(), start, stop );
 	time_t prev_start   = 0;
-	auto iter = time_list.begin();
+	auto iter = times_in_range.begin();
 	list<row_data> data_rows = {};
 	time_t cumulative_time_for_day = 0;
-	for (; iter != time_list.end(); )
+	for (; iter != times_in_range.end(); )
 	{
-		auto time_entry = *iter;
+		auto item = *iter;
 		row_data data{};
 
-		data.id           = time_entry.id;
+		data.id           = item.id;
 		data.prev_start   = prev_start;
-		data.start        = time_entry.start;
+		data.start        = item.start;
 		prev_start            = data.start;
-		data.stop         = time_entry.stop;
-		data.running      = time_entry.state == RUNNING;
-		data.comment      = time_entry.comment;
+		data.stop         = item.stop;
+		data.running      = item.state == RUNNING;
+		data.comment      = item.comment;
 
 		cumulative_time_for_day += data.stop - data.start;
 		data.cumulative_time =  cumulative_time_for_day;
 
 		++iter;
-		if( iter != time_list.end() )
+		if( iter != times_in_range.end() )
 		{
 			auto next_time_entry = *iter;
 			data.next_start = next_time_entry.start;
@@ -547,10 +547,10 @@ void details::on_menu_file_popup_edit()
 
 void details::edit_time_entry(time_id id)
 {
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
+	auto item = times.by_id( id);
+	if( item.has_value() )
 	{
-		auto dialog = make_shared<gui::edit_time_dialog>(*time_entry, db);
+		auto dialog = make_shared<gui::edit_time_dialog>( item.value(), db );
 		windows.manage_lifespan(dialog);
 		dialog->show();
 	}

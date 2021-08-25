@@ -156,16 +156,16 @@ void summary::calculate_time_span()
 {
 }
 
-void summary::on_task_updated(const task_id& taskID)
+void summary::on_task_updated(const task_id& id)
 {
 	if (is_visible())
 	{
-		auto updated_task = tasks.by_id(taskID);
-		Gtk::TreeIter iter = find_row(taskID);
+		auto updated_task = tasks.by_id( id);
+		Gtk::TreeIter iter = find_row( id);
 		if (updated_task.has_value() && iter != tree_model->children().end())
 		{
 			TreeModel::Row row = *iter;
-			time_t total_time = times.total_cumulative_time(taskID, start_time, stop_time);
+			time_t total_time = times.total_cumulative_time( id, start_time, stop_time);
 			assign_values_to_row(row, *updated_task, total_time);
 			if (updated_task->parent_id.has_value())
 			{
@@ -324,10 +324,10 @@ void summary::populate()
 	}
 }
 
-void summary::assign_values_to_row(TreeModel::Row &row, task &task_, time_t total_time) const
+void summary::assign_values_to_row( TreeModel::Row &row, task &item, time_t total_time) const
 {
-	row[columns.col_id] = task_.id;
-	row[columns.col_name] = task_.name;
+	row[columns.col_id] = item.id;
+	row[columns.col_name] = item.name;
 	row[columns.col_time] = libtimeit::seconds_2_hhmm(total_time);
 }
 

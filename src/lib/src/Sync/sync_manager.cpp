@@ -25,7 +25,7 @@ const int ONE_DAY = 60 * 60 * 24;
 sync_manager::sync_manager(
 		database &db,
 		abstract_network  &op_network,
-		notification_manager& notifier_,
+		notification_manager& op_notifier,
 		Timer&    timer
 		):
 		timer_observer(timer),
@@ -33,12 +33,12 @@ sync_manager::sync_manager(
 		times(db),
 		settings(db),
 		network(op_network),
-		notifier(notifier_)
+		notifier( op_notifier)
 {
 }
 
 
-Sync_state sync_manager::status()
+sync_state sync_manager::status()
 {
 	return state;
 }
@@ -47,7 +47,7 @@ void sync_manager::on_signal_1_second()
 {
 	switch (state)
 	{
-		case Sync_state::IDLE:
+		case sync_state::IDLE:
 		{
 			time_t now = libtimeit::now();
 			if (is_active() && now > next_full_sync)
@@ -58,20 +58,20 @@ void sync_manager::on_signal_1_second()
 			if (is_active() && now > next_sync)
 			{
 				logg("Starting sync run");
-				state = Sync_state::TASK_REQUEST;
+				state = sync_state::TASK_REQUEST;
 				current_sync = now;
 				next_sync = get_next_sync(current_sync);
 			}
 		}
 			break;
-		case Sync_state::TASK_REQUEST:
+		case sync_state::TASK_REQUEST:
 			logg("Requesting tasks");
 			outstanding_request = request_tasks(last_sync);
-			state = Sync_state::WAIT;
-			following_state = Sync_state::TASK_STORE;
+			state = sync_state::WAIT;
+			following_state = sync_state::TASK_STORE;
 			logg("Done");
 			break;
-		case Sync_state::WAIT:
+		case sync_state::WAIT:
 			if (request_is_done() )
 			{
 				auto response = outstanding_request->future_response.get();
@@ -83,36 +83,36 @@ void sync_manager::on_signal_1_second()
 				else
 				{
 					logg("Request failed");
-					state = Sync_state::FAIL;
+					state = sync_state::FAIL;
 				}
 			}
 			break;
-		case Sync_state::TASK_STORE:
+		case sync_state::TASK_STORE:
 			logg("Storing tasks");
 			sync_tasks_to_database();
-			state = Sync_state::TIME_REQUEST;
+			state = sync_state::TIME_REQUEST;
 			logg("Done");
 			break;
-		case Sync_state::TIME_REQUEST:
+		case sync_state::TIME_REQUEST:
 			logg("Requesting times");
 			outstanding_request = request_times(last_sync);
-			state = Sync_state::WAIT;
-			following_state = Sync_state::TIME_STORE;
+			state = sync_state::WAIT;
+			following_state = sync_state::TIME_STORE;
 			logg("Done");
 			break;
-		case Sync_state::TIME_STORE:
+		case sync_state::TIME_STORE:
 			logg("Storing times");
 			sync_times_to_database();
-			state = Sync_state::IDLE;
+			state = sync_state::IDLE;
 			next_sync = get_next_sync(current_sync);
 			last_sync = current_sync;
 			logg("Done");
 			logg("Sync run done");
 			break;
-		case Sync_state::FAIL:
+		case sync_state::FAIL:
 			logg("Failure");
 			manage_network_problems();
-			state = Sync_state::IDLE;
+			state = sync_state::IDLE;
 			next_sync = get_next_sync(current_sync);
 			break;
 	}
@@ -223,7 +223,7 @@ void sync_manager::sync_tasks_to_database()
 void sync_manager::sync_times_to_database()
 {
 	auto result = outstanding_request->future_response.get();
-	Time_list times_to_sync = to_times(result.response);
+	time_list times_to_sync = to_times( result.response);
 
 	tasks.enable_notifications(false);
 
@@ -248,7 +248,7 @@ void sync_manager::sync_times_to_database()
 			running = (original_item->state == RUNNING);
 		}
 
-		Time_entry_state item_state = STOPPED;
+		time_entry_state item_state = STOPPED;
 		if ( running )
 		{
 			item_state = RUNNING;
@@ -258,7 +258,7 @@ void sync_manager::sync_times_to_database()
 			item_state = DELETED;
 		}
 
-		Time_entry te( item.id, task_uuid, start, stop, item_state, changed, comment);
+		time_entry te( item.id, task_uuid, start, stop, item_state, changed, comment);
 		if (original_item.has_value())
 		{
 			times.update(te);
@@ -274,26 +274,26 @@ void sync_manager::sync_times_to_database()
 	tasks.enable_notifications(true);
 }
 
-shared_ptr <async_http_response> sync_manager::request_tasks(time_t sincePointInTime)
+shared_ptr <async_http_response> sync_manager::request_tasks(time_t since_point_in_time )
 {
-	vector<task> changed_tasks = tasks.changed_since(sincePointInTime);
+	vector<task> changed_tasks = tasks.changed_since( since_point_in_time);
 	string base_url = settings.get_string("URL", DEFAULT_URL);
 	string username = settings.get_string("Username", DEFAULT_USER);
 	string password = settings.get_string("Password", DEFAULT_PASSWORD);
-	string url = base_url + "sync/tasks/" + username + "/" + std::to_string(sincePointInTime);
+	string url = base_url + "sync/tasks/" + username + "/" + std::to_string( since_point_in_time);
 	bool ignore_cert_error = settings.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 	string json_string = to_json(changed_tasks, username);
 	return network.request(url, json_string, username, password, ignore_cert_error);
 }
 
-shared_ptr <async_http_response> sync_manager::request_times(time_t sincePointInTime)
+shared_ptr <async_http_response> sync_manager::request_times( time_t since_point_in_time )
 {
-	Time_list changed_times = times.times_changed_since(sincePointInTime);
+	time_list changed_times = times.times_changed_since( since_point_in_time);
 	std::string json_string = to_json(changed_times);
 	string base_url = settings.get_string("URL", DEFAULT_URL);
 	string username = settings.get_string("Username", DEFAULT_USER);
 	string password = settings.get_string("Password", DEFAULT_PASSWORD);
-	string url = base_url + "sync/times/" + username + "/" + std::to_string(sincePointInTime);
+	string url = base_url + "sync/times/" + username + "/" + std::to_string( since_point_in_time);
 	bool ignore_cert_error = settings.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
 
 	return network.request(url, json_string, username, password, ignore_cert_error);

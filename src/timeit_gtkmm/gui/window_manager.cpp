@@ -15,17 +15,17 @@ using namespace std;
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
 window_manager::window_manager(
-		Time_keeper& op_timeKeeper,
+		Time_keeper& op_time_keeper,
 		database&    op_database,
 		Timer&       op_timer,
 		notification_manager&    publisher,
-		image_cache&      images_)
+		image_cache&      op_images)
 		:
-		time_keeper(op_timeKeeper),
+		time_keeper( op_time_keeper),
 		db(op_database),
 		timer(op_timer),
 		notifier(publisher),
-		images(images_)
+		images( op_images)
 
 {
 
@@ -40,9 +40,9 @@ void window_manager::quit()
 	Gtk::Main::quit();
 }
 
-WidgetPtr window_manager::get_widget(EWidget widget)
+widget_ptr window_manager::get_widget( EWidget widget)
 {
-	WidgetPtr ret_val;
+	widget_ptr ret_val;
 	switch (widget)
 	{
 	case MAIN_WINDOW:

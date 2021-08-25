@@ -68,7 +68,7 @@ void Time_keeper::start(task_id id)
 	}
 
 	auto now = libtimeit::now();
-	times.create(Time_entry(id, now, now, RUNNING ) );
+	times.create( time_entry( id, now, now, RUNNING ) );
 	notify_running_changed();
 }
 
@@ -86,15 +86,15 @@ void Time_keeper::toggle(task_id id)
 	start(id);
 }
 
-void Time_keeper::stop_time(const Time_entry& time_entry)
+void Time_keeper::stop_time(const time_entry& item)
 {
-	if( time_entry.stop -time_entry.start < idle_gz )
+	if( item.stop - item.start < idle_gz )
 	{
-		times.update(time_entry.with (DELETED));
+		times.update( item.with ( DELETED));
 	}
 	else
 	{
-		times.update(time_entry.with(STOPPED));
+		times.update( item.with( STOPPED));
 	}
 	notify_running_changed();
 }
@@ -167,7 +167,7 @@ void Time_keeper::notify_running_changed()
 	}
 }
 
-void Time_keeper::notify_idle_detected(const Time_entry& te)
+void Time_keeper::notify_idle_detected(const time_entry& te)
 {
 	for (auto* observer: observers)
 	{
@@ -193,7 +193,7 @@ void Time_keeper::check_for_status_change()
 	}
 	old_running = currently_running;
 }
-void Time_keeper::on_time_entry_changed(const Time_entry& /*id*/)
+void Time_keeper::on_time_entry_changed(const time_entry& /*id*/)
 {
 	check_for_status_change();
 }
@@ -206,9 +206,9 @@ bool Time_keeper::user_is_active()
 void Time_keeper::update_running_entries()
 {
 	auto running = times.by_state(RUNNING);
-	for (const auto& time_entry: running)
+	for (const auto& item: running)
 	{
-		auto updated_time_entry = time_entry.with_stop(libtimeit::now());
+		auto updated_time_entry = item.with_stop( libtimeit::now());
 		times.update(updated_time_entry );
 	}
 
@@ -217,7 +217,7 @@ void Time_keeper::update_running_entries()
 void Time_keeper::check_if_tasks_should_be_stopped()
 {
 	auto now = libtimeit::now();
-	list<Time_entry> times_to_stop {};
+	list<time_entry> times_to_stop {};
 	auto running_time_items = times.by_state(RUNNING);
 	for (const auto& time_item: running_time_items)
 	{

@@ -1,5 +1,5 @@
-#ifndef TIMEIT_NETWORK_H
-#define TIMEIT_NETWORK_H
+#ifndef NETWORK_H
+#define NETWORK_H
 
 #include <curl/curl.h>
 #include <string>

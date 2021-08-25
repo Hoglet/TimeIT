@@ -1,5 +1,5 @@
-#ifndef DETAILS_DIALOG_H_
-#define DETAILS_DIALOG_H_
+#ifndef DETAILS_DIALOG_H
+#define DETAILS_DIALOG_H
 
 #include <gtkmm.h>
 #include "gui/widgets/lz_spin_button.h"
@@ -34,7 +34,7 @@ public:
 	details_dialog& operator=(const details_dialog&) = delete;
 	details_dialog& operator=(details_dialog&&) = delete;
 	~details_dialog() override ;
-	void set(optional<task_id> item,time_t startTime,time_t stopTime);
+	void set( optional<task_id> item, time_t start_time, time_t stop_time);
 
 
 	// IWidget interface
@@ -42,7 +42,7 @@ public:
 	void hide() override { Gtk::Dialog::hide(); }
 	void move(int x, int y) override { Gtk::Dialog::move(x,y); };
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
-	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void get_position( int& window_x, int& window_y) override { Gtk::Dialog::get_position( window_x, window_y); };
 
 	void on_running_changed() override;
 	void on_task_name_updated(const task_id& id);
@@ -51,7 +51,7 @@ public:
 private:
 
 	//SummaryObserver
-	void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) override;
+	void on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time) override;
 	void on_show_details_clicked(const task_id& /*id*/, time_t /*start*/, time_t /*stop*/) override {};
 
 	//EventObserver
@@ -59,7 +59,7 @@ private:
 	void on_task_name_changed(const task& item) override;
 
 
-	Gtk::Table table1;
+	Gtk::Table top_table;
 	Gtk::Label task_name;
 	Gtk::Image running_image;
 	details    detail_list;
@@ -67,7 +67,6 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> running_icon;
 	Glib::RefPtr<Gdk::Pixbuf> running_idle_icon;
 	Glib::RefPtr<Gdk::Pixbuf> blank_icon;
-	Gtk::Table table2;
 	Gtk::ScrolledWindow scrolled_window;
 
 
@@ -84,4 +83,4 @@ private:
 };
 }
 
-#endif /* DETAILS_DIALOG_H_ */
+#endif /* DETAILS_DIALOG_H */

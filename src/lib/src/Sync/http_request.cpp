@@ -37,10 +37,10 @@ void http_request::ignore_cert_errors(bool ignore)
 }
 
 
-size_t http_request::send_data(char* dest, size_t i, size_t i1, http_request* caller)
+size_t http_request::send_data(char* dest, size_t size, size_t items, http_request* caller)
 {
 	size_t data_length = caller->send_buffer.size();
-	size_t buffer_length = i * i1;
+	size_t buffer_length = size * items;
 	size_t characters_to_send = data_length - caller->cur_send_position;
 	if (characters_to_send > buffer_length)
 	{

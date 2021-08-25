@@ -1,12 +1,5 @@
-/*
- * Ipc.h
- *
- *  Created on: 17 Jul 2019
- *      Author: hoglet
- */
-
-#ifndef SRC_MISC_IPC_H_
-#define SRC_MISC_IPC_H_
+#ifndef IPC_H
+#define IPC_H
 
 #include <string>
 
@@ -24,4 +17,4 @@ protected:
 
 } /* namespace libtimeit */
 
-#endif /* SRC_MISC_IPC_H_ */
+#endif /* IPC_H */

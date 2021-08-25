@@ -1,5 +1,5 @@
-#ifndef UTILS_H_
-#define UTILS_H_
+#ifndef UTILS_H
+#define UTILS_H
 #include <iostream>
 #include <string>
 #include <libtimeit/datatypes/task_id.h>
@@ -11,7 +11,7 @@ namespace libtimeit
 using namespace std;
 using namespace std::chrono;
 
-string ISO_639_language_string();
+string iso_639_language_string();
 time_t now();
 
 
@@ -65,4 +65,4 @@ optional<task_id> optional_task_id(const string& basic_string);
 }
 
 
-#endif /* UTILS_H_ */
+#endif /* UTILS_H */

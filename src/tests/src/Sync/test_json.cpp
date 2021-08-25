@@ -102,7 +102,7 @@ TEST( Json, simpleTimeTest )
 {
 	string json_string =
 			"[ {\"id\": \"01bd0176-00ed-4135-b181-014101790130\",\"task\":{\"id\":\"00e1010f-00f2-40df-90b3-00f900ab009e\"},\"start\": 1363339855,\"stop\": 1363342626,\"deleted\": false,\"changed\": 1376059170, \"owner\":{\"username\":\"tester\"}}]";
-	vector<Time_entry> times = to_times(json_string);
+	vector<time_entry> times = to_times( json_string);
 
 	string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -114,7 +114,7 @@ TEST( Json, simpleTimeTest )
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		Time_entry item = times.at(0);
+		time_entry item = times.at( 0);
 		bool expectedState = STOPPED;
 		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";
 		ASSERT_EQ( expectedTaskID, static_cast<string>(item.owner_id)) << "Task_ID: ";
@@ -130,7 +130,7 @@ TEST( Json, simpleTimeTest2 )
 	string json_string = R"(
 [ {
   "id": "01bd0176-00ed-4135-b181-014101790130","task":{"id":"00e1010f-00f2-40df-90b3-00f900ab009e"},"start": 1363339855,"stop": 1363342626,"deleted": true,"changed": 1376059170, "owner":{"username":"tester"}}])";
-	Time_list times = to_times(json_string);
+	time_list times = to_times( json_string);
 
 	string expectedTaskID = "00e1010f-00f2-40df-90b3-00f900ab009e";
 	string expectedUUID = "01bd0176-00ed-4135-b181-014101790130";
@@ -142,7 +142,7 @@ TEST( Json, simpleTimeTest2 )
 		time_t expectedStart = 1363339855;
 		time_t expectedStop = 1363342626;
 		time_t expectedChange = 1376059170;
-		Time_entry item = times.at(0);
+		time_entry item = times.at( 0);
 		auto expectedState = DELETED;
 		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";
 		ASSERT_EQ( expectedTaskID, static_cast<string>(item.owner_id)) << "Task_ID: ";
@@ -170,12 +170,12 @@ TEST( Json, threeWayTimeTest )
 	"owner":{"username":"tester"}
 }])";
 
-	vector<Time_entry> items = to_times(json_string);
-	Time_entry item1 = items.at(0);
+	vector<time_entry> items = to_times( json_string);
+	time_entry item1 = items.at( 0);
 	//Convert once more to be able to compare
 	std::string result = to_json(items);
 	items = to_times(result);
-	Time_entry item2 = items.at(0);
+	time_entry item2 = items.at( 0);
 
 	ASSERT_EQ( item1.id, item2.id) << "id ";
 	ASSERT_EQ( item1.owner_id, item2.owner_id) << "Task_ID: ";
@@ -201,12 +201,12 @@ TEST( Json, threeWayTimeTest2 )
 	"deleted": true,
 	"changed": 1376059170,"owner": {"username":"tester"}
 }])";
-	vector<Time_entry> items = to_times(json_string);
-	Time_entry item1 = items.at(0);
+	vector<time_entry> items = to_times( json_string);
+	time_entry item1 = items.at( 0);
 	//Convert once more to be able to compare
 	std::string result = to_json(items);
 	items = to_times(result);
-	Time_entry item2 = items.at(0);
+	time_entry item2 = items.at( 0);
 
 	ASSERT_EQ( item1.id, item2.id) << "id ";
 	ASSERT_EQ( item1.owner_id, item2.owner_id) << "Task_ID: ";

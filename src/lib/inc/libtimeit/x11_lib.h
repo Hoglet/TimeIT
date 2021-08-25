@@ -1,5 +1,5 @@
-#ifndef X11PROPERTY_H_
-#define X11PROPERTY_H_
+#ifndef X11_LIB_H
+#define X11_LIB_H
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
@@ -29,4 +29,4 @@ private:
 
 }
 
-#endif /* X11PROPERTY_H_ */
+#endif /* X11_LIB_H */

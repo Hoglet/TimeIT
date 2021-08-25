@@ -1,5 +1,5 @@
-#ifndef WINDOW_MANAGER_H_
-#define WINDOW_MANAGER_H_
+#ifndef WINDOW_MANAGER_H
+#define WINDOW_MANAGER_H
 
 #include <libtimeit/db/database.h>
 #include <libtimeit/logic/time_keeper.h>
@@ -26,24 +26,24 @@ enum EWidget
 	MAX_WIDGETS
 };
 
-using WidgetPtr = std::shared_ptr<IWidget>;
+using widget_ptr = std::shared_ptr<IWidget>;
 
 class window_manager
 {
 public:
-	window_manager(Time_keeper&, database &database, Timer& timer, notification_manager& notifier, image_cache& images_);
-	virtual WidgetPtr get_widget(EWidget widget);
+	window_manager(Time_keeper&, database &database, Timer& timer, notification_manager& notifier, image_cache& op_images);
+	virtual widget_ptr get_widget( EWidget widget);
 	virtual status_icon_widget& get_status_icon();
 
 	void manage_lifespan(shared_ptr<Gtk::Dialog> dialog);
 	void quit();
 private:
-	WidgetPtr add_task_instance;
-	WidgetPtr about_dialog_instance;
-	WidgetPtr main_window_instance;
-	WidgetPtr edit_task_dialog_instace;
-	WidgetPtr add_time_dialog_instace;
-	WidgetPtr preference_dialog_instance;
+	widget_ptr add_task_instance;
+	widget_ptr about_dialog_instance;
+	widget_ptr main_window_instance;
+	widget_ptr edit_task_dialog_instace;
+	widget_ptr add_time_dialog_instace;
+	widget_ptr preference_dialog_instance;
 
 	void on_main_window_hide();
 	void on_add_task_dialog_hide();
@@ -63,4 +63,4 @@ private:
 	list<shared_ptr<Gtk::Dialog>> active_dialogs;
 };
 }
-#endif /* WINDOW_MANAGER_H_ */
+#endif /* WINDOW_MANAGER_H */

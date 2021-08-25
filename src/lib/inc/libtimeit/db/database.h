@@ -1,5 +1,5 @@
-#ifndef DATABASE_H_
-#define DATABASE_H_
+#ifndef DATABASE_H
+#define DATABASE_H
 
 #include "notifier.h"
 #include <memory>
@@ -30,7 +30,7 @@ public:
 	void end_transaction();
 
 	void enable_notifications(bool);
-	void send_notification(message_type type, int64_t taskId, string name = "");
+	void send_notification( message_type type, int64_t id, string name = "");
 
 	Query_result        execute(const string& statement);
 	sql_statement           prepare(string statement);
@@ -49,4 +49,4 @@ private:
 
 }
 
-#endif /* DATABASE_H_ */
+#endif /* DATABASE_H */

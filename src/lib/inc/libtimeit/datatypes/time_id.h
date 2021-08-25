@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TIME_ID_H
-#define TIMEIT_TIME_ID_H
+#ifndef TIME_ID_H
+#define TIME_ID_H
 
 #include <string>
 #include <libtimeit/datatypes/uuid.h>
@@ -22,4 +22,4 @@ bool operator==(const time_id& id_1, const time_id& id_2);
 bool operator!=(const time_id& id_1, const time_id& id_2);
 
 }
-#endif //TIMEIT_TIME_ID_H
+#endif //TIME_ID_H

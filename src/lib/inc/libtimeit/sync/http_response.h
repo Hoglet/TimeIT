@@ -1,8 +1,5 @@
-//
-// Created by hoglet on 16/11/2020.
-//
-#ifndef TIMEIT_HTTP_RESPONSE_H
-#define TIMEIT_HTTP_RESPONSE_H
+#ifndef HTTP_RESPONSE_H
+#define HTTP_RESPONSE_H
 
 #include <string>
 
@@ -21,13 +18,13 @@ struct http_response
 	const string error_message;
 
 	http_response(
-			string url,
-			string response,
-			bool   status_OK,
-			int    http_code_,
-			string error_message_
+			string op_url,
+			string op_response,
+			bool   op_status_ok,
+			int    op_http_code,
+			string op_error_message
 	);
 };
 
 }
-#endif //TIMEIT_HTTP_RESPONSE_H
+#endif //HTTP_RESPONSE_H

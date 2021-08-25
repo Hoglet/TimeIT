@@ -1,5 +1,5 @@
-#ifndef MAIN_WINDOW_HPP_
-#define MAIN_WINDOW_HPP_
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
 #include <gtkmm.h>
 #include <IWidget.h>
@@ -25,7 +25,7 @@ public:
 	~main_window() override;
 	main_window(
 			database &db,
-			Time_keeper &timeKeeper,
+			Time_keeper &op_time_keeper,
 			notification_manager &notifier,
 			window_manager &window_manager,
 			image_cache &images);
@@ -56,9 +56,9 @@ public:
 		Gtk::Window::move(x, y);
 	};
 
-	void get_position(int &Window_x, int &Window_y) override
+	void get_position( int &x, int &y) override
 	{
-		Gtk::Window::get_position(Window_x, Window_y);
+		Gtk::Window::get_position( x, y);
 	};
 
 	virtual void attach(summary_observer* observer);
@@ -129,4 +129,4 @@ private:
 	vector<summary*> summaries;
 };
 }
-#endif // MAIN_WINDOW_HPP_
+#endif // MAIN_WINDOW_H

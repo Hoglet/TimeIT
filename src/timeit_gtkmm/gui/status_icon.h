@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef STATUS_ICON_H_
-#define STATUS_ICON_H_
+#ifndef STATUS_ICON_H
+#define STATUS_ICON_H
 
 #include <gtkmm.h>
 
@@ -48,11 +48,11 @@ private:
 	void on_menu_stop_all_timers();
 	void on_menu_about();
 	void on_menu_preferences();
-	void on_menu_toggle_task1();
-	void on_menu_toggle_task2();
-	void on_menu_toggle_task3();
-	void on_menu_toggle_task4();
-	void on_menu_toggle_task5();
+	void on_menu_toggle_task_1();
+	void on_menu_toggle_task_2();
+	void on_menu_toggle_task_3();
+	void on_menu_toggle_task_4();
+	void on_menu_toggle_task_5();
 	void populate_context_menu();
 	void toggle_task(const task_id& id);
 	string complete_task_path(const task_id& id);
@@ -79,4 +79,4 @@ private:
 };
 
 }
-#endif /* STATUS_ICON_H_ */
+#endif /* STATUS_ICON_H */

@@ -1,5 +1,5 @@
-#ifndef GENERAL_EXCEPTION_H_
-#define GENERAL_EXCEPTION_H_
+#ifndef GENERAL_EXCEPTION_H
+#define GENERAL_EXCEPTION_H
 
 #include <exception>
 //LCOV_EXCL_START
@@ -13,4 +13,4 @@ private:
 };
 //LCOV_EXCL_STOP
 
-#endif /* GENERAL_EXCEPTION_H_ */
+#endif /* GENERAL_EXCEPTION_H */

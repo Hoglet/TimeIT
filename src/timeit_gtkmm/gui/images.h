@@ -1,5 +1,5 @@
-#ifndef TIMEIT_IMAGES_H
-#define TIMEIT_IMAGES_H
+#ifndef IMAGES_H
+#define IMAGES_H
 
 #include <string>
 #include <gtkmm.h>
@@ -39,4 +39,4 @@ private:
 };
 
 }
-#endif //TIMEIT_IMAGES_H
+#endif //IMAGES_H

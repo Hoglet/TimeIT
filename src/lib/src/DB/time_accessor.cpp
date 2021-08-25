@@ -38,12 +38,12 @@ R"(
 
 
 
-void time_accessor::remove(const Time_entry& item)
+void time_accessor::remove(const time_entry& item)
 {
 	update(item.with(DELETED));
 }
 
-optional<Time_entry> time_accessor::by_id(time_id id)
+optional<time_entry> time_accessor::by_id( time_id id)
 {
 	by_uuid_statement.bind_value(1, static_cast<string>(id));
 
@@ -56,12 +56,12 @@ optional<Time_entry> time_accessor::by_id(time_id id)
 		time_t  changed   = row[column++].integer();
 		auto    possible_uuid      = uuid::from_string( row[column++].text());
 		auto    task_uuid = optional_task_id(row[column++].text());
-		auto    state     = static_cast<Time_entry_state>(row[column++].integer());
+		auto    state     = static_cast<time_entry_state>(row[column++].integer());
 		auto    comment   = row[column].text();
 
 		if( possible_uuid.has_value() && task_uuid.has_value() )
 		{
-			return Time_entry(
+			return time_entry(
 					time_id(possible_uuid.value()),
 					task_uuid.value(),
 					start,
@@ -75,12 +75,12 @@ optional<Time_entry> time_accessor::by_id(time_id id)
 	return {};
 }
 
-Duration time_accessor::duration_time(const task_id& id, time_t raw_start, time_t raw_stop)
+Duration time_accessor::duration_time( const task_id& task_id, time_t raw_start, time_t raw_stop)
 {
 	auto start  = system_clock::from_time_t(raw_start);
 	auto stop   = system_clock::from_time_t(raw_stop);
 
-	auto result = duration_time(id, start, stop);
+	auto result = duration_time( task_id, start, stop);
 	return result.count();
 }
 
@@ -225,21 +225,19 @@ task_id_list time_accessor::currently_running()
 	sql_statement statement_get_running_tasks = db.prepare(
 			"SELECT DISTINCT times.taskid FROM times WHERE times.state IS 1;");
 
-	Query_result rows = statement_get_running_tasks.execute();
-
-	for (auto row : rows)
+	for ( auto running_task : statement_get_running_tasks.execute() )
 	{
-		Task_id old_id = row[0].integer();
+		Task_id old_id = running_task[0].integer();
 		//result_list.push_back(id);
 
 		/** temp fix **/
 		sql_statement statement_get_uuid = db.prepare(
 				"SELECT uuid FROM tasks WHERE id=?;");
-		statement_get_uuid.bind_value(1, old_id);
-		Query_result rows2 = statement_get_uuid.execute();
-		for (auto row2 : rows2)
+		statement_get_uuid.bind_value( 1, old_id );
+
+		for ( auto task_uuid : statement_get_uuid.execute() )
 		{
-			auto id = task_id( uuid::from_string( row2[0].text()).value());
+			auto id = task_id( uuid::from_string( task_uuid[0].text()).value());
 			result_list.push_back(id);
 		}
 		/* end temp fix */
@@ -247,14 +245,14 @@ task_id_list time_accessor::currently_running()
 	return result_list;
 }
 
-Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time_t stopTime)
+time_list time_accessor::by_activity( const task_id& owner, time_t start_time, time_t stop_time)
 {
 	int64_t owner_id = legacy_db_helper::new_task_id_to_old( owner, db);
-	Time_list result_list;
+	time_list result_list;
 	stringstream statement;
 	statement << "SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times ";
-	statement << " WHERE stop > " << startTime;
-	statement << " AND start <" << stopTime;
+	statement << " WHERE stop > " << start_time;
+	statement << " AND start <" << stop_time;
 	statement << " AND taskID = " << owner_id;
 	statement << " AND deleted=0 ";
 	statement << " ORDER BY start";
@@ -265,7 +263,7 @@ Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time
 		int column{0};
 		time_t start     = row[column++].integer();
 		time_t stop      = row[column++].integer();
-		auto   state     = static_cast<Time_entry_state>(row[column++].integer());
+		auto   state     = static_cast<time_entry_state>(row[column++].integer());
 		time_t changed   = row[column++].integer();
 		auto   uuid      = uuid::from_string( row[column++].text());
 		auto   task_uuid = uuid::from_string( row[column++].text());
@@ -274,7 +272,7 @@ Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time
 		if (uuid.has_value() && task_uuid.has_value())
 		{
 			result_list.push_back(
-					Time_entry(
+					time_entry(
 							time_id(uuid.value()),
 							task_id( task_uuid.value()),
 							start,
@@ -287,9 +285,9 @@ Time_list time_accessor::time_list( const task_id& owner, time_t startTime, time
 	return result_list;
 }
 
-Time_list time_accessor::times_changed_since(time_t timestamp)
+time_list time_accessor::times_changed_since( time_t timestamp)
 {
-	Time_list result;
+	time_list result;
 
 	sql_statement statement = db.prepare("SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times WHERE changed>=?");
 
@@ -301,7 +299,7 @@ Time_list time_accessor::times_changed_since(time_t timestamp)
 		int column{0};
 		time_t start     = row[column++].integer();
 		time_t stop      = row[column++].integer();
-		auto   state     = static_cast<Time_entry_state>(row[column++].integer());
+		auto   state     = static_cast<time_entry_state>(row[column++].integer());
 		time_t changed   = row[column++].integer();
 		auto   uuid      = uuid::from_string( row[column++].text());
 		auto   task_uuid = uuid::from_string( row[column++].text());
@@ -325,7 +323,7 @@ Time_list time_accessor::times_changed_since(time_t timestamp)
 	return result;
 }
 
-bool time_accessor::update(const Time_entry& item )
+bool time_accessor::update(const time_entry& item )
 {
 	auto existing_item = by_id(item.id);
 	if (
@@ -415,7 +413,7 @@ Duration time_accessor::total_cumulative_time(const task_id& id, time_t raw_star
 	return total_cumulative_time( id, start, stop ).count();
 }
 
-int64_t time_accessor::create(const Time_entry& item)
+int64_t time_accessor::create(const time_entry& item)
 {
 	internal_create(item, statement_new_entry, db);
 	int64_t id = db.id_of_last_insert();
@@ -436,7 +434,7 @@ int64_t time_accessor::create(const Time_entry& item)
 	return id;
 }
 
-void time_accessor::internal_create(const Time_entry &item, sql_statement& statement_new_entry, database& db)
+void time_accessor::internal_create( const time_entry &item, sql_statement& statement_new_entry, database& db)
 {
 	auto deleted = false;
 	auto running = false;
@@ -555,9 +553,9 @@ task_id_list time_accessor::active_tasks(time_t start, time_t stop)
 	return result_list;
 }
 
-Time_list time_accessor::by_state(Time_entry_state state) const
+time_list time_accessor::by_state( time_entry_state state) const
 {
-	Time_list time_list;
+	time_list result;
 
 	sql_statement statement = db.prepare(R"Query(
 		SELECT
@@ -581,7 +579,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 		auto column{0};
 		time_t  start      = row[column++].integer();
 		time_t  stop       = row[column++].integer();
-		auto    item_state = static_cast<Time_entry_state>(row[column++].integer());
+		auto    item_state = static_cast<time_entry_state>(row[column++].integer());
 		int64_t changed    = row[column++].integer();
 		auto    id       = uuid::from_string( row[column++].text());
 		auto    task_uuid  = uuid::from_string( row[column++].text());
@@ -590,7 +588,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 		if ( id && task_uuid)
 		{
 			auto owner_id = task_id(task_uuid.value());
-			time_list.emplace_back(
+			result.emplace_back(
 					time_id(*id),
 					owner_id,
 					start,
@@ -600,7 +598,7 @@ Time_list time_accessor::by_state(Time_entry_state state) const
 					comment);
 		}
 	}
-	return time_list;
+	return result;
 }
 
 void time_accessor::setup(database& db)

@@ -1,12 +1,5 @@
-/*
- * Details.h
- *
- *  Created on: 2008-jul-22
- *      Author: hoglet
- */
-
-#ifndef DETAILS_H_
-#define DETAILS_H_
+#ifndef DETAILS_H
+#define DETAILS_H
 
 #include <gtkmm.h>
 #include <csignal>
@@ -46,7 +39,7 @@ struct row_data
 class details: public Gtk::TreeView, public event_observer, public summary_observer
 {
 public:
-	details(database &database, notification_manager& notifier, window_manager&  window_manager);
+	details( database &db, notification_manager& notifier, window_manager&  gui_factory);
 	void set(optional<task_id> id, time_t start, time_t stop);
 	bool on_button_press_event(GdkEventButton *event) override;
 	void on_menu_file_popup_edit();
@@ -58,9 +51,9 @@ public:
 	void on_task_removed(const task& item) override;
 	void on_complete_update() override;
 	void on_task_name_changed(const task& item) override;
-	void on_time_entry_changed(const Time_entry& /*te*/) override;
+	void on_time_entry_changed(const time_entry& /*te*/) override;
 	//Summary_observer interface
-	void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) override;
+	void on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time) override;
 	//
 	optional<time_id>   get_selected();
 	list<time_id>       get_selected_and_next();
@@ -117,4 +110,4 @@ private:
 };
 }
 
-#endif /* DETAILS_H_ */
+#endif /* DETAILS_H */

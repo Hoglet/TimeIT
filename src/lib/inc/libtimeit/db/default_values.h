@@ -1,12 +1,5 @@
-/*
- * defaultValues.h
- *
- *  Created on: Aug 16, 2009
- *      Author: hoglet
- */
-
-#ifndef DEFAULT_VALUES_H_
-#define DEFAULT_VALUES_H_
+#ifndef DEFAULT_VALUES_H
+#define DEFAULT_VALUES_H
 
 constexpr auto DEFAULT_GZ = 1;
 constexpr auto DEFAULT_GT = 7;
@@ -18,4 +11,4 @@ constexpr auto DEFAULT_USER = "";
 constexpr auto DEFAULT_PASSWORD = "";
 constexpr auto DEFAULT_IGNORE_CERT_ERR = false;
 constexpr auto DEFAULT_SYNC_INTERVAL = 10;
-#endif /* DEFAULT_VALUES_H_ */
+#endif /* DEFAULT_VALUES_H */

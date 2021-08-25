@@ -1,5 +1,5 @@
-#ifndef TIMEIT_LOGGING_H
-#define TIMEIT_LOGGING_H
+#ifndef LOGGING_H
+#define LOGGING_H
 
 #include <string>
 
@@ -10,4 +10,4 @@ void logg(std::string text);
 }
 
 
-#endif //TIMEIT_LOGGING_H
+#endif //LOGGING_H

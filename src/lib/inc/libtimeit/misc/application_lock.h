@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef APPLICATION_LOCK_H_
-#define APPLICATION_LOCK_H_
+#ifndef APPLICATION_LOCK_H
+#define APPLICATION_LOCK_H
 #include <fstream>
 
 namespace libtimeit
@@ -33,4 +33,4 @@ private:
 	bool locked;
 };
 }
-#endif /* APPLICATION_LOCK_H_ */
+#endif /* APPLICATION_LOCK_H */

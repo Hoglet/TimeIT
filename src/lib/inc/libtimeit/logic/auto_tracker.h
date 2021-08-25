@@ -1,5 +1,5 @@
-#ifndef AUTO_TRACKER_H_
-#define AUTO_TRACKER_H_
+#ifndef AUTO_TRACKER_H
+#define AUTO_TRACKER_H
 #include <iostream>
 #include <libtimeit/timer.h>
 #include <libtimeit/logic/time_keeper.h>
@@ -16,9 +16,9 @@ class auto_tracker : public timer_observer
 {
 public:
 	auto_tracker(
-			Time_keeper& time_keeper_,
-			database&    db,
-			Timer&       timer_
+			Time_keeper& /*time_keeper*/,
+			database&    /*db*/,
+			Timer&       /*timer*/
 			);
 
 private:
@@ -38,4 +38,4 @@ private:
 };
 
 }
-#endif /*AUTO_TRACKER_H_*/
+#endif /*AUTO_TRACKER_H*/

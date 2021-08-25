@@ -1,6 +1,6 @@
 
-#ifndef TIME_KEEPER_H_
-#define TIME_KEEPER_H_
+#ifndef TIME_KEEPER_H
+#define TIME_KEEPER_H
 
 static const int MINUTE = 60;
 
@@ -29,7 +29,7 @@ public:
 	time_keeper_observer& operator=(time_keeper_observer&& )      = delete;
 	~time_keeper_observer();
 
-	virtual void on_idle_detected(const Time_entry& /*id*/) {};
+	virtual void on_idle_detected(const time_entry& /*id*/) {};
 	virtual void on_running_changed()       {};
 private:
 	Time_keeper& time_keeper;
@@ -68,8 +68,8 @@ public:
 	void on_signal_10_seconds() override;
 
 	//Time_observer
-	void on_time_entry_changed(const Time_entry& /*te*/) override;
-	void stop_time(const Time_entry& te);
+	void on_time_entry_changed(const time_entry& /*te*/) override;
+	void stop_time(const time_entry& item);
 private:
 	//
 	void attach(time_keeper_observer *);
@@ -85,7 +85,7 @@ private:
 	minutes default_idle_time{0min};
 
 	void notify_running_changed();
-	void notify_idle_detected(const Time_entry& /*id*/);
+	void notify_idle_detected(const time_entry& /*id*/);
 
 	list<time_keeper_observer *> observers;
 
@@ -101,4 +101,4 @@ private:
 };
 }
 
-#endif /*TIME_KEEPER_H_*/
+#endif /*TIME_KEEPER_H*/

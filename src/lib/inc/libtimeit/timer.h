@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TIMER_H
-#define TIMEIT_TIMER_H
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <list>
 

@@ -41,7 +41,7 @@ string to_json(const vector<task>& tasks, const string& username)
 	return result.to_string();
 }
 
-string to_json(const Time_list& times)
+string to_json(const time_list& times)
 {
 	vector<json> items{};
 	for (const auto& time : times)
@@ -102,9 +102,9 @@ vector<task> to_tasks(const string &text)
 	return return_value;
 }
 
-Time_list to_times(const string &input)
+time_list to_times( const string &input)
 {
-	Time_list return_value;
+	time_list return_value;
 
 	json json_document=json::from_json_string(input);
 
@@ -115,7 +115,7 @@ Time_list to_times(const string &input)
 		time_t start          = item.integer("start");
 		time_t stop           = item.integer("stop");
 		time_t changed        = item.integer("changed");
-		auto   state          = (Time_entry_state)item.integer("state");
+		auto   state          = (time_entry_state)item.integer( "state");
 		auto   deleted        = item.boolean( "deleted");
 		auto   comment        = item.text("comment");
 		if(deleted)
@@ -127,7 +127,7 @@ Time_list to_times(const string &input)
 		auto owner= optional_task_id(task_id_string);
 		if( id.has_value() && owner.has_value())
 		{
-			Time_entry time_item( time_id( id.value() ), *owner, start, stop, state, changed, comment);
+			time_entry time_item( time_id( id.value() ), *owner, start, stop, state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

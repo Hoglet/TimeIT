@@ -1,12 +1,5 @@
-/*
- * IWidget.h
- *
- *  Created on: Mar 23, 2009
- *      Author: hoglet
- */
-
-#ifndef IWIDGET_H_
-#define IWIDGET_H_
+#ifndef IWIDGET_H
+#define IWIDGET_H
 
 #include <action_observer.h>
 namespace gui
@@ -19,11 +12,11 @@ public:
 	virtual void hide() = 0;
 	virtual void move(int x, int y) = 0;
 	virtual bool is_visible() = 0;
-	virtual void get_position(int &Window_x, int &Window_y) = 0;
+	virtual void get_position( int &window_x, int &window_y ) = 0;
 
 	virtual void attach(action_observer* /*observer*/) 	{};
 	virtual void detach(action_observer* /*observer*/) 	{};
 };
 
 }
-#endif /* IWIDGET_H_ */
+#endif /* IWIDGET_H */

@@ -1,5 +1,5 @@
-#ifndef JSON_H_
-#define JSON_H_
+#ifndef JSON_CONVERTER_H
+#define JSON_CONVERTER_H
 
 #include <string>
 #include <vector>
@@ -13,10 +13,10 @@ namespace libtimeit
 using namespace std;
 
 vector<task>       to_tasks(const string& json);
-vector<Time_entry> to_times(const string& json);
+vector<time_entry> to_times( const string& json);
 
 string to_json(const vector<task>& tasks, const string& username);
-string to_json(const vector<Time_entry>& times);
+string to_json(const vector<time_entry>& times);
 }
 
-#endif /* JSON_H_ */
+#endif /* JSON_CONVERTER_H */

@@ -1,5 +1,5 @@
-#ifndef SYNC_MANAGER_H_
-#define SYNC_MANAGER_H_
+#ifndef SYNC_MANAGER_H
+#define SYNC_MANAGER_H
 
 #include <memory>
 #include <libtimeit/db/database.h>
@@ -13,7 +13,7 @@ namespace libtimeit
 {
 using namespace std;
 
-enum class Sync_state
+enum class sync_state
 {
 	IDLE,
 	TASK_REQUEST,
@@ -30,10 +30,10 @@ public:
 	sync_manager(
 			database& db,
 			abstract_network& network,
-			notification_manager& notifier,
+			notification_manager& op_notifier,
 			Timer&    timer);
 
-	Sync_state status();
+	sync_state status();
 	void on_signal_1_second() override;
 
 	void reset();
@@ -45,16 +45,16 @@ private:
 	void    sync_tasks_to_database();
 	void    manage_network_problems();
 
-	shared_ptr<async_http_response> request_tasks(time_t sincePointInTime);
-	shared_ptr<async_http_response> request_times(time_t sincePointInTime);
+	shared_ptr<async_http_response> request_tasks(time_t since_point_in_time);
+	shared_ptr<async_http_response> request_times(time_t since_point_in_time);
 
 	task_accessor     tasks;
 	time_accessor     times;
 	settings_accessor settings;
 	abstract_network&         network;
 
-	Sync_state                     state          {Sync_state::IDLE};
-	Sync_state                     following_state{Sync_state::IDLE};
+	sync_state                     state          { sync_state::IDLE};
+	sync_state                     following_state{ sync_state::IDLE};
 	shared_ptr <async_http_response> outstanding_request;
 
 	notification_manager&  notifier;
@@ -64,4 +64,4 @@ private:
 	time_t     current_sync{0};
 };
 }
-#endif /* SYNC_MANAGER_H_ */
+#endif /* SYNC_MANAGER_H */

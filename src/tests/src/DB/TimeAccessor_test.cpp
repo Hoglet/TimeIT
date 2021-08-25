@@ -23,7 +23,7 @@ TEST(TimeAccessor, simpleTest)
 	task_accessor taskAccessor(tempdb);
 	task test_task( "test" );
 	taskAccessor.create(test_task);
-	timeAccessor.create( Time_entry( test_task.id, 0, 1000 ) );
+	timeAccessor.create( time_entry( test_task.id, 0, 1000 ) );
 	auto result = timeAccessor.duration_time( test_task.id);
 	ASSERT_EQ(1000, result.count());
 }
@@ -36,7 +36,7 @@ TEST(TimeAccessor, ChangeEndTime)
 	task test_task( "test" );
 	taskAccessor.create( test_task );
 	time_accessor timeAccessor(tempdb);
-	Time_entry original = Time_entry( test_task.id, 0, 1000 );
+	time_entry original = time_entry( test_task.id, 0, 1000 );
 	timeAccessor.create( original );
 	auto te = timeAccessor.by_id( original.id );
 	if (te)
@@ -56,7 +56,7 @@ TEST(TimeAccessor, ChangeStartTime)
 	task test_task( "test" );
 	taskAccessor.create( test_task );
 	time_accessor timeAccessor(tempdb);
-	Time_entry original( test_task.id, 0, 1000 );
+	time_entry original( test_task.id, 0, 1000 );
 	timeAccessor.create( original );
 	auto te = timeAccessor.by_id(original.id);
 	timeAccessor.update(te->with_start(300));
@@ -75,7 +75,7 @@ TEST(TimeAccessor, UpdateTime)
 	task test_task( "test" );
 	taskAccessor.create(test_task );
 	time_accessor timeAccessor(tempdb);
-	Time_entry first( test_task.id, 0, 1000 );
+	time_entry first( test_task.id, 0, 1000 );
 	timeAccessor.create( first );
 	observer.task_id_time = {};
 	auto original = timeAccessor.by_id(first.id).value();
@@ -95,9 +95,9 @@ TEST(TimeAccessor, RemoveTime)
 	task test_task("test");
 	taskAccessor.create( test_task );
 	time_accessor timeAccessor(tempdb);
-	Time_entry te = Time_entry( test_task.id, 0, 1000 );
+	time_entry te = time_entry( test_task.id, 0, 1000 );
 	timeAccessor.create( te );
-	timeAccessor.create( Time_entry( test_task.id, 2000, 2300 ));
+	timeAccessor.create( time_entry( test_task.id, 2000, 2300 ));
 	timeAccessor.remove( te );
 	auto result = timeAccessor.duration_time( test_task.id );
 	ASSERT_EQ(300, result.count());
@@ -112,7 +112,7 @@ TEST(TimeAccessor, GetLatestTasks)
 	task test_task( "test" );
 	taskAccessor.create( test_task );
 	time_accessor timeAccessor(tempdb);
-	timeAccessor.create( Time_entry( test_task.id, 0, 1000) );
+	timeAccessor.create( time_entry( test_task.id, 0, 1000) );
 	auto result = timeAccessor.latest_active_tasks(10);
 	ASSERT_EQ(1, result.size());
 	ASSERT_EQ( test_task.id, result[0]);
@@ -130,10 +130,10 @@ TEST(TimeAccessor, GetDetailTimeList)
 
 	task test_task( "test" );
 	taskAccessor.create(test_task );
-	timeAccessor.create( Time_entry( test_task.id, 10, 100) );
-	vector<Time_entry> result = timeAccessor.time_list( test_task.id, 0, 10000);
+	timeAccessor.create( time_entry( test_task.id, 10, 100) );
+	vector<time_entry> result = timeAccessor.by_activity( test_task.id, 0, 10000 );
 	ASSERT_EQ(1, result.size());
-	Time_entry te = result[0];
+	time_entry te = result[0];
 	ASSERT_EQ(10, te.start);
 	ASSERT_EQ(100, te.stop);
 }
@@ -146,7 +146,7 @@ TEST(TimeAccessor, testGetByID)
 	extended_task_accessor taskAccessor(tempdb);
 	task test_task( "test" );
 	taskAccessor.create( test_task );
-	Time_entry original( test_task.id, 10, 100);
+	time_entry original( test_task.id, 10, 100);
 	timeAccessor.create( original );
 	auto te = timeAccessor.by_id(original.id);
 	ASSERT_EQ( test_task.id, te->owner_id) << "Check task id";
@@ -164,7 +164,7 @@ TEST(TimeAccessor, testGetByUUID)
 
 	task test_task( "test" );
 	taskAccessor.create( test_task );
-	Time_entry original = Time_entry( test_task.id, 10, 100);
+	time_entry original = time_entry( test_task.id, 10, 100);
 	timeAccessor.create( original );
 
 	auto te = timeAccessor.by_id(original.id);
@@ -187,7 +187,7 @@ TEST(TimeAccessor, newItem)
 
 	task test_task( "test" );
 	taskAccessor.create( test_task );
-	Time_entry item1( time_id(), test_task.id, 100, 200, STOPPED, 200, COMMENT);
+	time_entry item1( time_id(), test_task.id, 100, 200, STOPPED, 200, COMMENT);
 
 	timeAccessor.create(item1);
 	auto item2 = timeAccessor.by_id(item1.id);
@@ -217,7 +217,7 @@ TEST(TimeAccessor, GetTotalTimeWithChildren)
 	task child( "test", parent.id );
 	taskAccessor.create( child );
 	auto taskId = child.id;
-	timeAccessor.create( Time_entry(taskId, 4000, 5000) );
+	timeAccessor.create( time_entry( taskId, 4000, 5000) );
 	int parentTotalTime = timeAccessor.total_cumulative_time(parentId).count();
 	ASSERT_EQ(1000, parentTotalTime);
 	int childTotalTime = timeAccessor.total_cumulative_time(taskId).count();
@@ -235,11 +235,11 @@ TEST(TimeAccessor, getTimesChangedSince)
 	auto taskId = test_task.id;
 	taskAccessor.create( test_task );
 
-	Time_entry original(taskId, 0, 1000);
+	time_entry original( taskId, 0, 1000);
 	timeAccessor.create( original );
 
 	auto item = timeAccessor.by_id( original.id );
-	vector<Time_entry> result = timeAccessor.times_changed_since(0);
+	vector<time_entry> result = timeAccessor.times_changed_since( 0);
 	ASSERT_EQ(1, result.size());
 	result = timeAccessor.times_changed_since(item->changed);
 	ASSERT_EQ(1, result.size());
@@ -258,7 +258,7 @@ TEST(TimeAccessor, getActiveTasks)
 	task test_task( "test" );
 	auto taskId = test_task.id;
 	taskAccessor.create( test_task );
-	Time_entry item( time_id(), taskId, 100, 600, STOPPED, 200, COMMENT);
+	time_entry item( time_id(), taskId, 100, 600, STOPPED, 200, COMMENT);
 
 	timeAccessor.create(item);
 

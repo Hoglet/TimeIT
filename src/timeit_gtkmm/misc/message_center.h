@@ -1,5 +1,5 @@
-#ifndef MESSAGE_CENTER_H_
-#define MESSAGE_CENTER_H_
+#ifndef MESSAGE_CENTER_H
+#define MESSAGE_CENTER_H
 
 #include <string>
 #include <list>
@@ -18,7 +18,7 @@ enum MessageType
 };
 struct Message
 {
-	Message(MessageType type_, string header_, string message_);
+	Message( MessageType op_type, string header_text, string message_text);
 	const MessageType type;
 	const string header;
 	const string message;
@@ -39,4 +39,4 @@ private:
 
 } /* namespace Utils */
 
-#endif /* MESSAGE_CENTER_H_ */
+#endif // MESSAGE_CENTER_H

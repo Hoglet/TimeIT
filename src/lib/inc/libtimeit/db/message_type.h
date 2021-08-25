@@ -1,9 +1,5 @@
-//
-// Created by hoglet on 22/03/2021.
-//
-
-#ifndef TIMEIT_MESSAGE_TYPE_H
-#define TIMEIT_MESSAGE_TYPE_H
+#ifndef MESSAGE_TYPE_H
+#define MESSAGE_TYPE_H
 
 namespace libtimeit
 {
@@ -16,4 +12,4 @@ enum message_type
 };
 
 }
-#endif //TIMEIT_MESSAGE_TYPE_H
+#endif //MESSAGE_TYPE_H

@@ -1,6 +1,6 @@
 #include <libtimeit/exceptions/general_exception.h>
 
-general_exception::general_exception(const char* op1) : message(op1)
+general_exception::general_exception(const char* op) : message(op)
 {
 }
 

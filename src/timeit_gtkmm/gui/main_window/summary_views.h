@@ -1,12 +1,5 @@
-/*
- * DaySummary.h
- *
- *  Created on: 2008-jul-12
- *      Author: hoglet
- */
-
-#ifndef SUMMARY_VIEWS_H_
-#define SUMMARY_VIEWS_H_
+#ifndef SUMMARY_VIEWS_H
+#define SUMMARY_VIEWS_H
 
 #include <gtkmm.h>
 #include "summary.h"
@@ -82,4 +75,4 @@ private:
 };
 
 }
-#endif /* SUMMARY_VIEWS_H_ */
+#endif /* SUMMARY_VIEWS_H */

@@ -40,13 +40,13 @@ task task::with_parent(const optional<task_id>& new_parent_id) const
 			quiet};
 }
 
-task::task(string name_, optional<task_id> parent_ID_)
+task::task( string op_name, optional<task_id> op_parent_id)
 	:
 		task(
-			std::move(name_),
+			std::move( op_name),
 			task_id(),
 			system_clock::now(),
-			std::move(parent_ID_),
+			std::move( op_parent_id),
 			false,
 			0min,
 			false)
@@ -55,21 +55,21 @@ task::task(string name_, optional<task_id> parent_ID_)
 }
 
 task::task(
-		string                   name_,
-		task_id                  uuid_,
-		time_point<system_clock> last_change_,
-		optional<task_id>        parent_uuid_,
-		bool                     deleted_,
-		minutes                  idle_,
-		bool                     quiet_)
+		string                   op_name,
+		task_id                  op_uuid,
+		time_point<system_clock> op_last_change,
+		optional<task_id>        op_parent_uuid,
+		bool                     op_deleted,
+		minutes                  op_idle,
+		bool                     op_quiet)
 	:
-		name(move(name_)),
-		id( move( uuid_)),
-		parent_id( move( parent_uuid_)),
-		deleted(deleted_),
-		last_changed(last_change_),
-		idle(idle_),
-		quiet(quiet_)
+		name(move( op_name)),
+		id( move( op_uuid)),
+		parent_id( move( op_parent_uuid)),
+		deleted( op_deleted),
+		last_changed( op_last_change),
+		idle( op_idle),
+		quiet( op_quiet)
 {
 
 }
@@ -123,21 +123,21 @@ task task::with_quiet(bool new_quiet) const
 			new_quiet};
 }
 
-bool operator==(const task &op1, const task &op2)
+bool operator==( const task &op_1, const task &op_2)
 {
-	return (op1.name         == op2.name &&
-			op1.id           == op2.id &&
-			op1.parent_id    == op2.parent_id &&
-			op1.deleted      == op2.deleted &&
-			op1.last_changed == op2.last_changed &&
-			op1.idle         == op2.idle &&
-			op1.quiet        == op2.quiet
+	return ( op_1.name == op_2.name &&
+			 op_1.id == op_2.id &&
+			 op_1.parent_id == op_2.parent_id &&
+			 op_1.deleted == op_2.deleted &&
+			 op_1.last_changed == op_2.last_changed &&
+			 op_1.idle == op_2.idle &&
+			 op_1.quiet == op_2.quiet
 	);
 }
 
-bool operator!=(const task &op1, const task &op2)
+bool operator!=( const task &op_1, const task &op_2)
 {
-	return !(op1 == op2);
+	return !( op_1 == op_2);
 }
 
 }

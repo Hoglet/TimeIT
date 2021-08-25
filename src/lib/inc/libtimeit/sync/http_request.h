@@ -1,8 +1,5 @@
-//
-// Created by hoglet on 14/11/2020.
-//
-#ifndef TIMEIT_HTTP_REQUEST_H
-#define TIMEIT_HTTP_REQUEST_H
+#ifndef HTTP_REQUEST_H
+#define HTTP_REQUEST_H
 
 #include <libtimeit/sync/http_response.h>
 #include <curl/curl.h>
@@ -30,7 +27,7 @@ public:
 			string password
 			);
 private:
-	static size_t   send_data(char* dest, size_t i, size_t i1, http_request* caller);
+	static size_t   send_data(char* dest, size_t size, size_t items, http_request* caller);
 
 	CURL*        curl;
 	stringstream receive_buffer;
@@ -41,4 +38,4 @@ private:
 };
 
 }
-#endif //TIMEIT_HTTP_REQUEST_H
+#endif //HTTP_REQUEST_H

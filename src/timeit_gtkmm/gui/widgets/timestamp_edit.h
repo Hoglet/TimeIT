@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TIMESTAMP_EDIT_H
-#define TIMEIT_TIMESTAMP_EDIT_H
+#ifndef TIMESTAMP_EDIT_H
+#define TIMESTAMP_EDIT_H
 
 #include <string>
 #include <gtkmm.h>
@@ -49,4 +49,4 @@ private:
 };
 }
 
-#endif //TIMEIT_TIMESTAMP_EDIT_H
+#endif //TIMESTAMP_EDIT_H

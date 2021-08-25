@@ -1,5 +1,5 @@
-#ifndef TIMEIT_CONTAINS_H
-#define TIMEIT_CONTAINS_H
+#ifndef CONTAINS_H
+#define CONTAINS_H
 
 #include <vector>
 
@@ -23,4 +23,4 @@ bool contains( vector<my_type> vect, my_type value )
 }
 
 
-#endif //TIMEIT_CONTAINS_H
+#endif //CONTAINS_H

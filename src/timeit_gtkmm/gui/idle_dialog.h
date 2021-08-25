@@ -1,5 +1,5 @@
-#ifndef IDLE_DIALOG_H_
-#define IDLE_DIALOG_H_
+#ifndef IDLE_DIALOG_H
+#define IDLE_DIALOG_H
 
 #include <gtkmm.h>
 #include <libtimeit/timer.h>
@@ -14,7 +14,7 @@ namespace gui
 using namespace libtimeit;
 
 
-enum IdleDialogResponse{
+enum idle_dialog_response{
 	RESPONSE_REVERT=1,
 	RESPONSE_REVERTANDCONTINUE =2,
 	RESPONSE_CONTINUE=3
@@ -23,14 +23,14 @@ enum IdleDialogResponse{
 class idle_dialog : public Gtk::Dialog, public timer_observer, public IWidget
 {
 public:
-	idle_dialog(Timer& timer, database& db, Time_keeper& time_keeper);
+	idle_dialog(Timer& timer, database& db, Time_keeper& op_time_keeper);
 	void set_time_id(const time_id& id);
 	// IWidget interface
 	void show() override;
 	void hide() override { Gtk::Dialog::hide(); }
 	void move(int x, int y) override { Gtk::Dialog::move(x,y); } ;
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
-	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void get_position( int& x, int& y) override { Gtk::Dialog::get_position( x, y); };
 private:
 	void on_signal_10_seconds() override;
 	void set_text();
@@ -53,4 +53,4 @@ private:
 };
 
 }
-#endif /* IDLE_DIALOG_H_ */
+#endif /* IDLE_DIALOG_H */

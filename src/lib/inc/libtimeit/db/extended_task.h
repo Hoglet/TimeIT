@@ -1,5 +1,5 @@
-#ifndef TIMEIT_EXTENDED_TASK_H
-#define TIMEIT_EXTENDED_TASK_H
+#ifndef EXTENDED_TASK_H
+#define EXTENDED_TASK_H
 
 #include "libtimeit/datatypes/task.h"
 
@@ -17,7 +17,7 @@ struct extended_task : public task
 	extended_task(
 			const task&       source,
 			long              time,
-			long              total_time,
+			long              op_total_time,
 			bool              expanded,
 			bool              running
 			);

@@ -1,12 +1,5 @@
-/*
- * DaySummary.h
- *
- *  Created on: 2008-jul-12
- *      Author: hoglet
- */
-
-#ifndef SUMMARY_H_
-#define SUMMARY_H_
+#ifndef SUMMARY_H
+#define SUMMARY_H
 
 #include <gtkmm.h>
 #include <libtimeit/db/time_accessor.h>
@@ -31,7 +24,7 @@ public:
 	summary_observer &operator=(const summary_observer &) = delete;
 	summary_observer &operator=(summary_observer &&) = delete;
 	virtual ~summary_observer();
-	virtual void on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime) = 0;
+	virtual void on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time ) = 0;
 
 	virtual void on_show_details_clicked(const task_id& /*task_id*/, time_t /*start_time*/, time_t /*stop_time*/)
 	{};
@@ -93,7 +86,7 @@ private:
 	virtual void calculate_time_span() = 0;
 	Gtk::TreeModel::iterator find_row(const task_id& id);
 	Gtk::TreeModel::iterator sub_search(const task_id& id, Gtk::TreeModel::Children children);
-	void assign_values_to_row(Gtk::TreeModel::Row &row, task &task_, time_t total_time) const;
+	void assign_values_to_row(Gtk::TreeModel::Row &row, task &item, time_t total_time) const;
 
 	Glib::RefPtr<Gtk::TreeStore> tree_model;
 
@@ -129,4 +122,4 @@ private:
 };
 
 }
-#endif /* SUMMARY_H_ */
+#endif /* SUMMARY_H */

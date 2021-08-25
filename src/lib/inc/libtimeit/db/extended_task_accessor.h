@@ -1,5 +1,5 @@
-#ifndef EXTENDED_TASK_ACCESSOR_HPP_
-#define EXTENDED_TASK_ACCESSOR_HPP_
+#ifndef EXTENDED_TASK_ACCESSOR_H
+#define EXTENDED_TASK_ACCESSOR_H
 
 #include <vector>
 #include <list>
@@ -40,7 +40,7 @@ private:
 	vector<extended_task> get_extended_tasks(task_id id, optional<task_id> parent_id = {}, time_t start = 0, time_t stop = 0);
 	time_accessor times;
 
-	extended_task from_task( const task &item, vector <task_id> vector1 );
+	extended_task from_task( const task &item, vector <task_id> task_ids );
 	vector<extended_task> from_tasks(const vector<task>& items);
 	bool is_expanded(const task& task);
 
@@ -48,4 +48,4 @@ private:
 };
 
 }
-#endif // EXTENDED_TASK_ACCESSOR_HPP_
+#endif // EXTENDED_TASK_ACCESSOR_H

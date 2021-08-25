@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TIME_ENTRY_H
-#define TIMEIT_TIME_ENTRY_H
+#ifndef TIME_ENTRY_H
+#define TIME_ENTRY_H
 
 #include <cstdint>
 #include <string>
@@ -11,7 +11,7 @@ namespace libtimeit
 {
 using namespace std;
 
-enum Time_entry_state
+enum time_entry_state
 {
 	STOPPED = 0,
 	RUNNING = 1,
@@ -19,44 +19,44 @@ enum Time_entry_state
 	DELETED = 3
 };
 
-struct Time_entry
+struct time_entry
 {
 	const time_id              id;
 	const time_t               start;
 	const time_t               stop;
-	const Time_entry_state     state;
+	const time_entry_state     state;
 	const time_t               changed;
 	const task_id              owner_id;
 	const string               comment;
 
-	Time_entry(
+	time_entry(
 			task_id          owner,
-			time_t           start,
-			time_t           stop
+			time_t           op_start,
+			time_t           op_stop
 	);
-	Time_entry(
+	time_entry(
 			task_id          owner_id,
-			time_t           start,
-			time_t           stop,
-			Time_entry_state state
+			time_t           op_start,
+			time_t           op_stop,
+			time_entry_state op_state
 	);
 
-	Time_entry(
-			time_id           id_,
+	time_entry(
+			time_id           op_id,
 			task_id           owner_id,
-			time_t            start,
-			time_t            stop,
-			Time_entry_state  state,
-			time_t            changed,
-			string            comment);
+			time_t            op_start,
+			time_t            op_stop,
+			time_entry_state  op_state,
+			time_t            op_changed,
+			string            op_comment);
 
-	[[nodiscard]] Time_entry with_start(time_t) const;
-	[[nodiscard]] Time_entry with_stop(time_t) const;
-	[[nodiscard]] Time_entry with( Time_entry_state ) const;
-	[[nodiscard]] Time_entry with_comment(string comment);
+	[[nodiscard]] time_entry with_start( time_t) const;
+	[[nodiscard]] time_entry with_stop( time_t) const;
+	[[nodiscard]] time_entry with( time_entry_state ) const;
+	[[nodiscard]] time_entry with_comment( string comment);
 };
-bool operator==(const Time_entry &op1, const Time_entry &op2);
-bool operator!=(const Time_entry &op1, const Time_entry &op2);
+bool operator==( const time_entry &op_1, const time_entry &op_2);
+bool operator!=( const time_entry &op_1, const time_entry &op_2);
 
 }
 #endif

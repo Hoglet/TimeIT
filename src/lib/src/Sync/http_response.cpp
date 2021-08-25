@@ -12,17 +12,17 @@ namespace libtimeit
 using namespace std;
 
 http_response::http_response(
-			string url_,
-			string response_,
-			bool   status_OK_,
-			int    http_code_,
-			string error_message_
+			string op_url,
+			string op_response,
+			bool   op_status_ok,
+			int    op_http_code,
+			string op_error_message
 		) :
-		url(std::move(url_)),
-		response(std::move(response_)),
-		status_ok(status_OK_),
-		http_code(http_code_),
-		error_message(std::move(error_message_))
+		url(std::move( op_url)),
+		response(std::move( op_response)),
+		status_ok( op_status_ok),
+		http_code( op_http_code),
+		error_message(std::move( op_error_message))
 {
 }
 

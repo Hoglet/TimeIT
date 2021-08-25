@@ -1,5 +1,5 @@
-#ifndef TIMEIT_EVENT_OBSERVER_H_
-#define TIMEIT_EVENT_OBSERVER_H_
+#ifndef EVENT_OBSERVER_H
+#define EVENT_OBSERVER_H
 
 #include <cstdint>
 #include <string>
@@ -40,10 +40,10 @@ public:
 	virtual void on_complete_update()                     {}; // Database have many changes, re populate views
 	virtual void on_settings_changed( string /*name*/ )   {};
 	virtual void on_show_main_window()                    {}; //IPC request to show main window
-	virtual void on_time_entry_changed(const Time_entry& /*te*/) {};
+	virtual void on_time_entry_changed(const time_entry& /*te*/) {};
 private:
 	notification_manager& publisher;
 };
 
 }
-#endif // TIMEIT_EVENT_OBSERVER_H_
+#endif // EVENT_OBSERVER_H

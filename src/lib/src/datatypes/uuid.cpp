@@ -13,7 +13,7 @@ namespace libtimeit
 
 using namespace std;
 
-constexpr bool rangeTestG4(const char &c)
+constexpr bool range_test_g_4( const char &c)
 {
 	return  (c == '8' || c == '9' || c == 'a' || c == 'b' || c == 'A' || c == 'B');
 }
@@ -76,7 +76,7 @@ constexpr bool is_valid_uuid( string_view id ) // NOLINT(readability-function-co
 			return false;
 		}
 	}
-	if ( ! rangeTestG4( id[19]))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if ( !range_test_g_4( id[ 19 ] ))  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return false;
 	}
@@ -103,12 +103,12 @@ optional<uuid> uuid::from_string( string id)
 	return {};
 }
 
-int random4hex()
+int random_4_hex()
 {
 	return (rand() % (0xFF + 1)) + (rand() % (0xFF + 1)); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
-int randomBetween8and11()
+int random_between_8_and_11()
 {
 	return (rand() % 4) + 8;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
@@ -116,19 +116,19 @@ int randomBetween8and11()
 uuid::uuid()
 {
 	stringstream uuid_string_stream;
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
 	uuid_string_stream << "-";
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
 	uuid_string_stream << "-4";
-	uuid_string_stream << hex << setfill('0') << setw(3) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(3) << random_4_hex();
 	uuid_string_stream << "-";
-	uuid_string_stream << hex << randomBetween8and11();
-	uuid_string_stream << hex << setfill('0') << setw(3) << random4hex();
+	uuid_string_stream << hex << random_between_8_and_11();
+	uuid_string_stream << hex << setfill('0') << setw(3) << random_4_hex();
 	uuid_string_stream << "-";
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
-	uuid_string_stream << hex << setfill('0') << setw(4) << random4hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
+	uuid_string_stream << hex << setfill('0') << setw(4) << random_4_hex();
 
 	id = uuid_string_stream.str();
 }

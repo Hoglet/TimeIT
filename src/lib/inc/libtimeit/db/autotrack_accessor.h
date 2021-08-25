@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef AUTO_TRACK_ACCESSOR_H_
-#define AUTO_TRACK_ACCESSOR_H_
+#ifndef AUTOTRACK_ACCESSOR_H
+#define AUTOTRACK_ACCESSOR_H
 #include <vector>
 #include "extended_task_accessor.h"
 #include "autotrack_accessor.h"
@@ -26,7 +26,7 @@ public:
 
 	task_id_list     task_ids(unsigned workspace);
 	vector<unsigned> workspaces(const task_id& id);
-	void             set_workspaces(const task_id& task_ID, const vector<unsigned>& workspaces);
+	void             set_workspaces(const task_id& id, const vector<unsigned>& workspaces);
 private:
 	extended_task_accessor tasks;
 	database&              db;
@@ -36,4 +36,4 @@ private:
 };
 
 }
-#endif /* AUTO_TRACK_ACCESSOR_H_ */
+#endif /* AUTOTRACK_ACCESSOR_H */

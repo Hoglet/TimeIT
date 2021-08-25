@@ -70,11 +70,11 @@ void notification_manager::send_message(notification_message message)
 	}
 }
 
-void notification_manager::is_enabled(bool enabled_)
+void notification_manager::is_enabled(bool op_enabled)
 {
-	if (enabled_ != enabled)
+	if ( op_enabled != enabled)
 	{
-		enabled = enabled_;
+		enabled = op_enabled;
 	}
 	if (enabled && missed_notification)
 	{

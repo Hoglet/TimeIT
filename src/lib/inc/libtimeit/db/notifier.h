@@ -1,11 +1,5 @@
-/*
- * Notifier.h
- *
- *  Created on: Dec 25, 2011
- *      Author: hoglet
- */
-#ifndef TIMEIT_NOTIFIER_H
-#define TIMEIT_NOTIFIER_H
+#ifndef NOTIFIER_H
+#define NOTIFIER_H
 
 #include <cstdint>
 #include <list>
@@ -32,7 +26,7 @@ class notification_manager
 public:
 	void             try_send_notification(message_type type, int64_t item_id, string name = "");
 	void             send_notification(message_type type, int64_t item_id, string name = "");
-	void             is_enabled(bool enabled_);
+	void             is_enabled(bool op_enabled);
 	void             send(EventType type, string headline, string message);
 	void             broadcast(function<void(event_observer*)>);
 	unsigned long    size();

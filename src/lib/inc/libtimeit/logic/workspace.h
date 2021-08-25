@@ -1,5 +1,5 @@
-#ifndef WORKSPACE_H_
-#define WORKSPACE_H_
+#ifndef WORKSPACE_H
+#define WORKSPACE_H
 #include <string>
 #include "libtimeit/x11_lib.h"
 
@@ -14,13 +14,13 @@ struct workspace_layout
 	const unsigned  rows;
 	const unsigned  columns;
 	workspace_layout(
-			unsigned number_of_workspaces_,
-			unsigned rows_,
-			unsigned columns_)
+			unsigned op_number_of_workspaces,
+			unsigned op_rows,
+			unsigned op_columns)
 			:
-			number_of_workspaces(number_of_workspaces_),
-			rows(rows_),
-			columns(columns_)
+			number_of_workspaces( op_number_of_workspaces),
+			rows( op_rows),
+			columns( op_columns)
 	{};
 };
 class x11_workspace
@@ -44,4 +44,4 @@ private:
 
 };
 }
-#endif /* WORKSPACE_H_ */
+#endif /* WORKSPACE_H */

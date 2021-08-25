@@ -1,12 +1,5 @@
-/*
- * Calendar.h
- *
- *  Created on: 2008-nov-22
- *      Author: hoglet
- */
-
-#ifndef CALENDAR_H_
-#define CALENDAR_H_
+#ifndef CALENDAR_H
+#define CALENDAR_H
 
 #include <gtkmm.h>
 #include <list>
@@ -35,4 +28,4 @@ private:
 };
 
 }
-#endif /* CALENDAR_H_ */
+#endif /* CALENDAR_H */

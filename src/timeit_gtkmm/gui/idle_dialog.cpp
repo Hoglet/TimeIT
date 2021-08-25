@@ -22,12 +22,12 @@ using namespace libtimeit;
 idle_dialog::idle_dialog(
 		Timer& timer,
 		database& db,
-		Time_keeper& time_keeper_)
+		Time_keeper& op_time_keeper)
 		:
 		timer_observer(timer),
 		tasks(db ),
 		times(db ),
-		time_keeper(time_keeper_)
+		time_keeper( op_time_keeper)
 {
 
 	//Setting start time to now in case nobody will set the idle time later.
@@ -55,11 +55,11 @@ idle_dialog::idle_dialog(
 
 void idle_dialog::set_time_id(const time_id& id)
 {
-	auto time_entry = times.by_id(id);
-	if ( time_entry.has_value())
+	auto item = times.by_id( id);
+	if ( item.has_value() )
 	{
-		idle_start_time = time_entry->stop;
-		auto idle_task = tasks.by_id(time_entry->owner_id);
+		idle_start_time = item->stop;
+		auto idle_task = tasks.by_id( item->owner_id);
 		if(idle_task.has_value())
 		{
 			task_string = idle_task->name;
@@ -125,30 +125,30 @@ void idle_dialog::response_handler(int result)
 
 void idle_dialog::action_continue(const time_id& id)
 {
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
+	auto item = times.by_id( id);
+	if(item.has_value())
 	{
-		times.update(time_entry->with(RUNNING).with_stop(libtimeit::now()));
+		times.update( item->with( RUNNING).with_stop( libtimeit::now()));
 	}
 }
 
 void idle_dialog::revert_and_stop(const time_id& id)
 {
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
+	auto item = times.by_id( id);
+	if(item.has_value())
 	{
-		time_keeper.stop_time(time_entry.value());
-		time_keeper.stop(time_entry->owner_id);
+		time_keeper.stop_time( item.value());
+		time_keeper.stop( item->owner_id);
 	}
 }
 
 void idle_dialog::revert_and_continue(const time_id& id)
 {
-	auto time_entry = times.by_id(id);
-	if(time_entry.has_value())
+	auto item = times.by_id( id);
+	if(item.has_value())
 	{
-		time_keeper.stop_time(time_entry.value());
-		time_keeper.start(time_entry->owner_id);
+		time_keeper.stop_time( item.value());
+		time_keeper.start( item->owner_id);
 	}
 }
 

@@ -15,7 +15,7 @@ using namespace libtimeit;
 
 void about_dialog::on_link_clicked(AboutDialog& /*about_dialog*/, const Glib::ustring &link)
 {
-	show_URL(link);
+	show_url( link );
 }
 
 about_dialog::about_dialog(image_cache& images)
@@ -48,7 +48,7 @@ about_dialog::about_dialog(image_cache& images)
 	list_authors.emplace_back("Kent Asplund");
 	set_copyright("Kent Asplund");
 	set_authors (list_authors);
-	/* This is where you add your name so you will be credited as translator */
+	/* This is where you add your name, so you will be credited as translator */
 	set_translator_credits(_("translator-credits"));
 }
 }

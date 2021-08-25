@@ -3,7 +3,7 @@
 namespace libtimeit
 {
 
-static const string TIME_SCHEMA_V5 = R"Query(
+static const string TIME_SCHEMA_V_5 = R"Query(
 			CREATE TABLE IF NOT EXISTS times
 			(id          INTEGER PRIMARY KEY,
 			 uuid        TEXT UNIQUE,
@@ -17,7 +17,7 @@ static const string TIME_SCHEMA_V5 = R"Query(
 			)
 		)Query";
 
-static const string TASK_SCHEMA_V5 = R"Query(
+static const string TASK_SCHEMA_V_5 = R"Query(
 		CREATE TABLE IF NOT EXISTS
  			tasks
 			 (
@@ -34,12 +34,12 @@ static const string TASK_SCHEMA_V5 = R"Query(
 			)Query";
 
 
-static const string CTEATE_TIME_ENTRY_V5 = R"Query(
+static const string CTEATE_TIME_ENTRY_V_5 = R"Query(
 	INSERT INTO
 		times (uuid,taskID, start, stop, changed,deleted,running)
 	VALUES (?,?,?,?,?,0,0))Query";
 
-const string CREATE_TASK_V5 = R"Query(
+const string CREATE_TASK_V_5 = R"Query(
 				INSERT INTO
 					tasks (id,name,parent,changed,uuid,completed,deleted)
 				VALUES    (?, ?, ?, ?, ?, 0, 0);
@@ -71,8 +71,8 @@ void db_updater::update_times_to_db_5()
 	db.execute("DELETE FROM times WHERE taskID = 0");
 	db.execute("DROP TABLE IF EXISTS times_backup");
 	db.execute("ALTER TABLE times RENAME TO times_backup");
-	db.prepare(TIME_SCHEMA_V5).execute();
-	auto statement_new_entry(db.prepare(CTEATE_TIME_ENTRY_V5));
+	db.prepare( TIME_SCHEMA_V_5).execute();
+	auto statement_new_entry(db.prepare( CTEATE_TIME_ENTRY_V_5));
 
 	sql_statement statement = db.prepare("SELECT  taskID, start, stop FROM  times_backup");
 	Query_result rows = statement.execute();
@@ -94,8 +94,8 @@ void db_updater::update_tasks_to_db_5()
 	time_t now = time(nullptr);
 //Update Tasks to new design
 	db.execute("ALTER TABLE tasks RENAME TO tasks_backup");
-	db.prepare(TASK_SCHEMA_V5).execute();
-	auto statement_new_task(db.prepare(CREATE_TASK_V5 ));
+	db.prepare( TASK_SCHEMA_V_5).execute();
+	auto statement_new_task(db.prepare( CREATE_TASK_V_5 ));
 
 	db.execute("UPDATE tasks_backup SET deleted = 0 WHERE deleted != 1");
 	db.execute("UPDATE tasks_backup SET parent = NULL WHERE parent = 0");

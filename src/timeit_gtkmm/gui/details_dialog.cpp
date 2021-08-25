@@ -21,11 +21,10 @@ details_dialog::details_dialog(
 		:
 		event_observer(notifier),
 		time_keeper_observer(timeKeeper ),
-		table1(14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		top_table( 14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		task_name(""),
 		detail_list(db, notifier, gui_factory),
 		task_total_time(""),
-		table2(7, 4), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		times(db),
 		tasks(db),
 		settings(db ),
@@ -53,13 +52,13 @@ details_dialog::details_dialog(
 	task_name.set_padding(5, 3);
 	task_total_time.set_padding(5, 3);
 	task_total_time.set_alignment(0.0, 0.5);
-	table1.attach(task_name, 0, 1, 0, 1);
-	table1.attach(running_image, 1, 2, 0, 1);
-	table1.attach(task_total_time, 2, 14, 0, 1);
+	top_table.attach( task_name, 0, 1, 0, 1);
+	top_table.attach( running_image, 1, 2, 0, 1);
+	top_table.attach( task_total_time, 2, 14, 0, 1);
 	//Layout
 
 	scrolled_window.add(detail_list);
-	get_vbox()->pack_start(table1, Gtk::PACK_SHRINK, 3);
+	get_vbox()->pack_start( top_table, Gtk::PACK_SHRINK, 3);
 	get_vbox()->pack_start(scrolled_window, Gtk::PACK_EXPAND_WIDGET, 3);
 	show_all_children();
 
@@ -72,9 +71,9 @@ details_dialog::~details_dialog()
 }
 
 
-void details_dialog::on_selection_changed(optional<task_id> id, time_t startTime, time_t stopTime)
+void details_dialog::on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time)
 {
-	set(id, startTime, stopTime);
+	set( id, start_time, stop_time);
 }
 
 void details_dialog::on_task_time_changed(const task_id& id)
@@ -88,12 +87,12 @@ void details_dialog::on_task_name_changed(const task& item)
 }
 
 
-void details_dialog::set(optional<task_id> id, time_t startTime, time_t stopTime)
+void details_dialog::set( optional<task_id> id, time_t start_time, time_t stop_time)
 {
 	time_entry_id = {};
 	presented_task = id;
-	range_start = startTime;
-	range_stop = stopTime;
+	range_start = start_time;
+	range_stop = stop_time;
 
 	if(id.has_value())
 	{

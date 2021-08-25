@@ -9,16 +9,16 @@ namespace gui
 {
 
 edit_time_dialog::edit_time_dialog(
-		Time_entry time_entry_,
+		time_entry item,
 		database& db)
 		:
-		time_entry(std::move(time_entry_)),
-		times(db),
-		tasks(db)
+		item_under_edit( std::move( item ) ),
+		times( db ),
+		tasks( db )
 {
 	set_deletable(false);
 
-	auto owning_task = tasks.by_id(time_entry.owner_id);
+	auto owning_task = tasks.by_id( item_under_edit.owner_id);
 	if (owning_task.has_value())
 	{
 		task_name_label.set_text(_("Editing time belonging to: "));
@@ -85,14 +85,14 @@ void edit_time_dialog::on_response(int response_id)
 		time_t start_time = start_timestamp_edit.timestamp();
 		time_t stop_time  = stop_timestamp_edit.timestamp();
 		auto   comment    = comment_buffer->get_text();
-		auto existing_time_entry = times.by_id(time_entry.id);
+		auto existing_time_entry = times.by_id( item_under_edit.id);
 		if(existing_time_entry.has_value())
 		{
-			times.update(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
+			times.update( item_under_edit.with_start( start_time).with_stop( stop_time).with_comment( comment));
 		}
 		else
 		{
-			times.create(time_entry.with_start(start_time).with_stop(stop_time).with_comment(comment));
+			times.create( item_under_edit.with_start( start_time).with_stop( stop_time).with_comment( comment));
 		}
 	}
 }
@@ -101,14 +101,14 @@ void edit_time_dialog::on_response(int response_id)
 
 void edit_time_dialog::set_values()
 {
-	start_timestamp_edit.set_values(time_entry.start);
-	stop_timestamp_edit.set_values(time_entry.stop);
+	start_timestamp_edit.set_values( item_under_edit.start);
+	stop_timestamp_edit.set_values( item_under_edit.stop);
 
 	original_start = start_timestamp_edit.timestamp();
 	original_stop  = stop_timestamp_edit.timestamp();
 
-	comment_buffer->set_text(time_entry.comment);
-	original_comment = time_entry.comment;
+	comment_buffer->set_text( item_under_edit.comment);
+	original_comment = item_under_edit.comment;
 }
 
 void edit_time_dialog::on_change()

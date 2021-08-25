@@ -102,9 +102,9 @@ TEST( database, testUpgrade )
 	ASSERT_EQ( 1, task2->parent_id) << "Task 2 parent ";
 */
 	time_accessor timeAccessor(db);
-	vector<Time_entry> times = timeAccessor.times_changed_since();
+	vector<time_entry> times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
-	Time_entry te = times.at(0);
+	time_entry te = times.at( 0);
 	ASSERT_EQ( 10, te.start) << "Time start ";
 	ASSERT_EQ( 100, te.stop) << "Time stop ";
 

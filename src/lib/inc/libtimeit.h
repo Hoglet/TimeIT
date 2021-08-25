@@ -1,9 +1,5 @@
-//
-// Created by hoglet on 13/11/2020.
-//
-
-#ifndef TIMEIT_LIBTIMEIT_H
-#define TIMEIT_LIBTIMEIT_H
+#ifndef LIBTIMEIT_H
+#define LIBTIMEIT_H
 
 namespace libtimeit
 {
@@ -12,4 +8,4 @@ namespace libtimeit
 
 }
 
-#endif // TIMEIT_LIBTIMEIT_H
+#endif // LIBTIMEIT_H

@@ -1,5 +1,5 @@
-#ifndef TASK_ACCESSOR_H_
-#define TASK_ACCESSOR_H_
+#ifndef TASK_ACCESSOR_H
+#define TASK_ACCESSOR_H
 
 #include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
@@ -53,4 +53,4 @@ private:
 };
 
 }
-#endif /* TASK_ACCESSOR_H_ */
+#endif /* TASK_ACCESSOR_H */

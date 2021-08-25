@@ -16,21 +16,21 @@ using namespace libtimeit;
 using namespace std;
 
 widget_controller::widget_controller(
-		window_manager& op_guiFactory,
-		Time_keeper&    op_timeKeeper,
-		database&       database_,
-		notification_manager&       notifier_,
-		image_cache&         images_)
+		window_manager&        op_gui_factory,
+		Time_keeper&           op_time_keeper,
+		database&              db,
+		notification_manager&  op_notifier,
+		image_cache&           images)
 		:
-		time_keeper_observer(op_timeKeeper),
-		event_observer(notifier_ ),
-		windows(op_guiFactory),
-		time_keeper(op_timeKeeper),
-		times(database_),
-		settings(database_),
-		db(database_),
-		notifier(notifier_),
-		images(images_)
+		time_keeper_observer( op_time_keeper),
+		event_observer( op_notifier ),
+		windows( op_gui_factory),
+		time_keeper( op_time_keeper),
+		times( db),
+		settings( db),
+		db( db),
+		notifier( op_notifier),
+		images( images)
 
 
 {
@@ -52,9 +52,9 @@ void widget_controller::start()
 		window->attach(observer);
 		window->show();
 	}
-	for( auto time_entry: times.by_state(PAUSED))
+	for( auto item: times.by_state( PAUSED))
 	{
-		show_idle_dialog(time_entry.id);
+		show_idle_dialog( item.id );
 	}
 
 }
@@ -89,7 +89,7 @@ void widget_controller::on_action_toggle_main_window()
 }
 void widget_controller::on_show_main_window()
 {
-	WidgetPtr window = windows.get_widget(MAIN_WINDOW);
+	widget_ptr window = windows.get_widget( MAIN_WINDOW);
 	window->show();
 }
 
@@ -100,14 +100,14 @@ void widget_controller::on_action_about()
 //LCOV_EXCL_START
 void widget_controller::on_action_report_bug()
 {
-	show_URL("https://github.com/Hoglet/TimeIT/issues/new");
+	show_url( "https://github.com/Hoglet/TimeIT/issues/new" );
 }
 
 void widget_controller::on_action_help()
 {
 	stringstream translated_help { };
 	stringstream help_to_use { };
-	translated_help << PACKAGE_DATA_DIR << "/doc/timeit/html/" << ISO_639_language_string() << "/index.html";
+	translated_help << PACKAGE_DATA_DIR << "/doc/timeit/html/" << iso_639_language_string() << "/index.html";
 	if (file_exists(string(translated_help.str())))
 	{
 		help_to_use << "file://" << translated_help.str();
@@ -121,7 +121,7 @@ void widget_controller::on_action_help()
 			help_to_use << "file://" << default_help.str();
 		}
 	}
-	show_URL(help_to_use.str());
+	show_url( help_to_use.str());
 }
 //LCOV_EXCL_STOP
 void widget_controller::on_action_start_task()
@@ -147,7 +147,7 @@ void widget_controller::on_action_edit_task()
 	//m_refXML->get_widget_derived("EditTaskDialog", dialog);
 	if (selected_task_id.has_value())
 	{
-		WidgetPtr edit_task = windows.get_widget(EDIT_TASK_DIALOG);
+		widget_ptr edit_task = windows.get_widget( EDIT_TASK_DIALOG);
 		dynamic_pointer_cast<edit_task_dialog>(edit_task)->set_task_id(selected_task_id.value());
 		edit_task->show();
 	}
@@ -158,8 +158,8 @@ void widget_controller::on_action_add_time()
 	if (selected_task_id.has_value())
 	{
 		auto now = libtimeit::now();
-		Time_entry time_entry(selected_task_id.value(), now, now);
-		auto dialog = make_shared<gui::edit_time_dialog>(time_entry, db);
+		time_entry item( selected_task_id.value(), now, now);
+		auto dialog = make_shared<gui::edit_time_dialog>( item, db);
 		windows.manage_lifespan(dialog);
 		dialog->show();
 	}
@@ -170,7 +170,7 @@ void widget_controller::on_action_remove_task()
 	//ENHANCEMENT Move code from main window (or?)
 }
 
-void widget_controller::on_idle_detected( const Time_entry& te)
+void widget_controller::on_idle_detected( const time_entry& te)
 {
 	on_idle_changed();
 
@@ -196,29 +196,29 @@ void widget_controller::on_action_task_selection_changed(optional<task_id> selec
 
 void widget_controller::on_action_add_task()
 {
-	WidgetPtr add_task_dialog = windows.get_widget(ADD_TASK_DIALOG);
+	widget_ptr add_task_dialog = windows.get_widget( ADD_TASK_DIALOG);
 	dynamic_pointer_cast<edit_task_dialog>(add_task_dialog)->set_parent(selected_task_id);
 	add_task_dialog->show();
 }
 
 void widget_controller::on_action_preferences()
 {
-	WidgetPtr dialog = windows.get_widget(PREFERENCE_DIALOG);
+	widget_ptr dialog = windows.get_widget( PREFERENCE_DIALOG);
 	dialog->show();
 }
 
-void widget_controller::on_show_details_clicked(const task_id& taskId, time_t startTime, time_t stopTime)
+void widget_controller::on_show_details_clicked( const task_id& id, time_t start_time, time_t stop_time)
 {
 	auto dialog = make_shared<details_dialog>(db, time_keeper, notifier, windows, images);
 	if (dialog)
 	{
 		windows.manage_lifespan(dialog);
-		dialog->set(taskId, startTime, stopTime);
+		dialog->set( id, start_time, stop_time);
 		dialog->show();
 	}
 }
 
-void widget_controller::on_time_entry_changed(const Time_entry& /*te*/)
+void widget_controller::on_time_entry_changed(const time_entry& /*te*/)
 {
 	auto currently_running = times.currently_running();
 	if(currently_running != old_running)

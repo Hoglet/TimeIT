@@ -12,13 +12,13 @@ using namespace Glib;
 
 task_list_widget::task_list_widget(
 		database &db,
-		Time_keeper &timeKeeper,
+		Time_keeper &op_time_keeper,
 		notification_manager &notifier,
 		image_cache &images)
 		:
 		event_observer(notifier),
 		tasks(db),
-		time_keeper(timeKeeper)
+		time_keeper( op_time_keeper)
 {
 	// consider not loading and having these icons in memory multiple times across multiple classes
 	running_icon = images.by_id(image_identifier::RUNNING);
@@ -207,11 +207,11 @@ Gtk::TreeModel::iterator task_list_widget::sub_search(const task_id& id, TreeMod
 	return iter;
 }
 
-void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_task &task_)
+void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_task &item)
 {
-	auto id = task_.id;
+	auto id = item.id;
 	row[columns.col_id] = id;
-	if (task_.running)
+	if (item.running)
 	{
 		if (!time_keeper.tasks_are_running())
 		{
@@ -226,8 +226,8 @@ void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_
 	{
 		row[columns.col_pixbuf] = blank_icon;
 	}
-	row[columns.col_name] = task_.name;
-	time_t total_time = task_.total_time;
+	row[columns.col_name] = item.name;
+	time_t total_time = item.total_time;
 	if (total_time > 0)
 	{
 		row[columns.col_time] = libtimeit::seconds_2_hhmm(total_time);
@@ -238,9 +238,9 @@ void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_
 	}
 }
 
-void task_list_widget::populate(TreeModel::Row* parent, optional<task_id> parentID)
+void task_list_widget::populate(TreeModel::Row* parent, optional<task_id> parent_id)
 {
-	auto child_tasks = tasks.by_parent_id(parentID);
+	auto child_tasks = tasks.by_parent_id( parent_id);
 
 	for (auto child_task: child_tasks)
 	{

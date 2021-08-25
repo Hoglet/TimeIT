@@ -1,12 +1,5 @@
-/*
- * toolbar.h
- *
- *  Created on: 2008-aug-20
- *      Author: hoglet
- */
-
-#ifndef TOOLBAR_H_
-#define TOOLBAR_H_
+#ifndef TOOLBAR_H
+#define TOOLBAR_H
 
 #include <gtkmm.h>
 #include <list>
@@ -39,4 +32,4 @@ private:
 };
 
 }
-#endif /* TOOLBAR_H_ */
+#endif /* TOOLBAR_H */

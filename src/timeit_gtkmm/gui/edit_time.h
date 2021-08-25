@@ -1,5 +1,5 @@
-#ifndef ADDTIME_H_
-#define ADDTIME_H_
+#ifndef EDIT_TIME_H
+#define EDIT_TIME_H
 
 #include <gtkmm.h>
 #include <gui/widgets/lz_spin_button.h>
@@ -21,7 +21,7 @@ using namespace libtimeit;
 class edit_time_dialog: public Gtk::Dialog, public IWidget
 {
 public:
-	edit_time_dialog(Time_entry time_entry, database& db);
+	edit_time_dialog( time_entry op_time_entry, database& db);
 	edit_time_dialog(const edit_time_dialog&)             = delete;
 	edit_time_dialog(edit_time_dialog&&)                 = delete;
 	edit_time_dialog& operator=(const edit_time_dialog& ) = delete;
@@ -33,7 +33,7 @@ public:
 	void hide() override { Gtk::Dialog::hide(); }
 	void move(int x, int y) override { Gtk::Dialog::move(x,y); };
 	bool is_visible() override { return Gtk::Dialog::is_visible(); } ;
-	void get_position(int& Window_x, int& Window_y) override { Gtk::Dialog::get_position(Window_x, Window_y); };
+	void get_position( int& window_x, int& window_y ) override { Gtk::Dialog::get_position( window_x, window_y); };
 private:
 	void connect_signals();
 	void set_values( );
@@ -59,7 +59,7 @@ private:
 
 	Gtk::Button* ok_button;
 
-	Time_entry    time_entry;
+	time_entry    item_under_edit;
 	time_accessor times;
 	task_accessor tasks;
 
@@ -69,4 +69,4 @@ private:
 };
 }
 
-#endif /* ADDTIME_H_ */
+#endif /* EDIT_TIME_H */

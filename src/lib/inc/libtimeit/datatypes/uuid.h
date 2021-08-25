@@ -1,8 +1,8 @@
 //
 // Created by hoglet on 11/11/2020.
 //
-#ifndef TIMEIT_UUID_H
-#define TIMEIT_UUID_H
+#ifndef UUID_H
+#define UUID_H
 
 #include <optional>
 

@@ -18,8 +18,8 @@ extended_task getTask()
 	task sub_task( "sub_task", taskID);
 	auto subTaskID = sub_task.id;
 	taskAccessor.create( sub_task );
-	timeAccessor.create( Time_entry( taskID, 100, 200 ) );
-	timeAccessor.create( Time_entry( subTaskID, 150, 200 ) );
+	timeAccessor.create( time_entry( taskID, 100, 200 ) );
+	timeAccessor.create( time_entry( subTaskID, 150, 200 ) );
 	return *taskAccessor.by_id(taskID);
 }
 

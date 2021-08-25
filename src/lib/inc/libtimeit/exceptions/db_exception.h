@@ -11,7 +11,7 @@ using namespace std;
 class db_exception : public std::exception
 {
 public:
-	db_exception(string message, int return_code = 0);
+	db_exception( string op_message, int op_return_code = 0);
 
 	[[nodiscard]] const char *what() const noexcept override;
 private:

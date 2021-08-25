@@ -22,8 +22,8 @@ TEST(ExtendedTaskAccessor, by_ID)
 	taskAccessor.create(test_task_2);
 
 	time_accessor timeAccessor(tempdb);
-	timeAccessor.create( Time_entry( parent.id, 0, 1000) );
-	timeAccessor.create( Time_entry( test_task_2.id, 0, 1000 ) );
+	timeAccessor.create( time_entry( parent.id, 0, 1000) );
+	timeAccessor.create( time_entry( test_task_2.id, 0, 1000 ) );
 
 	auto task1 = taskAccessor.by_id(parent.id);
 	ASSERT_EQ("Test", task1->name);
@@ -54,7 +54,7 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 
 	task test_task_2("Test2", test_task.id);
 	taskAccessor.create(test_task_2);
-	timeAccessor.create( Time_entry( test_task_2.id, 0, 1000 ) );
+	timeAccessor.create( time_entry( test_task_2.id, 0, 1000 ) );
 
 	tasks = taskAccessor.by_parent_id({});
 	extended_task &task1 = tasks.at(0);
@@ -73,7 +73,7 @@ TEST(ExtendedTaskAccessor, testTotalTime)
 	taskAccessor.create(test_task_2);
 
 	time_accessor timeAccessor(tempdb);
-	timeAccessor.create( Time_entry( test_task_2.id, 0, 1000 ));
+	timeAccessor.create( time_entry( test_task_2.id, 0, 1000 ));
 
 	auto task1 = taskAccessor.by_id(test_task_1.id);
 	ASSERT_EQ(1000, task1->total_time);
@@ -107,7 +107,7 @@ TEST(ExtendedTaskAccessor, testTimeReporting)
 	task test_task("test", parentId);
 	taskAccessor.create(test_task);
 	auto taskId = test_task.id;
-	timeAccessor.create( Time_entry( taskId, 4000, 5000 ) );
+	timeAccessor.create( time_entry( taskId, 4000, 5000 ) );
 
 	auto tasks = taskAccessor.by_parent_id(parentId);
 	extended_task task1 = tasks.at(0);

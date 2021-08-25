@@ -4,35 +4,35 @@
 
 namespace libtimeit
 {
-Time_entry::Time_entry(
-		time_id               id_,
+time_entry::time_entry(
+		time_id               op_id,
 		task_id               owner_id,
-		time_t                start_,
-		time_t                stop_,
-		Time_entry_state      state_,
-		time_t                changed_,
-		string                comment_)
+		time_t                op_start,
+		time_t                op_stop,
+		time_entry_state      op_state,
+		time_t                op_changed,
+		string                op_comment)
 		:
-		id( move( id_)),
-		start(start_),
-		stop(stop_),
-		state(state_),
-		changed(changed_),
+		id( move( op_id)),
+		start( op_start),
+		stop( op_stop),
+		state( op_state),
+		changed( op_changed),
 		owner_id(std::move( owner_id)),
-		comment(std::move(comment_))
+		comment(std::move( op_comment))
 {
 }
 
 
 
-Time_entry::Time_entry(
+time_entry::time_entry(
 		task_id owner,
-		time_t  start_,
-		time_t  stop_)
+		time_t  op_start,
+		time_t  op_stop)
 			:
 		id( uuid() ),
-		start(start_ ),
-		stop(stop_ ),
+		start( op_start ),
+		stop( op_stop ),
 		state(STOPPED ),
 		changed(time(nullptr)),
 		owner_id(std::move( owner)),
@@ -40,16 +40,16 @@ Time_entry::Time_entry(
 {
 }
 
-Time_entry::Time_entry(
+time_entry::time_entry(
 		task_id          owner_id,
-		time_t           start_,
-		time_t           stop_,
-		Time_entry_state state_)
+		time_t           op_start,
+		time_t           op_stop,
+		time_entry_state op_state)
 		:
 		id( uuid() ),
-		start( start_ ),
-		stop( stop_ ),
-		state( state_ ),
+		start( op_start ),
+		stop( op_stop ),
+		state( op_state ),
 		changed( time(nullptr) ),
 		owner_id(std::move( owner_id)),
 		comment()
@@ -58,25 +58,25 @@ Time_entry::Time_entry(
 
 
 
-Time_entry Time_entry::with_start(time_t start_) const
+time_entry time_entry::with_start( time_t op_start) const
 {
-	if (start == start_)
+	if ( start == op_start)
 	{
 		return *this;
 	}
 	return {
 			id,
 			owner_id,
-			start_,
+			op_start,
 			stop,
 			state,
 			time(nullptr),
 			comment};
 }
 
-Time_entry Time_entry::with_stop(time_t stop_) const
+time_entry time_entry::with_stop( time_t op_stop) const
 {
-	if(stop == stop_)
+	if( stop == op_stop)
 	{
 		return *this;
 	}
@@ -84,14 +84,14 @@ Time_entry Time_entry::with_stop(time_t stop_) const
 			id,
 			owner_id,
 			start,
-			stop_,
+			op_stop,
 			state,
 			time(nullptr),
 			comment};
 }
 
 
-Time_entry Time_entry::with( Time_entry_state new_state) const
+time_entry time_entry::with( time_entry_state new_state) const
 {
 	if (state == new_state)
 	{
@@ -107,7 +107,7 @@ Time_entry Time_entry::with( Time_entry_state new_state) const
 			comment};
 }
 
-Time_entry Time_entry::with_comment(string new_comment)
+time_entry time_entry::with_comment( string new_comment)
 {
 	if (comment == new_comment)
 	{
@@ -124,22 +124,22 @@ Time_entry Time_entry::with_comment(string new_comment)
 			};
 }
 
-bool operator==(const Time_entry &op1, const Time_entry &op2)
+bool operator==( const time_entry &op_1, const time_entry &op_2 )
 {
 	return (
-			op1.changed   == op2.changed &&
-			op1.state     == op2.state &&
-			op1.start     == op2.start &&
-			op1.stop      == op2.stop &&
-			op1.id == op2.id &&
-			op1.owner_id == op2.owner_id &&
-			op1.comment   == op2.comment
+			op_1.changed == op_2.changed &&
+			op_1.state == op_2.state &&
+			op_1.start == op_2.start &&
+			op_1.stop == op_2.stop &&
+			op_1.id == op_2.id &&
+			op_1.owner_id == op_2.owner_id &&
+			op_1.comment == op_2.comment
 			);
 }
 
-bool operator!=(const Time_entry &op1, const Time_entry &op2)
+bool operator!=( const time_entry &op_1, const time_entry &op_2 )
 {
-	return !(op1 == op2);
+	return !( op_1 == op_2);
 }
 
 }

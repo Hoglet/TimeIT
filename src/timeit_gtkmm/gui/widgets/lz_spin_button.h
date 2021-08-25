@@ -1,5 +1,5 @@
-#ifndef LZSPINBUTTON_H_
-#define LZSPINBUTTON_H_
+#ifndef LZ_SPIN_BUTTON_H
+#define LZ_SPIN_BUTTON_H
 
 #include <gtkmm.h>
 
@@ -13,4 +13,4 @@ public:
 };
 
 }
-#endif /* LZSPINBUTTON_H_ */
+#endif /* LZ_SPIN_BUTTON_H */

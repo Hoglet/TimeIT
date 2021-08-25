@@ -19,7 +19,7 @@ constexpr auto SECOND_PER_DAY = 24 * 60 * 60;
 
 //LCOV_EXCL_START
 
-string ISO_639_language_string()
+string iso_639_language_string()
 {
 	string return_value = setlocale(LC_ALL, nullptr);
 	return_value = return_value.substr(0, 2);

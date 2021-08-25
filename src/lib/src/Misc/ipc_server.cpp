@@ -20,10 +20,10 @@ namespace libtimeit
 {
 using namespace std;
 
-ipc_server::ipc_server(string name, Timer& timer, notification_manager& notifier_)
+ipc_server::ipc_server(string name, Timer& timer, notification_manager& op_notifier)
 	:
 		timer_observer(timer),
-		notifier(notifier_)
+		notifier( op_notifier)
 {
 	socket_name = prepare_socket_dir() + name;
 

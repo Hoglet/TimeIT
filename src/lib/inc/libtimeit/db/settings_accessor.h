@@ -1,12 +1,5 @@
-/*
- * Settings.h
- *
- *  Created on: 2008-sep-06
- *      Author: hoglet
- */
-
-#ifndef SETTINGS_H_
-#define SETTINGS_H_
+#ifndef SETTINGS_ACCESSOR_H
+#define SETTINGS_ACCESSOR_H
 
 #include <optional>
 #include <libtimeit/db/database.h>
@@ -45,4 +38,4 @@ private:
 };
 }
 
-#endif /* SETTINGS_H_ */
+#endif /* SETTINGS_ACCESSOR_H */

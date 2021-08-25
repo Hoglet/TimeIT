@@ -1,5 +1,5 @@
-#ifndef TIMEIT_EXPORTERS_H
-#define TIMEIT_EXPORTERS_H
+#ifndef EXPORTERS_H
+#define EXPORTERS_H
 
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/time_accessor.h>
@@ -17,4 +17,4 @@ bool export_to_csv( database& db , const string &filename, time_point<system_clo
 
 }
 
-#endif //TIMEIT_EXPORTERS_H
+#endif //EXPORTERS_H

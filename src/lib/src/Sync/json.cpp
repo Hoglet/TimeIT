@@ -83,7 +83,7 @@ json& json::operator=(json&& other)
 	return *this;
 }
 
-json::json(json_t* object_) : object(object_)
+json::json(json_t* op_object) : object( op_object)
 {
 	json_incref(object);
 }

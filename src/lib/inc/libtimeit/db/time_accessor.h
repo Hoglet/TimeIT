@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TIME_ACCESSOR_H
-#define TIMEIT_TIME_ACCESSOR_H
+#ifndef TIME_ACCESSOR_H
+#define TIME_ACCESSOR_H
 
 #include <map>
 #include <vector>
@@ -24,19 +24,19 @@ class time_accessor
 {
 	friend database;
 public:
-	time_accessor(database& database);
+	explicit time_accessor(database& database);
 
-	int64_t                 create(const Time_entry& item);
-	optional<Time_entry>    by_id(time_id id);
+	int64_t                 create(const time_entry& item);
+	optional<time_entry>    by_id( time_id id);
 
-	[[nodiscard]] Time_list by_state(Time_entry_state state) const;
-	bool                    update(const Time_entry& item);
-	void                    remove(const Time_entry& item);
+	[[nodiscard]] time_list by_state( time_entry_state state) const;
+	bool                    update(const time_entry& item);
+	void                    remove(const time_entry& item);
 
 	task_id_list            latest_active_tasks(int amount);
 
 
-	Time_list               time_list( const task_id& owner, time_t start, time_t stop);
+	time_list               by_activity( const task_id& owner, time_t start_time, time_t stop_time);
 
 	seconds  duration_time(
 			const task_id& id,
@@ -49,8 +49,8 @@ public:
 			time_point<system_clock> stop  = time_point<system_clock>::max()
 					);
 
-	Duration                duration_time(const task_id& task_ID, time_t start, time_t stop);
-	Time_list               times_changed_since(time_t timestamp= 0);
+	Duration                duration_time( const task_id &task_id, time_t start, time_t stop );
+	time_list               times_changed_since( time_t timestamp= 0);
 
 
 	Duration                total_cumulative_time(const task_id& owner, time_t start, time_t stop);
@@ -76,7 +76,7 @@ private:
 	sql_statement statement_update_time;
 	sql_statement statement_new_entry;
 	static void setup(database& db);
-	static void internal_create(const Time_entry &item, sql_statement& new_entry, database& db);
+	static void internal_create( const time_entry &item, sql_statement& new_entry, database& db);
 };
 }
 #endif

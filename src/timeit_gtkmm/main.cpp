@@ -14,7 +14,7 @@
 
 #include <window_manager.h>
 #include <controller.h>
-#include <MessageCenter.h>
+#include <message_center.h>
 #include <gtk_timer.h>
 
 #include <libtimeit.h>

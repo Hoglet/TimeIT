@@ -1,7 +1,5 @@
-
-
-#ifndef TIMEIT_JSON_H
-#define TIMEIT_JSON_H
+#ifndef JSON_H
+#define JSON_H
 #include <string>
 #include <jansson.h>
 #include <list>
@@ -21,7 +19,7 @@ public:
 	~json();
 	json(json&&);
 	json(const json&);
-	json(json_t* object);
+	json(json_t* op_object);
 	json(string  text);
 	json(int64_t number);
 	json(bool state);
@@ -50,4 +48,4 @@ private:
 
 }
 
-#endif //TIMEIT_JSON_H
+#endif //JSON_H

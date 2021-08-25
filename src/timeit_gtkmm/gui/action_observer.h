@@ -1,12 +1,5 @@
-/*
- * IActionObserver.h
- *
- *  Created on: 2008-dec-21
- *      Author: hoglet
- */
-
-#ifndef ACTION_OBSERVER_H_
-#define ACTION_OBSERVER_H_
+#ifndef ACTION_OBSERVER_H
+#define ACTION_OBSERVER_H
 
 #include <libtimeit/db/data_types.h>
 namespace gui

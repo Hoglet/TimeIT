@@ -1,5 +1,5 @@
-#ifndef IPC_CLIENT_H_
-#define IPC_CLIENT_H_
+#ifndef IPC_CLIENT_H
+#define IPC_CLIENT_H
 
 #include <string>
 #include <memory>
@@ -22,4 +22,4 @@ private:
 
 } /* namespace libtimeit */
 
-#endif /* IPC_CLIENT_H_ */
+#endif /* IPC_CLIENT_H */

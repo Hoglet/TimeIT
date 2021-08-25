@@ -1,5 +1,5 @@
-#ifndef EDIT_TASK_DIALOG_H_
-#define EDIT_TASK_DIALOG_H_
+#ifndef EDIT_TASK_DIALOG_H
+#define EDIT_TASK_DIALOG_H
 
 #include "parent_chooser.h"
 #include <gtkmm.h>
@@ -35,7 +35,7 @@ public:
 	void hide() override;
 	void move(int x, int y) override;
 	bool is_visible() override;
-	void get_position(int& window_x, int& window_y) override;
+	void get_position( int& x, int& y) override;
 private:
 	void             create_layout();
 	void             check_for_changes();
@@ -61,7 +61,7 @@ private:
 	Gtk::Entry    task_name_entry;
 
 	// This is the Parent in the context "Parent task"
-	// The parent could be be "Project A" and the children could then be "Design", "Planning", "Coding".
+	// The parent could be "Project A" and the children could then be "Design", "Planning", "Coding".
 	// Parent task and child task.
 	Gtk::Label    parent_label   {_("Parent: ")};
 	parent_chooser_widget parent_chooser;
@@ -82,4 +82,4 @@ private:
 	vector<shared_ptr<Gtk::CheckButton>> check_button;
 };
 }
-#endif /*EDIT_TASK_DIALOG_H_*/
+#endif /*EDIT_TASK_DIALOG_H*/

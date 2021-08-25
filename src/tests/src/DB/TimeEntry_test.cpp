@@ -3,7 +3,7 @@
 
 using namespace libtimeit;
 
-Time_entry getTestTimeEntry()
+time_entry getTestTimeEntry()
 {
 	auto id = uuid::from_string( "00a600df-00da-414c-8078-0182005b0109");
 	return {
@@ -27,7 +27,7 @@ Time_entry getTestTimeEntry()
 
 TEST(TimeEntry, changeEndTime)
 {
-	Time_entry te=getTestTimeEntry();
+	time_entry te=getTestTimeEntry();
 	time_t now=time(0);
 	auto changedItem = te.with_stop(2000);
 	ASSERT_EQ(2000, changedItem.stop);
@@ -36,7 +36,7 @@ TEST(TimeEntry, changeEndTime)
 
 TEST(TimeEntry, setDeleted)
 {
-	Time_entry te=getTestTimeEntry();
+	time_entry te=getTestTimeEntry();
 	time_t now=time(0);
 	auto changedItem= te.with(DELETED);
 	ASSERT_TRUE(changedItem.state == DELETED);

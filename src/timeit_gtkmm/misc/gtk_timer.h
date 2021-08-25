@@ -1,9 +1,5 @@
-//
-// Created by hoglet on 03/04/2021.
-//
-
-#ifndef TIMEIT_GTK_TIMER_H
-#define TIMEIT_GTK_TIMER_H
+#ifndef GTK_TIMER_H
+#define GTK_TIMER_H
 #include <libtimeit/timer.h>
 
 namespace gui
@@ -34,4 +30,4 @@ private:
 };
 
 }
-#endif //TIMEIT_GTK_TIMER_H
+#endif //GTK_TIMER_H

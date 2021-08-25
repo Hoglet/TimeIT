@@ -27,12 +27,12 @@ static const int DEFAULT_WINDOW_HEIGHT = 550;
 
 main_window::main_window(
 		database &db,
-		Time_keeper &timeKeeper,
+		Time_keeper &op_time_keeper,
 		notification_manager &notifier,
 		window_manager &gui_factory,
 		image_cache &images)
 		:
-		task_list(db, timeKeeper, notifier, images),
+		task_list( db, op_time_keeper, notifier, images),
 		day_summary(db, notifier),
 		week_summary(db, notifier),
 		month_summary(db, notifier),
@@ -115,7 +115,7 @@ void main_window::detach(action_observer* observer)
 
 void main_window::relate_widgets()
 {
-	//Give widgets references to other widgets they need too communicate with
+	//Give widgets references to other widgets they need to communicate with
 	summaries.push_back(&day_summary);
 	summaries.push_back(&week_summary);
 	summaries.push_back(&month_summary);

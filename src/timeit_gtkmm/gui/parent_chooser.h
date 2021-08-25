@@ -1,12 +1,5 @@
-/*
- * ParentChooser.h
- *
- *  Created on: Apr 26, 2009
- *      Author: hoglet
- */
-
-#ifndef PARENTCHOOSER_H_
-#define PARENTCHOOSER_H_
+#ifndef PARENT_CHOOSER_H
+#define PARENT_CHOOSER_H
 
 #include <string>
 #include <gtkmm/combobox.h>
@@ -31,7 +24,7 @@ private:
 	//Signal handlers:
 	virtual void on_combo_changed();
 
-	void populate(string& base_string, optional<task_id> parent_id);
+	void populate(string& base_string, optional<task_id> parent);
 
 	Gtk::TreeModel::iterator find_row(const task_id& id);
 
@@ -60,4 +53,4 @@ private:
 
 }
 
-#endif /* PARENTCHOOSER_H_ */
+#endif /* PARENT_CHOOSER_H */

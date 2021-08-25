@@ -1,5 +1,5 @@
-#ifndef TASK_LIST_HPP_
-#define TASK_LIST_HPP_
+#ifndef TASK_LIST_H
+#define TASK_LIST_H
 
 #include <gtkmm.h>
 #include <libtimeit/db/extended_task.h>
@@ -19,7 +19,7 @@ public:
 	~task_list_widget() override;
 	task_list_widget(
 			database &db,
-			Time_keeper &time_keeper,
+			Time_keeper &op_time_keeper,
 			notification_manager &notifier,
 			image_cache &images);
 	task_list_widget(const task_list_widget &) = delete;
@@ -75,7 +75,7 @@ private:
 	void on_menu_remove_task();
 	void on_menu_add_time();
 	bool on_button_press_event(GdkEventButton* event) override;
-	void assign_values_to_row(Gtk::TreeModel::Row &row, const extended_task &task_);
+	void assign_values_to_row(Gtk::TreeModel::Row &row, const extended_task &item);
 
 	Glib::RefPtr<Gdk::Pixbuf> running_icon;
 	Glib::RefPtr<Gdk::Pixbuf> running_idle_icon;
@@ -87,4 +87,4 @@ private:
 	Time_keeper &time_keeper;
 };
 }
-#endif // TASK_LIST_HPP_
+#endif // TASK_LIST_H

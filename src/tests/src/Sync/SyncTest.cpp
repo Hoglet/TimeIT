@@ -48,11 +48,11 @@ TEST( SyncManager, fullSyncEmptyClient )
 	network.setResponse(timesKey, timesResponse);
 
 
-	while(syncManager.status() == Sync_state::IDLE)
+	while( syncManager.status() == sync_state::IDLE)
 	{
 		timer.on_signal_1_second();
 	}
-	while(syncManager.status() != Sync_state::IDLE)
+	while( syncManager.status() != sync_state::IDLE)
 	{
 		timer.on_signal_1_second();
 	}
@@ -78,7 +78,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 		}
 	}
 	time_accessor timeAccessor(db);
-	Time_list times = timeAccessor.times_changed_since();
+	time_list times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Checking amount of times in database";
 	for (auto item : times)
 	{
@@ -91,11 +91,11 @@ TEST( SyncManager, fullSyncEmptyClient )
 	}
 
 	syncManager.reset();
-	while(syncManager.status() == Sync_state::IDLE)
+	while( syncManager.status() == sync_state::IDLE)
 	{
 		timer.on_signal_1_second();
 	}
-	while(syncManager.status() != Sync_state::IDLE)
+	while( syncManager.status() != sync_state::IDLE)
 	{
 		timer.on_signal_1_second();
 	}

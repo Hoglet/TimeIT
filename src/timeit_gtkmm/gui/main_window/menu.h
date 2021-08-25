@@ -1,12 +1,5 @@
-/*
- * menu.h
- *
- *  Created on: 2008-aug-20
- *      Author: hoglet
- */
-
-#ifndef MENU_H_
-#define MENU_H_
+#ifndef MENU_H
+#define MENU_H
 
 #include <gtkmm.h>
 #include <action_observer.h>
@@ -46,4 +39,4 @@ private:
 };
 
 }
-#endif /* MENU_H_ */
+#endif /* MENU_H */

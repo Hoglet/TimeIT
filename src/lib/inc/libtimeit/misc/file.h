@@ -1,5 +1,5 @@
-#ifndef TIMEIT_FILE_H
-#define TIMEIT_FILE_H
+#ifndef FILE_H
+#define FILE_H
 
 #include <string>
 
@@ -28,4 +28,4 @@ private:
 };
 
 }
-#endif //TIMEIT_FILE_H
+#endif //FILE_H

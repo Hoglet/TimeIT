@@ -1,5 +1,5 @@
-#ifndef DATA_CELL_H_
-#define DATA_CELL_H_
+#ifndef DATA_CELL_H
+#define DATA_CELL_H
 
 #include <string>
 #include <libtimeit/exceptions/db_exception.h>
@@ -27,4 +27,4 @@ private:
 
 }
 
-#endif /*DATA_CELL_H_*/
+#endif /*DATA_CELL_H*/

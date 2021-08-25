@@ -1,5 +1,5 @@
-#ifndef TIMEIT_TASK_H
-#define TIMEIT_TASK_H
+#ifndef TASK_H
+#define TASK_H
 
 #include <string>
 #include <optional>
@@ -28,15 +28,15 @@ struct [[nodiscard]]  task
 
 
 
-	explicit task( string name_, optional<task_id> parent_ID = {});
+	explicit task( string op_name, optional<task_id> op_parent_id = {});
 	task(
-			string                    name_,
-			task_id                   uuid_,
-			time_point<system_clock>  last_change_,
-			optional<task_id>         parent_uuid_,
-			bool                      deleted_,
-			minutes                   idle_,
-			bool                      quiet_);
+			string                    op_name,
+			task_id                   op_uuid,
+			time_point<system_clock>  op_last_change,
+			optional<task_id>         op_parent_uuid,
+			bool                      op_deleted,
+			minutes                   op_idle,
+			bool                      op_quiet);
 
 	task       with_name(const string& /*new_name*/)        const;
 	task       with_parent(const optional<task_id>& /*id*/) const;
@@ -45,8 +45,8 @@ struct [[nodiscard]]  task
 	task       with_quiet(bool /*quiet*/)            const;
 };
 
-extern bool operator==(const task &op1, const task &op2);
-extern bool operator!=(const task &op1, const task &op2);
+extern bool operator==( const task &op_1, const task &op_2);
+extern bool operator!=( const task &op_1, const task &op_2);
 }
 
 #endif
