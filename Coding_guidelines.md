@@ -49,7 +49,7 @@ Indent with tabs.
 ## Code examples
 
 ### Example 1
-<pre>
+```cpp
 void preference_dialog::on_data_changed()
 {
   get_values();
@@ -75,10 +75,10 @@ void preference_dialog::on_data_changed()
     ok_button.set_sensitive(false);
   }
 }
-</pre>
+```
 
 ### Example 1
-<pre>
+```cpp
 bool arbitrary_function(
   float    param1,
   float    param2,
@@ -89,4 +89,4 @@ bool arbitrary_function(
   auto result = param1 * param2 * pi;
   return (result < param3);
 }
-</pre>
+```
