@@ -24,9 +24,9 @@ public:
 	summary_observer &operator=(const summary_observer &) = delete;
 	summary_observer &operator=(summary_observer &&) = delete;
 	virtual ~summary_observer();
-	virtual void on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time ) = 0;
+	virtual void on_selection_changed( optional<task_id> id, time_point<system_clock> start_time, time_point<system_clock> stop_time ) = 0;
 
-	virtual void on_show_details_clicked(const task_id& /*task_id*/, time_t /*start_time*/, time_t /*stop_time*/)
+	virtual void on_show_details_clicked(const task_id& /*task_id*/, time_point<system_clock> /*start_time*/, time_point<system_clock> /*stop_time*/)
 	{};
 	void attach(summary* subject);
 	void detach(summary* subject);
@@ -43,12 +43,12 @@ public:
 	void set_references(Gtk::Calendar &calendar);
 	optional<task_id> selected_id();
 
-	time_t get_start_time() const
+	time_point<system_clock> get_start_time() const
 	{
 		return start_time;
 	}
 
-	time_t get_stop_time() const
+	time_point<system_clock> get_stop_time() const
 	{
 		return stop_time;
 	}
@@ -59,9 +59,9 @@ public:
 
 protected:
 	void init();
-	time_t active_day = 0; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
-	time_t start_time = 0; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
-	time_t stop_time = 0;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+	time_point<system_clock> active_day = system_clock::from_time_t(0);
+	time_point<system_clock> start_time = system_clock::from_time_t(0);
+	time_point<system_clock> stop_time  = time_point<system_clock>::max();
 
 private:
 	Gtk::TreeModel::Row add(const task_id& id);
@@ -86,7 +86,7 @@ private:
 	virtual void calculate_time_span() = 0;
 	Gtk::TreeModel::iterator find_row(const task_id& id);
 	Gtk::TreeModel::iterator sub_search(const task_id& id, Gtk::TreeModel::Children children);
-	void assign_values_to_row(Gtk::TreeModel::Row &row, task &item, time_t total_time) const;
+	void assign_values_to_row(Gtk::TreeModel::Row &row, task &item, seconds total_time) const;
 
 	Glib::RefPtr<Gtk::TreeStore> tree_model;
 

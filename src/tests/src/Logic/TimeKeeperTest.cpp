@@ -76,22 +76,25 @@ TEST( TimeKeeper, update )
 	task_accessor tasks(db);
 	time_accessor times(db);
 
-	time_t now = time(nullptr);
+	auto now = system_clock::now();
 	task test_task("Test", {});
 	tasks.create(test_task);
 	TKObserver observer(timeKeeper);
 
 	timeKeeper.start(test_task.id);
 
-	vector<time_entry> entries = times.by_activity( test_task.id, 0, now + 1000 );
+	vector<time_entry> entries = times.by_activity(
+			test_task.id,
+			system_clock::from_time_t( 0 ),
+			now + 1000s );
 	auto teID = entries.at(0).id;
 	auto te = times.by_id(teID);
-	times.update(te->with_start(0).with_start(10));
+	times.update(te->with_start( system_clock::from_time_t( 0 )).with_stop( system_clock::from_time_t( 100 )));
 
 	timeKeeper.on_signal_10_seconds();
 
 	auto changedItem = times.by_id(teID);
-	ASSERT_TRUE( 100 < changedItem->stop) << "Stop should be higher than 100 ";
+	ASSERT_EQ(  100  , system_clock::to_time_t( changedItem->stop)) << "Stop should be 100 ";
 
 }
 

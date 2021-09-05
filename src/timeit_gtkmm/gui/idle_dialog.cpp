@@ -84,13 +84,13 @@ static const int SECONDS_PER_MINUTE = 60;
 void idle_dialog::set_text()
 {
 	std::stringstream str;
-	auto minutes_idle = (libtimeit::now() - idle_start_time) / SECONDS_PER_MINUTE;
+	auto minutes_idle = duration_cast<minutes>( system_clock::now() - idle_start_time);
 
 	// {} represents the time
 	std::string format_str = ngettext("No activity has been detected for {} minute. What should we do?",
 									  "No activity has been detected for {} minutes. What should we do?",
-									  (unsigned long)minutes_idle);
-	str << fmt::format(format_str, minutes_idle);
+									  minutes_idle.count());
+	str << fmt::format(format_str, minutes_idle.count());
 
 	if ( !task_string.empty() )
 	{
@@ -128,7 +128,7 @@ void idle_dialog::action_continue(const time_id& id)
 	auto item = times.by_id( id);
 	if(item.has_value())
 	{
-		times.update( item->with( RUNNING).with_stop( libtimeit::now()));
+		times.update( item->with( RUNNING).with_stop( system_clock::now()));
 	}
 }
 

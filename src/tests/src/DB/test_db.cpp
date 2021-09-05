@@ -105,8 +105,8 @@ TEST( database, testUpgrade )
 	vector<time_entry> times = timeAccessor.times_changed_since();
 	ASSERT_EQ( 1, times.size()) << "Number of times ";
 	time_entry te = times.at( 0);
-	ASSERT_EQ( 10, te.start) << "Time start ";
-	ASSERT_EQ( 100, te.stop) << "Time stop ";
+	ASSERT_EQ( system_clock::from_time_t( 10 ), te.start) << "Time start ";
+	ASSERT_EQ( system_clock::from_time_t( 100 ), te.stop) << "Time stop ";
 
 	unlink("/tmp/dbtest.db");
 }

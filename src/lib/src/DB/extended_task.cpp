@@ -5,10 +5,10 @@ namespace libtimeit
 
 extended_task::extended_task(
 		const task&       source,
-		long              time,
-		long              op_total_time,
-		bool              expanded,
-		bool              running
+		seconds           op_time,
+		seconds           op_total_time,
+		bool              op_expanded,
+		bool              op_running
 		)
 		:
 		task(
@@ -20,9 +20,9 @@ extended_task::extended_task(
 				source.idle,
 				source.quiet
 		),
-		expanded(expanded),
-		running(running),
-		time(time),
+		expanded(op_expanded),
+		running(op_running),
+		time(op_time),
 		total_time( op_total_time)
 {
 

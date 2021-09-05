@@ -264,8 +264,8 @@ void status_icon_widget::set_tooltip()
 	else
 	{
 		//Figure out start and end of today
-		auto start_time = libtimeit::beginning_of_day(time(nullptr));
-		auto stop_time  = libtimeit::end_of_day(time(nullptr));
+		auto start_time = libtimeit::beginning_of_day( system_clock::now());
+		auto stop_time  = libtimeit::end_of_day(system_clock::now());
 		for (auto id : currently_running)
 		{
 			auto task = tasks.by_id(id);

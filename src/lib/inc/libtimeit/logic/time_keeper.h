@@ -81,7 +81,7 @@ private:
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
-	int idle_gz;
+	seconds idle_gz;
 	minutes default_idle_time{0min};
 
 	void notify_running_changed();

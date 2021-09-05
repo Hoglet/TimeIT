@@ -9,11 +9,13 @@
 #include <libtimeit/db/query_result.h>
 #include <cstdint>
 #include <memory>
+#include <chrono>
 
 namespace libtimeit
 {
 
 using namespace std;
+using namespace std::chrono;
 class SQLite3;
 
 class sql_statement
@@ -30,6 +32,7 @@ public:
 	void bind_value(int index, int  value);
 	void bind_value(int index, int64_t value);
 	void bind_value(int index, const string& text);
+	void bind_value(int index, time_point<system_clock> value);
 	void bind_null_value(int index);
 
 	Query_result execute();

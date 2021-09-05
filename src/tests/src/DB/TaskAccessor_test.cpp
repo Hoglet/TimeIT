@@ -212,11 +212,11 @@ TEST(TaskAccessor, lastChanged)
 
 	taskAccessor.create(original_task);
 
-	vector<task> tasks = taskAccessor.changed_since(0);
+	vector<task> tasks = taskAccessor.changed_since();
 	ASSERT_EQ(1, tasks.size()) << "Asking for all tasks";
 	task task1 = tasks.at(0);
 	ASSERT_EQ(system_clock::from_time_t(500), task1.last_changed) << "Checking change time";
-	tasks = taskAccessor.changed_since(600);
+	tasks = taskAccessor.changed_since( system_clock::from_time_t(600) );
 	ASSERT_EQ(0, tasks.size()) << "Asking for all tasks after last inserted";
 
 	string newName = "New name";
@@ -230,7 +230,7 @@ TEST(TaskAccessor, lastChanged)
 			false);
 
 	taskAccessor.update(updated_task);
-	tasks = taskAccessor.changed_since(0);
+	tasks = taskAccessor.changed_since();
 
 	ASSERT_EQ(1, tasks.size()) <<
 							   "Updated with task changed before task in database. Number of tasks should be unchanged";

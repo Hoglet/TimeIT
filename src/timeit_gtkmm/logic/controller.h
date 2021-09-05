@@ -48,8 +48,16 @@ public:
 	void on_action_report_bug() override;
 
 	//SummaryObserver
-	void on_show_details_clicked( const task_id& id, time_t start_time, time_t stop_time) override;
-	void on_selection_changed(optional<task_id> id, time_t start, time_t stop) override;
+	void on_show_details_clicked(
+			const task_id&           id,
+			time_point<system_clock> start_time,
+			time_point<system_clock> stop_time) override;
+
+	void on_selection_changed(
+			optional<task_id>        /*id*/,
+			time_point<system_clock> /*start*/,
+			time_point<system_clock> /*stop*/) override
+			{};
 
 	//
 	void on_idle_detected(const time_entry& /*te*/ ) override;

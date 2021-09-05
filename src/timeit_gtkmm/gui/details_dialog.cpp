@@ -71,7 +71,7 @@ details_dialog::~details_dialog()
 }
 
 
-void details_dialog::on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time)
+void details_dialog::on_selection_changed( optional<task_id> id, time_point<system_clock> start_time, time_point<system_clock> stop_time)
 {
 	set( id, start_time, stop_time);
 }
@@ -87,7 +87,7 @@ void details_dialog::on_task_name_changed(const task& item)
 }
 
 
-void details_dialog::set( optional<task_id> id, time_t start_time, time_t stop_time)
+void details_dialog::set( optional<task_id> id, time_point<system_clock> start_time, time_point<system_clock> stop_time)
 {
 	time_entry_id = {};
 	presented_task = id;
@@ -168,13 +168,13 @@ void details_dialog::on_task_total_time_updated(const task_id& id)
 {
 	if (presented_task == id)
 	{
-		if (difftime(range_stop, range_start) > COMPLETE_DAY)
+		if ( range_stop - range_start > 24h )
 		{
 			// longer than a day, could be a week, month, year, with a margin to stay clear of leap seconds
 			auto updated_task = tasks.by_id(presented_task.value());
 			if (updated_task.has_value())
 			{
-				time_t total_time = times.total_cumulative_time(presented_task.value(), range_start, range_stop);
+				auto total_time = times.total_cumulative_time(presented_task.value(), range_start, range_stop);
 				task_total_time.set_text("∑ = " + libtimeit::seconds_2_hhmm(total_time));
 			}
 			else

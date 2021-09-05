@@ -97,8 +97,8 @@ void extended_task_accessor::setup(database& db)
 
 extended_task extended_task_accessor::from_task( const task &item, vector<task_id> running_tasks )
 {
-	auto time = times.duration_time( item.id ).count();
-	auto total_time = times.total_cumulative_time( item.id ).count();
+	auto time = times.duration_time( item.id );
+	auto total_time = times.total_cumulative_time( item.id );
 
 	bool running = contains( running_tasks, item.id);
 	bool expanded = is_expanded( item );

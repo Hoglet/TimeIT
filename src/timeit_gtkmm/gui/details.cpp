@@ -105,12 +105,12 @@ void details::on_menu_file_popup_remove()
 		if (optional_time_entry)
 		{
 			time_entry item = optional_time_entry.value();
-			auto idle_gt = settings.get_int("Gt", DEFAULT_GT);
-			auto idle_gz = settings.get_int("Gz", DEFAULT_GZ);
-			int64_t minutes_to_lose = (int64_t)difftime( item.stop, item.start) / SECONDS_PER_MINUTE;
-			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose);
+			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
+			auto idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
+			auto minutes_to_lose = duration_cast<minutes>( item.stop - item.start);
+			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose.count());
 			std::string secondary_text;
-			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0)
+			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0min)
 			{
 				secondary_text = fmt::format(
 						_("Removing will lose {} minutes.\n\nRemoving will be permanent."),
@@ -170,25 +170,25 @@ void details::on_menu_file_popup_merge()
 		{
 			time_entry time_entry_0 = optional_time_entry_0.value();
 			time_entry time_entry_1 = optional_time_entry_1.value();
-			auto idle_gt = settings.get_int("Gt", DEFAULT_GT);
-			auto idle_gz = settings.get_int("Gz", DEFAULT_GZ);
+			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
+			auto idle_gz = minutes(settings.get_int("Gz", DEFAULT_GZ));
 
-			auto minutes_to_gain = (int)difftime(time_entry_1.start, time_entry_0.stop) / SECONDS_PER_MINUTE;
+			auto minutes_to_gain = duration_cast<minutes>(time_entry_1.stop - time_entry_0.start);
 
 			std::string minutes_string;
-			if (minutes_to_gain >= 0)
+			if (minutes_to_gain >= 0min)
 			{
-				minutes_string = fmt::format("<span color='green'>{}</span>", minutes_to_gain);
+				minutes_string = fmt::format("<span color='green'>{}</span>", minutes_to_gain.count() );
 			}
 			else
 			{
-				minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_gain);
+				minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_gain.count() );
 			}
 			std::string secondary_text;
 			if (
 					minutes_to_gain > idle_gt ||
 					minutes_to_gain > idle_gz ||
-					minutes_to_gain < 0)
+					minutes_to_gain < 0min)
 			{
 				secondary_text = fmt::format(
 						_("Merging will add {} minutes.\n\nMerging with the next row will be permanent."),
@@ -210,7 +210,7 @@ void details::on_menu_file_popup_merge()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry_1 could be currently running
-				time_t new_start = time_entry_0.start;
+				auto new_start = time_entry_0.start;
 				times.remove(time_entry_0);
 				times.update(time_entry_1.with_start(new_start) );
 				populate( );
@@ -227,12 +227,12 @@ void details::on_menu_file_popup_merge()
 
 bool offer_to_split( time_entry &item)
 {
-	time_t start_time = item.start;
-	time_t stop_time = item.stop;
-	auto seconds_to_split = (long)difftime(stop_time, start_time);
+	auto start_time = item.start;
+	auto stop_time = item.stop;
+	auto seconds_to_split = start_time - stop_time;
 	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
-	return across_days || seconds_to_split > 120; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return across_days || seconds_to_split > 120s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void details::on_menu_file_popup_split()
@@ -244,25 +244,27 @@ void details::on_menu_file_popup_split()
 		if (optional_time_entry)
 		{
 			time_entry item = optional_time_entry.value();
-			time_t start = item.start;
-			time_t stop = item.stop;
-			bool across_days = is_on_different_days(start, stop);
+			auto start = item.start;
+			auto stop  = item.stop;
+
 
 			// coded considering time_entry could be currently running
 
 			if (offer_to_split( item))
 			{
-				time_t split_stop_time  = (start + (stop - start) / 2 - 1);
-				time_t split_start_time = split_stop_time + 2;
-				if (across_days)
+				// ToDo Move this outside the GUI code
+				time_point<system_clock> split_stop_time  = start + (stop - start) / 2 - 1s;
+				auto split_start_time = split_stop_time + 2s;
+
+				if ( is_on_different_days(start, stop) )
 				{
 					// use sufficient margins to stay clear of leap seconds
-					struct tm first_day = *localtime(&start);
+					auto first_day = libtimeit::localtime( start );
 					first_day.tm_hour = 23;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 					first_day.tm_min = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 					first_day.tm_sec = 57;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-					split_stop_time = mktime(&first_day);
-					split_start_time = split_stop_time + 6; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+					split_stop_time = system_clock::from_time_t( mktime(&first_day) );
+					split_start_time = split_stop_time + 6s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 				}
 
 				times.update( item.with_start( split_start_time).with_stop( stop) );
@@ -361,7 +363,7 @@ void details::on_time_entry_changed(const time_entry& te)
 		auto item = times.by_id( te.id);
 		if(item.has_value())
 		{
-			auto day = item->start;
+			auto day =  item->start;
 			auto start = beginning_of_day(day);
 			auto stop = end_of_day(day);
 			update( create_row_data( start, stop) );
@@ -383,7 +385,7 @@ void details::on_complete_update()
 	populate( );
 }
 
-void details::set(optional<task_id> id, time_t start, time_t stop)
+void details::set(optional<task_id> id, time_point<system_clock> start, time_point<system_clock> stop)
 {
 	if (id.has_value())
 	{
@@ -397,13 +399,16 @@ void details::set(optional<task_id> id, time_t start, time_t stop)
 	{
 		set_headers_visible(false);
 		presented_task = {};
-		start_time = 0;
-		stop_time = 0;
+		start_time = system_clock::from_time_t(0);
+		stop_time = system_clock::from_time_t(0);
 		tree_model->clear();
 	}
 }
 
-void details::on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time)
+void details::on_selection_changed(
+		optional<task_id>        id,
+		time_point<system_clock> start_time,
+		time_point<system_clock> stop_time)
 {
 	set( id, start_time, stop_time);
 }
@@ -424,7 +429,7 @@ void details::update_row(TreeModel::Row& row, row_data data ) const
 	}
 	else if( data.next_start >= data.stop)
 	{
-		row[columns.col_idle] = string("\u2003") + idling_string(data.stop, data.next_start);
+		row[columns.col_idle] = string("\u2003") + idling_string( data.stop, data.next_start );
 	}
 	else
 	{
@@ -445,17 +450,17 @@ void details::update_row(TreeModel::Row& row, row_data data ) const
 }
 
 
-list<row_data> details::create_row_data(time_t start, time_t stop)
+list<row_data> details::create_row_data( time_point<system_clock> start, time_point<system_clock> stop)
 {
 	if( !presented_task.has_value() )
 	{
 		return {};
 	}
 	time_list times_in_range = times.by_activity( presented_task.value(), start, stop );
-	time_t prev_start   = 0;
+	auto prev_start   = system_clock::from_time_t(0);
 	auto iter = times_in_range.begin();
 	list<row_data> data_rows = {};
-	time_t cumulative_time_for_day = 0;
+	seconds cumulative_time_for_day = 0s;
 	for (; iter != times_in_range.end(); )
 	{
 		auto item = *iter;
@@ -464,12 +469,12 @@ list<row_data> details::create_row_data(time_t start, time_t stop)
 		data.id           = item.id;
 		data.prev_start   = prev_start;
 		data.start        = item.start;
-		prev_start            = data.start;
+		prev_start        = data.start;
 		data.stop         = item.stop;
 		data.running      = item.state == RUNNING;
 		data.comment      = item.comment;
 
-		cumulative_time_for_day += data.stop - data.start;
+		cumulative_time_for_day += duration_cast<seconds>(data.stop - data.start);
 		data.cumulative_time =  cumulative_time_for_day;
 
 		++iter;
@@ -481,14 +486,14 @@ list<row_data> details::create_row_data(time_t start, time_t stop)
 			data.last_in_day = is_on_different_days(data.start, data.next_start);
 			if(data.last_in_day)
 			{
-				cumulative_time_for_day = 0;
+				cumulative_time_for_day = 0s;
 			}
 		}
 		else
 		{
 			data.first_in_day = is_on_different_days(data.prev_start, data.start);
 			data.last_in_day = true;
-			data.next_start = 0;
+			data.next_start = system_clock::from_time_t(0);
 		}
 		data_rows.push_back(data);
 	}

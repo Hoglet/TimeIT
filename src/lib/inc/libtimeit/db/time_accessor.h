@@ -35,27 +35,26 @@ public:
 
 	task_id_list            latest_active_tasks(int amount);
 
-
-	time_list               by_activity( const task_id& owner, time_t start_time, time_t stop_time);
+	time_list by_activity(
+			const task_id& owner,
+			time_point<system_clock> start_time,
+			time_point<system_clock> stop_time);
 
 	seconds  duration_time(
 			const task_id& id,
-			time_point<system_clock> start = time_point<system_clock>::min(),
+			time_point<system_clock> start = system_clock::from_time_t(0),
 			time_point<system_clock> stop  = time_point<system_clock>::max()
 					);
 	seconds  total_cumulative_time(
 			const task_id&           owner,
-			time_point<system_clock> start = time_point<system_clock>::min(),
+			time_point<system_clock> start = system_clock::from_time_t(0),
 			time_point<system_clock> stop  = time_point<system_clock>::max()
 					);
 
-	Duration                duration_time( const task_id &task_id, time_t start, time_t stop );
-	time_list               times_changed_since( time_t timestamp= 0);
+	time_list               times_changed_since( time_point<system_clock> time_stamp = system_clock::from_time_t(0));
 
-
-	Duration                total_cumulative_time(const task_id& owner, time_t start, time_t stop);
 	task_id_list            currently_running();
-	task_id_list            active_tasks(time_t start, time_t stop) ;
+	task_id_list            active_tasks(time_point<system_clock> start, time_point<system_clock> stop) ;
 
 protected:
 	static void          create_table(database& db);

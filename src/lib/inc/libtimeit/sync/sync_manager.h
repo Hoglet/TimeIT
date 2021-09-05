@@ -38,15 +38,16 @@ public:
 
 	void reset();
 private:
+	time_point<system_clock>  get_next_sync( time_point<system_clock> reference_point );
+
 	bool    is_active();
-	time_t  get_next_sync(time_t reference_point);
 	bool    request_is_done();
 	void    sync_times_to_database();
 	void    sync_tasks_to_database();
 	void    manage_network_problems();
 
-	shared_ptr<async_http_response> request_tasks(time_t since_point_in_time);
-	shared_ptr<async_http_response> request_times(time_t since_point_in_time);
+	shared_ptr<async_http_response> request_tasks( time_point<system_clock> since_point_in_time);
+	shared_ptr<async_http_response> request_times( time_point<system_clock> since_point_in_time);
 
 	task_accessor     tasks;
 	time_accessor     times;
@@ -58,10 +59,10 @@ private:
 	shared_ptr <async_http_response> outstanding_request;
 
 	notification_manager&  notifier;
-	time_t     next_sync{0};
-	time_t     next_full_sync{0};
-	time_t     last_sync{0};
-	time_t     current_sync{0};
+	time_point<system_clock>    next_sync{system_clock::from_time_t(0)};
+	time_point<system_clock>    next_full_sync{system_clock::from_time_t(0)};
+	time_point<system_clock>    last_sync{system_clock::from_time_t(0)};
+	time_point<system_clock>    current_sync{system_clock::from_time_t(0)};
 };
 }
 #endif /* SYNC_MANAGER_H */

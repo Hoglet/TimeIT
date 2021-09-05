@@ -317,11 +317,11 @@ static const int YEAR_ZERO = 1900;
 
 void main_window::set_calendar()
 {
-	time_t now = libtimeit::now();
-	struct tm* time_info = localtime(&now);
-	auto month = (guint) time_info->tm_mon;
-	auto year = (guint) time_info->tm_year + YEAR_ZERO;
-	auto day = (guint) time_info->tm_mday;
+	auto now = system_clock::now();
+	struct tm time_info = localtime( now );
+	auto month = (guint) time_info.tm_mon;
+	auto year = (guint) time_info.tm_year + YEAR_ZERO;
+	auto day = (guint) time_info.tm_mday;
 	calendar.select_month(month, year);
 	calendar.select_day(day);
 }

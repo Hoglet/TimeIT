@@ -26,5 +26,6 @@ private:
 	explicit uuid( string basic_string);
 };
 
+
 }
 #endif

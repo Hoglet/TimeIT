@@ -34,7 +34,7 @@ public:
 	details_dialog& operator=(const details_dialog&) = delete;
 	details_dialog& operator=(details_dialog&&) = delete;
 	~details_dialog() override ;
-	void set( optional<task_id> item, time_t start_time, time_t stop_time);
+	void set( optional<task_id> item, time_point<system_clock> start_time, time_point<system_clock> stop_time);
 
 
 	// IWidget interface
@@ -51,8 +51,10 @@ public:
 private:
 
 	//SummaryObserver
-	void on_selection_changed( optional<task_id> id, time_t start_time, time_t stop_time) override;
-	void on_show_details_clicked(const task_id& /*id*/, time_t /*start*/, time_t /*stop*/) override {};
+	void on_selection_changed(
+			optional<task_id> id,
+			time_point<system_clock> start_time,
+			time_point<system_clock> stop_time) override;
 
 	//EventObserver
 	void on_task_time_changed(const task_id& id) override;
@@ -70,8 +72,8 @@ private:
 	Gtk::ScrolledWindow scrolled_window;
 
 
-	time_t  range_start              {0};
-	time_t  range_stop               {0};
+	time_point<system_clock>  range_start              {system_clock::from_time_t(0)};
+	time_point<system_clock>  range_stop               {time_point<system_clock>::max()};
 
 	optional<task_id> presented_task;
 	optional<time_id> time_entry_id;

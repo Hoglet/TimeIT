@@ -4,91 +4,96 @@
 
 namespace libtimeit
 {
+
 time_entry::time_entry(
-		time_id               op_id,
-		task_id               owner_id,
-		time_t                op_start,
-		time_t                op_stop,
-		time_entry_state      op_state,
-		time_t                op_changed,
-		string                op_comment)
+		time_id                  op_id,
+		task_id                  owner_id,
+		time_point<system_clock> op_start,
+		time_point<system_clock> op_stop,
+		time_entry_state         op_state,
+		time_point<system_clock> op_changed,
+		string                   op_comment)
 		:
-		id( move( op_id)),
-		start( op_start),
-		stop( op_stop),
+		id( move( op_id) ),
+		start( op_start ),
+		stop( op_stop ),
 		state( op_state),
-		changed( op_changed),
+		changed( op_changed ),
 		owner_id(std::move( owner_id)),
 		comment(std::move( op_comment))
-{
-}
+		{
+		}
 
 
 
 time_entry::time_entry(
 		task_id owner,
-		time_t  op_start,
-		time_t  op_stop)
-			:
-		id( uuid() ),
-		start( op_start ),
-		stop( op_stop ),
-		state(STOPPED ),
-		changed(time(nullptr)),
-		owner_id(std::move( owner)),
-		comment()
+		time_point<system_clock>  op_start,
+		time_point<system_clock>  op_stop)
+		:
+		time_entry(
+				time_id(uuid()) ,
+				owner,
+				op_start,
+				op_stop,
+				STOPPED,
+				system_clock::now(),
+				{})
 {
 }
 
 time_entry::time_entry(
-		task_id          owner_id,
-		time_t           op_start,
-		time_t           op_stop,
-		time_entry_state op_state)
+		task_id owner,
+		time_point<system_clock> op_start,
+		time_point<system_clock> op_stop,
+		time_entry_state         op_state
+		)
 		:
-		id( uuid() ),
-		start( op_start ),
-		stop( op_stop ),
-		state( op_state ),
-		changed( time(nullptr) ),
-		owner_id(std::move( owner_id)),
-		comment()
+		time_entry(
+				time_id(uuid()) ,
+				owner,
+				op_start,
+				op_stop,
+				op_state,
+				system_clock::now(),
+				{})
 {
 }
 
 
-
-time_entry time_entry::with_start( time_t op_start) const
+time_entry time_entry::with_start( time_point<system_clock> start_point) const
 {
-	if ( start == op_start)
+	if ( start == start_point )
 	{
 		return *this;
 	}
 	return {
-			id,
-			owner_id,
-			op_start,
-			stop,
-			state,
-			time(nullptr),
-			comment};
+		id,
+		owner_id,
+		start_point,
+		stop,
+		state,
+		system_clock::now(),
+		comment};
 }
 
-time_entry time_entry::with_stop( time_t op_stop) const
+time_entry time_entry::with_stop( time_point<system_clock> stop_point) const
 {
-	if( stop == op_stop)
+	if( stop == stop_point )
 	{
 		return *this;
 	}
 	return {
-			id,
-			owner_id,
-			start,
-			op_stop,
-			state,
-			time(nullptr),
-			comment};
+		id,
+		owner_id,
+		start,
+		stop_point,
+		state,
+		system_clock::now(),
+		comment};
 }
+
+
 
 
 time_entry time_entry::with( time_entry_state new_state) const
@@ -103,7 +108,7 @@ time_entry time_entry::with( time_entry_state new_state) const
 			start,
 			stop,
 			new_state,
-			time(nullptr),
+			system_clock::now(),
 			comment};
 }
 
@@ -119,7 +124,7 @@ time_entry time_entry::with_comment( string new_comment)
 			start,
 			stop,
 			state,
-			time(nullptr),
+			system_clock::now(),
 			new_comment
 			};
 }

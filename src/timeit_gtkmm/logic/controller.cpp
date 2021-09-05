@@ -157,7 +157,7 @@ void widget_controller::on_action_add_time()
 {
 	if (selected_task_id.has_value())
 	{
-		auto now = libtimeit::now();
+		auto now = system_clock::now();
 		time_entry item( selected_task_id.value(), now, now);
 		auto dialog = make_shared<gui::edit_time_dialog>( item, db);
 		windows.manage_lifespan(dialog);
@@ -207,7 +207,10 @@ void widget_controller::on_action_preferences()
 	dialog->show();
 }
 
-void widget_controller::on_show_details_clicked( const task_id& id, time_t start_time, time_t stop_time)
+void widget_controller::on_show_details_clicked(
+		const task_id&           id,
+		time_point<system_clock> start_time,
+		time_point<system_clock> stop_time)
 {
 	auto dialog = make_shared<details_dialog>(db, time_keeper, notifier, windows, images);
 	if (dialog)
@@ -233,10 +236,6 @@ void widget_controller::on_running_changed()
 {
 	shared_ptr<main_window> window = dynamic_pointer_cast<main_window>(windows.get_widget(MAIN_WINDOW));
 	window->on_running_tasks_changed();
-}
-
-void widget_controller::on_selection_changed(optional<task_id> /*task_id*/, time_t /*start*/, time_t /*stop*/)
-{
 }
 
 void widget_controller::show_idle_dialog(const time_id& id)

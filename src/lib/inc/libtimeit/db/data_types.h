@@ -8,13 +8,7 @@ namespace libtimeit
 {
 using namespace std;
 
-struct time_entry;
-
-using time_list    = vector<time_entry>;
 using Task_id      = int64_t;
-using task_id_list = vector<task_id>;
-
-using Duration = long;      //Duration in seconds
 
 }
 

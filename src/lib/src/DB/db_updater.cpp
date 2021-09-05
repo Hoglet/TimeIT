@@ -66,7 +66,7 @@ void db_updater::update_times_to_db_5()
 {
 	static const int CHANGED_INDEX = 5;
 
-	time_t now = time(nullptr);
+	auto now = time(nullptr);
 
 	db.execute("DELETE FROM times WHERE taskID = 0");
 	db.execute("DROP TABLE IF EXISTS times_backup");
@@ -91,7 +91,7 @@ void db_updater::update_times_to_db_5()
 
 void db_updater::update_tasks_to_db_5()
 {
-	time_t now = time(nullptr);
+	auto now = time(nullptr);
 //Update Tasks to new design
 	db.execute("ALTER TABLE tasks RENAME TO tasks_backup");
 	db.prepare( TASK_SCHEMA_V_5).execute();

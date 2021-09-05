@@ -165,7 +165,7 @@ void summary::on_task_updated(const task_id& id)
 		if (updated_task.has_value() && iter != tree_model->children().end())
 		{
 			TreeModel::Row row = *iter;
-			time_t total_time = times.total_cumulative_time( id, start_time, stop_time);
+			auto total_time = times.total_cumulative_time( id, start_time, stop_time);
 			assign_values_to_row(row, *updated_task, total_time);
 			if (updated_task->parent_id.has_value())
 			{
@@ -222,6 +222,7 @@ void summary::on_date_changed()
 	guint month{0};
 	guint day{0};
 	calendar->get_date(year, month, day);
+
 	active_day = libtimeit::to_time(
 			year, month, day); // NOLINT(bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions)
 	auto old_start_time = start_time;
@@ -324,7 +325,7 @@ void summary::populate()
 	}
 }
 
-void summary::assign_values_to_row( TreeModel::Row &row, task &item, time_t total_time) const
+void summary::assign_values_to_row( TreeModel::Row &row, task &item, seconds total_time) const
 {
 	row[columns.col_id] = item.id;
 	row[columns.col_name] = item.name;

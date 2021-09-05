@@ -112,9 +112,9 @@ time_list to_times( const string &input)
 	{
 		string uuid_string    = item.text("id");
 		string task_id_string = item.by_name("task").text("id");
-		time_t start          = item.integer("start");
-		time_t stop           = item.integer("stop");
-		time_t changed        = item.integer("changed");
+		auto   start          = system_clock::from_time_t( item.integer("start") );
+		auto   stop           = system_clock::from_time_t( item.integer("stop") );
+		auto   changed        = system_clock::from_time_t( item.integer("changed") );
 		auto   state          = (time_entry_state)item.integer( "state");
 		auto   deleted        = item.boolean( "deleted");
 		auto   comment        = item.text("comment");

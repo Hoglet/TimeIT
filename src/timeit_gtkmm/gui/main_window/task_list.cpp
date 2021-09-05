@@ -227,8 +227,8 @@ void task_list_widget::assign_values_to_row(TreeModel::Row &row, const extended_
 		row[columns.col_pixbuf] = blank_icon;
 	}
 	row[columns.col_name] = item.name;
-	time_t total_time = item.total_time;
-	if (total_time > 0)
+	auto total_time = item.total_time;
+	if (total_time > 0s)
 	{
 		row[columns.col_time] = libtimeit::seconds_2_hhmm(total_time);
 	}

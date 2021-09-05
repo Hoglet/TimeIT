@@ -51,9 +51,9 @@ optional<time_entry> time_accessor::by_id( time_id id)
 	for ( auto row: rows )
 	{
 		int column{0};
-		time_t  start     = row[column++].integer();
-		time_t  stop      = row[column++].integer();
-		time_t  changed   = row[column++].integer();
+		auto    start     = system_clock::from_time_t( row[column++].integer() );
+		auto    stop      = system_clock::from_time_t( row[column++].integer() );
+		auto    changed   = system_clock::from_time_t( row[column++].integer() );
 		auto    possible_uuid      = uuid::from_string( row[column++].text());
 		auto    task_uuid = optional_task_id(row[column++].text());
 		auto    state     = static_cast<time_entry_state>(row[column++].integer());
@@ -73,15 +73,6 @@ optional<time_entry> time_accessor::by_id( time_id id)
 		break;
 	}
 	return {};
-}
-
-Duration time_accessor::duration_time( const task_id& task_id, time_t raw_start, time_t raw_stop)
-{
-	auto start  = system_clock::from_time_t(raw_start);
-	auto stop   = system_clock::from_time_t(raw_stop);
-
-	auto result = duration_time( task_id, start, stop);
-	return result.count();
 }
 
 seconds  time_accessor::duration_time(const task_id& id, time_point<system_clock> start, time_point<system_clock> stop)
@@ -245,14 +236,17 @@ task_id_list time_accessor::currently_running()
 	return result_list;
 }
 
-time_list time_accessor::by_activity( const task_id& owner, time_t start_time, time_t stop_time)
-{
+time_list time_accessor::by_activity(
+			const task_id& owner,
+			time_point<system_clock> start_time,
+			time_point<system_clock> stop_time)
+			{
 	int64_t owner_id = legacy_db_helper::new_task_id_to_old( owner, db);
 	time_list result_list;
 	stringstream statement;
 	statement << "SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times ";
-	statement << " WHERE stop > " << start_time;
-	statement << " AND start <" << stop_time;
+	statement << " WHERE stop > " << system_clock::to_time_t( start_time );
+	statement << " AND start <" << system_clock::to_time_t( stop_time );
 	statement << " AND taskID = " << owner_id;
 	statement << " AND deleted=0 ";
 	statement << " ORDER BY start";
@@ -261,10 +255,10 @@ time_list time_accessor::by_activity( const task_id& owner, time_t start_time, t
 	for (vector<data_cell> row : rows)
 	{
 		int column{0};
-		time_t start     = row[column++].integer();
-		time_t stop      = row[column++].integer();
+		auto   start     = system_clock::from_time_t( row[column++].integer() );
+		auto   stop      = system_clock::from_time_t( row[column++].integer() );
 		auto   state     = static_cast<time_entry_state>(row[column++].integer());
-		time_t changed   = row[column++].integer();
+		auto   changed   = system_clock::from_time_t( row[column++].integer() );
 		auto   uuid      = uuid::from_string( row[column++].text());
 		auto   task_uuid = uuid::from_string( row[column++].text());
 		auto   comment   = row[column].text();
@@ -285,22 +279,22 @@ time_list time_accessor::by_activity( const task_id& owner, time_t start_time, t
 	return result_list;
 }
 
-time_list time_accessor::times_changed_since( time_t timestamp)
+time_list time_accessor::times_changed_since( time_point<system_clock> time_stamp)
 {
 	time_list result;
 
 	sql_statement statement = db.prepare("SELECT start, stop, state, changed, uuid, task_UUID, comment FROM v_times WHERE changed>=?");
 
-	statement.bind_value(1, timestamp);
+	statement.bind_value(1, system_clock::to_time_t( time_stamp ));
 
 	Query_result rows = statement.execute();
 	for (vector<data_cell> row : rows)
 	{
 		int column{0};
-		time_t start     = row[column++].integer();
-		time_t stop      = row[column++].integer();
+		auto   start     = system_clock::from_time_t( row[column++].integer() );
+		auto   stop      = system_clock::from_time_t( row[column++].integer() );
 		auto   state     = static_cast<time_entry_state>(row[column++].integer());
-		time_t changed   = row[column++].integer();
+		auto   changed   = system_clock::from_time_t( row[column++].integer() );
 		auto   uuid      = uuid::from_string( row[column++].text());
 		auto   task_uuid = uuid::from_string( row[column++].text());
 		auto   comment   = row[column].text();
@@ -347,10 +341,10 @@ bool time_accessor::update(const time_entry& item )
 				break;
 		}
 		auto index{1};
-		statement_update_time.bind_value(index++, item.start);
-		statement_update_time.bind_value(index++, item.stop);
+		statement_update_time.bind_value(index++, system_clock::to_time_t( item.start ));
+		statement_update_time.bind_value(index++, system_clock::to_time_t( item.stop ));
 		statement_update_time.bind_value(index++, static_cast<int64_t>(running) );
-		statement_update_time.bind_value(index++, item.changed);
+		statement_update_time.bind_value(index++, system_clock::to_time_t( item.changed ));
 		statement_update_time.bind_value(index++, static_cast<int64_t>(deleted) );
 		statement_update_time.bind_value(index++, static_cast<int64_t>(item.state));
 		statement_update_time.bind_value(index++, item.comment);
@@ -406,13 +400,6 @@ seconds  time_accessor::total_cumulative_time(
 
 }
 
-Duration time_accessor::total_cumulative_time(const task_id& id, time_t raw_start, time_t raw_stop)
-{
-	auto start = system_clock::from_time_t( raw_start );
-	auto stop  = system_clock::from_time_t( raw_stop );
-	return total_cumulative_time( id, start, stop ).count();
-}
-
 int64_t time_accessor::create(const time_entry& item)
 {
 	internal_create(item, statement_new_entry, db);
@@ -454,9 +441,9 @@ void time_accessor::internal_create( const time_entry &item, sql_statement& stat
 	auto owner_old_id = legacy_db_helper::new_task_id_to_old( item.owner_id, db);
 	statement_new_entry.bind_value(index++, static_cast<string>(item.id));
 	statement_new_entry.bind_value(index++, owner_old_id);
-	statement_new_entry.bind_value(index++, item.start);
-	statement_new_entry.bind_value(index++, item.stop);
-	statement_new_entry.bind_value(index++, item.changed);
+	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.start ));
+	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.stop ));
+	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.changed ));
 	statement_new_entry.bind_value(index++, deleted);
 	statement_new_entry.bind_value(index++, running);
 	statement_new_entry.bind_value(index++, static_cast<int64_t>(item.state));
@@ -511,7 +498,7 @@ void time_accessor::remove_short_time_spans()
 }
 
 
-task_id_list time_accessor::active_tasks(time_t start, time_t stop)
+task_id_list time_accessor::active_tasks(time_point<system_clock> start_point, time_point<system_clock> stop_point)
 {
 	task_id_list result_list;
 	sql_statement statement_get_tasks = db.prepare(R"Query(
@@ -536,6 +523,10 @@ task_id_list time_accessor::active_tasks(time_t start, time_t stop)
 					)Query"
 					);
 	auto index{1};
+
+	auto start = duration_cast<seconds>( start_point.time_since_epoch() ).count();
+	auto stop  = duration_cast<seconds>(  stop_point.time_since_epoch() ).count();
+
 	statement_get_tasks.bind_value(index++, start);
 	statement_get_tasks.bind_value(index++, stop);
 	statement_get_tasks.bind_value(index++, start);
@@ -577,11 +568,11 @@ time_list time_accessor::by_state( time_entry_state state) const
 	for (auto row: rows)
 	{
 		auto column{0};
-		time_t  start      = row[column++].integer();
-		time_t  stop       = row[column++].integer();
+		auto    start      = system_clock::from_time_t( row[column++].integer() );
+		auto    stop       = system_clock::from_time_t( row[column++].integer() );
 		auto    item_state = static_cast<time_entry_state>(row[column++].integer());
-		int64_t changed    = row[column++].integer();
-		auto    id       = uuid::from_string( row[column++].text());
+		auto    changed    = system_clock::from_time_t( row[column++].integer() );
+		auto    id         = uuid::from_string( row[column++].text());
 		auto    task_uuid  = uuid::from_string( row[column++].text());
 		auto    comment    = row[column].text();
 

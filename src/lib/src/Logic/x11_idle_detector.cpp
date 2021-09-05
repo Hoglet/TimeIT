@@ -1,9 +1,3 @@
-/*
- * X11_IdleDetector.cpp
- *
- *  Created on: 2008-aug-27
- *      Author: hoglet
- */
 #include <X11/Xlib.h>
 #include <X11/extensions/scrnsaver.h>
 #include <libtimeit/logic/x11_idle_detector.h>
@@ -14,7 +8,6 @@
 
 namespace libtimeit
 {
-constexpr const auto MINUTE=60;
 Display*         display = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 XScreenSaverInfo* x_info = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
@@ -38,8 +31,8 @@ X11_idle_detector::X11_idle_detector(Timer &timer) : timer_observer(timer)
 	}
 	display = XOpenDisplay(nullptr);
 	x_info = XScreenSaverAllocInfo();
-	idle_seconds = 0;
-	last_poll = libtimeit::now();
+	idle_seconds = 0s;
+	last_poll = system_clock::now();
 	last_activity = last_poll;
 	is_idle = false;
 }
@@ -60,23 +53,23 @@ X11_idle_detector::~X11_idle_detector()
 
 void X11_idle_detector::poll_status()
 {
-	time_t now = libtimeit::now();
+	auto now = system_clock::now();
 	auto poll_time = now - last_poll;
 	last_poll = now;
 
 	// Check if we have been suspended
-	if (poll_time > MINUTE)
+	if (poll_time > 1min)
 	{
 		//We have been suspended
-		idle_seconds = now - last_activity;
+		idle_seconds = duration_cast<seconds>(now - last_activity);
 		is_idle = true;
 		return;
 	}
 
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), x_info);
-	idle_seconds = (time_t)(x_info->idle / 1000); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	idle_seconds = duration_cast<seconds>(milliseconds(x_info->idle ));
 
-	if (idle_seconds < 20) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	if (idle_seconds < 20s)
 	{
 		last_activity = now;
 	}
@@ -90,7 +83,7 @@ bool X11_idle_detector::idle()
 	return is_idle;
 }
 
-time_t X11_idle_detector::time_idle()
+seconds X11_idle_detector::time_idle()
 {
 	poll_status();
 	return idle_seconds;

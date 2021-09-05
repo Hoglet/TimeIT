@@ -9,6 +9,7 @@
 namespace  gui
 {
 using namespace std;
+using namespace std::chrono;
 
 class timestamp_edit : public Gtk::Frame
 {
@@ -16,8 +17,8 @@ public:
 	timestamp_edit() = delete;
 	timestamp_edit(string title);
 
-	void set_values(time_t timestamp);
-	time_t timestamp();
+	void set_values( time_point<system_clock> time_stamp);
+	time_point<system_clock> timestamp();
 
 	sigc::signal<void> signal_changed;
 private:

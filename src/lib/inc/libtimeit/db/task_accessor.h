@@ -20,7 +20,7 @@ public:
 
 	optional<task> by_id(const task_id& id);
 	vector<task>   by_parent_id(optional<task_id> parent_id = {});
-	vector<task>   changed_since(time_t timestamp = 0);
+	vector<task>   changed_since(time_point<system_clock> timestamp = system_clock::from_time_t(0));
 
 	void           create(const task &item);
 	bool           update(const task &item);

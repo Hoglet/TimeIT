@@ -28,15 +28,15 @@ public:
 	X11_idle_detector& operator=( X11_idle_detector&& ) = delete;
 
 	~X11_idle_detector() override;
-	time_t time_idle();
+	seconds time_idle();
 	bool idle();
 private:
 	void   poll_status();
-	time_t  idle_seconds = 0;
-	time_t  last_poll = 0;
-	long    idle_timeout{2000}; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	seconds  idle_seconds = 0s;
+	time_point<system_clock>  last_poll { system_clock::from_time_t(0) };
+	time_point<system_clock>   last_activity;
+	seconds    idle_timeout{2000}; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	bool     is_idle{false};
-	time_t   last_activity;
 };
 
 }

@@ -82,9 +82,10 @@ void edit_time_dialog::on_response(int response_id)
 {
 	if (response_id == Gtk::RESPONSE_OK)
 	{
-		time_t start_time = start_timestamp_edit.timestamp();
-		time_t stop_time  = stop_timestamp_edit.timestamp();
-		auto   comment    = comment_buffer->get_text();
+		auto start_time = start_timestamp_edit.timestamp();
+		auto stop_time  = stop_timestamp_edit.timestamp();
+		auto   comment  = comment_buffer->get_text();
+
 		auto existing_time_entry = times.by_id( item_under_edit.id);
 		if(existing_time_entry.has_value())
 		{

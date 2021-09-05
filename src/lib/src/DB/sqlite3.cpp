@@ -3,10 +3,13 @@
 #include <string>
 #include <cstring>
 #include <libtimeit/db/sqlite3.h>
+#include <chrono>
+#include <algorithm>
 
-using namespace std;
 namespace libtimeit
 {
+
+using namespace std;
 
 SQLite3::SQLite3(string dbname)
 {
@@ -129,6 +132,13 @@ void sql_statement::bind_value(int index, int value)
 {
 	sqlite3_bind_int(stmt, index, value);
 }
+
+void sql_statement::bind_value(int index, time_point<system_clock> time_stamp)
+{
+	auto value = std::max( 0, static_cast<int>(system_clock::to_time_t(time_stamp)) );
+	sqlite3_bind_int( stmt, index, value );
+}
+
 
 void sql_statement::bind_value(int index, int64_t value)
 {

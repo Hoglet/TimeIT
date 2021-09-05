@@ -11,13 +11,13 @@ struct extended_task : public task
 
 	const bool expanded;
 	const bool running;
-	const long time;
-	const long total_time;
+	const seconds time;
+	const seconds total_time;
 
 	extended_task(
 			const task&       source,
-			long              time,
-			long              op_total_time,
+			seconds           time,
+			seconds           op_total_time,
 			bool              expanded,
 			bool              running
 			);

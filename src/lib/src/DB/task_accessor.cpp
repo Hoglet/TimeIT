@@ -206,7 +206,7 @@ optional<task> task_accessor::get_task_unlimited(const task_id& id)
 	return {};
 }
 
-vector<task> task_accessor::changed_since(time_t timestamp)
+vector<task> task_accessor::changed_since( time_point<system_clock> timestamp )
 {
 	vector<task> return_value;
 	stringstream statement;
@@ -224,7 +224,7 @@ vector<task> task_accessor::changed_since(time_t timestamp)
 			    tasks
 			WHERE
 				changed > )"
-				<< timestamp;
+				<< system_clock::to_time_t( timestamp );
 
 	Query_result rows = db.execute(statement.str());
 	for (std::vector<data_cell> row : rows)

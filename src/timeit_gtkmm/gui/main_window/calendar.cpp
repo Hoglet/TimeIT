@@ -1,15 +1,9 @@
-/*
- * Calendar.cpp
- *
- *  Created on: 2008-nov-22
- *      Author: hoglet
- */
-
 #include "calendar.h"
 #include <libtimeit/utils.h>
 
 namespace gui
 {
+using namespace libtimeit;
 
 calendar_widget::calendar_widget()
 {
@@ -45,15 +39,15 @@ void calendar_widget::detach(calendar_observer* observer)
 
 void calendar_widget::mark_today()
 {
-	auto now = libtimeit::now();
+	auto now = system_clock::now();
 
 	guint year{0};
 	guint month{0};
 	guint day{0};
 	get_date(year, month, day);
-	struct tm* today = localtime(&now);
-	int current_year = today->tm_year + 1900;
-	int current_month = today->tm_mon;
+	struct tm today = localtime( now );
+	int current_year = today.tm_year + 1900;
+	int current_month = today.tm_mon;
 
 	unmark_day(marked_day);
 	if (
@@ -61,7 +55,7 @@ void calendar_widget::mark_today()
 			current_month == (int) month
 			)
 	{
-		marked_day = today->tm_mday;
+		marked_day = today.tm_mday;
 		mark_day(marked_day);
 	}
 }

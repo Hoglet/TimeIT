@@ -25,7 +25,6 @@ public:
 	extended_task_accessor(database& db);
 
 	optional<extended_task> by_id(const task_id& id);
-	//optional<extended_task> by_id(const task_id& id, time_t start = 0, time_t stop = 0);
 	vector<extended_task>   by_parent_id(optional<task_id> id);
 
 	void     set_task_expanded(const task_id& id, bool expanded);
@@ -37,7 +36,6 @@ private:
 	static void create_views(database& db);
 	static void upgrade(database& db);
 
-	vector<extended_task> get_extended_tasks(task_id id, optional<task_id> parent_id = {}, time_t start = 0, time_t stop = 0);
 	time_accessor times;
 
 	extended_task from_task( const task &item, vector <task_id> task_ids );

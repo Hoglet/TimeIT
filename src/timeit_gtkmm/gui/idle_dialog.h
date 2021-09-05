@@ -44,7 +44,8 @@ private:
 	Time_keeper&  time_keeper;
 
 	time_id       time_entry_id;
-	time_t        idle_start_time{0};
+
+	time_point<system_clock>  idle_start_time { system_clock::from_time_t(0) };
 
 	void response_handler(int result);
 	void action_continue(const time_id& id);

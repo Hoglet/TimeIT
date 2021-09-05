@@ -3,6 +3,7 @@
 
 #include <string>
 #include <libtimeit/datatypes/uuid.h>
+#include <vector>
 
 namespace libtimeit
 {
@@ -20,6 +21,8 @@ private:
 
 bool operator==(const task_id& id_1, const task_id& id_2);
 bool operator!=(const task_id& id_1, const task_id& id_2);
+
+using task_id_list = vector<task_id>;
 
 }
 #endif //TASK_ID_H

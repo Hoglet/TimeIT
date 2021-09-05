@@ -30,7 +30,7 @@ Time_keeper::Time_keeper(
 		idle_detector(timer)
 
 {
-	idle_gz = (int)settings.get_int("Gz", DEFAULT_GZ);
+	idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
 	default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
 }
 
@@ -42,7 +42,7 @@ void Time_keeper::on_settings_changed(string name)
 	}
 	if ( name == "Gz")
 	{
-		idle_gz = (int)settings.get_int("Gz", DEFAULT_GZ);
+		idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
 	}
 }
 
@@ -67,7 +67,7 @@ void Time_keeper::start(task_id id)
 		}
 	}
 
-	auto now = libtimeit::now();
+	auto now = system_clock::now();
 	times.create( time_entry( id, now, now, RUNNING ) );
 	notify_running_changed();
 }
@@ -154,7 +154,7 @@ void Time_keeper::stop_all()
 
 [[maybe_unused]] [[nodiscard]] bool   Time_keeper::is_idle()
 {
-	return idle_detector.time_idle() > 10; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return idle_detector.time_idle() > 10s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void Time_keeper::notify_running_changed()
@@ -200,7 +200,7 @@ void Time_keeper::on_time_entry_changed(const time_entry& /*id*/)
 
 bool Time_keeper::user_is_active()
 {
-	return 	(idle_detector.time_idle() < 10);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return 	(idle_detector.time_idle() < 10s);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
 void Time_keeper::update_running_entries()
@@ -208,7 +208,7 @@ void Time_keeper::update_running_entries()
 	auto running = times.by_state(RUNNING);
 	for (const auto& item: running)
 	{
-		auto updated_time_entry = item.with_stop( libtimeit::now());
+		auto updated_time_entry = item.with_stop( system_clock::now());
 		times.update(updated_time_entry );
 	}
 
@@ -216,7 +216,7 @@ void Time_keeper::update_running_entries()
 
 void Time_keeper::check_if_tasks_should_be_stopped()
 {
-	auto now = libtimeit::now();
+	auto now = system_clock::now();
 	list<time_entry> times_to_stop {};
 	auto running_time_items = times.by_state(RUNNING);
 	for (const auto& time_item: running_time_items)
@@ -227,7 +227,7 @@ void Time_keeper::check_if_tasks_should_be_stopped()
 		{
 			idle_time = default_idle_time;
 		}
-		auto time_inactive = seconds(now - time_item.stop);
+		auto time_inactive = now - time_item.stop;
 		if( time_inactive > duration_cast<seconds>(idle_time) )
 		{
 			times_to_stop.push_back( time_item );

@@ -10,12 +10,13 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-//using namespace Glib;
 using namespace std;
+
+// ToDo Use std::chrono instad of legacy C
+
 
 namespace libtimeit
 {
-constexpr auto SECOND_PER_DAY = 24 * 60 * 60;
 
 //LCOV_EXCL_START
 
@@ -28,50 +29,44 @@ string iso_639_language_string()
 
 time_point<system_clock> beginning_of_day( time_point<system_clock> time_stamp)
 {
-	auto raw_time = system_clock::to_time_t(time_stamp);
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 0;
-	time_info->tm_min = 0;
-	time_info->tm_hour = 0;
-	time_info->tm_isdst = -1;
-	auto result = mktime(time_info);
+	struct tm time_info = localtime(time_stamp);
+	time_info.tm_sec = 0;
+	time_info.tm_min = 0;
+	time_info.tm_hour = 0;
+	time_info.tm_isdst = -1;
+	auto result = mktime(&time_info);
 	return system_clock::from_time_t(result);
-}
-
-time_t beginning_of_day( time_t raw_time)
-{
-	auto time_stamp = system_clock::from_time_t(raw_time);
-	auto result     = beginning_of_day(time_stamp);
-	return system_clock::to_time_t(result);
-}
-
-time_t end_of_day( time_t raw_time)
-{
-	auto time_stamp = system_clock::from_time_t(raw_time);
-	auto result     = end_of_day(time_stamp);
-	return system_clock::to_time_t(result);
 }
 
 time_point<system_clock> end_of_day( time_point<system_clock> time_stamp)
 {
-	auto raw_time = system_clock::to_time_t(time_stamp);
-	struct tm * time_info = localtime(&raw_time);
-	time_info->tm_sec = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_min = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_hour = 23; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_isdst = -1;
-	auto result = mktime(time_info);
+	struct tm time_info = localtime( time_stamp );
+	time_info.tm_sec = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_min = 59;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_hour = 23; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_isdst = -1;
+	auto result = mktime(&time_info);
 	return system_clock::from_time_t(result);
 }
 
-
-int get_day_of_week(time_t raw_time)
+int first_weekday(void)
 {
-	struct tm *time_info = localtime(&raw_time);
-	int dow = time_info->tm_wday;
+	const char *const s = nl_langinfo(_NL_TIME_FIRST_WEEKDAY);
+
+	if (s && *s >= 1 && *s <= 7)
+		return (int)*s;
+
+	/* Default to Sunday, 1. */
+	return 1;
+}
+
+int get_day_of_week(time_point<system_clock> time_stamp)
+{
+	struct tm time_info = localtime( time_stamp );
+	int dow = time_info.tm_wday;
 	int return_value = dow;
 
-	int week_starts_on_day = *(nl_langinfo(_NL_TIME_FIRST_WEEKDAY)) - 1;
+	int week_starts_on_day = first_weekday() - 1;
 	return_value = return_value - week_starts_on_day;
 	if (return_value < 0)
 	{
@@ -80,145 +75,137 @@ int get_day_of_week(time_t raw_time)
 	return return_value;
 }
 
-time_t beginning_of_week( time_t raw_time)
+time_point<system_clock> beginning_of_week( time_point<system_clock> time_stamp)
 {
-	long day_of_week = get_day_of_week(raw_time);
-	time_t bow = raw_time - (day_of_week) * SECOND_PER_DAY;
-	struct tm * time_info = localtime(&bow);
-	time_info->tm_sec = 0;
-	time_info->tm_min = 0;
-	time_info->tm_hour = 0;
-	time_info->tm_wday = 1;
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	auto day_of_week = get_day_of_week(time_stamp);
+	auto bow = time_stamp - 24h * day_of_week;
+	struct tm time_info = localtime( bow );
+	time_info.tm_sec = 0;
+	time_info.tm_min = 0;
+	time_info.tm_hour = 0;
+	time_info.tm_wday = 1;
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t(mktime(&time_info));
 }
 
-time_t end_of_week( time_t raw_time)
+time_point<system_clock> end_of_week( time_point<system_clock> time_stamp)
 {
+	auto eow = beginning_of_week(time_stamp) + 6 * 24h;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	struct tm time_info = localtime( eow );
+	time_info.tm_sec = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_min = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_hour = 23;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t(mktime(&time_info));
+}
 
-	long day_of_week = get_day_of_week(raw_time);
-	time_t eow = raw_time + (6 - day_of_week) * SECOND_PER_DAY;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	struct tm * time_info = localtime(&eow);
-	time_info->tm_sec = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_min = 59;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_hour = 23;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
-}
-time_t beginning_of_month( time_t raw_time)
+time_point<system_clock> beginning_of_month( time_point<system_clock> time_stamp)
 {
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 0;
-	time_info->tm_min = 0;
-	time_info->tm_hour = 0;
-	time_info->tm_mday = 1;
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	struct tm time_info = localtime( time_stamp );
+	time_info.tm_sec = 0;
+	time_info.tm_min = 0;
+	time_info.tm_hour = 0;
+	time_info.tm_mday = 1;
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t( mktime(&time_info) );
 }
-time_t end_of_month( time_t raw_time)
+
+time_point<system_clock> end_of_month( time_point<system_clock> time_stamp)
 {
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_mday = days_in_month(raw_time);
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	auto time_info = localtime( time_stamp );
+	time_info.tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_mday = days_in_month( time_stamp );
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t( mktime(&time_info) );
 }
 
 
 
 time_point<system_clock> beginning_of_year( time_point<system_clock> time_stamp)
 {
-	auto raw_time = system_clock::to_time_t(time_stamp);
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 0;
-	time_info->tm_min = 0;
-	time_info->tm_hour = 0;
-	time_info->tm_mday = 1;
-	time_info->tm_mon = 0;
-	time_info->tm_isdst = -1;
-	auto temp_result = mktime(time_info);
+	struct tm time_info = localtime(time_stamp);
+	time_info.tm_sec = 0;
+	time_info.tm_min = 0;
+	time_info.tm_hour = 0;
+	time_info.tm_mday = 1;
+	time_info.tm_mon = 0;
+	time_info.tm_isdst = -1;
+	auto temp_result = mktime(&time_info);
 	return system_clock::from_time_t( temp_result );
 }
 
-time_t beginning_of_year( time_t raw_time)
+time_point<system_clock> end_of_year( time_point<system_clock> time_point )
 {
-	auto result = beginning_of_year( system_clock::from_time_t(raw_time) );
-	return system_clock::to_time_t( result );
-}
-time_t end_of_year( time_t raw_time)
-{
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_mday = 31;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_mon = 11;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	struct tm time_info = localtime(time_point);
+	time_info.tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_mday = 31;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_mon = 11;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t( mktime(&time_info) );
 }
 
-int days_in_month( time_t raw_time)
+int days_in_month( time_point<system_clock> time_stamp)
 {
-	struct tm *time_info = localtime(&raw_time);
-	time_info->tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	switch (time_info->tm_mon)
+	struct tm time_info = localtime(time_stamp);
+	time_info.tm_sec = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_min = 59;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_hour = 23;   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	switch (time_info.tm_mon)
 	{
 	case 1:
-		if ((time_info->tm_year % 4 == 0 && time_info->tm_year % 100 != 0) || time_info->tm_year % 400 == 0) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		if ((time_info.tm_year % 4 == 0 && time_info.tm_year % 100 != 0) || time_info.tm_year % 400 == 0) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		{
-			time_info->tm_mday = 29; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+			time_info.tm_mday = 29; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		}
 		else
 		{
-			time_info->tm_mday = 28; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+			time_info.tm_mday = 28; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		}
 		break;
 	case 3:
 	case 5:    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	case 8:    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	case 10:   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-		time_info->tm_mday = 30;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		time_info.tm_mday = 30;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		break;
 	default:
-		time_info->tm_mday = 31;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		time_info.tm_mday = 31;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		break;
 	}
-	return time_info->tm_mday;
+	return time_info.tm_mday;
 }
 
 static const int YEAR_ZERO = 1900;
 
-time_t to_time(int year, int month, int day, int hour, int min, int sec)
+time_point<system_clock> to_time(int year, int month, int day, int hour, int min, int sec)
 {
-	time_t raw_time = 0;
-	time(&raw_time);
-	struct tm*	time_info = localtime(&raw_time);
-	time_info->tm_year = year - YEAR_ZERO;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	time_info->tm_mon = month;
-	time_info->tm_mday = day;
-	time_info->tm_hour = hour;
-	time_info->tm_min = min;
-	time_info->tm_sec = sec;
-	time_info->tm_isdst = -1;
-	return mktime(time_info);
+	struct tm time_info {};
+	time_info.tm_year = year - YEAR_ZERO;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_mon = month;
+	time_info.tm_mday = day;
+	time_info.tm_hour = hour;
+	time_info.tm_min = min;
+	time_info.tm_sec = sec;
+	time_info.tm_isdst = -1;
+	return system_clock::from_time_t(mktime(&time_info));
 }
 
-bool is_on_different_days( time_t one, time_t other)
+bool is_on_different_days( time_point<system_clock> one, time_point<system_clock> other)
 {
-	struct tm one_time = *localtime(&one);
-	struct tm other_time = *localtime(&other);
+	auto one_time   = localtime( one );
+	auto other_time = localtime( other );
 	return one_time.tm_year != other_time.tm_year || one_time.tm_mon != other_time.tm_mon || one_time.tm_mday != other_time.tm_mday;
 }
 
-string day_of_week_abbreviation( time_t raw_time)
+string day_of_week_abbreviation( time_point<system_clock> time_point )
 {
-	struct tm *time_info = localtime(&raw_time);
+	struct tm time_info = localtime( time_point );
 	array<char,15> abbreviation{};              // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	int length = (int)strftime(abbreviation.data(), abbreviation.size(), "%a", time_info);
+	int length = (int)strftime(abbreviation.data(), abbreviation.size(), "%a", &time_info);
 	return length>0 ? abbreviation.data() : "☼";
 }
 
@@ -234,22 +221,27 @@ string hh_mm( seconds time_span )
 	return "";
 }
 
+
 string seconds_2_hhmm(int64_t s)
 {
+	return 	seconds_2_hhmm( seconds(s) );
+}
+
+string seconds_2_hhmm(seconds time_span)
+{
 	stringstream return_value;
-	auto hours = s / (60 * 60);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	s -= hours * (60 * 60);      // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	auto minutes = s / 60;      // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	if( hours < 10 )            // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	auto hh = duration_cast<hours>(time_span);
+	auto mm = duration_cast<minutes>( time_span - hh );
+	if( hh < 10h )            // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return_value << "\u2007";
 	}
-	return_value << hours << " h ";
-	if (minutes < 10) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return_value << hh.count() << " h ";
+	if (mm < 10min) // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	{
 		return_value <<  "\u2007";
 	}
-	return_value << minutes << " m";
+	return_value << mm.count() << " m";
 
 	return return_value.str();
 }
@@ -280,8 +272,7 @@ string small_numbers(const string& s)
 
 string date_string(time_point<system_clock> time_stamp)
 {
-	auto raw_time = system_clock::to_time_t(time_stamp);
-	auto day = *localtime(&raw_time);
+	auto day = localtime( time_stamp );
 	stringstream date_string;
 	date_string << (day.tm_year + YEAR_ZERO)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	<< "-"
@@ -292,17 +283,12 @@ string date_string(time_point<system_clock> time_stamp)
 }
 
 
-string date_string(time_t raw_time)
-{
-	auto time_stamp = system_clock::from_time_t(raw_time);
-	return  date_string(time_stamp);
-}
 
-string time_span_string( time_t from, time_t to)
+string time_span_string( time_point<system_clock> from, time_point<system_clock> to)
 {
 	stringstream return_value;
-	struct tm from_time = *localtime(&from);
-	struct tm to_time = *localtime(&to);
+	struct tm from_time = localtime( from );
+	struct tm to_time = localtime( to );
 	return_value << "\u2003"
 	             << setfill('0') << setw(2) << from_time.tm_hour
 	             << ":"
@@ -322,25 +308,20 @@ string time_span_string( time_t from, time_t to)
 	return return_value.str();
 }
 
-string duration_string( time_t from, time_t to)
+string duration_string( time_point<system_clock> from, time_point<system_clock> to)
 {
 	stringstream return_value;
-	return_value <<" = " << seconds_2_hhmm((int64_t)difftime(to, from))
+	return_value <<" = " << seconds_2_hhmm( duration_cast<seconds>( to - from ))
 	             <<" ";
 	return return_value.str();
 }
 
-string idling_string( time_t to, time_t next)
+string idling_string( time_point<system_clock> to, time_point<system_clock> next)
 {
 	stringstream return_value;
-	auto to_next_min = (int64_t)difftime(next, to) / 60;    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-	return_value << "⇣ " << small_numbers(to_string(to_next_min)) << " ₘ";
+	auto to_next_min = duration_cast<minutes>( next- to );    // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return_value << "⇣ " << small_numbers(to_string(to_next_min.count())) << " ₘ";
 	return return_value.str();
-}
-
-time_t now()
-{
-	return time(nullptr);
 }
 
 int safe_strcpy(char* dest, const char* src, size_t size)
@@ -417,5 +398,13 @@ optional<task_id> optional_task_id(const string& basic_string)
 	}
 	return {};
 }
+
+std::tm localtime( time_point<system_clock> point )
+{
+	auto raw_time = system_clock::to_time_t( point );
+	std::tm return_value = *::localtime( &raw_time );
+	return return_value;
+}
+
 
 }

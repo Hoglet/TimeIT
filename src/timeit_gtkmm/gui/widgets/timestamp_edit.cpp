@@ -16,15 +16,15 @@ timestamp_edit::timestamp_edit(string title)
 
 
 }
-void timestamp_edit::set_values(time_t timestamp)
+void timestamp_edit::set_values(time_point<system_clock> time_stamp)
 {
-	struct tm *time_info = localtime(&timestamp);
-	hour.set_value(time_info->tm_hour);
-	minute.set_value(time_info->tm_min);
+	struct tm time_info = libtimeit::localtime( time_stamp );
+	hour.set_value(time_info.tm_hour);
+	minute.set_value(time_info.tm_min);
 
-	year.set_value(time_info->tm_year + YEAR_ZERO);
-	month.set_value(time_info->tm_mon + 1);
-	day.set_value(time_info->tm_mday);
+	year.set_value(time_info.tm_year + YEAR_ZERO);
+	month.set_value(time_info.tm_mon + 1);
+	day.set_value(time_info.tm_mday);
 }
 
 void timestamp_edit::connect_signals()
@@ -88,14 +88,14 @@ void timestamp_edit::on_change()
 	signal_changed.emit();
 }
 
-time_t timestamp_edit::timestamp()
+time_point<system_clock> timestamp_edit::timestamp()
 {
 	auto y = year.get_value_as_int();
 	auto m = month.get_value_as_int() - 1;
 	auto d = day.get_value_as_int();
 
 	//Avoiding problems with daylight saving time by checking second day of month
-	time_t active_day = libtimeit::to_time(y, m, 2);
+	auto active_day = libtimeit::to_time(y, m, 2);
 	int max_day = libtimeit::days_in_month(active_day);
 	day.set_range(1, max_day);
 

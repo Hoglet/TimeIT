@@ -16,7 +16,7 @@ json::json(string text) : object(json_string(text.c_str()))
 {
 }
 
-json::json(time_point<system_clock> time_stamp) : object(json_integer(system_clock::to_time_t(time_stamp)))
+json::json(time_point<system_clock> time_stamp) : object(json_integer(max(0, static_cast<int>(system_clock::to_time_t(time_stamp)))))
 {
 }
 

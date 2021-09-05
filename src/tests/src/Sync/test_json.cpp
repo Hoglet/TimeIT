@@ -111,9 +111,9 @@ TEST( Json, simpleTimeTest )
 
 	if (numberOfItems == 1)
 	{
-		time_t expectedStart = 1363339855;
-		time_t expectedStop = 1363342626;
-		time_t expectedChange = 1376059170;
+		auto expectedStart  = system_clock::from_time_t( 1363339855 );
+		auto expectedStop   = system_clock::from_time_t(  1363342626 );
+		auto expectedChange = system_clock::from_time_t(  1376059170 );
 		time_entry item = times.at( 0);
 		bool expectedState = STOPPED;
 		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";
@@ -139,9 +139,9 @@ TEST( Json, simpleTimeTest2 )
 
 	if (numberOfItems == 1)
 	{
-		time_t expectedStart = 1363339855;
-		time_t expectedStop = 1363342626;
-		time_t expectedChange = 1376059170;
+		auto expectedStart  = system_clock::from_time_t( 1363339855 );
+		auto expectedStop   = system_clock::from_time_t( 1363342626 );
+		auto expectedChange = system_clock::from_time_t( 1376059170 );
 		time_entry item = times.at( 0);
 		auto expectedState = DELETED;
 		ASSERT_EQ( expectedUUID, static_cast<string>(item.id)) << "id: ";

@@ -63,8 +63,8 @@ private:
 	time_accessor times;
 	task_accessor tasks;
 
-	time_t original_start{0};
-	time_t original_stop{0};
+	time_point<system_clock> original_start {system_clock::from_time_t(0)};
+	time_point<system_clock> original_stop  {system_clock::from_time_t(0)};
 	string original_comment;
 };
 }
