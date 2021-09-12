@@ -218,7 +218,7 @@ task_id_list time_accessor::currently_running()
 
 	for ( auto running_task : statement_get_running_tasks.execute() )
 	{
-		Task_id old_id = running_task[0].integer();
+		int64_t old_id = running_task[0].integer();
 		//result_list.push_back(id);
 
 		/** temp fix **/

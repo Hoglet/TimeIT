@@ -1,7 +1,6 @@
 #ifndef TASK_ACCESSOR_H
 #define TASK_ACCESSOR_H
 
-#include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/datatypes/task.h>
 #include <libtimeit/db/notifier.h>
@@ -26,8 +25,7 @@ public:
 	bool           update(const task &item);
 	void           remove(const task_id& id);
 
-	Task_id  to_id(const task_id& id);
-	Task_id  to_id(const uuid& id);
+	int64_t  to_id(const task_id& id);
 	void     enable_notifications(bool);
 
 protected:
@@ -37,11 +35,8 @@ private:
 	void notify(const task &old_task, const task &item);
 	void internal_update(const task &item);
 
-	optional<task_id>    optional_task_id(Task_id id);
-	optional<task_id>    to_task_id(Task_id id);
 	optional<task>       get_task_unlimited(const task_id& id);
 
-	sql_statement statement_uuid_to_id;
 	sql_statement statement_get_by_id;
 	sql_statement statement_get_task;
 	sql_statement statement_id_to_uuid;

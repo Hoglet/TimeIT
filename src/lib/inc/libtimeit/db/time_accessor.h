@@ -8,7 +8,6 @@
 #include <memory>
 #include <chrono>
 
-#include <libtimeit/db/data_types.h>
 #include <libtimeit/db/database.h>
 #include "sqlite3.h"
 #include "notifier.h"

@@ -1,7 +1,8 @@
 #ifndef ACTION_OBSERVER_H
 #define ACTION_OBSERVER_H
 
-#include <libtimeit/db/data_types.h>
+#include <libtimeit/datatypes/task_id.h>
+
 namespace gui
 {
 

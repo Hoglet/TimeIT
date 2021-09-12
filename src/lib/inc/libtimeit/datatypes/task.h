@@ -3,7 +3,6 @@
 
 #include <string>
 #include <optional>
-#include <libtimeit/db/data_types.h>
 #include <libtimeit/datatypes/uuid.h>
 #include <libtimeit/datatypes/task_id.h>
 #include <chrono>

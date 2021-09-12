@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <string>
-#include <libtimeit/db/data_types.h>
+#include <libtimeit/datatypes/task_id.h>
 #include <libtimeit/datatypes/time_id.h>
 #include <chrono>
 
