@@ -2,7 +2,7 @@
 #define MAIN_WINDOW_H
 
 #include <gtkmm.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <main_window/main_window.h>
 #include "task_list.h"
 #include <libtimeit/db/extended_task.h>
@@ -19,13 +19,13 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class main_window : public Gtk::Window, public action_observer, public IWidget
+class main_window : public Gtk::Window, public action_observer, public widget_interface
 {
 public:
 	~main_window() override;
 	main_window(
 			database &db,
-			Time_keeper &op_time_keeper,
+			time_manager &op_time_keeper,
 			notification_manager &notifier,
 			window_manager &window_manager,
 			image_cache &images);
@@ -61,8 +61,6 @@ public:
 		Gtk::Window::get_position( x, y);
 	};
 
-	virtual void attach(summary_observer* observer);
-	virtual void detach(summary_observer* observer);
 	void attach(action_observer* /*observer*/) override;
 	void detach(action_observer* /*observer*/) override;
 
@@ -89,6 +87,9 @@ private:
 	static void remove_children(Container &container);
 	void empty_containers();
 	void do_layout();
+
+	void attach_to_all(action_observer* /*observer*/);
+	void detach_from_all(action_observer* /*observer*/);
 
 	task_list_widget task_list;
 	day_summary_widget day_summary;

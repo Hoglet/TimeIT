@@ -3,13 +3,13 @@
 namespace legacy_db_helper
 {
 
-Task_id to_id(const task_id& id, database& db)
+old_task_id to_id( const task_id& id, database& db)
 {
 
-	Task_id old_id = 0;
+	old_task_id old_id = 0;
 	sql_statement statement_uuid_to_id(db.prepare("SELECT id FROM tasks WHERE uuid=?;"));
 	statement_uuid_to_id.bind_value(1, static_cast<string>(id));
-	Query_result rows = statement_uuid_to_id.execute();
+	query_result rows = statement_uuid_to_id.execute();
 	for (vector<data_cell> row : rows)
 	{
 		old_id = row[0].integer();
@@ -17,11 +17,11 @@ Task_id to_id(const task_id& id, database& db)
 	return old_id;
 }
 
-Task_id to_id(const uuid& id, database& db)
+old_task_id to_id( const uuid& id, database& db)
 {
 	sql_statement statement_uuid_to_id(db.prepare("SELECT id FROM tasks WHERE uuid=?;"));
 	statement_uuid_to_id.bind_value(1, id.to_string());
-	Query_result rows = statement_uuid_to_id.execute();
+	query_result rows = statement_uuid_to_id.execute();
 	for (vector<data_cell> row : rows)
 	{
 		return row[0].integer();
@@ -30,7 +30,7 @@ Task_id to_id(const uuid& id, database& db)
 }
 
 
-Task_id new_task_id_to_old(task_id owner_id, database& db)
+old_task_id new_task_id_to_old( task_id owner_id, database& db)
 {
 	auto statement = db.prepare(R"(
 	SELECT

@@ -10,7 +10,7 @@ using namespace libtimeit;
 using namespace std;
 
 auto_tracker::auto_tracker(
-		Time_keeper &op_time_keeper,
+		time_manager &op_time_keeper,
 		database   &db,
 		Timer       &timer)
 		:

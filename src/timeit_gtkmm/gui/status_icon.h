@@ -20,11 +20,11 @@ namespace gui
 {
 using namespace libtimeit;
 
-class status_icon_widget: public time_keeper_observer, public event_observer
+class status_icon_widget: public time_manager_observer, public event_observer
 {
 public:
 	status_icon_widget(
-			Time_keeper&,
+			time_manager&,
 			database&,
 			notification_manager&   notifier,
 			image_cache&     images);
@@ -69,7 +69,7 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> running_icon_small;
 
 	Gtk::Menu menu_popup;
-	Time_keeper&  m_time_keeper;
+	time_manager&  m_time_keeper;
 	task_accessor tasks;
 	time_accessor times;
 

@@ -47,7 +47,7 @@ optional<time_entry> time_accessor::by_id( time_id id)
 {
 	by_uuid_statement.bind_value(1, static_cast<string>(id));
 
-	Query_result rows = by_uuid_statement.execute();
+	query_result rows = by_uuid_statement.execute();
 	for ( auto row: rows )
 	{
 		int column{0};
@@ -91,7 +91,7 @@ seconds  time_accessor::duration_time(const task_id& id, time_point<system_clock
 seconds time_accessor::time_completely_within_limits(const task_id& owner_id, time_point<system_clock> start, time_point<system_clock> stop)
 {
 	seconds time(0);
-	Query_result rows;
+	query_result rows;
 	auto task_id = legacy_db_helper::new_task_id_to_old( owner_id, db);
 	if (stop < time_point<system_clock>::max() )
 	{
@@ -134,7 +134,7 @@ seconds time_accessor::time_passing_end_limit( const task_id& owner, time_point<
 	statement << " AND stop  > " << stop;
 	statement << " AND start > " << start;
 	statement << " AND state IS NOT 3 ";
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
@@ -165,7 +165,7 @@ seconds time_accessor::time_passing_start_limit(
 	statement << " AND stop  >  " << start;
 	statement << " AND stop  <  " << stop;
 	statement << " AND state IS NOT 3 ";
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
@@ -199,7 +199,7 @@ task_id_list time_accessor::latest_active_tasks(int amount)
 			)Query"
 			<< amount;
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 
 	for (auto row : rows)
 	{
@@ -251,7 +251,7 @@ time_list time_accessor::by_activity(
 	statement << " AND deleted=0 ";
 	statement << " ORDER BY start";
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	for (vector<data_cell> row : rows)
 	{
 		int column{0};
@@ -287,7 +287,7 @@ time_list time_accessor::times_changed_since( time_point<system_clock> time_stam
 
 	statement.bind_value(1, system_clock::to_time_t( time_stamp ));
 
-	Query_result rows = statement.execute();
+	query_result rows = statement.execute();
 	for (vector<data_cell> row : rows)
 	{
 		int column{0};
@@ -375,7 +375,7 @@ task_id_list time_accessor::children_id_list(const task_id& owner_id)
 	task_id_list result;
 	sql_statement statement_get_children_i_ds = db.prepare("SELECT uuid FROM tasks WHERE parent=?;");
 	statement_get_children_i_ds.bind_value(1, id);
-	Query_result rows = statement_get_children_i_ds.execute();
+	query_result rows = statement_get_children_i_ds.execute();
 
 	for (auto row : rows)
 	{
@@ -534,7 +534,7 @@ task_id_list time_accessor::active_tasks(time_point<system_clock> start_point, t
 	statement_get_tasks.bind_value(index++, start);
 	statement_get_tasks.bind_value(index, stop);
 
-	Query_result rows = statement_get_tasks.execute();
+	query_result rows = statement_get_tasks.execute();
 
 	for (auto row : rows)
 	{
@@ -564,7 +564,7 @@ time_list time_accessor::by_state( time_entry_state state) const
 		)Query");
 	statement.bind_value(1, static_cast<int>(state));
 
-	Query_result rows = statement.execute();
+	query_result rows = statement.execute();
 	for (auto row: rows)
 	{
 		auto column{0};

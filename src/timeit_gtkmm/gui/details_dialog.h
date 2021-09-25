@@ -6,7 +6,7 @@
 #include "details.h"
 #include "main_window/summary.h"
 #include <libtimeit/db/database.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/db/extended_task_accessor.h>
 
@@ -19,13 +19,13 @@ class details_dialog:
 		public Gtk::Dialog,
 		public summary_observer,
 		public event_observer,
-		public time_keeper_observer,
-		public IWidget
+		public time_manager_observer,
+		public widget_interface
 {
 public:
 	details_dialog(
 			database&       db,
-			Time_keeper&    time_keeper,
+			time_manager&    op_time_keeper,
 			notification_manager&       notifier,
 			window_manager& window_manager,
 			image_cache&         images);
@@ -81,7 +81,7 @@ private:
 	time_accessor          times;
 	extended_task_accessor tasks;
 	settings_accessor      settings;
-	Time_keeper&           time_keeper;
+	time_manager&           time_keeper;
 };
 }
 

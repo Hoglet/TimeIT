@@ -70,7 +70,7 @@ void edit_task_dialog::create_layout()
 	idle_time_entry.set_range(1, MAX_IDLE_TIME);
 	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
 	idle_time = minutes(settings.get_int("Gt", DEFAULT_GT ));
-	idle_time_entry.set_value( idle_time.count() );
+	idle_time_entry.set_value( double(idle_time.count()) );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
 
@@ -150,20 +150,20 @@ vector<unsigned> edit_task_dialog::get_ticked_workspaces()
 }
 
 
-void edit_task_dialog::set_task_id(const task_id& id)
+void edit_task_dialog::set_task_id(const task_id& op_id)
 {
-	this->id = id;
-	auto task_to_edit = tasks.by_id( id);
+	this->id = op_id;
+	auto task_to_edit = tasks.by_id( op_id );
 	if (task_to_edit.has_value())
 	{
 		name = task_to_edit->name;
 		set_parent(task_to_edit->parent_id);
 		task_name_entry.set_text(name);
-		vector<unsigned> workspace_list = auto_track_table.workspaces( id);
+		vector<unsigned> workspace_list = auto_track_table.workspaces( op_id);
 		set_ticked_workspaces(workspace_list);
 		ok_button.set_sensitive(false);
 		workspaces = workspace_list;
-		parent_chooser.set_id( id);
+		parent_chooser.set_id( op_id);
 		idle_time = task_to_edit->idle;
 		quiet = task_to_edit->quiet;
 		if(idle_time == 0min)
@@ -171,14 +171,14 @@ void edit_task_dialog::set_task_id(const task_id& id)
 			idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
 		}
 
-		idle_time_entry.set_value( idle_time.count());
+		idle_time_entry.set_value( double(idle_time.count()));
 		quiet_button.set_active( quiet);
 	}
 }
 
-void edit_task_dialog::set_parent(optional<task_id> id)
+void edit_task_dialog::set_parent(const optional<task_id>& op_id)
 {
-	parent_id = id;
+	parent_id = op_id;
 	parent_chooser.set_parent(parent_id);
 }
 

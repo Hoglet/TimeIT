@@ -9,7 +9,7 @@
 #include <libtimeit/db/autotrack_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <parent_chooser.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/database.h>
 #include <glibmm/i18n.h>
@@ -19,7 +19,7 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-class edit_task_dialog: public Gtk::Dialog, public IWidget
+class edit_task_dialog: public Gtk::Dialog, public widget_interface
 {
 public:
 	edit_task_dialog(database& db);
@@ -28,7 +28,7 @@ public:
 	void on_cancel_button_clicked();
 	void on_data_changed();
 	void set_task_id(const task_id& id);
-	void set_parent(optional<task_id> id);
+	void set_parent(const optional<task_id>& id);
 
 	// IWidget interface
 	void show() override;

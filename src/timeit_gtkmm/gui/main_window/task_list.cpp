@@ -1,5 +1,4 @@
 #include "task_list.h"
-#include <string>
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 
@@ -12,7 +11,7 @@ using namespace Glib;
 
 task_list_widget::task_list_widget(
 		database &db,
-		Time_keeper &op_time_keeper,
+		time_manager &op_time_keeper,
 		notification_manager &notifier,
 		image_cache &images)
 		:

@@ -32,7 +32,7 @@ protected:
 	database& db; // NOLINT
 
 private:
-	void notify(const task &old_task, const task &item);
+	void notify( const task &existing_task, const task &item);
 	void internal_update(const task &item);
 
 	optional<task>       get_task_unlimited(const task_id& id);

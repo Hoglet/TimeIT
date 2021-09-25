@@ -66,14 +66,14 @@ public:
 	list<time_id>       get_selected_and_next();
 	//
 private:
-	void update_row(Gtk::TreeModel::Row& row, row_data ) const;
+	void update_row(Gtk::TreeModel::Row& row, const row_data& ) const;
 
-	optional<Gtk::TreeModel::Row> find_row(time_id id);
+	optional<Gtk::TreeModel::Row> find_row(const time_id& id);
 
 	list<row_data> create_row_data( time_point<system_clock> start, time_point<system_clock> stop);
 
 	void           populate();
-	void           populate(list<row_data> data_rows);
+	void           populate(const list<row_data>& data_rows);
 	void           update(list<row_data> data_rows);
 
 	Glib::RefPtr<Gtk::ListStore> tree_model;
@@ -115,6 +115,7 @@ private:
 	window_manager&             windows;
 	database&                   db;
 	void edit_time_entry(time_id /*id*/);
+	void set_visibility_of_context_menu();
 };
 }
 

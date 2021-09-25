@@ -19,7 +19,7 @@ public:
 	~task_list_widget() override;
 	task_list_widget(
 			database &db,
-			Time_keeper &op_time_keeper,
+			time_manager &op_time_keeper,
 			notification_manager &notifier,
 			image_cache &images);
 	task_list_widget(const task_list_widget &) = delete;
@@ -32,6 +32,7 @@ public:
 	void on_task_added(const task& item) override;
 	void on_task_updated(const task_id& id) override;
 	void on_task_removed(const task& item) override;
+	void on_parent_changed(Widget* previous_parent) override { Gtk::Widget::on_parent_changed(previous_parent);};
 	void on_parent_changed(const task& item) override;
 	void on_complete_update() override;
 	void on_task_name_changed(const task& item) override;
@@ -84,7 +85,7 @@ private:
 	void do_update();
 	std::list<action_observer*> observers;
 	extended_task_accessor tasks;
-	Time_keeper &time_keeper;
+	time_manager &time_keeper;
 };
 }
 #endif // TASK_LIST_H

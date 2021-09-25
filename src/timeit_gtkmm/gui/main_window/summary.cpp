@@ -279,7 +279,8 @@ bool summary::is_visible()
 	return true;
 }
 
-TreeModel::Row summary::add(const task_id& id)
+
+TreeModel::Row summary::create_row( const task_id& id)
 {
 	auto task_to_add = tasks.by_id(id);
 	TreeModel::Row row;
@@ -293,7 +294,7 @@ TreeModel::Row summary::add(const task_id& id)
 		}
 		else
 		{
-			row = add(task_to_add->parent_id.value());
+			row = create_row( task_to_add->parent_id.value());
 		}
 		row = *(tree_model->append((row).children()));
 	}
@@ -307,15 +308,16 @@ TreeModel::Row summary::add(const task_id& id)
 	return row;
 }
 
+
 void summary::populate()
 {
 	if (is_visible())
 	{
 		auto active_tasks = times.active_tasks(start_time, stop_time);
 
-		for (auto id : active_tasks)
+		for (const auto& id : active_tasks)
 		{
-			add(id);
+			create_row( id );
 		}
 		needs_re_population = false;
 	}

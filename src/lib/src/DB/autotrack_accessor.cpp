@@ -44,7 +44,7 @@ task_id_list auto_track_accessor::task_ids(unsigned workspace)
 	stringstream  statement;
 
 	statement << "SELECT taskID FROM autotrack WHERE workspace =" << workspace;
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	for (vector<data_cell> row : rows)
 	{
 		int64_t old_id = row[0].integer();
@@ -67,7 +67,7 @@ vector<unsigned> auto_track_accessor::workspaces(const task_id& id)
 	vector<unsigned> return_value;
 	stringstream     statement;
 	statement << "SELECT workspace FROM autotrack where taskID =" << task_id;
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	for (auto row : rows)
 	{
 		auto workspace = (unsigned)row[0].integer();

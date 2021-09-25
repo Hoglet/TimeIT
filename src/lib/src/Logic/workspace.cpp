@@ -11,7 +11,7 @@ x11_workspace::x11_workspace()
 {
 	try
 	{
-		x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
+		x_lib.get_cardinal( "_NET_DESKTOP_LAYOUT", 1);
 	}
 	catch (const general_exception &e)
 	{
@@ -29,20 +29,20 @@ workspace_layout x11_workspace::layout()
 	try
 	{
 		is_virtual = false;
-		auto desktop_width = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 0);
-		auto desktop_height = x11.get_cardinal("_NET_DESKTOP_GEOMETRY", 1);
-		viewport_width = x11.viewport_width();
-		viewport_height = x11.viewport_height();
-		number_of_workspaces = (unsigned)x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0);
+		auto desktop_width = x_lib.get_cardinal( "_NET_DESKTOP_GEOMETRY", 0);
+		auto desktop_height = x_lib.get_cardinal( "_NET_DESKTOP_GEOMETRY", 1);
+		viewport_width = x_lib.viewport_width();
+		viewport_height = x_lib.viewport_height();
+		number_of_workspaces = (unsigned)x_lib.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0);
 
 		if (supports_layout && number_of_workspaces > 1)
 		{
 
 			/*_NET_DESKTOP_LAYOUT, orientation, columns, rows, starting_corner CARDINAL[4]/32*/
-			columns = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 1);
+			columns = (unsigned)x_lib.get_cardinal( "_NET_DESKTOP_LAYOUT", 1);
 			if (columns == 0)
 			{
-				rows = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
+				rows = (unsigned)x_lib.get_cardinal( "_NET_DESKTOP_LAYOUT", 2);
 				if (rows != 0)
 				{
 					columns = (number_of_workspaces + 1) / rows;
@@ -52,7 +52,7 @@ workspace_layout x11_workspace::layout()
 					columns = 1;
 				}
 			}
-			rows = (unsigned)x11.get_cardinal("_NET_DESKTOP_LAYOUT", 2);
+			rows = (unsigned)x_lib.get_cardinal( "_NET_DESKTOP_LAYOUT", 2);
 			if (rows == 0)
 			{
 				if (columns != 0)
@@ -87,10 +87,10 @@ unsigned x11_workspace::active()
 {
 	long active = 0;
 	auto layout = this->layout();
-	if (layout.number_of_workspaces != x11.get_cardinal("_NET_NUMBER_OF_DESKTOPS", 0))
+	if ( layout.number_of_workspaces != x_lib.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0))
 	{
-		auto x = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 0);
-		auto y = x11.get_cardinal("_NET_DESKTOP_VIEWPORT", 1);
+		auto x = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 0);
+		auto y = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 1);
 
 		auto current_column = x / viewport_width + 1;
 		auto current_row = y / viewport_height + 1;
@@ -100,7 +100,7 @@ unsigned x11_workspace::active()
 	{
 		try
 		{
-			active = x11.get_cardinal("_NET_CURRENT_DESKTOP", 0);
+			active = x_lib.get_cardinal( "_NET_CURRENT_DESKTOP", 0);
 		}
 		catch (const general_exception &e)
 		{
@@ -119,7 +119,7 @@ string x11_workspace::name(unsigned workspace_nr)
 
 	try
 	{
-		vector<string> names = x11.get_strings("_NET_DESKTOP_NAMES");
+		vector<string> names = x_lib.get_strings( "_NET_DESKTOP_NAMES");
 
 		if ((unsigned) names.size() > workspace_nr)
 		{

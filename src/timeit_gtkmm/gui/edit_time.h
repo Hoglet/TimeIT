@@ -7,7 +7,7 @@
 #include <libtimeit/db/database.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <gui/widgets/timestamp_edit.h>
 
 
@@ -18,7 +18,7 @@ using namespace libtimeit;
 /*
  * Edit and add times
  */
-class edit_time_dialog: public Gtk::Dialog, public IWidget
+class edit_time_dialog: public Gtk::Dialog, public widget_interface
 {
 public:
 	edit_time_dialog( time_entry op_time_entry, database& db);

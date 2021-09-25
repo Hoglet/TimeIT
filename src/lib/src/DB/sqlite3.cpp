@@ -59,7 +59,7 @@ sql_statement SQLite3::prepare(const string& query)
 	return {stmt, *this};
 }
 
-Query_result SQLite3::execute(const string& query)
+query_result SQLite3::execute( const string& query)
 {
 	sql_statement statement = prepare(query);
 	return statement.execute();
@@ -155,9 +155,9 @@ void sql_statement::bind_null_value(int index)
 	sqlite3_bind_null(stmt, index);
 }
 
-Query_result sql_statement::execute()
+query_result sql_statement::execute()
 {
-	Query_result rows;
+	query_result rows;
 	while (true)
 	{
 		int rc = sqlite3_step(stmt);

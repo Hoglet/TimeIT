@@ -7,17 +7,17 @@
 using namespace std;
 using namespace libtimeit;
 
-time_keeper_observer::time_keeper_observer(Time_keeper& tk): time_keeper(tk)
+time_manager_observer::time_manager_observer( time_manager& tk): time_keeper( tk)
 {
 	tk.attach(this);
 }
 
-time_keeper_observer::~time_keeper_observer()
+time_manager_observer::~time_manager_observer()
 {
 	time_keeper.detach(this);
 }
 
-Time_keeper::Time_keeper(
+time_manager::time_manager(
 		database& db,
 		Timer& timer,
 		notification_manager& notifier)
@@ -34,7 +34,7 @@ Time_keeper::Time_keeper(
 	default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
 }
 
-void Time_keeper::on_settings_changed(string name)
+void time_manager::on_settings_changed( string name)
 {
 	if ( name == "Gt")
 	{
@@ -46,7 +46,7 @@ void Time_keeper::on_settings_changed(string name)
 	}
 }
 
-void Time_keeper::on_signal_10_seconds()
+void time_manager::on_signal_10_seconds()
 {
 	check_if_tasks_should_be_stopped();
 	if ( user_is_active () )
@@ -56,7 +56,7 @@ void Time_keeper::on_signal_10_seconds()
 }
 
 
-void Time_keeper::start(task_id id)
+void time_manager::start( task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
@@ -72,7 +72,7 @@ void Time_keeper::start(task_id id)
 	notify_running_changed();
 }
 
-void Time_keeper::toggle(task_id id)
+void time_manager::toggle( task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
@@ -86,7 +86,7 @@ void Time_keeper::toggle(task_id id)
 	start(id);
 }
 
-void Time_keeper::stop_time(const time_entry& item)
+void time_manager::stop_time( const time_entry& item)
 {
 	if( item.stop - item.start < idle_gz )
 	{
@@ -99,7 +99,7 @@ void Time_keeper::stop_time(const time_entry& item)
 	notify_running_changed();
 }
 
-void Time_keeper::stop(task_id id)
+void time_manager::stop( task_id id)
 {
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
@@ -112,7 +112,7 @@ void Time_keeper::stop(task_id id)
 	}
 }
 
-void Time_keeper::on_task_removed(const task& removed_task)
+void time_manager::on_task_removed( const task& removed_task)
 {
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
@@ -123,20 +123,20 @@ void Time_keeper::on_task_removed(const task& removed_task)
 		}
 	}
 }
-void Time_keeper::on_complete_update()
+void time_manager::on_complete_update()
 {
 	//TODO Detect task removal during syncing
 }
 
 
 
-bool Time_keeper::has_running_tasks()
+bool time_manager::has_running_tasks()
 {
 	auto running_items = times.by_state(RUNNING);
 	return ( !running_items.empty() );
 }
 
-void Time_keeper::stop_all()
+void time_manager::stop_all()
 {
 	auto running_items = times.by_state(RUNNING);
 	for (const auto& item: running_items)
@@ -146,28 +146,28 @@ void Time_keeper::stop_all()
 }
 
 
-[[nodiscard]] bool  Time_keeper::tasks_are_running() const
+[[nodiscard]] bool  time_manager::tasks_are_running() const
 {
 	auto running_items = times.by_state(RUNNING);
 	return running_items.empty();
 }
 
-[[maybe_unused]] [[nodiscard]] bool   Time_keeper::is_idle()
+[[maybe_unused]] [[nodiscard]] bool   time_manager::is_idle()
 {
 	return idle_detector.time_idle() > 10s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
-void Time_keeper::notify_running_changed()
+void time_manager::notify_running_changed()
 {
-	std::list<time_keeper_observer*>::iterator iter;
+	std::list<time_manager_observer*>::iterator iter;
 	for (iter = observers.begin(); iter != observers.end(); ++iter)
 	{
-		time_keeper_observer* observer = *iter;
+		time_manager_observer* observer = *iter;
 		observer->on_running_changed();
 	}
 }
 
-void Time_keeper::notify_idle_detected(const time_entry& te)
+void time_manager::notify_idle_detected( const time_entry& te)
 {
 	for (auto* observer: observers)
 	{
@@ -175,16 +175,16 @@ void Time_keeper::notify_idle_detected(const time_entry& te)
 	}
 }
 
-void Time_keeper::attach(time_keeper_observer* observer)
+void time_manager::attach( time_manager_observer* observer)
 {
 	observers.push_back(observer);
 }
-void Time_keeper::detach(time_keeper_observer* observer)
+void time_manager::detach( time_manager_observer* observer)
 {
 	observers.remove(observer);
 }
 
-void Time_keeper::check_for_status_change()
+void time_manager::check_for_status_change()
 {
 	auto currently_running = times.currently_running();
 	if(currently_running != old_running)
@@ -193,17 +193,17 @@ void Time_keeper::check_for_status_change()
 	}
 	old_running = currently_running;
 }
-void Time_keeper::on_time_entry_changed(const time_entry& /*id*/)
+void time_manager::on_time_entry_changed( const time_entry& /*id*/)
 {
 	check_for_status_change();
 }
 
-bool Time_keeper::user_is_active()
+bool time_manager::user_is_active()
 {
 	return 	(idle_detector.time_idle() < 10s);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 }
 
-void Time_keeper::update_running_entries()
+void time_manager::update_running_entries()
 {
 	auto running = times.by_state(RUNNING);
 	for (const auto& item: running)
@@ -214,7 +214,7 @@ void Time_keeper::update_running_entries()
 
 }
 
-void Time_keeper::check_if_tasks_should_be_stopped()
+void time_manager::check_if_tasks_should_be_stopped()
 {
 	auto now = system_clock::now();
 	list<time_entry> times_to_stop {};

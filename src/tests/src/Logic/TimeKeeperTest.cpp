@@ -10,10 +10,10 @@ using namespace test;
 namespace Test
 {
 
-class TKObserver: public time_keeper_observer
+class TKObserver: public time_manager_observer
 {
 public:
-	TKObserver(Time_keeper& tk): time_keeper_observer(tk) {};
+	TKObserver( time_manager& tk): time_manager_observer( tk) {};
 	virtual void on_idle_detected(const time_entry& /*te*/)
 	{
 		idleDetected = true;
@@ -34,7 +34,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	notification_manager notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Time_keeper timeKeeper(db, timer, notifier);
+	time_manager timeKeeper( db, timer, notifier);
 	task_accessor tasks(db);
 	time_accessor times(db);
 
@@ -72,7 +72,7 @@ TEST( TimeKeeper, update )
 	notification_manager notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Time_keeper    timeKeeper(db, timer, notifier);
+	time_manager    timeKeeper( db, timer, notifier);
 	task_accessor tasks(db);
 	time_accessor times(db);
 
@@ -103,7 +103,7 @@ TEST( TimeKeeper, Stop_all)
 	notification_manager notifier;
 	TempDB db(notifier);
 	Timer timer;
-	Time_keeper   time_keeper(db, timer, notifier);
+	time_manager   time_keeper( db, timer, notifier);
 	task_accessor tasks(db);
 	time_accessor times(db);
 

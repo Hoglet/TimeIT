@@ -1,5 +1,5 @@
-#ifndef X11_LIB_H
-#define X11_LIB_H
+#ifndef X_LIB_ACCESSOR_H
+#define X_LIB_ACCESSOR_H
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
@@ -8,16 +8,16 @@ namespace libtimeit
 {
 using namespace std;
 
-class x11_lib
+class x_lib_accessor
 {
 public:
-	x11_lib();
-	x11_lib(const x11_lib&) = delete;
-	x11_lib(x11_lib&&) = delete;
-	x11_lib& operator=(x11_lib&&) = delete;
-	x11_lib& operator=(const x11_lib&) = delete;
+	x_lib_accessor();
+	x_lib_accessor(const x_lib_accessor&) = delete;
+	x_lib_accessor(x_lib_accessor&&) = delete;
+	x_lib_accessor& operator=(x_lib_accessor&&) = delete;
+	x_lib_accessor& operator=(const x_lib_accessor&) = delete;
 
-	virtual ~x11_lib();
+	virtual ~x_lib_accessor();
 	long            get_cardinal(const char *prop_name, int index) noexcept(false);
 	vector<string>  get_strings(const char *prop_name)             noexcept(false);
 	int             viewport_width();
@@ -29,4 +29,4 @@ private:
 
 }
 
-#endif /* X11_LIB_H */
+#endif /* X_LIB_ACCESSOR_H */

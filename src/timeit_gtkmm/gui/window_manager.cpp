@@ -15,7 +15,7 @@ using namespace std;
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
 window_manager::window_manager(
-		Time_keeper& op_time_keeper,
+		time_manager& op_time_keeper,
 		database&    op_database,
 		Timer&       op_timer,
 		notification_manager&    publisher,
@@ -40,7 +40,7 @@ void window_manager::quit()
 	Gtk::Main::quit();
 }
 
-widget_ptr window_manager::get_widget( EWidget widget)
+widget_ptr window_manager::get_widget( widget_type widget)
 {
 	widget_ptr ret_val;
 	switch (widget)
@@ -136,7 +136,6 @@ void window_manager::on_preference_dialog_hide()
 
 status_icon_widget& window_manager::get_status_icon()
 {
-	static status_icon_widget *status_icon_instance = nullptr;
 	if (status_icon_instance == nullptr)
 	{
 		status_icon_instance =  (new status_icon_widget(time_keeper, db, notifier, images));
@@ -149,7 +148,7 @@ status_icon_widget& window_manager::get_status_icon()
 
 void window_manager::manage_lifespan(shared_ptr<Gtk::Dialog> dialog)
 {
-	auto raw_pointer = dialog.get();
+	auto* raw_pointer = dialog.get();
 	dialog->signal_hide().connect([this, raw_pointer]() { this->on_dialog_hide(raw_pointer); } );
 	dialog->signal_response().connect([raw_pointer](int /*response*/) { window_manager::on_dialog_response(raw_pointer); });
 	active_dialogs.push_back(dialog);

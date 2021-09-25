@@ -32,7 +32,7 @@ optional<int> settings_accessor::value(string name)
 					name = '{}'; )Query", name.c_str());
 
 
-	Query_result rows = db.execute(statement);
+	query_result rows = db.execute( statement);
 	if (rows.empty())
 	{
 		return {};
@@ -49,7 +49,7 @@ int64_t settings_accessor::get_int(string name, int64_t default_value)
 
 	auto return_value = default_value;
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.empty())
 	{
 		set_int(name, default_value);
@@ -99,7 +99,7 @@ bool settings_accessor::get_bool(string name, bool default_value)
 
 	bool return_value = default_value;
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.empty())
 	{
 		set_bool(name, default_value);
@@ -118,7 +118,7 @@ bool settings_accessor::set_bool(string name, bool value)
 	statement << "SELECT boolValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.empty())
 	{//Value did not exist
 		statement.str("");
@@ -149,7 +149,7 @@ string settings_accessor::get_string(string name, string default_value)
 
 	string return_value = default_value;
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.empty())
 	{
 		set_string(name, default_value);
@@ -168,7 +168,7 @@ bool settings_accessor::set_string(string name, string value)
 	statement << "SELECT stringValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	if (rows.empty())
 	{
 		statement.str("");

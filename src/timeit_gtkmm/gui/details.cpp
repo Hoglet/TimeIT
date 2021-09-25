@@ -288,36 +288,8 @@ bool details::on_button_press_event(GdkEventButton *event)
 	//Then do our custom stuff:
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		auto selected_ids = get_selected_and_next();
-		if(selected_ids.size()==2)
-		{
-			auto selected_id = selected_ids.front();
-			auto next_id = selected_ids.back();
-			optional<time_entry> optional_time_entry = times.by_id( selected_id);
-			optional<time_entry> optional_next_time_entry = times.by_id( next_id);
-			if (optional_time_entry)
-			{
-				if (offer_to_merge(optional_time_entry, optional_next_time_entry))
-				{
-					merge_menu_item->set_sensitive(true);
-				}
-				else
-				{
-					merge_menu_item->set_sensitive(false);
-				}
-
-				if (offer_to_split(optional_time_entry.value()))
-				{
-					split_menu_item->set_sensitive(true);
-				}
-				else
-				{
-					split_menu_item->set_sensitive(false);
-				}
-
-				menu_popup.popup(event->button, event->time);
-			}
-		}
+		set_visibility_of_context_menu();
+		menu_popup.popup(event->button, event->time);
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
@@ -332,7 +304,45 @@ bool details::on_button_press_event(GdkEventButton *event)
 	return return_value;
 }
 
-optional<Gtk::TreeModel::Row> details::find_row(time_id id)
+void details::set_visibility_of_context_menu()
+{
+	auto selected_ids = get_selected_and_next();
+	if( selected_ids.size()==2 )
+	{
+		auto selected_id = selected_ids.front();
+		auto next_id = selected_ids.back();
+		optional<time_entry> optional_time_entry = times.by_id( selected_id);
+		optional<time_entry> optional_next_time_entry = times.by_id( next_id);
+		if (optional_time_entry.has_value())
+		{
+			if (offer_to_merge(optional_time_entry, optional_next_time_entry))
+			{
+				merge_menu_item->set_sensitive( true);
+			}
+			else
+			{
+				merge_menu_item->set_sensitive( false);
+			}
+		}
+
+	}
+	else if ( selected_ids.size()==1 )
+	{
+		merge_menu_item->set_sensitive( false);
+		auto selected_id = selected_ids.front();
+		optional<time_entry> optional_time_entry = times.by_id( selected_id);
+		if ( optional_time_entry.has_value() && offer_to_split( optional_time_entry.value() ) )
+		{
+			split_menu_item->set_sensitive( true);
+		}
+		else
+		{
+			split_menu_item->set_sensitive( false);
+		}
+	}
+}
+
+optional<Gtk::TreeModel::Row> details::find_row(const time_id& id)
 {
 	TreeModel::Children children = tree_model->children();
 	TreeIter iter;
@@ -407,15 +417,15 @@ void details::set(optional<task_id> id, time_point<system_clock> start, time_poi
 
 void details::on_selection_changed(
 		optional<task_id>        id,
-		time_point<system_clock> start_time,
-		time_point<system_clock> stop_time)
+		time_point<system_clock> start,
+		time_point<system_clock> stop)
 {
-	set( id, start_time, stop_time);
+	set( id, start, stop);
 }
 
 
 
-void details::update_row(TreeModel::Row& row, row_data data ) const
+void details::update_row(TreeModel::Row& row, const row_data& data ) const
 {
 	row[columns.col_id]          = data.id;
 	row[columns.col_morning]     = data.first_in_day ? day_of_week_abbreviation(data.start) : "";
@@ -504,7 +514,7 @@ void details::populate()
 {
 	populate( create_row_data(start_time, stop_time) );
 }
-void details::populate(list<row_data> data_rows)
+void details::populate(const list<row_data>& data_rows)
 {
 	tree_model->clear();
 

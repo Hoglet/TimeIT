@@ -5,7 +5,7 @@
 #include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/timer.h>
 #include <gtkmm.h>
-#include "IWidget.h"
+#include "widget_interface.h"
 #include "status_icon.h"
 #include <gui/images.h>
 
@@ -14,7 +14,7 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-enum EWidget
+enum widget_type
 {
 	MAIN_WINDOW,
 	ADD_TASK_DIALOG,
@@ -26,13 +26,13 @@ enum EWidget
 	MAX_WIDGETS
 };
 
-using widget_ptr = std::shared_ptr<IWidget>;
+using widget_ptr = std::shared_ptr<widget_interface>;
 
 class window_manager
 {
 public:
-	window_manager(Time_keeper&, database &database, Timer& timer, notification_manager& notifier, image_cache& op_images);
-	virtual widget_ptr get_widget( EWidget widget);
+	window_manager( time_manager&, database &database, Timer& timer, notification_manager& notifier, image_cache& op_images);
+	virtual widget_ptr get_widget( widget_type widget);
 	virtual status_icon_widget& get_status_icon();
 
 	void manage_lifespan(shared_ptr<Gtk::Dialog> dialog);
@@ -44,6 +44,7 @@ private:
 	widget_ptr edit_task_dialog_instace;
 	widget_ptr add_time_dialog_instace;
 	widget_ptr preference_dialog_instance;
+	status_icon_widget *status_icon_instance{nullptr};
 
 	void on_main_window_hide();
 	void on_add_task_dialog_hide();
@@ -55,7 +56,7 @@ private:
 	void on_dialog_hide(Gtk::Dialog* dialog);
 
 
-	Time_keeper& time_keeper;
+	time_manager& time_keeper;
 	database&    db;
 	Timer&       timer;
 	notification_manager&    notifier;

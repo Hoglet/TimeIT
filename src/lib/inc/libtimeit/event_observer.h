@@ -10,7 +10,7 @@ namespace libtimeit
 {
 using namespace std;
 
-enum class EventType
+enum class event_type
 {
 	ERROR_MESSAGE
 	//INFO_MESSAGE
@@ -28,7 +28,7 @@ public:
 	event_observer& operator=(const event_observer&) = delete;
 	event_observer& operator=(event_observer&&) = delete;
 
-	virtual void on_message(EventType /*type*/, string /*headline*/, string /*message*/) const {};
+	virtual void on_message( event_type /*type*/, string /*headline*/, string /*message*/) const {};
 
 	virtual void on_parent_changed(const task&  /*id*/ )       {}; // Parent of task changed
 	virtual void on_task_added(const task&  /*id*/ )           {};

@@ -1,7 +1,7 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 #include <string>
-#include "libtimeit/x11_lib.h"
+#include "libtimeit/x_lib_accessor.h"
 
 namespace libtimeit
 {
@@ -40,7 +40,7 @@ private:
 
 	long  viewport_width  = 0;
 	long  viewport_height = 0;
-	x11_lib  x11;
+	x_lib_accessor  x_lib;
 
 };
 }

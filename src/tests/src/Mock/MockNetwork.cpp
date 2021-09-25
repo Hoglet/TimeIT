@@ -30,7 +30,7 @@ shared_ptr<async_http_response> MockNetwork::request(string url, string , string
 	
 	int urlLen = url.size();
 
-	int httpCode;
+	int httpCode=200;
 	for (iter = responses.begin(); iter != responses.end(); ++iter)
 	{
 		string key = iter->first;

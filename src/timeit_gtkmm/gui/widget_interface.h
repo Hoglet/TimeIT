@@ -1,11 +1,11 @@
-#ifndef IWIDGET_H
-#define IWIDGET_H
+#ifndef WIDGET_INTERFACE_H
+#define WIDGET_INTERFACE_H
 
 #include <action_observer.h>
 namespace gui
 {
 
-class IWidget
+class widget_interface
 {
 public:
 	virtual void show() = 0;
@@ -19,4 +19,4 @@ public:
 };
 
 }
-#endif /* IWIDGET_H */
+#endif /* WIDGET_INTERFACE_H */

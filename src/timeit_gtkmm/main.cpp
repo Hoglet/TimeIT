@@ -9,12 +9,14 @@
 #  include <libintl.h>
 #endif
 #include <csignal>
+#include <utility>
+#include <vector>
 #include <glibmm.h>
 #include <glibmm/i18n.h>
+#include <fmt/core.h>
 
 #include <window_manager.h>
 #include <controller.h>
-#include <message_center.h>
 #include <gtk_timer.h>
 
 #include <libtimeit.h>
@@ -29,14 +31,18 @@
 using namespace std;
 using namespace libtimeit;
 
-string db_name;
-string socket_name = "timeit.socket";
+struct settings
+{
+	const string db_name;
+	const string socket_name;
+	settings( string db, string socket): db_name(std::move(db)), socket_name(std::move(socket))
+	{};
+};
 
 extern "C" {
 void sighandler(int sig)
 {
-	printf("signal %d caught...\n", sig);
-	//GUI::GUIFactory::quit();
+	fmt::print("signal {} caught...\n", sig);
 	Gtk::Main::quit();
 }
 }
@@ -57,18 +63,17 @@ void print_help()
 }
 
 
-void init(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays,cppcoreguidelines-avoid-c-arrays)
+settings init( vector<char*> arguments)
 {
 	signal(SIGINT, &sighandler);
 
 	string db_path = Glib::build_filename(Glib::get_user_config_dir(), "TimeIT");
 	make_directory(db_path);
 
-	db_name = Glib::build_filename(db_path, "TimeIt.db");
-
-	for (int i = 0; i < argc; i++)
+	auto db_name = Glib::build_filename(db_path, "TimeIt.db");
+	string socket_name {"timeit.socket"};
+	for ( string argument: arguments )
 	{
-		string argument = argv[i]; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		if (argument == "--help" || argument == "-?")
 		{
 			print_help();
@@ -82,15 +87,15 @@ void init(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays,cppcoreguid
 				string tmp = db_name;
 				replace(tmp.begin(), tmp.end(), ' ', '.');
 				replace(tmp.begin(), tmp.end(), '/', '_');
-				socket_name = tmp + ".socket";
+				socket_name = tmp.append(".socket");
 			}
 		}
 	}
-
+	return {db_name, socket_name};
 }
 
 
-int run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
+int run( vector<char*> arguments, settings settings )
 {
 	try
 	{
@@ -98,29 +103,30 @@ int run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 		bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 		textdomain(GETTEXT_PACKAGE);
 
-		application_lock lock(db_name);
+		application_lock lock( settings.db_name );
 		if (lock.lock_acquired())
 		{
 
-			Gtk::Main application(argc, argv);
+			auto argc = static_cast<int>(arguments.size());
+			auto *argv = arguments.data();
+			Gtk::Main application( argc, argv, true);
 			Gtk::Main::init_gtkmm_internals();
 			libtimeit::init();
 			notification_manager notifier;
 
 			//Create a database object
-			database db(db_name, notifier);
+			database db( settings.db_name, notifier );
 
 			//Initiate all logic
-			gui::message_center messages;
 
 			gui::gtk_timer timer;
 
 
 			curl_network network;
 			sync_manager syncer(db, network, notifier, timer);
-			ipc_server   server(socket_name, timer, notifier);
+			ipc_server   server(settings.socket_name, timer, notifier);
 
-			Time_keeper  time_keeper(db, timer, notifier);
+			time_manager  time_keeper( db, timer, notifier);
 			auto_tracker auto_tracker(time_keeper, db, timer);
 
 			gui::image_cache images;
@@ -135,7 +141,7 @@ int run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 		}
 		else
 		{
-			ipc_client client(socket_name);
+			ipc_client client(settings.socket_name);
 			client.window_2_front();
 		}
 	}
@@ -151,6 +157,7 @@ int run(int argc, char *argv[]) // NOLINT(modernize-avoid-c-arrays)
 
 int main(int argc, char *argv[])
 {
-	init(argc, argv);
-	return run(argc, argv);
+	vector<char*> arguments ( argv , argv + argc  );
+	auto settings = init( arguments );
+	return run( arguments, settings );
 }

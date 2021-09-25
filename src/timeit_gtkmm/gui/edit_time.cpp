@@ -1,5 +1,4 @@
 #include "edit_time.h"
-#include <ctime>
 #include <utility>
 #include <glibmm/i18n.h>
 

@@ -27,7 +27,7 @@ public:
 	void             try_send_notification(message_type type, int64_t item_id, string name = "");
 	void             send_notification(message_type type, int64_t item_id, string name = "");
 	void             is_enabled(bool op_enabled);
-	void             send(EventType type, string headline, string message);
+	void             send( event_type type, string headline, string message);
 	void             broadcast(function<void(event_observer*)>);
 	unsigned long    size();
 protected:

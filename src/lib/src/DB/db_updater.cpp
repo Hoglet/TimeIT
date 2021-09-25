@@ -75,7 +75,7 @@ void db_updater::update_times_to_db_5()
 	auto statement_new_entry(db.prepare( CTEATE_TIME_ENTRY_V_5));
 
 	sql_statement statement = db.prepare("SELECT  taskID, start, stop FROM  times_backup");
-	Query_result rows = statement.execute();
+	query_result rows = statement.execute();
 	statement_new_entry.bind_value( CHANGED_INDEX, now);
 
 	for (vector<data_cell> row : rows)
@@ -102,7 +102,7 @@ void db_updater::update_tasks_to_db_5()
 
 	statement_new_task.bind_value(4, now);
 
-	Query_result rows = db.prepare("SELECT id, name, parent, deleted FROM  tasks_backup").execute();
+	query_result rows = db.prepare( "SELECT id, name, parent, deleted FROM  tasks_backup").execute();
 	for (vector<data_cell> row : rows)
 	{
 		statement_new_task.bind_value(1, row[0].integer());
@@ -142,7 +142,7 @@ void db_updater::upgrade_tasks_to_db_6()
 			)Query";
 		db.execute(query );
 
-		const auto *query2 = R"Query(
+		const auto *query_2 = R"Query(
 			ALTER TABLE
 				tasks
 			ADD
@@ -150,7 +150,7 @@ void db_updater::upgrade_tasks_to_db_6()
 			DEFAULT 0
 				;
 			)Query";
-		db.execute(query2 );
+		db.execute( query_2 );
 	}
 }
 

@@ -22,7 +22,7 @@ using namespace libtimeit;
 idle_dialog::idle_dialog(
 		Timer& timer,
 		database& db,
-		Time_keeper& op_time_keeper)
+		time_manager& op_time_keeper)
 		:
 		timer_observer(timer),
 		tasks(db ),

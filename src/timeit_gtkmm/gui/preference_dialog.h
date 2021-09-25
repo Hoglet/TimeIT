@@ -8,7 +8,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
 
@@ -17,7 +17,7 @@ namespace gui
 using namespace libtimeit;
 using namespace std;
 
-class preference_dialog: public Gtk::Dialog, public IWidget
+class preference_dialog: public Gtk::Dialog, public widget_interface
 {
 public:
 	preference_dialog(database& db);

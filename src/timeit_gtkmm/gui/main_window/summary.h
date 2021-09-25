@@ -64,7 +64,7 @@ protected:
 	time_point<system_clock> stop_time  = time_point<system_clock>::max();
 
 private:
-	Gtk::TreeModel::Row add(const task_id& id);
+	Gtk::TreeModel::Row create_row( const task_id& id);
 	Gtk::Menu menu_popup;
 
 	bool on_button_press_event(GdkEventButton* event) override;
@@ -117,7 +117,7 @@ private:
 	bool is_visible();
 	bool needs_re_population = true;
 
-	inline static optional<task_id> global_id;
+	inline static optional<task_id> global_id; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 	void try_set_selection();
 };
 

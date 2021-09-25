@@ -4,7 +4,6 @@
 #include <ctime>
 #include <iomanip>
 #include <langinfo.h>
-#include <sys/stat.h>
 #include <sys/time.h>
 #include <cstring>
 #include <fmt/core.h>
@@ -49,12 +48,15 @@ time_point<system_clock> end_of_day( time_point<system_clock> time_stamp)
 	return system_clock::from_time_t(result);
 }
 
-int first_weekday(void)
+int first_weekday()
 {
-	const char *const s = nl_langinfo(_NL_TIME_FIRST_WEEKDAY);
+	const char *const S = nl_langinfo( _NL_TIME_FIRST_WEEKDAY);
 
-	if (s && *s >= 1 && *s <= 7)
-		return (int)*s;
+	if ( ( S != nullptr ) &&
+	     ( *S >= 1 )       &&
+	     ( *S <= 7 )
+	   )
+		return (int)*S;
 
 	/* Default to Sunday, 1. */
 	return 1;
@@ -67,7 +69,7 @@ int get_day_of_week(time_point<system_clock> time_stamp)
 	int return_value = dow;
 
 	int week_starts_on_day = first_weekday() - 1;
-	return_value = return_value - week_starts_on_day;
+	return_value -= week_starts_on_day;
 	if (return_value < 0)
 	{
 		return_value = return_value + 7; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)

@@ -32,7 +32,7 @@ public:
 	void enable_notifications(bool);
 	void send_notification( message_type type, int64_t id, string name = "");
 
-	Query_result        execute(const string& statement);
+	query_result        execute( const string& statement);
 	sql_statement           prepare(string statement);
 	int64_t             id_of_last_insert();
 	bool                table_exists(string name);

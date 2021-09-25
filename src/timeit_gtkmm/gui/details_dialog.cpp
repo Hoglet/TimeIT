@@ -1,6 +1,5 @@
 #include "details_dialog.h"
 #include "libtimeit/utils.h"
-#include <ctime>
 #include <libtimeit/logic/time_keeper.h>
 
 using namespace libtimeit;
@@ -13,14 +12,14 @@ static const int COMPLETE_DAY = 86403;
 
 
 details_dialog::details_dialog(
-		database&        db,
-		Time_keeper&     timeKeeper,
-		notification_manager&        notifier,
-		window_manager&  gui_factory,
+		database&             db,
+		time_manager&         op_time_keeper,
+		notification_manager& notifier,
+		window_manager&       gui_factory,
 		image_cache&          images)
 		:
 		event_observer(notifier),
-		time_keeper_observer(timeKeeper ),
+		time_manager_observer( op_time_keeper ),
 		top_table( 14, 1), // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		task_name(""),
 		detail_list(db, notifier, gui_factory),
@@ -28,7 +27,7 @@ details_dialog::details_dialog(
 		times(db),
 		tasks(db),
 		settings(db ),
-		time_keeper(timeKeeper)
+		time_keeper( op_time_keeper)
 {
 	set_skip_pager_hint(true);
 	set_skip_taskbar_hint(true);

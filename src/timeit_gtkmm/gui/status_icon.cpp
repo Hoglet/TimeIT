@@ -18,12 +18,12 @@ using namespace std;
 using namespace libtimeit;
 
 status_icon_widget::status_icon_widget(
-		Time_keeper& time_keeper,
+		time_manager& time_keeper,
 		database&    db,
 		notification_manager&    notifier,
 		image_cache&      images)
 		:
-		time_keeper_observer(time_keeper),
+		time_manager_observer( time_keeper),
 		event_observer(notifier),
 		m_time_keeper(time_keeper),
 		tasks(db),

@@ -16,7 +16,7 @@ class auto_tracker : public timer_observer
 {
 public:
 	auto_tracker(
-			Time_keeper& /*time_keeper*/,
+			time_manager& /*time_keeper*/,
 			database&    /*db*/,
 			Timer&       /*timer*/
 			);
@@ -29,7 +29,7 @@ private:
 
 	unsigned old_workspace {UINT_MAX};
 
-	Time_keeper        &time_keeper;
+	time_manager        &time_keeper;
 
 	auto_track_accessor  auto_track;
 	task_accessor        tasks;

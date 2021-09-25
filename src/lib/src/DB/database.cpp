@@ -162,7 +162,7 @@ void database::send_notification( message_type type, int64_t id, string name)
 }
 
 
-Query_result database::execute(const string& statement)
+query_result database::execute( const string& statement)
 {
 	return db.execute(statement);
 }

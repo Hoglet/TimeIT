@@ -19,7 +19,7 @@ main_window::~main_window()
 {
 	empty_containers();
 	save_size();
-	detach(this);
+	detach_from_all(this);
 }
 
 static const int DEFAULT_WINDOW_WIDTH = 550;
@@ -27,7 +27,7 @@ static const int DEFAULT_WINDOW_HEIGHT = 550;
 
 main_window::main_window(
 		database &db,
-		Time_keeper &op_time_keeper,
+		time_manager &op_time_keeper,
 		notification_manager &notifier,
 		window_manager &gui_factory,
 		image_cache &images)
@@ -49,7 +49,7 @@ main_window::main_window(
 {
 	create_layout();
 	relate_widgets();
-	attach(this);
+	attach_to_all(this);
 	show_all_children();
 	on_running_tasks_changed();
 
@@ -72,23 +72,12 @@ calendar_widget &main_window::get_calendar()
 	return calendar;
 }
 
-void main_window::attach(summary_observer* observer)
-{
-	for (auto item : summaries)
-	{
-		item->attach(observer);
-	}
-}
-
-void main_window::detach(summary_observer* observer)
-{
-	for (auto item : summaries)
-	{
-		item->detach(observer);
-	}
-}
-
 void main_window::attach(action_observer* observer)
+{
+	attach_to_all(observer);
+}
+
+void main_window::attach_to_all(action_observer* observer)
 {
 	detach(observer); //To avoid duplicates
 	task_list.attach(observer);
@@ -97,11 +86,18 @@ void main_window::attach(action_observer* observer)
 	auto* s_observer = dynamic_cast<summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
-		attach(s_observer);
+		for (auto *item : summaries)
+		{
+			item->attach(s_observer);
+		}
 	}
 }
-
 void main_window::detach(action_observer* observer)
+{
+	detach_from_all( observer );
+}
+
+void main_window::detach_from_all(action_observer* observer)
 {
 	task_list.detach(observer);
 	toolbar.detach(observer);
@@ -109,7 +105,10 @@ void main_window::detach(action_observer* observer)
 	auto* s_observer = dynamic_cast<summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
-		detach(s_observer);
+		for (auto *item : summaries)
+		{
+			item->detach(s_observer);
+		}
 	}
 }
 
@@ -121,7 +120,7 @@ void main_window::relate_widgets()
 	summaries.push_back(&month_summary);
 	summaries.push_back(&year_summary);
 
-	for (auto widget : summaries)
+	for (auto *widget : summaries)
 	{
 		widget->set_references(calendar);
 		widget->attach(&details_view);

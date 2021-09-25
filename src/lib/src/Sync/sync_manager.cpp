@@ -323,7 +323,7 @@ void sync_manager::manage_network_problems()
 			logg(logg_text);
 		}
 
-		notifier.send(EventType::ERROR_MESSAGE, _("Network error"), text.str() );
+		notifier.send( event_type::ERROR_MESSAGE, _( "Network error"), text.str() );
 	}
 }
 

@@ -9,12 +9,12 @@
 #define ABOUT_DIALOG_H
 
 #include <gtkmm.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <gui/images.h>
 
 namespace gui
 {
-class about_dialog : public Gtk::AboutDialog, public IWidget
+class about_dialog : public Gtk::AboutDialog, public widget_interface
 {
 public:
 	about_dialog(image_cache& images);

@@ -3,7 +3,7 @@
 
 #include <gtkmm.h>
 #include <libtimeit/timer.h>
-#include <IWidget.h>
+#include <widget_interface.h>
 #include <memory>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
@@ -20,10 +20,10 @@ enum idle_dialog_response{
 	RESPONSE_CONTINUE=3
 } ;
 
-class idle_dialog : public Gtk::Dialog, public timer_observer, public IWidget
+class idle_dialog : public Gtk::Dialog, public timer_observer, public widget_interface
 {
 public:
-	idle_dialog(Timer& timer, database& db, Time_keeper& op_time_keeper);
+	idle_dialog( Timer& timer, database& db, time_manager& op_time_keeper);
 	void set_time_id(const time_id& id);
 	// IWidget interface
 	void show() override;
@@ -41,7 +41,7 @@ private:
 	string        task_string;
 	task_accessor tasks;
 	time_accessor times;
-	Time_keeper&  time_keeper;
+	time_manager&  time_keeper;
 
 	time_id       time_entry_id;
 

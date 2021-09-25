@@ -1,4 +1,4 @@
-#include "libtimeit/x11_lib.h"
+#include "libtimeit/x_lib_accessor.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -8,30 +8,30 @@ namespace libtimeit
 
 
 //LCOV_EXCL_START
-x11_lib::x11_lib() : display(XOpenDisplay(nullptr))
+x_lib_accessor::x_lib_accessor() : display(XOpenDisplay(nullptr))
 {
 	root_window = DefaultRootWindow(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-prefer-member-initializer,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
-x11_lib::~x11_lib()
+x_lib_accessor::~x_lib_accessor()
 {
 	XCloseDisplay(display);
 }
 
-int x11_lib::viewport_width()
+int x_lib_accessor::viewport_width()
 {
 	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	return screen->width;
 }
 
-int x11_lib::viewport_height()
+int x_lib_accessor::viewport_height()
 {
 	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	return screen->height;
 }
 
 
-long x11_lib::get_cardinal(const char *name, int offset) noexcept(false)
+long x_lib_accessor::get_cardinal(const char *name, int offset) noexcept(false)
 {
 	Atom property_name = XInternAtom(display, name, False);
 	Atom property_type = XA_CARDINAL;
@@ -67,7 +67,7 @@ long x11_lib::get_cardinal(const char *name, int offset) noexcept(false)
 	return return_value;
 }
 
-vector<string> x11_lib::get_strings(const char *name) noexcept(false)
+vector<string> x_lib_accessor::get_strings(const char *name) noexcept(false)
 {
 	Atom property_name = XInternAtom(display, name, False);
 	Atom property_type = XInternAtom(display, "UTF8_STRING", False);

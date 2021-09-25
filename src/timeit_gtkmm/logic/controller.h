@@ -19,14 +19,14 @@ using namespace libtimeit;
 
 class widget_controller : // NOLINT(cppcoreguidelines-special-member-functions)
 		public action_observer,
-		public time_keeper_observer,
+		public time_manager_observer,
 		public summary_observer,
 		public event_observer
 {
 public:
 	widget_controller(
 			window_manager& op_gui_factory,
-			Time_keeper&    op_time_keeper,
+			time_manager&    op_time_keeper,
 			database&       db,
 			notification_manager&       op_notifier,
 			image_cache&         images);
@@ -71,7 +71,7 @@ public:
 
 private:
 	window_manager&          windows;
-	Time_keeper&             time_keeper;
+	time_manager&             time_keeper;
 	time_accessor            times;
 	settings_accessor        settings;
 	database&                db;

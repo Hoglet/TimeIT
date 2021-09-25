@@ -17,12 +17,12 @@ using namespace std;
 
 widget_controller::widget_controller(
 		window_manager&        op_gui_factory,
-		Time_keeper&           op_time_keeper,
+		time_manager&           op_time_keeper,
 		database&              db,
 		notification_manager&  op_notifier,
 		image_cache&           images)
 		:
-		time_keeper_observer( op_time_keeper),
+		time_manager_observer( op_time_keeper),
 		event_observer( op_notifier ),
 		windows( op_gui_factory),
 		time_keeper( op_time_keeper),
@@ -189,9 +189,9 @@ void widget_controller::on_action_stop_timers()
 	time_keeper.stop_all();
 }
 
-void widget_controller::on_action_task_selection_changed(optional<task_id> selected_task_id)
+void widget_controller::on_action_task_selection_changed(optional<task_id> selected_task)
 {
-	this->selected_task_id = selected_task_id;
+	this->selected_task_id = selected_task;
 }
 
 void widget_controller::on_action_add_task()

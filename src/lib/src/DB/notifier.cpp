@@ -28,7 +28,7 @@ void notification_manager::detach(event_observer* observer)
 	}
 }
 
-void notification_manager::send(EventType type, string headline, string message)
+void notification_manager::send( event_type type, string headline, string message)
 {
 	for (event_observer *observer : observers)
 	{

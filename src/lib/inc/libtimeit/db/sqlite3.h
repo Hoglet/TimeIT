@@ -35,7 +35,7 @@ public:
 	void bind_value(int index, time_point<system_clock> value);
 	void bind_null_value(int index);
 
-	Query_result execute();
+	query_result execute();
 private:
 	SQLite3&      db;
 	sqlite3_stmt* stmt;
@@ -56,7 +56,7 @@ public:
 
 
 	virtual ~SQLite3();
-	Query_result execute(const string& statement);
+	query_result execute( const string& statement);
 	int64_t      id_of_last_insert();
 	sql_statement    prepare(const string& query);
 	string       last_error_message();

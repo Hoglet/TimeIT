@@ -17,31 +17,31 @@ static const int MINUTE = 60;
 namespace libtimeit
 {
 using namespace std;
-class Time_keeper;
+class time_manager;
 
-class time_keeper_observer
+class time_manager_observer
 {
 public:
-	time_keeper_observer(Time_keeper& /*time_keeper*/);
-	time_keeper_observer(const time_keeper_observer& ) = delete;
-	time_keeper_observer(time_keeper_observer&& )      = delete;
-	time_keeper_observer& operator=(const time_keeper_observer& ) = delete;
-	time_keeper_observer& operator=(time_keeper_observer&& )      = delete;
-	~time_keeper_observer();
+	time_manager_observer( time_manager& /*time_keeper*/);
+	time_manager_observer( const time_manager_observer& ) = delete;
+	time_manager_observer( time_manager_observer&& )      = delete;
+	time_manager_observer& operator=( const time_manager_observer& ) = delete;
+	time_manager_observer& operator=( time_manager_observer&& )      = delete;
+	~time_manager_observer();
 
 	virtual void on_idle_detected(const time_entry& /*id*/) {};
 	virtual void on_running_changed()       {};
 private:
-	Time_keeper& time_keeper;
+	time_manager& time_keeper;
 };
 
-class Time_keeper :
+class time_manager :
 		public timer_observer,
 		public event_observer
 {
-	friend class time_keeper_observer;
+	friend class time_manager_observer;
 public:
-	Time_keeper(
+	time_manager(
 			database& db,
 			Timer&    timer,
 			notification_manager& notifier
@@ -72,8 +72,8 @@ public:
 	void stop_time(const time_entry& item);
 private:
 	//
-	void attach(time_keeper_observer *);
-	void detach(time_keeper_observer *);
+	void attach( time_manager_observer *);
+	void detach( time_manager_observer *);
 
 	void check_for_status_change();
 
@@ -81,13 +81,13 @@ private:
 	void on_settings_changed(string /*name*/) override;
 	void on_complete_update() override;
 
-	seconds idle_gz;
+	seconds idle_gz{0s};
 	minutes default_idle_time{0min};
 
 	void notify_running_changed();
 	void notify_idle_detected(const time_entry& /*id*/);
 
-	list<time_keeper_observer *> observers;
+	list<time_manager_observer *> observers;
 
 	time_accessor      times;
 	task_accessor      tasks;

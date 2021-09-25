@@ -8,7 +8,7 @@ namespace libtimeit
 {
 using namespace std;
 
-using Query_result = vector<vector<data_cell>>;
+using query_result = vector<vector<data_cell>>;
 
 }
 

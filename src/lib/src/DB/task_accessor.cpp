@@ -9,7 +9,7 @@ namespace libtimeit
 using namespace std;
 using namespace std::chrono;
 
-const string CREATE_TASK_V6 = R"Query(
+const string CREATE_TASK_V_6 = R"Query(
 				INSERT INTO
 					tasks (name,parent,changed,uuid, deleted,idle,quiet)
 				VALUES (?,?,?,?,?,?,?);
@@ -47,7 +47,7 @@ task_accessor::task_accessor(database& op_database )
 				WHERE
 					id=?)")),
 		statement_id_to_uuid(db.prepare("SELECT uuid FROM tasks WHERE id=?;")),
-		statement_new_task(db.prepare(CREATE_TASK_V6 ))
+		statement_new_task(db.prepare( CREATE_TASK_V_6 ))
 {
 }
 
@@ -100,7 +100,7 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 		statement << " AND parent IS NULL ";
 	}
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	for (vector<data_cell> row : rows)
 	{
 		auto column{0};
@@ -127,7 +127,7 @@ vector<task> task_accessor::by_parent_id(optional<task_id> parent)
 optional<task> task_accessor::by_id(const task_id& id)
 {
 	statement_get_by_id.bind_value(1, static_cast<string>(id));
-	Query_result rows = statement_get_by_id.execute();
+	query_result rows = statement_get_by_id.execute();
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
@@ -174,7 +174,7 @@ optional<task> task_accessor::get_task_unlimited(const task_id& id)
 			id=?;
 		)");
 	statement_get_complete_task.bind_value( 1, old_task_id);
-	Query_result rows = statement_get_complete_task.execute();
+	query_result rows = statement_get_complete_task.execute();
 	if (rows.size() == 1)
 	{
 		vector<data_cell> row = rows.at(0);
@@ -225,7 +225,7 @@ vector<task> task_accessor::changed_since( time_point<system_clock> timestamp )
 				changed > )"
 				<< system_clock::to_time_t( timestamp );
 
-	Query_result rows = db.execute(statement.str());
+	query_result rows = db.execute( statement.str());
 	for (std::vector<data_cell> row : rows)
 	{
 		auto column{0};
@@ -299,11 +299,11 @@ void task_accessor::internal_update(const task &item)
 	statement_update_task.execute();
 }
 
-void task_accessor::notify(const task &existingTask, const task &item)
+void task_accessor::notify( const task &existing_task, const task &item)
 {
-	bool parent_changed = ( existingTask.parent_id != item.parent_id);
-	bool task_deleted   = ((existingTask.deleted != item.deleted) && item.deleted);
-	bool name_changed   = (existingTask.name != item.name);
+	bool parent_changed = ( existing_task.parent_id != item.parent_id);
+	bool task_deleted   = (( existing_task.deleted != item.deleted) && item.deleted);
+	bool name_changed   = ( existing_task.name != item.name);
 
 	if (name_changed)
 	{
