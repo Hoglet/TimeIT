@@ -77,7 +77,7 @@ void preference_dialog::on_data_changed()
 }
 ```
 
-### Example 1
+### Example 2
 ```cpp
 bool arbitrary_function(
   float    param1,
