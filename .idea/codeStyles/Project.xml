@@ -1,10 +1,5 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
-    <option name="OTHER_INDENT_OPTIONS">
-      <value>
-        <option name="USE_TAB_CHARACTER" value="true" />
-      </value>
-    </option>
     <Objective-C>
       <option name="INDENT_NAMESPACE_MEMBERS" value="0" />
       <option name="NAMESPACE_BRACE_PLACEMENT" value="2" />
@@ -19,6 +14,28 @@
       <option name="ADD_SETTER_PREFIX" value="false" />
       <option name="HEADER_GUARD_STYLE_PATTERN" value="${FILE_NAME}_${EXT}" />
     </Objective-C>
+    <Objective-C-extensions>
+      <rules>
+        <rule entity="NAMESPACE" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="MACRO" visibility="ANY" specifier="ANY" prefix="" style="SCREAMING_SNAKE_CASE" suffix="" />
+        <rule entity="CLASS" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="STRUCT" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="ENUM" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="TYPEDEF" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="UNION" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="CLASS_MEMBER_FUNCTION" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="STRUCT_MEMBER_FUNCTION" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="CLASS_MEMBER_FIELD" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="STRUCT_MEMBER_FIELD" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="GLOBAL_FUNCTION" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="GLOBAL_VARIABLE" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="PARAMETER" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="LOCAL_VARIABLE" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
+        <rule entity="LOCAL_VARIABLE" visibility="ANY" specifier="CONST" prefix="" style="SCREAMING_SNAKE_CASE" suffix="" />
+        <rule entity="GLOBAL_VARIABLE" visibility="ANY" specifier="CONST" prefix="" style="SCREAMING_SNAKE_CASE" suffix="" />
+        <rule entity="ENUMERATOR" visibility="ANY" specifier="ANY" prefix="" style="SCREAMING_SNAKE_CASE" suffix="" />
+      </rules>
+    </Objective-C-extensions>
     <Objective-C-extensions>
       <rules>
         <rule entity="NAMESPACE" visibility="ANY" specifier="ANY" prefix="" style="SNAKE_CASE" suffix="" />
