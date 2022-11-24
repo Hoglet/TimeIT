@@ -55,10 +55,10 @@ summary::summary(
 	ref_tree_selection = get_selection();
 	ref_tree_selection->signal_changed().connect(sigc::mem_fun(*this, &summary::on_selection_changed));
 
-	Gtk::Menu::MenuList &menu_list = menu_popup.items();
+	//ToDo Gtk::Menu::MenuList &menu_list = menu_popup.items();
 
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this,
-							&summary::on_menu_show_details)));
+	//ToDo menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this,
+	//ToDo 						&summary::on_menu_show_details)));
 
 }
 

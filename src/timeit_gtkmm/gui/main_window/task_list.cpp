@@ -36,9 +36,9 @@ task_list_widget::task_list_widget(
 	populate();
 
 	//Popup menu
-	Gtk::Menu::MenuList &menu_list = menu_popup.items();
+	//ToDo Gtk::Menu::MenuList &menu_list = menu_popup.items();
 
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &task_list_widget::on_menu_start)));
+/*	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &task_list_widget::on_menu_start)));
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(*this, &task_list_widget::on_menu_stop)));
 	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &task_list_widget::on_menu_add_time)));
@@ -46,7 +46,7 @@ task_list_widget::task_list_widget(
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &task_list_widget::on_menu_add_task)));
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &task_list_widget::on_menu_edit)));
 	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(*this, &task_list_widget::on_menu_remove_task)));
-
+*/
 }
 
 task_list_widget::~task_list_widget()

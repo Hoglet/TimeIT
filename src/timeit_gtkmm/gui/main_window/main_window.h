@@ -10,7 +10,7 @@
 #include "summary_views.h"
 #include "about_dialog.h"
 #include "details.h"
-#include "menu.h"
+//#include "menu.h"
 #include "toolbar.h"
 #include "calendar.h"
 
@@ -24,11 +24,12 @@ class main_window : public Gtk::Window, public action_observer, public widget_in
 public:
 	~main_window() override;
 	main_window(
-			database &db,
-			time_manager &op_time_keeper,
-			notification_manager &notifier,
-			window_manager &window_manager,
-			image_cache &images);
+			database&             db,
+			time_manager&         op_time_keeper,
+			notification_manager& notifier,
+			window_manager&       window_manager,
+			image_cache&          images,
+			controller_interface&           controller);
 	main_window(const main_window &) = delete;
 	main_window(main_window &&) = delete;
 	main_window &operator=(const main_window &) = delete;
@@ -88,6 +89,8 @@ private:
 	void empty_containers();
 	void do_layout();
 
+	Widget* create_menubar();
+
 	void attach_to_all(action_observer* /*observer*/);
 	void detach_from_all(action_observer* /*observer*/);
 
@@ -99,7 +102,7 @@ private:
 	calendar_widget calendar;
 	Gtk::Notebook summary_tabs;
 
-	menu_bar menubar;
+	//menu_bar menubar;
 	toolbar_widget toolbar;
 
 	Gtk::ScrolledWindow task_list_container;
@@ -115,15 +118,17 @@ private:
 	Gtk::VPaned v_paned;
 	details details_view;
 
-	Gtk::VBox secondary_v_box; //on right side
-	Gtk::HPaned h_paned;
-	Gtk::Statusbar statusbar;
-	Gtk::VBox main_v_box;
+	Gtk::VBox       secondary_v_box; //on right side
+	Gtk::HPaned     h_paned;
+	Gtk::Statusbar  statusbar;
+	Gtk::VBox       main_v_box;
 
-	time_accessor times;
+	time_accessor          times;
 	extended_task_accessor tasks;
-	settings_accessor settings;
-	vector<summary*> summaries;
+	settings_accessor      settings;
+	vector<summary*>       summaries;
+	Gtk::MenuBar*          menu_bar;
+	controller_interface&  controller;
 };
 }
 #endif // MAIN_WINDOW_H

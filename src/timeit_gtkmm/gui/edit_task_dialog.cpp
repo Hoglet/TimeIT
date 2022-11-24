@@ -60,7 +60,7 @@ void edit_task_dialog::create_layout()
 	parent_choosing_row.pack_start(parent_label, Gtk::PACK_SHRINK, 0);
 	parent_choosing_row.pack_start(parent_chooser, Gtk::PACK_SHRINK, 0);
 
-	task_name_entry.set_flags(Gtk::CAN_FOCUS);
+	//ToDo task_name_entry.set_flags(Gtk::CAN_FOCUS);
 	name_editing_row.pack_start(name_label, Gtk::PACK_SHRINK, 0);
 	name_editing_row.pack_start(task_name_entry);
 
@@ -83,9 +83,9 @@ void edit_task_dialog::create_layout()
 	desktop_frame.set_label_widget(workspace_label);
 
 
-	cancel_button.set_flags(Gtk::CAN_FOCUS);
+	//ToDo cancel_button.set_flags(Gtk::CAN_FOCUS);
 	ok_button.set_sensitive(false);
-	ok_button.set_flags(Gtk::CAN_FOCUS);
+	//ToDo ok_button.set_flags(Gtk::CAN_FOCUS);
 
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
 	get_action_area()->pack_start(cancel_button);
@@ -99,7 +99,7 @@ void edit_task_dialog::create_layout()
 	get_vbox()->pack_start(desktop_frame, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	set_border_width(BORDER_WIDTH);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER_ON_PARENT);
-	set_has_separator(false);
+	//ToDo set_has_separator(false);
 
 	for (unsigned row = 0; row < num_rows; row++)
 	{
@@ -110,7 +110,7 @@ void edit_task_dialog::create_layout()
 				string button_text = workspace.name(row * num_columns + column);
 				auto button = make_shared<Gtk::CheckButton>(button_text);
 
-				button->set_flags(Gtk::CAN_FOCUS);
+				//ToDo button->set_flags(Gtk::CAN_FOCUS);
 				button->set_mode(true);
 
 				button->set_tooltip_text(_("When enabled your task will start when entering this workspace and stop when exiting"));

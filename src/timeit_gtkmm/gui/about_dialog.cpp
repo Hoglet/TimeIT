@@ -36,18 +36,18 @@ about_dialog::about_dialog(image_cache& images)
 
 	set_logo( images.by_id(image_identifier::STD_ICON));
 
-	set_url_hook(
-			[](AboutDialog &dialog, const Glib::ustring& link)
-			{
-				about_dialog::on_link_clicked(dialog, link);
-			});
+	//ToDo set_url_hook(
+	//		[](AboutDialog &dialog, const Glib::ustring& link)
+	//		{
+	//			about_dialog::on_link_clicked(dialog, link);
+	//		});
 	set_website("https://hoglet.github.io/TimeIT/");
 	set_website_label(_("TimeIT website"));
 
 	std::list < Glib::ustring > list_authors;
 	list_authors.emplace_back("Kent Asplund");
 	set_copyright("Kent Asplund");
-	set_authors (list_authors);
+	//ToDo set_authors (list_authors);
 	/* This is where you add your name, so you will be credited as translator */
 	set_translator_credits(_("translator-credits"));
 }

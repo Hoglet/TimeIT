@@ -7,6 +7,7 @@
 #include <gtkmm.h>
 #include "widget_interface.h"
 #include "status_icon.h"
+#include "controller_interface.h"
 #include <gui/images.h>
 
 namespace gui
@@ -31,7 +32,9 @@ using widget_ptr = std::shared_ptr<widget_interface>;
 class window_manager
 {
 public:
-	window_manager( time_manager&, database &database, Timer& timer, notification_manager& notifier, image_cache& op_images);
+	window_manager( time_manager& op_time_keeper, database& op_database, Timer& op_timer,
+					notification_manager& op_notifier, image_cache& op_images,
+					controller_interface& op_controller );
 	virtual widget_ptr get_widget( widget_type widget);
 	virtual status_icon_widget& get_status_icon();
 
@@ -56,12 +59,13 @@ private:
 	void on_dialog_hide(Gtk::Dialog* dialog);
 
 
-	time_manager& time_keeper;
-	database&    db;
-	Timer&       timer;
-	notification_manager&    notifier;
-	image_cache&      images;
+	time_manager&                 time_keeper;
+	database&                     db;
+	Timer&                        timer;
+	notification_manager&         notifier;
+	image_cache&                  images;
 	list<shared_ptr<Gtk::Dialog>> active_dialogs;
+	controller_interface&                   controller_;
 };
 }
 #endif /* WINDOW_MANAGER_H */

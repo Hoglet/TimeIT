@@ -41,6 +41,8 @@ details::details(
 	set_headers_visible(false);
 	//Fill the popup menu:
 	{
+		//ToDo
+		/*
 		Gtk::Menu::MenuList &menulist = menu_popup.items();
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &details::on_menu_file_popup_edit)));
@@ -54,6 +56,7 @@ details::details(
 		menulist.push_back(split_menu_elem);
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &details::on_menu_file_popup_remove)));
+		*/
 	}
 	menu_popup.accelerate(*this);
 }

@@ -16,7 +16,7 @@
 #include <fmt/core.h>
 
 #include <window_manager.h>
-#include <controller.h>
+#include <gui_controller.h>
 #include <gtk_timer.h>
 
 #include <libtimeit.h>
@@ -111,6 +111,7 @@ int run( vector<char*> arguments, settings settings )
 			auto *argv = arguments.data();
 			Gtk::Main application( argc, argv, true);
 			Gtk::Main::init_gtkmm_internals();
+
 			libtimeit::init();
 			notification_manager notifier;
 
@@ -130,8 +131,7 @@ int run( vector<char*> arguments, settings settings )
 			auto_tracker auto_tracker(time_keeper, db, timer);
 
 			gui::image_cache images;
-			gui::window_manager   gui_factory(time_keeper, db, timer, notifier, images);
-			gui::widget_controller       controller(gui_factory, time_keeper, db, notifier, images);
+			gui::gui_controller       controller(timer, time_keeper, db, notifier, images);
 
 			controller.start();
 

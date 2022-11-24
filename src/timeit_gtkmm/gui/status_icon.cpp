@@ -48,8 +48,8 @@ status_icon_widget::status_icon_widget(
 
 void status_icon_widget::populate_context_menu()
 {
-	Gtk::Menu::MenuList &menu_list = menu_popup.items();
-	menu_list.clear();
+	//ToDo Gtk::Menu::MenuList &menu_list = menu_popup.items();
+	/*menu_list.clear();
 
 	latest_tasks = times.latest_active_tasks(5);
 	auto running_tasks = times.currently_running();
@@ -114,7 +114,7 @@ void status_icon_widget::populate_context_menu()
 			));
 	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &status_icon_widget::on_menu_preferences)));
 	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &status_icon_widget::on_menu_about)));
-
+*/
 }
 
 std::string status_icon_widget::complete_task_path(const task_id& id)
@@ -273,7 +273,7 @@ void status_icon_widget::set_tooltip()
 			message << " " << libtimeit::seconds_2_hhmm(times.duration_time(id, start_time, stop_time));
 		}
 	}
-	status_icon_instance->set_tooltip(message.str());
+	//ToDo status_icon_instance->set_tooltip(message.str());
 }
 
 void status_icon_widget::set_icon()

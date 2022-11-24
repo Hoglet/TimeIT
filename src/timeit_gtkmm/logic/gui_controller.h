@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef GUI_CONTROLLER_H
+#define GUI_CONTROLLER_H
 
 #include <action_observer.h>
 #include <window_manager.h>
@@ -10,6 +10,7 @@
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/database.h>
 #include <libtimeit/event_observer.h>
+#include "gtk_timer.h"
 
 namespace gui
 {
@@ -17,21 +18,38 @@ namespace gui
 using namespace std;
 using namespace libtimeit;
 
-class widget_controller : // NOLINT(cppcoreguidelines-special-member-functions)
+
+class gui_controller : // NOLINT(cppcoreguidelines-special-member-functions)
 		public action_observer,
 		public time_manager_observer,
 		public summary_observer,
-		public event_observer
+		public event_observer,
+		public controller_interface
 {
 public:
-	widget_controller(
-			window_manager& op_gui_factory,
-			time_manager&    op_time_keeper,
-			database&       db,
-			notification_manager&       op_notifier,
-			image_cache&         images);
-	~widget_controller() override;
+	gui_controller(
+			gtk_timer&            timer,
+			time_manager&         op_time_keeper,
+			database&             db,
+			notification_manager& op_notifier,
+			image_cache&          images);
+	~gui_controller() override;
 	void start();
+
+	//Controller
+	void on_settings()  override;
+	void on_quit()      override;
+
+	void on_edit_task()  override;
+	void on_start()      override;
+	void on_stop()       override;
+	void on_stop_all()   override;
+	void on_add_time()   override;
+	void on_add_task()   override;
+
+	void on_about()      override;
+	void on_report_bug() override;
+	void on_help()       override;
 
 	//Action observers
 	void on_action_task_selection_changed(optional<task_id> selected_task_id) override;
@@ -70,13 +88,13 @@ public:
 	void on_action_stop_timers() override;
 
 private:
-	window_manager&          windows;
-	time_manager&             time_keeper;
+	time_manager&            time_keeper;
 	time_accessor            times;
 	settings_accessor        settings;
 	database&                db;
 	notification_manager&    notifier;
 	image_cache&             images;
+	window_manager           windows;
 
 	int main_window_x = 0;
 	int main_window_y = 0;
@@ -86,4 +104,4 @@ private:
 	void show_idle_dialog(const time_id& id);
 };
 }
-#endif /* CONTROLLER_H */
+#endif /* GUI_CONTROLLER_H */

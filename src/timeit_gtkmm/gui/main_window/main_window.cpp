@@ -6,6 +6,8 @@
 #include <libtimeit/os_abstraction.h>
 #include <glibmm/i18n.h>
 #include "summary.h"
+#include "menu.h"
+#include "submenu.h"
 #include <libtimeit/db/default_values.h>
 #include <glibmm.h>
 
@@ -26,11 +28,12 @@ static const int DEFAULT_WINDOW_WIDTH = 550;
 static const int DEFAULT_WINDOW_HEIGHT = 550;
 
 main_window::main_window(
-		database &db,
-		time_manager &op_time_keeper,
-		notification_manager &notifier,
-		window_manager &gui_factory,
-		image_cache &images)
+		database&             db,
+		time_manager&         op_time_keeper,
+		notification_manager& notifier,
+		window_manager&       gui_factory,
+		image_cache&          images,
+		controller_interface&           op_controller)
 		:
 		task_list( db, op_time_keeper, notifier, images),
 		day_summary(db, notifier),
@@ -45,7 +48,8 @@ main_window::main_window(
 		details_view(db, notifier, gui_factory),
 		times(db),
 		tasks(db),
-		settings(db)
+		settings(db),
+		controller( op_controller )
 {
 	create_layout();
 	relate_widgets();
@@ -82,7 +86,6 @@ void main_window::attach_to_all(action_observer* observer)
 	detach(observer); //To avoid duplicates
 	task_list.attach(observer);
 	toolbar.attach(observer);
-	menubar.attach(observer);
 	auto* s_observer = dynamic_cast<summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
@@ -101,7 +104,6 @@ void main_window::detach_from_all(action_observer* observer)
 {
 	task_list.detach(observer);
 	toolbar.detach(observer);
-	menubar.detach(observer);
 	auto* s_observer = dynamic_cast<summary_observer*>(observer);
 	if (s_observer != nullptr)
 	{
@@ -131,27 +133,26 @@ void main_window::create_layout()
 {
 	//First setting parameters on widgets
 	task_list_container.set_size_request(270, 230);
-	task_list_container.set_flags(Gtk::CAN_FOCUS);
+	//ToDo task_list_container.set_flags(Gtk::CAN_FOCUS);
 	task_list_container.set_shadow_type(Gtk::SHADOW_NONE);
 	task_list_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	calendar.set_flags(Gtk::CAN_FOCUS);
-	calendar.display_options(
-			Gtk::CALENDAR_SHOW_HEADING | Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
-	day_summary_container.set_flags(Gtk::CAN_FOCUS);
+	//ToDo calendar.set_flags(Gtk::CAN_FOCUS);
+	//ToDo calendar.display_options( Gtk:CALENDAR_SHOW_HEADING | Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
+	//ToDo day_summary_container.set_flags(Gtk::CAN_FOCUS);
 	day_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	day_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	week_summary_container.set_flags(Gtk::CAN_FOCUS);
+	//ToDo week_summary_container.set_flags(Gtk::CAN_FOCUS);
 	week_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	week_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	month_summary_container.set_flags(Gtk::CAN_FOCUS);
+	//ToDo month_summary_container.set_flags(Gtk::CAN_FOCUS);
 	month_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	month_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	year_summary_container.set_flags(Gtk::CAN_FOCUS);
+	//ToDo year_summary_container.set_flags(Gtk::CAN_FOCUS);
 	year_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	year_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-	h_paned.set_flags(Gtk::CAN_FOCUS);
-	summary_tabs.set_flags(Gtk::CAN_FOCUS);
+	//ToDo h_paned.set_flags(Gtk::CAN_FOCUS);
+	//ToDo summary_tabs.set_flags(Gtk::CAN_FOCUS);
 	summary_tabs.set_size_request(250, 150);
 
 	//Then the actual layout
@@ -224,7 +225,8 @@ void main_window::default_layout()
 	{
 		h_paned.pack1(main_v_box, Gtk::FILL);
 		{
-			main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
+
+			main_v_box.pack_start(*create_menubar(), Gtk::PACK_SHRINK, 0);
 			main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
 			main_v_box.pack_start(task_list_container); // Gtk::AttachOptions(0));
 
@@ -260,7 +262,7 @@ void main_window::classic_layout()
 	add(v_paned);
 	v_paned.pack1(main_v_box, Gtk::FILL);
 	{
-		main_v_box.pack_start(menubar, Gtk::PACK_SHRINK, 0);
+		main_v_box.pack_start(*menu_bar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(toolbar, Gtk::PACK_SHRINK, 0);
 		main_v_box.pack_start(h_paned);
 		{
@@ -328,12 +330,18 @@ void main_window::set_calendar()
 void main_window::on_action_task_selection_changed(optional<task_id> selected_task_id)
 {
 	toolbar.set_task_is_selected(selected_task_id.has_value());
-	menubar.set_task_is_selected(selected_task_id.has_value());
+	//menu_bar.set_task_is_selected(selected_task_id.has_value());
 }
 
 void main_window::on_action_remove_task()
 {
 	auto selected_task_id = task_list.selected_id();
+
+	if( selected_task_id.has_value() == false )
+	{
+		return;
+	}
+
 	//Confirm dialog when removing task, headline!
 	const char* headline = _("Are you sure you want to delete this task?");
 	Gtk::MessageDialog dialog(*this, headline, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_OK_CANCEL);
@@ -348,10 +356,7 @@ void main_window::on_action_remove_task()
 	{
 		case (Gtk::RESPONSE_OK):
 			//Remove task
-			if(selected_task_id.has_value())
-			{
-				tasks.remove(selected_task_id.value());
-			}
+			tasks.remove(selected_task_id.value());
 			break;
 		case (Gtk::RESPONSE_CANCEL):
 			break;
@@ -359,6 +364,39 @@ void main_window::on_action_remove_task()
 			cerr << "Unexpected button clicked." << std::endl;
 			break;
 	}
+}
+
+Widget* main_window::create_menubar()
+{
+
+	submenu file_menu(_("_File"));
+	file_menu
+		.add_item(_("Settings"), "", [&] { this->controller.on_settings();})
+		.add_item(_("Quit"), "<Primary>q", [&] { this->controller.on_quit();});
+
+	submenu task_menu(_("_Task"));
+	task_menu
+		.add_item(_("_Start"), "", [&] { this->controller.on_start(); })
+		.add_item(_("Stop"), "", [&] { this->controller.on_stop(); })
+		.add_item(_("Stop all"), "", [&] { this->controller.on_stop_all(); } )
+		.add_item( _("Add time"), "", [&] { this->controller.on_add_time(); } )
+		.add_item( _("Add task"), "", [&] { this->controller.on_add_task(); } )
+		.add_item(_("Remove"), "", [&] { this->on_action_remove_task();})
+		.add_item(_("Edit"), "", [&] { this->controller.on_edit_task();});
+
+	submenu help_menu(_("_Help"));
+	help_menu
+		.add_item(_("About"), "", [&] { this->controller.on_about(); })
+		.add_item(_("Report bug"), "", [&]  { this->controller.on_report_bug(); })
+		.add_item(_("Help"), "", [&]  { this->controller.on_help(); });
+
+	menu main_menu;
+	main_menu
+		.add(file_menu)
+		.add( task_menu )
+		.add( help_menu );
+
+	return main_menu.get_menu_bar();
 }
 
 }

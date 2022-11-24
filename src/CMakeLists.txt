@@ -50,7 +50,7 @@ add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
 #  Subfolders
 # ---------------
 add_subdirectory(lib)
-add_subdirectory(timeit_gtkmm3)
+add_subdirectory(timeit_gtkmm)
 add_subdirectory(images)
 add_subdirectory(doc)
 add_subdirectory(po)
