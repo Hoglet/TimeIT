@@ -366,37 +366,38 @@ void main_window::on_action_remove_task()
 	}
 }
 
-Widget* main_window::create_menubar()
+Widget* main_window::create_menubar( )
 {
-
-	submenu file_menu(_("_File"));
+	submenu file_menu( _( "_File" ));
 	file_menu
-		.add_item(_("Settings"), "", [&] { this->controller.on_settings();})
-		.add_item(_("Quit"), "<Primary>q", [&] { this->controller.on_quit();});
+			.add_item( _( "Settings" ), "", [ & ] { this->controller.on_settings( ); } )
+			.add_item( _( "Quit" ), "<Primary>q", [ & ] { this->controller.on_quit( ); } );
 
-	submenu task_menu(_("_Task"));
+	submenu task_menu( _( "_Task" ));
 	task_menu
-		.add_item(_("_Start"), "", [&] { this->controller.on_start(); })
-		.add_item(_("Stop"), "", [&] { this->controller.on_stop(); })
-		.add_item(_("Stop all"), "", [&] { this->controller.on_stop_all(); } )
-		.add_item( _("Add time"), "", [&] { this->controller.on_add_time(); } )
-		.add_item( _("Add task"), "", [&] { this->controller.on_add_task(); } )
-		.add_item(_("Remove"), "", [&] { this->on_action_remove_task();})
-		.add_item(_("Edit"), "", [&] { this->controller.on_edit_task();});
+			.add_item( _( "_Start" ), "", [ & ] { this->controller.on_start( ); } )
+			.add_item( _( "Stop" ), "", [ & ] { this->controller.on_stop( ); } )
+			.add_item( _( "Stop all" ), "", [ & ] { this->controller.on_stop_all( ); } )
+			.add_item( _( "Edit" ), "", [ & ] { this->controller.on_edit_task( ); } )
+			.add_item( )
+			.add_item( _( "Add time" ), "", [ & ] { this->controller.on_add_time( ); } )
+			.add_item( )
+			.add_item( _( "Add task" ), "", [ & ] { this->controller.on_add_task( ); } )
+			.add_item( _( "Remove" ), "", [ & ] { this->on_action_remove_task( ); } );
 
-	submenu help_menu(_("_Help"));
+	submenu help_menu( _( "_Help" ));
 	help_menu
-		.add_item(_("About"), "", [&] { this->controller.on_about(); })
-		.add_item(_("Report bug"), "", [&]  { this->controller.on_report_bug(); })
-		.add_item(_("Help"), "", [&]  { this->controller.on_help(); });
+			.add_item( _( "About" ), "", [ & ] { this->controller.on_about( ); } )
+			.add_item( _( "Report bug" ), "", [ & ] { this->controller.on_report_bug( ); } )
+			.add_item( _( "Help" ), "", [ & ] { this->controller.on_help( ); } );
 
 	menu main_menu;
 	main_menu
-		.add(file_menu)
-		.add( task_menu )
-		.add( help_menu );
+			.add( file_menu )
+			.add( task_menu )
+			.add( help_menu );
 
-	return main_menu.get_menu_bar();
+	return main_menu.get_menu_bar( );
 }
 
 }

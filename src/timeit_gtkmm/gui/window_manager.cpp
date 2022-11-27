@@ -133,7 +133,7 @@ status_icon_widget& window_manager::get_status_icon()
 {
 	if (status_icon_instance == nullptr)
 	{
-		status_icon_instance =  (new status_icon_widget(time_keeper, db, notifier, images));
+		status_icon_instance =  (new status_icon_widget(time_keeper, db, notifier, images, controller_));
 	}
 	return *status_icon_instance;
 }

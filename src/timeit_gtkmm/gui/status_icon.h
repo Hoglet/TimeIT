@@ -15,6 +15,7 @@
 #include <libtimeit/db/time_accessor.h>
 #include <gui/images.h>
 #include "action_observer.h"
+#include "controller_interface.h"
 
 namespace gui
 {
@@ -26,8 +27,9 @@ public:
 	status_icon_widget(
 			time_manager&,
 			database&,
-			notification_manager&   notifier,
-			image_cache&     images);
+			notification_manager& notifier,
+			image_cache&          images,
+			controller_interface& controller);
 
 	void show()
 	{
@@ -68,7 +70,6 @@ private:
 	Glib::RefPtr<Gdk::Pixbuf> idle_icon_small;
 	Glib::RefPtr<Gdk::Pixbuf> running_icon_small;
 
-	Gtk::Menu menu_popup;
 	time_manager&  m_time_keeper;
 	task_accessor tasks;
 	time_accessor times;
@@ -76,6 +77,8 @@ private:
 	std::list<action_observer*> observers;
 	std::vector<task_id> latest_tasks;
 
+	unique_ptr<Gtk::Menu> popup_menu;
+	controller_interface& controller;
 };
 
 }

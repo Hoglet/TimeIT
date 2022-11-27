@@ -10,6 +10,7 @@
 class menu_item
 {
 public:
+	menu_item();
 	menu_item( const std::string           title,
 			   const std::string           accelerator,
 			   std::function< void(void) > lambda
@@ -19,6 +20,7 @@ public:
 	const std::string title;
 	const std::string accelerator;
 	const std::function< void(void) > lambda;
+	const bool is_separator;
 };
 
 
