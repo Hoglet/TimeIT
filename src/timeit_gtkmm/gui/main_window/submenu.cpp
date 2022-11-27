@@ -64,8 +64,11 @@ std::unique_ptr<Gtk::Menu> submenu::create( )
 	Glib::RefPtr<Glib::Object> object = m_refBuilder->get_object("menu_id");
 	Glib::RefPtr<Gio::Menu> gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 
-	return std::make_unique<Gtk::Menu>(gmenu);
+	auto result = std::make_unique<Gtk::Menu>(gmenu);
+	result->insert_action_group("timeit", get_actions());
+	return result;
 }
+
 
 const Glib::RefPtr<Gio::ActionGroup> submenu::get_actions( )
 {

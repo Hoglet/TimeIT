@@ -108,7 +108,6 @@ void status_icon_widget::populate_context_menu()
 		.add_item( _( "About" ), "",            [&]{ this->controller.on_about( ); } );
 
 	popup_menu = c_menu.create();
-	popup_menu->insert_action_group( "timeit", c_menu.get_actions());
 }
 
 std::string status_icon_widget::complete_task_path(const task_id& id)
