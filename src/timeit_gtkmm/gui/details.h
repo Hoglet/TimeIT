@@ -107,8 +107,8 @@ private:
 
 	time_point<system_clock> start_time { system_clock::from_time_t(0) };
 	time_point<system_clock> stop_time  { system_clock::from_time_t(0) };
-	Glib::RefPtr<Gtk::MenuItem> merge_menu_item;
-	Glib::RefPtr<Gtk::MenuItem> split_menu_item;
+	Gtk::MenuItem*              merge_menu_item = nullptr;
+	Gtk::MenuItem*              split_menu_item = nullptr;
 	unique_ptr<Gtk::Menu>       context_menu;
 	time_accessor               times;
 	settings_accessor           settings;
