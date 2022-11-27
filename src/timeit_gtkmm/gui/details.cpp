@@ -1,4 +1,5 @@
 #include "details.h"
+#include "main_window/submenu.h"
 #include <fmt/core.h>
 #include <vector>
 #include <libtimeit/utils.h>
@@ -43,9 +44,6 @@ details::details(
 	{
 		//ToDo
 		/*
-		Gtk::Menu::MenuList &menulist = menu_popup.items();
-
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &details::on_menu_file_popup_edit)));
 
 		Gtk::Menu_Helpers::MenuElem merge_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &details::on_menu_file_popup_merge));
 		merge_menu_item = merge_menu_elem.get_child();
@@ -57,8 +55,18 @@ details::details(
 
 		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &details::on_menu_file_popup_remove)));
 		*/
+		submenu l_menu("");
+		l_menu
+				.append( { _("_Edit"),            [&]{ this->on_menu_file_popup_edit();}   })
+				.append( { _("_Merge with next"), [&]{ this->on_menu_file_popup_merge();}  })
+				.append( { _("_Split"),           [&]{ this->on_menu_file_popup_split();}  })
+				.append( {  } )
+				.append( { _("_Remove"),          [&]{ this->on_menu_file_popup_remove();} });
+
+		context_menu = l_menu.create();
+		//ToDo merge_menu_item = context_menu->get_children() | views::filter( [](Widget* i)) ;
 	}
-	menu_popup.accelerate(*this);
+	context_menu->accelerate(*this);
 }
 
 
@@ -292,7 +300,7 @@ bool details::on_button_press_event(GdkEventButton *event)
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
 		set_visibility_of_context_menu();
-		menu_popup.popup(event->button, event->time);
+		context_menu->popup(event->button, event->time);
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
@@ -309,6 +317,9 @@ bool details::on_button_press_event(GdkEventButton *event)
 
 void details::set_visibility_of_context_menu()
 {
+	//ToDo fix visibility
+	return;
+
 	auto selected_ids = get_selected_and_next();
 	if( selected_ids.size()==2 )
 	{
