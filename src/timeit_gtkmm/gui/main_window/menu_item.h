@@ -12,6 +12,10 @@ class menu_item
 public:
 	menu_item();
 	menu_item( const std::string           title,
+			   std::function< void(void) > lambda
+	);
+
+	menu_item( const std::string           title,
 			   const std::string           accelerator,
 			   std::function< void(void) > lambda
 			   );

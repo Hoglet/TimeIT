@@ -1,4 +1,5 @@
 #include "task_list.h"
+#include "submenu.h"
 #include <glibmm/i18n.h>
 #include <libtimeit/utils.h>
 
@@ -35,18 +36,19 @@ task_list_widget::task_list_widget(
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &task_list_widget::on_selection_changed));
 	populate();
 
-	//Popup menu
-	//ToDo Gtk::Menu::MenuList &menu_list = menu_popup.items();
+	submenu l_menu("");
 
-/*	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Start"), sigc::mem_fun(*this, &task_list_widget::on_menu_start)));
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(*this, &task_list_widget::on_menu_stop)));
-	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(*this, &task_list_widget::on_menu_add_time)));
-	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(*this, &task_list_widget::on_menu_add_task)));
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Edit task"), sigc::mem_fun(*this, &task_list_widget::on_menu_edit)));
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(*this, &task_list_widget::on_menu_remove_task)));
-*/
+	l_menu
+		.append( { _("Start"),       [&]{ this->on_menu_start();}    })
+		.append( { _("Stop"),        [&]{ this->on_menu_stop();}     })
+		.append( { } )
+		.append( { _("Add time"),    [&]{ this->on_menu_add_time();} })
+		.append( {  } )
+		.append( { _("Add task"),    [&]{ this->on_menu_add_task();} })
+		.append( { _("Edit task"),   [&]{ this->on_menu_edit();}     })
+		.append( { _("Remove task"), [&]{ this->on_menu_remove_task();} });
+
+	context_menu = l_menu.create();
 }
 
 task_list_widget::~task_list_widget()
@@ -64,7 +66,7 @@ bool task_list_widget::on_button_press_event(GdkEventButton* event)
 	bool retval = TreeView::on_button_press_event(event);
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		menu_popup.popup(event->button, event->time);
+		context_menu->popup(event->button, event->time);
 		retval = true; //It has been handled.
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)

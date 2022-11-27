@@ -14,6 +14,8 @@ public:
 	const std::string title;
 	submenu& add_item( const std::string &text, const std::string &accelerator, std::function< void(void) > lambda );
 	submenu& add_item( );
+	submenu& append( const menu_item& );
+
 	std::string xml();
 	std::string items_xml();
 	std::list<menu_item> menu_items;

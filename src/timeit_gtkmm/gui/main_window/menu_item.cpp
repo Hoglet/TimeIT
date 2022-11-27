@@ -15,6 +15,16 @@ menu_item::menu_item()
 {}
 
 menu_item::menu_item(
+		const std::string            op_title,
+		std::function< void(void) >  op_lambda)
+		:
+		title(op_title),
+		accelerator(""),
+		lambda(op_lambda),
+		is_separator(false)
+{}
+
+menu_item::menu_item(
 		   const std::string            op_title,
 		   const std::string            op_accelerator,
 		   std::function< void(void) >  op_lambda)

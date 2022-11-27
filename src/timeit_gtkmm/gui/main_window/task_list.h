@@ -68,7 +68,6 @@ private:
 
 	model_columns  columns;
 	//
-	Gtk::Menu menu_popup;
 	void on_menu_start();
 	void on_menu_stop();
 	void on_menu_edit();
@@ -86,6 +85,7 @@ private:
 	std::list<action_observer*> observers;
 	extended_task_accessor tasks;
 	time_manager &time_keeper;
+	unique_ptr <Gtk::Menu> context_menu;
 };
 }
 #endif // TASK_LIST_H

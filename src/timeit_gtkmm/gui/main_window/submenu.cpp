@@ -25,6 +25,13 @@ submenu& submenu::add_item( )
 	return *this;
 }
 
+submenu& submenu::append( const menu_item&  item)
+{
+	menu_items.push_back( item );
+	return *this;
+}
+
+
 string submenu::xml()
 {
 	return fmt::format( R"(
