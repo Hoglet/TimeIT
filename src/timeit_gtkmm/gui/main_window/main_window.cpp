@@ -133,26 +133,18 @@ void main_window::create_layout()
 {
 	//First setting parameters on widgets
 	task_list_container.set_size_request(270, 230);
-	//ToDo task_list_container.set_flags(Gtk::CAN_FOCUS);
 	task_list_container.set_shadow_type(Gtk::SHADOW_NONE);
 	task_list_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//ToDo calendar.set_flags(Gtk::CAN_FOCUS);
 	//ToDo calendar.display_options( Gtk:CALENDAR_SHOW_HEADING | Gtk::CALENDAR_SHOW_DAY_NAMES | Gtk::CALENDAR_SHOW_WEEK_NUMBERS);
-	//ToDo day_summary_container.set_flags(Gtk::CAN_FOCUS);
 	day_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	day_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//ToDo week_summary_container.set_flags(Gtk::CAN_FOCUS);
 	week_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	week_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//ToDo month_summary_container.set_flags(Gtk::CAN_FOCUS);
 	month_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	month_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//ToDo year_summary_container.set_flags(Gtk::CAN_FOCUS);
 	year_summary_container.set_shadow_type(Gtk::SHADOW_NONE);
 	year_summary_container.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-	//ToDo h_paned.set_flags(Gtk::CAN_FOCUS);
-	//ToDo summary_tabs.set_flags(Gtk::CAN_FOCUS);
 	summary_tabs.set_size_request(250, 150);
 
 	//Then the actual layout

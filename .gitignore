@@ -85,3 +85,4 @@ src/version.h
 /src/lib/inc/libtimeit/version.h
 /obj-x86_64-linux-gnu/
 /.idea/dataSources*
+/testdata/

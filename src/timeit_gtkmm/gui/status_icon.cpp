@@ -49,7 +49,6 @@ status_icon_widget::status_icon_widget(
 
 void status_icon_widget::populate_context_menu()
 {
-	//ToDo Gtk::Menu::MenuList &menu_list = menu_popup.items();
 	submenu c_menu("Status Icon");
 
 	latest_tasks = times.latest_active_tasks(5);
@@ -62,6 +61,7 @@ void status_icon_widget::populate_context_menu()
 			auto task = tasks.by_id(id);
 			string menu_line = complete_task_path(latest_tasks[i]);
 
+			//ToDo icons in menu?
 			/*Gtk::Image *menu_icon = Gtk::manage(new Gtk::Image());
 			if (find(running_tasks.begin(), running_tasks.end(), id) != running_tasks.end())
 			{
