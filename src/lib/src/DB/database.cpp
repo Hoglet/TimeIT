@@ -5,8 +5,6 @@
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/autotrack_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
-#include <libtimeit/db/sqlite3.h>
-#include <libtimeit/db/database.h>
 #include <fmt/core.h>
 #include "db_updater.h"
 

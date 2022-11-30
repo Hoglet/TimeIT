@@ -23,9 +23,9 @@ It features:
   * When did you have a break and for how long?
 * Editing of records.
 
-Source is available on [github](https://github.com/Hoglet/TimeIT)
+Source is available on [GitHub](https://github.com/Hoglet/TimeIT)
 
-Project homepage is on [github pages](https://hoglet.github.io/TimeIT/)
+Project homepage is on [GitHub pages](https://hoglet.github.io/TimeIT/)
 
 ## Build
 
@@ -65,7 +65,3 @@ Reported to work with following window managers:
 * metacity (Gnome2, Unity)
 * mutter (Gnome3)
 * muffin (Cinnamon)
-
-
-
-

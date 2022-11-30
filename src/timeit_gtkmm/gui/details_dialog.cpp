@@ -1,6 +1,5 @@
 #include "details_dialog.h"
 #include "libtimeit/utils.h"
-#include <libtimeit/logic/time_keeper.h>
 
 using namespace libtimeit;
 using namespace std;

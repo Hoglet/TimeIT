@@ -11,7 +11,6 @@
 #include <sys/un.h>
 #include <cstdio>
 #include <unistd.h>
-#include <iostream>
 #include <fcntl.h>
 #include <libtimeit/db/notifier.h>
 #include <libtimeit/utils.h>

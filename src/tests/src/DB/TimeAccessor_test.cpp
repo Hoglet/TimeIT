@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/exceptions/db_exception.h>
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/extended_task_accessor.h>

@@ -102,7 +102,7 @@ void gui_controller::on_show_main_window()
 void gui_controller::on_about()
 {
 	windows.get_widget(ABOUT_DIALOG)->show();
-};
+}
 
 void gui_controller::on_action_about()
 {

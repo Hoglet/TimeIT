@@ -1,6 +1,5 @@
 #include <libtimeit/timer.h>
 #include <libtimeit/logic/auto_tracker.h>
-#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/misc/contains.h>
 
 namespace libtimeit

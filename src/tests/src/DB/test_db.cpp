@@ -1,10 +1,5 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
-#include <libtimeit/db/database.h>
-#include <libtimeit/os_abstraction.h>
-#include <libtimeit/exceptions/db_exception.h>
-#include <libtimeit/db/data_cell.h>
-#include <libtimeit/db/sqlite3.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include <sstream>

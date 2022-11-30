@@ -2,8 +2,6 @@
 #include <X11/extensions/scrnsaver.h>
 #include <libtimeit/logic/x11_idle_detector.h>
 #include <iostream>
-#include <libtimeit/timer.h>
-#include <memory>
 #include <libtimeit/utils.h>
 
 namespace libtimeit

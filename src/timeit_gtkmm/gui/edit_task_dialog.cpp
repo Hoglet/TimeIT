@@ -1,7 +1,6 @@
 #include "edit_task_dialog.h"
 #include "parent_chooser.h"
 #include <iostream>
-#include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/default_values.h>
 #include <fmt/core.h>
 
@@ -95,7 +94,7 @@ void edit_task_dialog::create_layout()
 	get_vbox()->pack_start(quiet_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	get_vbox()->pack_start(desktop_frame, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	set_border_width(BORDER_WIDTH);
-	property_window_position().set_value(Gtk::WIN_POS_CENTER_ON_PARENT);
+	set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 	//ToDo set_has_separator(false);
 
 	for (unsigned row = 0; row < num_rows; row++)

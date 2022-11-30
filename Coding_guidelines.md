@@ -1,6 +1,6 @@
 # Coding guidelines
 This document is intended to encourage good coding practices 
-without inhibiting progress. Rules herein should be open ended 
+without inhibiting progress. Rules herein should be open-ended 
 to allow the author to "do better". 
 
 The main rules in order of importance:

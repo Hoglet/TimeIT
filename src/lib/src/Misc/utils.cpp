@@ -7,7 +7,6 @@
 #include <sys/time.h>
 #include <cstring>
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 #include <array>
 
 using namespace std;

@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include "TempDB.h"
 #include <libtimeit/db/task_accessor.h>
-#include <libtimeit/exceptions/db_exception.h>
 
 namespace test
 {

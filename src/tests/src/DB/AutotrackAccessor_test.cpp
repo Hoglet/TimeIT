@@ -2,7 +2,6 @@
 #include "TempDB.h"
 #include <libtimeit/db/autotrack_accessor.h>
 #include <vector>
-#include <sstream>
 
 namespace test
 {

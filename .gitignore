@@ -64,7 +64,6 @@ debian/timeit
 *.rpm
 *.out
 *.data
-src/version.h
 
 /.settings/org.sonar.ide.eclipse.core.prefs
 /testresult.xml
