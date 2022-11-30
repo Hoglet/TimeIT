@@ -18,7 +18,7 @@ menu &menu::add( const submenu& menu )
 	return *this;
 }
 
-Gtk::Widget* menu::get_menu_bar()
+unique_ptr<MenuBar> menu::get_menu_bar()
 {
 	auto builder = Gtk::Builder::create();
 	string ui_info = format(R"(
@@ -33,7 +33,7 @@ Gtk::Widget* menu::get_menu_bar()
 	auto object = builder->get_object( "menubar");
 	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 
-	auto result = make_managed<MenuBar>(gmenu);
+	auto result = make_unique<MenuBar>(gmenu);
 
 	result->insert_action_group( "timeit",get_actions());
 	return result;

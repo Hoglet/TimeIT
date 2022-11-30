@@ -84,12 +84,13 @@ private:
 	void default_layout();
 	void classic_layout();
 	void save_size();
+	void resized();
 
 	static void remove_children(Container &container);
 	void empty_containers();
 	void do_layout();
 
-	Widget* create_menubar();
+	unique_ptr<Gtk::MenuBar> create_menubar();
 
 	void attach_to_all(action_observer* /*observer*/);
 	void detach_from_all(action_observer* /*observer*/);
@@ -123,12 +124,17 @@ private:
 	Gtk::Statusbar  statusbar;
 	Gtk::VBox       main_v_box;
 
-	time_accessor          times;
-	extended_task_accessor tasks;
-	settings_accessor      settings;
-	vector<summary*>       summaries;
-	Gtk::MenuBar*          menu_bar;
-	controller_interface&  controller;
+	time_accessor             times;
+	extended_task_accessor    tasks;
+	settings_accessor         settings;
+	vector<summary*>          summaries;
+	unique_ptr <Gtk::MenuBar> menu_bar;
+	controller_interface&     controller;
+
+	int width = 1;
+	int height = 1;
+	list<string_view> task_sensitive_menus;
+	void update_menus( bool is_selected );
 };
 }
 #endif // MAIN_WINDOW_H

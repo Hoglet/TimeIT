@@ -11,7 +11,7 @@ class menu
 
 public:
 	menu &add( const submenu& menu );
-	Gtk::Widget* get_menu_bar();
+	std::unique_ptr<Gtk::MenuBar> get_menu_bar();
 	const Glib::RefPtr<Gio::ActionGroup> get_actions();
 private:
 	std::list<submenu> submenus;
