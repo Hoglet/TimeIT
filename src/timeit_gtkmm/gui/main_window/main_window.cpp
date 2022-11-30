@@ -174,7 +174,6 @@ void main_window::create_layout()
 	details_window.add(details_view);
 	details_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
-
 	h_paned.set_position((int) settings.get_int("main_win_h_paned_position", get_width()  * 4 / 10));
 	v_paned.set_position((int) settings.get_int("main_win_v_paned_position", get_height() * 3 /10));
 	v_paned.pack2(details_window);

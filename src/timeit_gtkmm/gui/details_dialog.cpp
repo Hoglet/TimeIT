@@ -35,14 +35,15 @@ details_dialog::details_dialog(
 	running_idle_icon = images.by_id(image_identifier::RUNNING_IDLE);
 	blank_icon        = images.by_id(image_identifier::BLANK);
 
-	auto width = (int)settings.get_int("details_dialog_width", 550);
-	auto height = (int)settings.get_int("details_dialog_height", 700);
+	width = (int)settings.get_int("details_dialog_width", 550);
+	height = (int)settings.get_int("details_dialog_height", 700);
 	set_default_size( width, height);
 
 
 	scrolled_window.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
 	scrolled_window.set_size_request(400, 400);
+
 
 	task_name.set_alignment(0.0, 0.5);
 	running_image.set_alignment(0.0, 0.5);
@@ -59,13 +60,13 @@ details_dialog::details_dialog(
 	get_vbox()->pack_start( top_table, Gtk::PACK_SHRINK, 3);
 	get_vbox()->pack_start(scrolled_window, Gtk::PACK_EXPAND_WIDGET, 3);
 	show_all_children();
-
+	signal_check_resize().connect( [&]{ this->size_change(); });
 }
 
 details_dialog::~details_dialog()
 {
-	settings.set_int("details_dialog_width", this->get_width());
-	settings.set_int("details_dialog_height", this->get_height());
+	settings.set_int("details_dialog_width", width);
+	settings.set_int("details_dialog_height", height);
 }
 
 
@@ -189,6 +190,20 @@ void details_dialog::on_task_total_time_updated(const task_id& id)
 	else
 	{
 		// ignore any other task being updated
+	}
+}
+
+void details_dialog::size_change( )
+{
+	auto w = get_width();
+	auto h = get_height();
+	if( w>1 )
+	{
+		width = w;
+	}
+	if( h>1 )
+	{
+		height = h;
 	}
 }
 
