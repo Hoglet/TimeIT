@@ -104,8 +104,8 @@ void edit_task_dialog::create_layout()
 			if ((row * num_columns + column) < number_of_workspaces)
 			{
 				string button_text = workspace.name(row * num_columns + column);
+				//auto button = make_shared<Gtk::CheckButton>(button_text);
 				auto button = make_shared<Gtk::CheckButton>(button_text);
-
 				button->set_mode(true);
 
 				button->set_tooltip_text(_("When enabled your task will start when entering this workspace and stop when exiting"));

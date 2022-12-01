@@ -5,36 +5,19 @@ namespace gui
 {
 using namespace libtimeit;
 
-calendar_widget::calendar_widget()
+calendar_widget::calendar_widget( )
 {
-	signal_day_selected().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_day_selected_double_click().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_month_changed().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_next_month().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_next_year().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_prev_month().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	signal_prev_year().connect(sigc::mem_fun(this, &calendar_widget::notify));
-	mark_today();
-
-}
-
-void calendar_widget::notify()
-{
-	for (auto* observer: observers)
-	{
-		observer->on_date_changed();
-	}
-	mark_today();
-}
-
-void calendar_widget::attach(calendar_observer* observer)
-{
-	observers.push_back(observer);
-}
-
-void calendar_widget::detach(calendar_observer* observer)
-{
-	observers.remove(observer);
+	mark_today( );
+	signal_next_month( ).connect( [ & ] { this->mark_today( ); } );
+	signal_prev_month( ).connect( [ & ] { this->mark_today( ); } );
+	signal_next_year( ).connect( [ & ] { this->mark_today( ); } );
+	signal_prev_year( ).connect( [ & ] { this->mark_today( ); } );
+	Glib::signal_timeout( ).connect_seconds(
+			[ & ]( ) -> bool
+			{
+				this->mark_today( );
+				return true;
+			}, 300 );
 }
 
 void calendar_widget::mark_today()
