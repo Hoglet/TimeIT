@@ -23,7 +23,7 @@ file( GLOB_RECURSE headers *.h)
 file( GLOB_RECURSE sources *.cpp)
 
 
-find_package(GTK2        2.6  REQUIRED  gtk gtkmm)
+find_package(GTK3 REQUIRED  gtk)
 find_package(Notify           REQUIRED)
 
 
@@ -31,7 +31,7 @@ link_directories(
 		${NOTIFY_LIBRARY_DIRS}
                  )
 
-include_directories(${GTK2_INCLUDE_DIRS}
+include_directories(${GTK3_INCLUDE_DIRS}
                     ${NOTIFY_INCLUDE_DIRS}
                     "${PROJECT_SOURCE_DIR}"
                     "${PROJECT_SOURCE_DIR}/logic/"
@@ -40,12 +40,12 @@ include_directories(${GTK2_INCLUDE_DIRS}
                     )
 
 
-add_executable(${PROJECT_NAME} ${sources} ${headers} )
+add_executable(${PROJECT_NAME} ${sources} ${headers})
 
 target_link_libraries(
 		${PROJECT_NAME}
 		${NOTIFY_LIBRARIES}
-		${GTK2_LIBRARIES}
+		${GTK3_LIBRARIES}
 		libtimeit
                       )
 
@@ -54,4 +54,3 @@ if(MSVC)
 else()
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
 endif()
-

@@ -98,10 +98,8 @@ preference_dialog::preference_dialog(database &db) :
 	get_vbox()->pack_start(sync_server_frame);
 
 	/*******/
-	cancel_button.set_flags(Gtk::CAN_FOCUS);
 	cancel_button.signal_clicked().connect(sigc::mem_fun(this, &preference_dialog::on_cancel_button_clicked));
 	ok_button.set_sensitive(false);
-	ok_button.set_flags(Gtk::CAN_FOCUS);
 	ok_button.signal_clicked().connect(sigc::mem_fun(this, &preference_dialog::on_ok_button_clicked));
 
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
@@ -116,15 +114,15 @@ preference_dialog::preference_dialog(database &db) :
 
 void preference_dialog::set_values()
 {
-	old_compact_layout = settings.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT);
-	old_start_minimized = settings.get_bool("StartMinimized", DEFAULT_START_MINIMIZED);
-	old_gt = (unsigned)settings.get_int("Gt", DEFAULT_GT);
-	old_gz = (unsigned)settings.get_int("Gz", DEFAULT_GZ);
-	old_url = settings.get_string("URL", DEFAULT_URL);
-	old_user = settings.get_string("Username", DEFAULT_USER);
-	old_password = settings.get_string("Password", DEFAULT_PASSWORD);
-	old_ignore_cert_err = settings.get_bool("IgnoreCertErr", DEFAULT_IGNORE_CERT_ERR);
-	old_sync_interval = (int)settings.get_int("SyncInterval", DEFAULT_SYNC_INTERVAL);
+	old_compact_layout = settings.get_bool( "CompactLayout", default_compact_layout);
+	old_start_minimized = settings.get_bool( "StartMinimized", default_start_minimized);
+	old_gt = (unsigned)settings.get_int( "Gt", default_gt);
+	old_gz = (unsigned)settings.get_int( "Gz", default_gz);
+	old_url = settings.get_string("URL", default_url);
+	old_user = settings.get_string( "Username", default_user);
+	old_password = settings.get_string( "Password", default_password);
+	old_ignore_cert_err = settings.get_bool( "IgnoreCertErr", default_ignore_cert_err);
+	old_sync_interval = (int)settings.get_int( "SyncInterval", default_sync_interval);
 	gz_entry.set_value(old_gz);
 	gt_entry.set_value(old_gt);
 	compact_layout_button.set_active(old_compact_layout);

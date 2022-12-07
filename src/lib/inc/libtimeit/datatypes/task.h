@@ -29,7 +29,7 @@ struct [[nodiscard]]  task
 
 	explicit task( string op_name, optional<task_id> op_parent_id = {});
 	task(
-			string                    op_name,
+			string_view               op_name,
 			task_id                   op_uuid,
 			time_point<system_clock>  op_last_change,
 			optional<task_id>         op_parent_uuid,

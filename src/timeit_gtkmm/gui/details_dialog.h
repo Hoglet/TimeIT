@@ -82,6 +82,10 @@ private:
 	extended_task_accessor tasks;
 	settings_accessor      settings;
 	time_manager&           time_keeper;
+
+	int width;
+	int height;
+	void size_change( );
 };
 }
 

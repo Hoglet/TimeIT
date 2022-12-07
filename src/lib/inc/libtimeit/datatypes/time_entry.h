@@ -15,10 +15,10 @@ using namespace std::chrono;
 
 enum time_entry_state
 {
-	STOPPED = 0,
-	RUNNING = 1,
-	PAUSED  = 2,
-	DELETED = 3
+	stopped = 0,
+	running = 1,
+	paused  = 2,
+	deleted = 3
 };
 
 struct time_entry

@@ -3,7 +3,7 @@
 
 #include <optional>
 #include <libtimeit/db/database.h>
-#include "sqlite3.h"
+#include "sqlite.h"
 
 namespace libtimeit
 {

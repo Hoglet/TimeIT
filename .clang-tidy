@@ -1,14 +1,60 @@
 Checks: '
-  readability-*,
-  modernize-*,
-  cppcoreguidelines-*,
+  -*,
+  mpi-*,
   bugprone-*,
-  -modernize-use-trailing-return-type,
-  -cppcoreguidelines-non-private-member-variables-in-classes,
+  cert-err52-cpp,
+  cert-err60-cpp,
+  cert-err34-c,
+  cert-str34-c,
+  cert-dcl21-cpp,
+  cert-msc50-cpp,
+  cert-msc51-cpp,
+  cert-dcl58-cpp,
+  cert-flp30-c,
+  cppcoreguidelines-pro-type-member-init,
+  cppcoreguidelines-slicing,
+  cppcoreguidelines-interfaces-global-init,
+  cppcoreguidelines-pro-type-static-cast-downcast,
+  cppcoreguidelines-narrowing-conversions,
+  google-default-arguments,
+  google-runtime-operator,
+  google-explicit-constructor,
+  hicpp-multiway-paths-covered,
+  hicpp-exception-baseclass,
+  misc-unconventional-assign-operator,
+  misc-misplaced-const,
+  misc-new-delete-overloads,
+  misc-non-copyable-objects,
+  misc-no-recursion,
+  misc-throw-by-value-catch-by-reference,
+  misc-uniqueptr-reset-release,
+  modernize-*,  
+  readability-*,
+  cppcoreguidelines-*,
+  openmp-use-default-none,
+  portability-simd-intrinsics,
+  readability-*,
+  -readability-redundant-preprocessor,
+  -readability-named-parameter,
+  -readability-function-size,
+  -readability-simplify-boolean-expr,
+  -readability-identifier-length,
+  -readability-duplicate-include,
   -readability-magic-numbers,
-  -cppcoreguidelines-avoid-magic-numbers,
-  -cppcoreguidelines-owning-memory
+  -readability-braces-around-statements,
+  -readability-redundant-member-init,
+  -readability-suspicious-call-argument,
+  -readability-qualified-auto,
+  -readability-isolate-declaration,
+  -readability-uppercase-literal-suffix,
+  -readability-container-data-pointer,
+  -modernize-use-trailing-return-type,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-non-private-member-variables-in-classes,  
+  -cppcoreguidelines-avoid-const-or-ref-data-members,
+  -modernize-pass-by-value
   '
+
 CheckOptions:
   - key: readability-function-cognitive-complexity.Threshold
     value: 19
@@ -27,8 +73,10 @@ CheckOptions:
   - key: readability-identifier-naming.NamespaceCase
     value: lower_case
   - key: readability-identifier-naming.ConstantCase
-    value: UPPER_CASE
+    value: lower_case
   - key: readability-identifier-naming.ConstantMemberCase
     value: lower_case
   - key: readability-braces-around-statements.ShortStatementLines
     value: 0
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: 'x, y'

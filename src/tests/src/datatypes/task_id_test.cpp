@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <iostream>
 #include <libtimeit/datatypes/task_id.h>
 
 using namespace libtimeit;

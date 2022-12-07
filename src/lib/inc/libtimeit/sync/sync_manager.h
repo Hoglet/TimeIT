@@ -15,13 +15,13 @@ using namespace std;
 
 enum class sync_state
 {
-	IDLE,
-	TASK_REQUEST,
-	WAIT,
-	TASK_STORE,
-	TIME_REQUEST,
-	TIME_STORE,
-	FAIL
+	idle,
+	task_request,
+	wait,
+	task_store,
+	time_request,
+	time_store,
+	fail
 };
 
 class sync_manager : public timer_observer
@@ -31,7 +31,7 @@ public:
 			database& db,
 			abstract_network& network,
 			notification_manager& op_notifier,
-			Timer&    timer);
+			timer_base&    timer);
 
 	sync_state status();
 	void on_signal_1_second() override;
@@ -54,8 +54,8 @@ private:
 	settings_accessor settings;
 	abstract_network&         network;
 
-	sync_state                     state          { sync_state::IDLE};
-	sync_state                     following_state{ sync_state::IDLE};
+	sync_state                     state          { sync_state::idle};
+	sync_state                     following_state{ sync_state::idle};
 	shared_ptr <async_http_response> outstanding_request;
 
 	notification_manager&  notifier;

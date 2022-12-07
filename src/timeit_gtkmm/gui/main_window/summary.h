@@ -65,7 +65,6 @@ protected:
 
 private:
 	Gtk::TreeModel::Row create_row( const task_id& id);
-	Gtk::Menu menu_popup;
 
 	bool on_button_press_event(GdkEventButton* event) override;
 
@@ -119,6 +118,7 @@ private:
 
 	inline static optional<task_id> global_id; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 	void try_set_selection();
+	unique_ptr<Gtk::Menu> context_menu;
 };
 
 }

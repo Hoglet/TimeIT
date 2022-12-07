@@ -1,14 +1,14 @@
 #ifndef DEFAULT_VALUES_H
 #define DEFAULT_VALUES_H
 
-constexpr auto DEFAULT_GZ = 1;
-constexpr auto DEFAULT_GT = 7;
-constexpr auto DEFAULT_COMPACT_LAYOUT = true;
-constexpr auto DEFAULT_START_MINIMIZED = false;
-constexpr auto DEFAULT_QUIET_MODE = false;
-constexpr auto DEFAULT_URL = "";
-constexpr auto DEFAULT_USER = "";
-constexpr auto DEFAULT_PASSWORD = "";
-constexpr auto DEFAULT_IGNORE_CERT_ERR = false;
-constexpr auto DEFAULT_SYNC_INTERVAL = 10;
+constexpr auto default_gz = 1;
+constexpr auto default_gt = 7;
+constexpr auto default_compact_layout = true;
+constexpr auto default_start_minimized = false;
+constexpr auto default_quiet_mode = false;
+constexpr auto default_url = "";
+constexpr auto default_user = "";
+constexpr auto default_password = "";
+constexpr auto default_ignore_cert_err = false;
+constexpr auto default_sync_interval = 10;
 #endif /* DEFAULT_VALUES_H */

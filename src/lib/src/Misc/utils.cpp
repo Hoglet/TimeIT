@@ -7,7 +7,6 @@
 #include <sys/time.h>
 #include <cstring>
 #include <fmt/core.h>
-#include <fmt/ranges.h>
 #include <array>
 
 using namespace std;
@@ -51,13 +50,13 @@ time_point<system_clock> end_of_day( time_point<system_clock> time_stamp)
 
 int first_weekday()
 {
-	const char *const S = nl_langinfo( _NL_TIME_FIRST_WEEKDAY);
+	const char *const s = nl_langinfo( _NL_TIME_FIRST_WEEKDAY);
 
-	if ( ( S != nullptr ) &&
-	     ( *S >= 1 )       &&
-	     ( *S <= 7 )
+	if (( s != nullptr ) &&
+		( *s >= 1 ) &&
+		( *s <= 7 )
 	   )
-		return (int)*S;
+		return (int)*s;
 
 	/* Default to Sunday, 1. */
 	return 1;
@@ -182,12 +181,12 @@ int days_in_month( time_point<system_clock> time_stamp)
 	return time_info.tm_mday;
 }
 
-static const int YEAR_ZERO = 1900;
+static const int year_zero = 1900;
 
 time_point<system_clock> to_time(int year, int month, int day, int hour, int min, int sec)
 {
 	struct tm time_info {};
-	time_info.tm_year = year - YEAR_ZERO;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	time_info.tm_year = year - year_zero;  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	time_info.tm_mon = month;
 	time_info.tm_mday = day;
 	time_info.tm_hour = hour;
@@ -277,7 +276,7 @@ string date_string(time_point<system_clock> time_stamp)
 {
 	auto day = localtime( time_stamp );
 	stringstream date_string;
-	date_string << (day.tm_year + YEAR_ZERO)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	date_string << (day.tm_year + year_zero)   // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 	<< "-"
 	<< setfill('0') << setw(2) << day.tm_mon + 1
 	<< "-"
@@ -299,7 +298,7 @@ string time_span_string( time_point<system_clock> from, time_point<system_clock>
 	             << " → ";
 	if (is_on_different_days(from,to))
 	{
-		return_value << (to_time.tm_year + YEAR_ZERO)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+		return_value << (to_time.tm_year + year_zero)  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 		             << "-"
 					 << setfill('0') << setw(2) << to_time.tm_mon + 1
 					 << "-"
@@ -373,7 +372,7 @@ string_view trim(string_view str)
 
 string abbreviate_string(string_view original, long unsigned i)
 {
-	constexpr string_view DOTS = " ...";
+	constexpr string_view dots = " ...";
 	string result(trim(original));
 	auto end_of_first_line = result.find('\n');
 
@@ -385,9 +384,9 @@ string abbreviate_string(string_view original, long unsigned i)
 		return result;
 	}
 
-	auto cut_position = min(end_of_first_line, i - DOTS.length()) ;
+	auto cut_position = min(end_of_first_line, i - dots.length()) ;
 	result = result.substr(0,cut_position);
-	result.append(DOTS);
+	result.append( dots);
 
 	return result;
 }

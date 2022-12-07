@@ -13,7 +13,7 @@ namespace libtimeit
 {
 
 
-static const int RW_RW_RW = 0666;
+static const int rw_rw_rw = 0666;
 
 application_lock::application_lock(string lock_base) : locked(false)
 {
@@ -27,7 +27,7 @@ application_lock::application_lock(string lock_base) : locked(false)
 	fl.l_start = 0;
 	fl.l_len = 1;
 
-	if ((fd_lock = open(file_name.c_str(), O_WRONLY | O_CREAT, RW_RW_RW)) != -1) // NOLINT
+	if ((fd_lock = open( file_name.c_str(), O_WRONLY | O_CREAT, rw_rw_rw)) != -1) // NOLINT
 	{
 		if (fcntl(fd_lock, F_SETLK, &fl) != -1) // NOLINT
 		{

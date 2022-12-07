@@ -6,26 +6,26 @@ namespace libtimeit
 
 using namespace std;
 
-const auto DATA_CELL_INTEGER = 1;
-const auto DATA_CELL_TEXT    = 3;
-const auto DATA_CELL_NULL    = 5;
+const auto data_cell_integer = 1;
+const auto data_cell_text    = 3;
+const auto data_cell_null    = 5;
 
-data_cell::data_cell(int op_value) : type( DATA_CELL_INTEGER), value( op_value)
+data_cell::data_cell(int op_value) : type( data_cell_integer), value( op_value)
 {
 }
 
-data_cell::data_cell(const char *op_text) : type( DATA_CELL_TEXT), txt( op_text)
+data_cell::data_cell(const char *op_text) : type( data_cell_text), txt( op_text)
 {
 }
 
 bool data_cell::has_value() const
 {
-	return ( type != DATA_CELL_NULL);
+	return ( type != data_cell_null);
 }
 
 int64_t data_cell::integer() const
 {
-	if ( type != DATA_CELL_INTEGER)
+	if ( type != data_cell_integer)
 	{
 		throw db_exception("Wrong datatype on column");
 	}
@@ -34,11 +34,11 @@ int64_t data_cell::integer() const
 
 string data_cell::text() const
 {
-	if ( type == DATA_CELL_NULL )
+	if ( type == data_cell_null )
 	{
 		return "";
 	}
-	if ( type != DATA_CELL_TEXT)
+	if ( type != data_cell_text)
 	{
 
 		throw db_exception("Wrong datatype on column");
@@ -48,7 +48,7 @@ string data_cell::text() const
 
 bool data_cell::boolean() const
 {
-	if ( type != DATA_CELL_INTEGER)
+	if ( type != data_cell_integer)
 	{
 		throw db_exception("Wrong datatype on column");
 	}
@@ -56,4 +56,3 @@ bool data_cell::boolean() const
 }
 
 }
-

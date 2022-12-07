@@ -2,8 +2,8 @@
 // Created by hoglet on 31/03/2021.
 //
 
-#ifndef TIMEIT_NOTIFY_OBSERVER_H
-#define TIMEIT_NOTIFY_OBSERVER_H
+#ifndef NOTIFY_OBSERVER_H
+#define NOTIFY_OBSERVER_H
 
 #include <libtimeit/event_observer.h>
 
@@ -11,14 +11,14 @@ namespace test
 {
 using namespace libtimeit;
 
-class Notify_observer : public event_observer
+class notify_observer : public event_observer
 {
 public:
-	Notify_observer(notification_manager& notifier) : event_observer(notifier)
+	notify_observer( notification_manager& notifier) : event_observer( notifier)
 	{
 	}
 
-	virtual ~Notify_observer()
+	virtual ~notify_observer()
 	{
 	}
 
@@ -68,4 +68,4 @@ public:
 };
 
 }
-#endif //TIMEIT_NOTIFY_OBSERVER_H
+#endif //NOTIFY_OBSERVER_H

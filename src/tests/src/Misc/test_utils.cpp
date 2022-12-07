@@ -40,9 +40,9 @@ TEST( utils, test_get_days_in_month )
 
 TEST( utils, convert_seconds_to_strings )
 {
-	auto timespan2 = 2h  + 4min;
+	auto timespan_2 = 2h + 4min;
 	auto expected = std::string("\u20072 h \u20074 m");
-	auto actual   = seconds_2_hhmm(timespan2);
+	auto actual   = seconds_2_hhmm( timespan_2);
 	ASSERT_EQ( expected , actual ) << "Converting 2 hours and 4 minutes into a txt string";
 }
 
@@ -64,8 +64,8 @@ TEST( utils, convertTimespanToString )
 
 TEST( utils, dayEnd )
 {
-	auto testPoint = to_time(2013, 0, 4, 12, 0, 0);
-	auto eod = end_of_day(testPoint);
+	auto test_point = to_time( 2013, 0, 4, 12, 0, 0);
+	auto eod = end_of_day( test_point);
 	struct tm end_of_day = localtime( eod );
 	ASSERT_EQ( 113, end_of_day.tm_year ) << "Check year";
 	ASSERT_EQ(   0, end_of_day.tm_mon )  << "Check month";
@@ -77,8 +77,8 @@ TEST( utils, dayEnd )
 
 TEST( utils, beginingOfDay )
 {
-	auto testPoint = to_time(2013, 0, 4, 12, 0, 0);
-	auto eod = beginning_of_day(testPoint);
+	auto test_point = to_time( 2013, 0, 4, 12, 0, 0);
+	auto eod = beginning_of_day( test_point);
 	struct tm end_of_day = localtime( eod );
 	ASSERT_EQ( 113, end_of_day.tm_year ) << "Check year";
 	ASSERT_EQ(   0, end_of_day.tm_mon )  << "Check month";
@@ -188,10 +188,10 @@ TEST( Utils, endOfYear )
 
 TEST( Utils, safe_strcpy_normal)
 {
-	const int BUFFER_SIZE=5;
-	char buffer[BUFFER_SIZE]{"a"};
+	const int buffer_size=5;
+	char buffer[buffer_size]{ "a"};
 	const char * source="ab";
-	auto result=safe_strcpy(buffer, source, BUFFER_SIZE);
+	auto result=safe_strcpy( buffer, source, buffer_size);
 
 	ASSERT_EQ(result, 0);
 	ASSERT_STREQ(buffer, source);
@@ -199,11 +199,11 @@ TEST( Utils, safe_strcpy_normal)
 
 TEST( Utils, safe_strcpy_to_long_source)
 {
-	const int BUFFER_SIZE=5;
+	const int buffer_size=5;
 
-	char buffer[BUFFER_SIZE]{"a"};
+	char buffer[buffer_size]{ "a"};
 	const char * source="abcde";
-	auto result=safe_strcpy(buffer, source, BUFFER_SIZE);
+	auto result=safe_strcpy( buffer, source, buffer_size);
 
 	ASSERT_EQ(result, 2);
 	ASSERT_STREQ(buffer, "a");
@@ -211,18 +211,18 @@ TEST( Utils, safe_strcpy_to_long_source)
 
 TEST( Utils, safe_strcpy_null_source)
 {
-	const int BUFFER_SIZE=5;
-	char buffer[BUFFER_SIZE]{"a"};
-	auto result=safe_strcpy(buffer, nullptr, BUFFER_SIZE);
+	const int buffer_size=5;
+	char buffer[buffer_size]{ "a"};
+	auto result=safe_strcpy( buffer, nullptr, buffer_size);
 
 	ASSERT_EQ(result, 1);
 	ASSERT_STREQ(buffer, "a");
 }
 TEST( Utils, safe_strcpy_null_buffer)
 {
-	const int BUFFER_SIZE=5;
+	const int buffer_size=5;
 	const char * source="abcde";
-	auto result=safe_strcpy(nullptr, source, BUFFER_SIZE);
+	auto result=safe_strcpy( nullptr, source, buffer_size);
 
 	ASSERT_EQ(result, 1);
 }
@@ -304,4 +304,3 @@ This is the third line)";
 	auto result = abbreviate_string(original, 100);
 	ASSERT_EQ(result, expected);
 }
-

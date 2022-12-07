@@ -16,7 +16,7 @@ using namespace libtimeit;
 class ipc_server: public ipc, public timer_observer
 {
 public:
-	ipc_server(string /*socket_name*/, Timer& /*timer*/, notification_manager& /*notifier*/);
+	ipc_server( string /*socket_name*/, timer_base& /*timer*/, notification_manager& /*notifier*/);
 	ipc_server(const ipc_server& ) = delete;
 	ipc_server(ipc_server&& ) = delete;
 	ipc_server& operator=(const ipc_server& ) = delete;

@@ -5,8 +5,6 @@
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/autotrack_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
-#include <libtimeit/db/sqlite3.h>
-#include <libtimeit/db/database.h>
 #include <fmt/core.h>
 #include "db_updater.h"
 
@@ -14,7 +12,7 @@ namespace libtimeit
 {
 using namespace std;
 
-const int EXPECTED_DB_VERSION = 5;
+const int expected_db_version = 5;
 
 
 int database::current_db_version() const
@@ -61,7 +59,7 @@ database::database(
 
 
 
-		db_version = EXPECTED_DB_VERSION;
+		db_version = expected_db_version;
 		settings.set_int("db_version", db_version);
 		db.execute( "DROP TABLE IF EXISTS parameters;" );
 
@@ -132,7 +130,7 @@ void database::find_db_version()
 	}
 	else
 	{
-		db_version = EXPECTED_DB_VERSION;
+		db_version = expected_db_version;
 	}
 }
 

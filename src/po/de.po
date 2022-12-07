@@ -198,7 +198,7 @@ msgstr "Alles anhalten"
 
 #: src/GUI/StatusIcon.cpp:121
 msgid "Stop all timers"
-msgstr "Alle Timer anhalten"
+msgstr "Alle timer anhalten"
 
 #: src/GUI/AddTime.cpp:20 src/GUI/DetailsDialog.cpp:26
 msgid "Stop time"

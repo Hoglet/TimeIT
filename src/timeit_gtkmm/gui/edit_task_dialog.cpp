@@ -1,7 +1,6 @@
 #include "edit_task_dialog.h"
 #include "parent_chooser.h"
 #include <iostream>
-#include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/default_values.h>
 #include <fmt/core.h>
 
@@ -60,7 +59,6 @@ void edit_task_dialog::create_layout()
 	parent_choosing_row.pack_start(parent_label, Gtk::PACK_SHRINK, 0);
 	parent_choosing_row.pack_start(parent_chooser, Gtk::PACK_SHRINK, 0);
 
-	task_name_entry.set_flags(Gtk::CAN_FOCUS);
 	name_editing_row.pack_start(name_label, Gtk::PACK_SHRINK, 0);
 	name_editing_row.pack_start(task_name_entry);
 
@@ -69,7 +67,7 @@ void edit_task_dialog::create_layout()
 	idle_time_entry.set_max_length(4);
 	idle_time_entry.set_range(1, MAX_IDLE_TIME);
 	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
-	idle_time = minutes(settings.get_int("Gt", DEFAULT_GT ));
+	idle_time = minutes(settings.get_int( "Gt", default_gt ));
 	idle_time_entry.set_value( double(idle_time.count()) );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
@@ -83,9 +81,7 @@ void edit_task_dialog::create_layout()
 	desktop_frame.set_label_widget(workspace_label);
 
 
-	cancel_button.set_flags(Gtk::CAN_FOCUS);
 	ok_button.set_sensitive(false);
-	ok_button.set_flags(Gtk::CAN_FOCUS);
 
 	get_action_area()->property_layout_style().set_value(Gtk::BUTTONBOX_END);
 	get_action_area()->pack_start(cancel_button);
@@ -98,8 +94,8 @@ void edit_task_dialog::create_layout()
 	get_vbox()->pack_start(quiet_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	get_vbox()->pack_start(desktop_frame, Gtk::PACK_EXPAND_WIDGET, PADDING);
 	set_border_width(BORDER_WIDTH);
-	property_window_position().set_value(Gtk::WIN_POS_CENTER_ON_PARENT);
-	set_has_separator(false);
+	set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
+	//ToDo set_has_separator(false);
 
 	for (unsigned row = 0; row < num_rows; row++)
 	{
@@ -108,9 +104,8 @@ void edit_task_dialog::create_layout()
 			if ((row * num_columns + column) < number_of_workspaces)
 			{
 				string button_text = workspace.name(row * num_columns + column);
+				//auto button = make_shared<Gtk::CheckButton>(button_text);
 				auto button = make_shared<Gtk::CheckButton>(button_text);
-
-				button->set_flags(Gtk::CAN_FOCUS);
 				button->set_mode(true);
 
 				button->set_tooltip_text(_("When enabled your task will start when entering this workspace and stop when exiting"));
@@ -168,7 +163,7 @@ void edit_task_dialog::set_task_id(const task_id& op_id)
 		quiet = task_to_edit->quiet;
 		if(idle_time == 0min)
 		{
-			idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
+			idle_time = minutes(settings.get_int( "Gt", default_gt));
 		}
 
 		idle_time_entry.set_value( double(idle_time.count()));
@@ -220,7 +215,7 @@ void edit_task_dialog::on_ok_button_clicked()
 		if (current_task.has_value())
 		{
 			auto new_idle_time = minutes(idle_time_entry.get_value_as_int());
-			auto default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
+			auto default_idle_time = minutes(settings.get_int( "Gt", default_gt));
 			if(new_idle_time == default_idle_time)
 			{
 				new_idle_time = 0min;

@@ -6,6 +6,7 @@
  */
 
 #include "status_icon.h"
+#include "main_window/menu.h"
 #include <libtimeit/utils.h>
 #include <iostream>
 #include <glibmm/i18n.h>
@@ -21,14 +22,15 @@ status_icon_widget::status_icon_widget(
 		time_manager& time_keeper,
 		database&    db,
 		notification_manager&    notifier,
-		image_cache&      images)
+		image_cache&             images,
+		controller_interface&    op_controller)
 		:
 		time_manager_observer( time_keeper),
 		event_observer(notifier),
 		m_time_keeper(time_keeper),
 		tasks(db),
-		times(db)
-
+		times(db),
+		controller(op_controller)
 {
 	default_icon = images.by_id(image_identifier::STD_ICON);
 	running_icon = images.by_id(image_identifier::RUNNING_BIG);
@@ -40,7 +42,6 @@ status_icon_widget::status_icon_widget(
 
 	Gtk::Window::set_default_icon(default_icon);
 
-	populate_context_menu();
 	set_tooltip();
 	status_icon_instance->signal_activate().connect(sigc::mem_fun(this, &status_icon_widget::on_activate));
 	status_icon_instance->signal_popup_menu().connect(sigc::mem_fun(this, &status_icon_widget::on_popup_menu));
@@ -48,8 +49,7 @@ status_icon_widget::status_icon_widget(
 
 void status_icon_widget::populate_context_menu()
 {
-	Gtk::Menu::MenuList &menu_list = menu_popup.items();
-	menu_list.clear();
+	submenu c_menu("Status Icon");
 
 	latest_tasks = times.latest_active_tasks(5);
 	auto running_tasks = times.currently_running();
@@ -61,7 +61,8 @@ void status_icon_widget::populate_context_menu()
 			auto task = tasks.by_id(id);
 			string menu_line = complete_task_path(latest_tasks[i]);
 
-			Gtk::Image *menu_icon = Gtk::manage(new Gtk::Image());
+			//ToDo icons in menu?
+			/*Gtk::Image *menu_icon = Gtk::manage(new Gtk::Image());
 			if (find(running_tasks.begin(), running_tasks.end(), id) != running_tasks.end())
 			{
 				menu_icon->set(running_icon_small);
@@ -70,28 +71,23 @@ void status_icon_widget::populate_context_menu()
 			{
 				menu_icon->set(idle_icon_small);
 			}
-
+            */
 			switch (i)
 			{
 			case 0:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
-																												  &status_icon_widget::on_menu_toggle_task_1)));
+				c_menu.add_item( menu_line.c_str(), "", [&]{ this->on_menu_toggle_task_1();} );
 				break;
 			case 1:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
-																												  &status_icon_widget::on_menu_toggle_task_2)));
+				c_menu.add_item( menu_line.c_str(), "", [&]{ this->on_menu_toggle_task_2();} );
 				break;
 			case 2:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
-																												  &status_icon_widget::on_menu_toggle_task_3)));
+				c_menu.add_item( menu_line.c_str(), "", [&]{ this->on_menu_toggle_task_3();} );
 				break;
 			case 3:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
-																												  &status_icon_widget::on_menu_toggle_task_4)));
+				c_menu.add_item( menu_line.c_str(), "", [&]{ this->on_menu_toggle_task_4();} );
 				break;
 			case 4:
-				menu_list.push_back(Gtk::Menu_Helpers::ImageMenuElem(menu_line.c_str(), *menu_icon, sigc::mem_fun(*this,
-																												  &status_icon_widget::on_menu_toggle_task_5)));
+				c_menu.add_item( menu_line.c_str(), "", [&]{ this->on_menu_toggle_task_5();} );
 				break;
 			default:
 				break;
@@ -101,20 +97,17 @@ void status_icon_widget::populate_context_menu()
 		{
 			//Ignore all errors
 		}
-	}
-	menu_list.push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle main window"), sigc::mem_fun(*this, &status_icon_widget::on_menu_file_popup_open)));
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all timers"), sigc::mem_fun(*this, &status_icon_widget::on_menu_stop_all_timers)));
-	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(
-			Gtk::StockID("gtk-quit"),
-			[this]()
-			{
-				this->on_menu_file_popup_quit();
-			}
-			));
-	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &status_icon_widget::on_menu_preferences)));
-	menu_list.push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &status_icon_widget::on_menu_about)));
 
+	}
+	c_menu
+		.add_item()
+		.add_item( _("Toggle main window"), "", [&]{ this->on_menu_file_popup_open(); })
+		.add_item( _("Stop all timers"), "",    [&]{ this->on_menu_stop_all_timers(); })
+		.add_item( _( "Quit" ), "",             [&]{ this->controller.on_quit( ); } )
+		.add_item( _( "Settings" ), "",         [&]{ this->controller.on_settings( ); } )
+		.add_item( _( "About" ), "",            [&]{ this->controller.on_about( ); } );
+
+	popup_menu = c_menu.create();
 }
 
 std::string status_icon_widget::complete_task_path(const task_id& id)
@@ -219,38 +212,34 @@ void status_icon_widget::on_menu_preferences()
 
 void status_icon_widget::on_popup_menu(guint button, guint32 activate_time)
 {
-	menu_popup.popup(button, activate_time);
+	populate_context_menu();
+	popup_menu->popup( button, activate_time);
 }
 
 void status_icon_widget::on_task_updated(const task_id& /*id*/)
 {
 	set_tooltip();
-	populate_context_menu();
 }
 
 void status_icon_widget::on_task_name_changed(const task& /*id*/)
 {
 	set_tooltip();
-	populate_context_menu();
 }
 
 void status_icon_widget::on_task_time_changed(const task_id& /*id*/)
 {
 	set_tooltip();
-	populate_context_menu();
 }
 
 void status_icon_widget::on_complete_update()
 {
 	set_tooltip();
-	populate_context_menu();
 }
 
 void status_icon_widget::on_running_changed()
 {
 	set_icon();
 	set_tooltip();
-	populate_context_menu();
 }
 void status_icon_widget::set_tooltip()
 {
@@ -273,7 +262,7 @@ void status_icon_widget::set_tooltip()
 			message << " " << libtimeit::seconds_2_hhmm(times.duration_time(id, start_time, stop_time));
 		}
 	}
-	status_icon_instance->set_tooltip(message.str());
+	//ToDo status_icon_instance->set_tooltip(message.str());
 }
 
 void status_icon_widget::set_icon()

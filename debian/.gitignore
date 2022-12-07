@@ -1,3 +1,4 @@
 *.log
 *.debhelper
 *.substvars
+/substvars

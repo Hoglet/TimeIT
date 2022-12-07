@@ -1,31 +1,27 @@
 #include <gtest/gtest.h>
 #include <libtimeit/timer.h>
-#include "libtimeit/logic/auto_tracker.h"
 
-
-#include "libtimeit/logic/time_keeper.h"
-
-namespace Test
+namespace test
 {
 
 using namespace libtimeit;
 
-class AutoTrackerTest
+class auto_tracker_test
 {
 public:
-	AutoTrackerTest()
+	auto_tracker_test()
 	{
 		//tracker = new AutoTracker(timeKeeper, database, timer);
 	}
 
-	~AutoTrackerTest()
+	~auto_tracker_test()
 	{
 		//delete tracker;
 	}
 
 private:
 /*	AutoTracker* tracker;
-	Timer timer;
+	timer_base timer;
 	TimeKeeper timeKeeper;
 	TempDB database;
 */
@@ -33,7 +29,7 @@ private:
 
 TEST( Auto_tracker, Workspace_switch_test)
 {
-	AutoTrackerTest test;
+	auto_tracker_test test;
 	//TODO: Write this test.....
 	/*		database->get
 	 set task 2 to start on workspace 2
@@ -47,4 +43,3 @@ TEST( Auto_tracker, Workspace_switch_test)
 
 
 }
-

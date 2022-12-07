@@ -21,6 +21,7 @@ struct async_http_response
 class abstract_network
 {
 public:
+	virtual ~abstract_network() = default;
 	virtual shared_ptr<async_http_response>
 	request(
 			string url,

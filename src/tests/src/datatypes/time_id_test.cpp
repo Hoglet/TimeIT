@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <iostream>
 #include <libtimeit/datatypes/time_id.h>
 
 using namespace libtimeit;

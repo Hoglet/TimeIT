@@ -55,7 +55,7 @@ task::task( string op_name, optional<task_id> op_parent_id)
 }
 
 task::task(
-		string                   op_name,
+		string_view              op_name,
 		task_id                  op_uuid,
 		time_point<system_clock> op_last_change,
 		optional<task_id>        op_parent_uuid,
@@ -63,9 +63,9 @@ task::task(
 		minutes                  op_idle,
 		bool                     op_quiet)
 	:
-		name(move( op_name)),
-		id( move( op_uuid)),
-		parent_id( move( op_parent_uuid)),
+		name( op_name ),
+		id( op_uuid),
+		parent_id(  op_parent_uuid),
 		deleted( op_deleted),
 		last_changed( op_last_change),
 		idle( op_idle),

@@ -2,14 +2,14 @@
 #ifndef TIME_KEEPER_H
 #define TIME_KEEPER_H
 
-static const int MINUTE = 60;
+static const auto minute = 60;
 
 #include <list>
 #include <map>
 #include <libtimeit/datatypes/task.h>
 #include <libtimeit/timer.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/logic/x11_idle_detector.h>
+#include <libtimeit/logic/x_11_idle_detector.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/time_accessor.h>
@@ -43,7 +43,7 @@ class time_manager :
 public:
 	time_manager(
 			database& db,
-			Timer&    timer,
+			timer_base&    timer,
 			notification_manager& notifier
 			);
 
@@ -93,7 +93,7 @@ private:
 	task_accessor      tasks;
 	settings_accessor  settings;
 
-	X11_idle_detector idle_detector;
+	x_11_idle_detector idle_detector;
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
 

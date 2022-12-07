@@ -9,7 +9,7 @@
 #include <chrono>
 
 #include <libtimeit/db/database.h>
-#include "sqlite3.h"
+#include "sqlite.h"
 #include "notifier.h"
 #include "libtimeit/datatypes/time_entry.h"
 

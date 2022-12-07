@@ -5,13 +5,13 @@
  *      Author: hoglet
  */
 
-#include "TempDB.h"
+#include "temp_db.h"
 
 namespace test
 {
 
 
-TempDB::TempDB(notification_manager &notifier) : database(":memory:", notifier)
+temp_db::temp_db(notification_manager &notifier) : database(":memory:", notifier)
 {
 }
 

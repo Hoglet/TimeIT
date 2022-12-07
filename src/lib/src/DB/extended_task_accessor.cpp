@@ -7,7 +7,7 @@ using namespace std;
 namespace libtimeit
 {
 
-const auto EXPANDED_QUERY = R"(
+const auto expanded_query = R"(
 		SELECT
 			expanded
 		FROM
@@ -20,7 +20,7 @@ extended_task_accessor::extended_task_accessor(database& db )
 		:
 		task_accessor(db),
 		times(db),
-		expanded_statement(db.prepare(EXPANDED_QUERY))
+		expanded_statement(db.prepare( expanded_query))
 {
 }
 

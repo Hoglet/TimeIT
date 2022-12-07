@@ -14,7 +14,7 @@ time_entry::time_entry(
 		time_point<system_clock> op_changed,
 		string                   op_comment)
 		:
-		id( move( op_id) ),
+		id( op_id ),
 		start( op_start ),
 		stop( op_stop ),
 		state( op_state),
@@ -36,7 +36,7 @@ time_entry::time_entry(
 				owner,
 				op_start,
 				op_stop,
-				STOPPED,
+				stopped,
 				system_clock::now(),
 				{})
 {

@@ -11,7 +11,6 @@
 #include <sys/un.h>
 #include <cstdio>
 #include <unistd.h>
-#include <iostream>
 #include <fcntl.h>
 #include <libtimeit/db/notifier.h>
 #include <libtimeit/utils.h>
@@ -20,7 +19,7 @@ namespace libtimeit
 {
 using namespace std;
 
-ipc_server::ipc_server(string name, Timer& timer, notification_manager& op_notifier)
+ipc_server::ipc_server( string name, timer_base& timer, notification_manager& op_notifier)
 	:
 		timer_observer(timer),
 		notifier( op_notifier)
@@ -65,8 +64,8 @@ ipc_server::~ipc_server()
 
 void ipc_server::poll()
 {
-	constexpr auto BUFFER_SIZE=1024;
-	char buf[BUFFER_SIZE]; // NOLINT(modernize-avoid-c-arrays)
+	constexpr auto buffer_size=1024;
+	char buf[buffer_size]; // NOLINT(modernize-avoid-c-arrays)
 	int msg_socket = accept(sock, nullptr, nullptr);
 	if (msg_socket == -1)
 	{
@@ -81,7 +80,7 @@ void ipc_server::poll()
 		do
 		{
 			memset(buf, '\0', sizeof(buf));   // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
-			if ((rval = read(msg_socket, buf, BUFFER_SIZE)) < 0) // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+			if ((rval = read( msg_socket, buf, buffer_size)) < 0) // NOLINT(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
 			{
 				perror("reading stream message");
 			}
@@ -101,6 +100,6 @@ void ipc_server::on_signal_1_second()
 
 void ipc_server::on_show_menu()
 {
-	notifier.send_notification(SHOW_MAIN_WINDOW, 0);
+	notifier.send_notification( show_main_window, 0);
 }
 } /* namespace libtimeit */

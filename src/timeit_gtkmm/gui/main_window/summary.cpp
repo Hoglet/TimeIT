@@ -1,5 +1,6 @@
 #include "summary.h"
 #include "libtimeit/utils.h"
+#include "submenu.h"
 #include <glibmm/i18n.h>
 
 using namespace std;
@@ -46,20 +47,18 @@ summary::summary(
 		times(db),
 		tasks(db)
 {
-	tree_model = TreeStore::create(columns);
-	set_model(tree_model);
-	append_column("Name", columns.col_name);
-	append_column("Time", columns.col_time);
-	set_headers_visible(false);
+	tree_model = TreeStore::create( columns );
+	set_model( tree_model );
+	append_column( "Name", columns.col_name );
+	append_column( "Time", columns.col_time );
+	set_headers_visible( false );
 
-	ref_tree_selection = get_selection();
-	ref_tree_selection->signal_changed().connect(sigc::mem_fun(*this, &summary::on_selection_changed));
+	ref_tree_selection = get_selection( );
+	ref_tree_selection->signal_changed( ).connect( sigc::mem_fun( *this, &summary::on_selection_changed ));
 
-	Gtk::Menu::MenuList &menu_list = menu_popup.items();
-
-	menu_list.push_back(Gtk::Menu_Helpers::MenuElem(_("Show details"), sigc::mem_fun(*this,
-							&summary::on_menu_show_details)));
-
+	submenu l_menu( "details" );
+	l_menu.add_item( _( "Show details" ), "", [ & ] { this->on_menu_show_details( ); } );
+	context_menu = l_menu.create( );
 }
 
 
@@ -68,7 +67,7 @@ bool summary::on_button_press_event(GdkEventButton* event)
 	bool return_value = Gtk::TreeView::on_button_press_event(event);
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
-		menu_popup.popup(event->button, event->time);
+		context_menu->popup(event->button, event->time);
 		return_value = true; //It has been handled.
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)

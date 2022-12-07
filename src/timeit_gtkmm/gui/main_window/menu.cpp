@@ -1,193 +1,60 @@
-/*
- * menu.cpp
- *
- *  Created on: 2008-aug-20
- *      Author: hoglet
- */
-
+#include <gtkmm/menubar.h>
+#include <gtkmm/builder.h>
+#include <giomm/menu.h>
+#include <fmt/format.h>
+#include <giomm/simpleactiongroup.h>
 #include "menu.h"
-#include <glibmm/i18n.h>
 
-namespace gui
+using namespace std;
+using namespace fmt;
+using namespace Gtk;
+
+menu &menu::add( const submenu& menu )
 {
-
-menu_bar::menu_bar()
-{
-	file_menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-preferences"), sigc::mem_fun(this, &menu_bar::on_menu_preferences)));
-	file_menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-quit"), sigc::mem_fun(this, &menu_bar::on_menu_quit)));
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Start"), sigc::mem_fun(this, &menu_bar::on_menu_start)));
-	task_id_dependent_menus.push_back(&(task_menu.items().back()));
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Stop"), sigc::mem_fun(this, &menu_bar::on_menu_stop)));
-	task_id_dependent_menus.push_back(&(task_menu.items().back()));
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Stop all"), sigc::mem_fun(this, &menu_bar::on_menu_stop_all)));
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit"), sigc::mem_fun(this, &menu_bar::on_menu_edit)));
-	task_id_dependent_menus.push_back(&(task_menu.items().back()));
-
-	//	m_taskMenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Remove",
-	//			sigc::mem_fun(this, &Menu::on_menu_remove)));
-	//taskIDDependentMenus.push_back(m_taskMenu.items().back());
-	task_menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Add time"), sigc::mem_fun(this, &menu_bar::on_menu_add_time)));
-	task_id_dependent_menus.push_back(&(task_menu.items().back()));
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Add task"), sigc::mem_fun(this, &menu_bar::on_menu_add_task)));
-	task_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Remove task"), sigc::mem_fun(this, &menu_bar::on_menu_remove_task)));
-	task_id_dependent_menus.push_back(&(task_menu.items().back()));
-
-	help_menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-about"), sigc::mem_fun(this, &menu_bar::on_menu_about)));
-	help_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Report bug"), sigc::mem_fun(this, &menu_bar::on_menu_report_bug)));
-	help_menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-help"), sigc::mem_fun(this, &menu_bar::on_menu_help)));
-
-	items().push_back(Gtk::Menu_Helpers::MenuElem(_("_File"), file_menu));
-
-	items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Task"), task_menu));
-
-	items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Help"), help_menu));
-	set_task_is_selected(false);
+	submenus.push_back( menu);
+	return *this;
 }
 
-
-void menu_bar::set_task_is_selected(bool show)
+unique_ptr<MenuBar> menu::get_menu_bar()
 {
-	for (auto* menu_item: task_id_dependent_menus)
+	auto builder = Gtk::Builder::create();
+	string ui_info = format(R"(
+            <interface>
+			  <menu id='menubar'>
+	             {}
+              </menu>
+            </interface>
+	)", submenus_xml());
+
+	builder->add_from_string( ui_info);
+	auto object = builder->get_object( "menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+
+	auto result = make_unique<MenuBar>(gmenu);
+
+	result->insert_action_group( "timeit",get_actions());
+	return result;
+}
+
+string menu::submenus_xml()
+{
+	string result;
+	for ( auto submenu : submenus )
 	{
-		menu_item->set_sensitive(show);
+		result.append( submenu.xml());
 	}
-
+	return result;
 }
 
-void menu_bar::on_menu_about()
+const Glib::RefPtr<Gio::ActionGroup> menu::get_actions()
 {
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
+	auto action_group = Gio::SimpleActionGroup::create();
+	for ( auto submenu : submenus )
 	{
-		action_observer* observer = *iter;
-		observer->on_action_about();
+		for ( auto item: submenu.menu_items)
+		{
+			action_group->add_action( item.title, item.lambda );
+		}
 	}
-}
-
-void menu_bar::on_menu_help()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_help();
-	}
-}
-
-void menu_bar::on_menu_add_task()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_add_task();
-	}
-}
-
-void menu_bar::on_menu_remove_task()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_remove_task();
-	}
-}
-
-void menu_bar::on_menu_add_time()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_add_time();
-	}
-}
-void menu_bar::on_menu_quit()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_quit();
-	}
-}
-
-void menu_bar::on_menu_start()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_start_task();
-	}
-}
-void menu_bar::on_menu_stop()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_stop_task();
-	}
-}
-
-void menu_bar::on_menu_stop_all()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_stop_timers();
-	}
-}
-
-void menu_bar::on_menu_edit()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_edit_task();
-	}
-}
-void menu_bar::on_menu_preferences()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_preferences();
-	}
-}
-void menu_bar::on_menu_report_bug()
-{
-	std::list<action_observer*>::iterator iter;
-	for (iter = observers.begin(); iter != observers.end(); ++iter)
-	{
-		action_observer* observer = *iter;
-		observer->on_action_report_bug();
-	}
-}
-
-
-
-void menu_bar::attach(action_observer* observer)
-{
-	observers.push_back(observer);
-}
-void menu_bar::detach(action_observer* observer)
-{
-	observers.remove(observer);
-}
-
+	return action_group;
 }

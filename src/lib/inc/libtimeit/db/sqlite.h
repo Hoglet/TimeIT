@@ -1,11 +1,11 @@
-#ifndef TIMEIT_SQLITE_H_
-#define TIMEIT_SQLITE_H_
+#ifndef SQLITE_H
+#define SQLITE_H
 
 #include <libtimeit/exceptions/db_exception.h>
 #include <sqlite3.h>
 #include <string>
 #include <vector>
-#include <libtimeit/db/sqlite3.h>
+#include <libtimeit/db/sqlite.h>
 #include <libtimeit/db/query_result.h>
 #include <cstdint>
 #include <memory>
@@ -16,14 +16,14 @@ namespace libtimeit
 
 using namespace std;
 using namespace std::chrono;
-class SQLite3;
+class sqlite;
 
 class sql_statement
 {
 public:
-	sql_statement(sqlite3_stmt* stmt, SQLite3& db);
+	sql_statement( sqlite3_stmt* stmt, sqlite& db);
 	sql_statement(const sql_statement&) = delete;
-	sql_statement(sql_statement&&);
+	sql_statement(sql_statement&&) noexcept ;
 	sql_statement& operator=(const sql_statement&) = delete;
 	sql_statement& operator=(sql_statement&&) = delete;
 
@@ -37,25 +37,25 @@ public:
 
 	query_result execute();
 private:
-	SQLite3&      db;
+	sqlite&      db;
 	sqlite3_stmt* stmt;
 	int           number_of_columns;
 
 	vector<data_cell> get_row();
 };
 
-class SQLite3
+class sqlite
 {
 public:
-	SQLite3(string database_name);
-	SQLite3() = delete;
-	SQLite3(const SQLite3&) = delete;
-	void operator=(const SQLite3&) = delete;
-	SQLite3(SQLite3&&);
-	SQLite3& operator=(SQLite3&&) = delete;
+	explicit sqlite( string database_name);
+	sqlite() = delete;
+	sqlite( const sqlite&) = delete;
+	void operator=(const sqlite&) = delete;
+	sqlite( sqlite&&) noexcept ;
+	sqlite& operator=( sqlite&&) = delete;
 
 
-	virtual ~SQLite3();
+	virtual ~sqlite();
 	query_result execute( const string& statement);
 	int64_t      id_of_last_insert();
 	sql_statement    prepare(const string& query);
@@ -72,4 +72,4 @@ private:
 };
 
 }
-#endif /*TIMEIT_SQLITE_H_*/
+#endif /*SQLITE_H*/

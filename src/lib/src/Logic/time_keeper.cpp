@@ -19,7 +19,7 @@ time_manager_observer::~time_manager_observer()
 
 time_manager::time_manager(
 		database& db,
-		Timer& timer,
+		timer_base& timer,
 		notification_manager& notifier)
 		:
 		timer_observer(timer ),
@@ -30,19 +30,19 @@ time_manager::time_manager(
 		idle_detector(timer)
 
 {
-	idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
-	default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
+	idle_gz = minutes( settings.get_int( "Gz", default_gz) );
+	default_idle_time = minutes(settings.get_int( "Gt", default_gt));
 }
 
 void time_manager::on_settings_changed( string name)
 {
 	if ( name == "Gt")
 	{
-		default_idle_time = minutes(settings.get_int("Gt", DEFAULT_GT));
+		default_idle_time = minutes(settings.get_int( "Gt", default_gt));
 	}
 	if ( name == "Gz")
 	{
-		idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
+		idle_gz = minutes( settings.get_int( "Gz", default_gz) );
 	}
 }
 
@@ -58,7 +58,7 @@ void time_manager::on_signal_10_seconds()
 
 void time_manager::start( task_id id)
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	for (const auto& item: running_items)
 	{
 		if( item.owner_id == id)
@@ -68,13 +68,13 @@ void time_manager::start( task_id id)
 	}
 
 	auto now = system_clock::now();
-	times.create( time_entry( id, now, now, RUNNING ) );
+	times.create( time_entry( id, now, now, running ) );
 	notify_running_changed();
 }
 
 void time_manager::toggle( task_id id)
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	for (const auto& item: running_items)
 	{
 		if( item.owner_id == id)
@@ -90,18 +90,18 @@ void time_manager::stop_time( const time_entry& item)
 {
 	if( item.stop - item.start < idle_gz )
 	{
-		times.update( item.with ( DELETED));
+		times.update( item.with ( deleted));
 	}
 	else
 	{
-		times.update( item.with( STOPPED));
+		times.update( item.with( stopped));
 	}
 	notify_running_changed();
 }
 
 void time_manager::stop( task_id id)
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	for (const auto& item: running_items)
 	{
 		if( item.owner_id == id)
@@ -114,7 +114,7 @@ void time_manager::stop( task_id id)
 
 void time_manager::on_task_removed( const task& removed_task)
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	for (const auto& item: running_items)
 	{
 		if( item.owner_id == removed_task.id)
@@ -132,13 +132,13 @@ void time_manager::on_complete_update()
 
 bool time_manager::has_running_tasks()
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	return ( !running_items.empty() );
 }
 
 void time_manager::stop_all()
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	for (const auto& item: running_items)
 	{
 		stop_time(item);
@@ -148,7 +148,7 @@ void time_manager::stop_all()
 
 [[nodiscard]] bool  time_manager::tasks_are_running() const
 {
-	auto running_items = times.by_state(RUNNING);
+	auto running_items = times.by_state(running);
 	return running_items.empty();
 }
 
@@ -205,7 +205,7 @@ bool time_manager::user_is_active()
 
 void time_manager::update_running_entries()
 {
-	auto running = times.by_state(RUNNING);
+	auto running = times.by_state( time_entry_state::running);
 	for (const auto& item: running)
 	{
 		auto updated_time_entry = item.with_stop( system_clock::now());
@@ -218,7 +218,7 @@ void time_manager::check_if_tasks_should_be_stopped()
 {
 	auto now = system_clock::now();
 	list<time_entry> times_to_stop {};
-	auto running_time_items = times.by_state(RUNNING);
+	auto running_time_items = times.by_state(running);
 	for (const auto& time_item: running_time_items)
 	{
 		auto owner = tasks.by_id(time_item.owner_id);
@@ -242,4 +242,3 @@ void time_manager::check_if_tasks_should_be_stopped()
 		stop_time(time_to_stop);
 	}
 }
-

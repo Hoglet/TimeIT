@@ -1,38 +1,38 @@
 #include <gtest/gtest.h>
-#include "TempDB.h"
+#include "temp_db.h"
 #include <libtimeit/db/extended_task_accessor.h>
 
 namespace test
 {
 using namespace libtimeit;
 
-extended_task getTask()
+extended_task get_task()
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	extended_task_accessor taskAccessor(tempdb);
-	time_accessor timeAccessor(tempdb);
+	temp_db tempdb(notifier);
+	extended_task_accessor tasks( tempdb);
+	time_accessor times( tempdb);
 	task test_task( "test" );
-	auto taskID = test_task.id;
-	taskAccessor.create( test_task);
-	task sub_task( "sub_task", taskID);
-	auto subTaskID = sub_task.id;
-	taskAccessor.create( sub_task );
-	timeAccessor.create( time_entry( taskID, system_clock::from_time_t( 100 ), system_clock::from_time_t( 200 )) );
-	timeAccessor.create( time_entry( subTaskID, system_clock::from_time_t( 150 ), system_clock::from_time_t( 200 )) );
-	return *taskAccessor.by_id(taskID);
+	auto task_id = test_task.id;
+	tasks.create( test_task);
+	task sub_task( "sub_task", task_id);
+	auto sub_task_id = sub_task.id;
+	tasks.create( sub_task );
+	times.create( time_entry( task_id, system_clock::from_time_t( 100 ), system_clock::from_time_t( 200 )) );
+	times.create( time_entry( sub_task_id, system_clock::from_time_t( 150 ), system_clock::from_time_t( 200 )) );
+	return *tasks.by_id( task_id);
 }
 
 TEST(TimeManagement, tasksTimeIs100)
 {
-	extended_task task1 = getTask();
-	ASSERT_EQ(100s, task1.time);
+	extended_task task_1 = get_task( );
+	ASSERT_EQ( 100s, task_1.time);
 }
 
 TEST(TimeManagement, tasksTotalTimeIs150)
 {
-	extended_task task1 = getTask();
-	ASSERT_EQ(150s, task1.total_time);
+	extended_task task_1 = get_task( );
+	ASSERT_EQ( 150s, task_1.total_time);
 }
 
 

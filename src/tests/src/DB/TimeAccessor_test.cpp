@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "TempDB.h"
-#include <libtimeit/exceptions/db_exception.h>
+#include "temp_db.h"
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/extended_task_accessor.h>
@@ -18,32 +17,32 @@ const string COMMENT = "Just a comment";
 TEST(TimeAccessor, simpleTest)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	task_accessor tasks( tempdb);
 	task test_task( "test" );
-	taskAccessor.create(test_task);
-	timeAccessor.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t(  1000 )) );
-	auto result = timeAccessor.duration_time( test_task.id);
+	tasks.create( test_task);
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )) );
+	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(1000, result.count());
 }
 
 TEST(TimeAccessor, ChangeEndTime)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	task_accessor tasks( tempdb);
 	task test_task( "test" );
-	taskAccessor.create( test_task );
-	time_accessor timeAccessor(tempdb);
+	tasks.create( test_task );
+	time_accessor times( tempdb);
 	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
-	timeAccessor.create( original );
-	auto te = timeAccessor.by_id( original.id );
+	times.create( original );
+	auto te = times.by_id( original.id );
 	if (te)
 	{
-		timeAccessor.update(te->with_stop( system_clock::from_time_t( 1300 )));
+		times.update( te->with_stop( system_clock::from_time_t( 1300 )));
 	}
-	auto result = timeAccessor.duration_time( test_task.id);
+	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(1300, result.count());
 
 }
@@ -51,16 +50,16 @@ TEST(TimeAccessor, ChangeEndTime)
 TEST(TimeAccessor, ChangeStartTime)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	task_accessor tasks( tempdb);
 	task test_task( "test" );
-	taskAccessor.create( test_task );
-	time_accessor timeAccessor(tempdb);
+	tasks.create( test_task );
+	time_accessor times( tempdb);
 	time_entry original( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
-	timeAccessor.create( original );
-	auto te = timeAccessor.by_id(original.id);
-	timeAccessor.update(te->with_start( system_clock::from_time_t( 300 )));
-	auto result = timeAccessor.duration_time( test_task.id);
+	times.create( original );
+	auto te = times.by_id( original.id);
+	times.update( te->with_start( system_clock::from_time_t( 300 )));
+	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(700, result.count());
 
 }
@@ -68,19 +67,19 @@ TEST(TimeAccessor, ChangeStartTime)
 TEST(TimeAccessor, UpdateTime)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	Notify_observer observer(notifier);
+	temp_db tempdb(notifier);
+	notify_observer observer( notifier);
 
-	task_accessor taskAccessor(tempdb);
+	task_accessor tasks( tempdb);
 	task test_task( "test" );
-	taskAccessor.create(test_task );
-	time_accessor timeAccessor(tempdb);
+	tasks.create( test_task );
+	time_accessor times( tempdb);
 	time_entry first( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
-	timeAccessor.create( first );
+	times.create( first );
 	observer.task_id_time = {};
-	auto original = timeAccessor.by_id(first.id).value();
-	timeAccessor.update( original.with_start( system_clock::from_time_t( 300 )).with_stop( system_clock::from_time_t( 700 )));
-	auto result = timeAccessor.duration_time( test_task.id);
+	auto original = times.by_id( first.id).value();
+	times.update( original.with_start( system_clock::from_time_t( 300 )).with_stop( system_clock::from_time_t( 700 )));
+	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(400s, result );
 	ASSERT_TRUE( observer.task_id_time.has_value());
 	ASSERT_EQ(observer.task_id_time.value(), test_task.id );
@@ -90,48 +89,48 @@ TEST(TimeAccessor, UpdateTime)
 TEST(TimeAccessor, RemoveTime)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	task_accessor tasks( tempdb);
 	task test_task("test");
-	taskAccessor.create( test_task );
-	time_accessor timeAccessor(tempdb);
+	tasks.create( test_task );
+	time_accessor times( tempdb);
 	time_entry te = time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
-	timeAccessor.create( te );
-	timeAccessor.create( time_entry( test_task.id, system_clock::from_time_t( 2000 ), system_clock::from_time_t( 2300 )));
-	timeAccessor.remove( te );
-	auto result = timeAccessor.duration_time( test_task.id );
+	times.create( te );
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 2000 ), system_clock::from_time_t( 2300 )));
+	times.remove( te );
+	auto result = times.duration_time( test_task.id );
 	ASSERT_EQ(300s, result);
 }
 
 TEST(TimeAccessor, GetLatestTasks)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	task_accessor tasks( tempdb);
 
 	task test_task( "test" );
-	taskAccessor.create( test_task );
-	time_accessor timeAccessor(tempdb);
-	timeAccessor.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000)));
-	auto result = timeAccessor.latest_active_tasks(10);
+	tasks.create( test_task );
+	time_accessor times( tempdb);
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000)));
+	auto result = times.latest_active_tasks( 10);
 	ASSERT_EQ(1, result.size());
 	ASSERT_EQ( test_task.id, result[0]);
-	taskAccessor.remove( test_task.id);
-	result = timeAccessor.latest_active_tasks(10);
+	tasks.remove( test_task.id);
+	result = times.latest_active_tasks( 10);
 	ASSERT_EQ(0, result.size());
 }
 
 TEST(TimeAccessor, GetDetailTimeList)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	extended_task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	extended_task_accessor tasks( tempdb);
 
 	task test_task( "test" );
-	taskAccessor.create(test_task );
-	timeAccessor.create( time_entry( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 )) );
-	vector<time_entry> result = timeAccessor.by_activity(
+	tasks.create( test_task );
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 )) );
+	vector<time_entry> result = times.by_activity(
 			test_task.id,
 			system_clock::from_time_t( 0 ),
 			system_clock::from_time_t( 10000 ));
@@ -145,14 +144,14 @@ TEST(TimeAccessor, GetDetailTimeList)
 TEST(TimeAccessor, testGetByID)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	extended_task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	extended_task_accessor tasks( tempdb);
 	task test_task( "test" );
-	taskAccessor.create( test_task );
+	tasks.create( test_task );
 	time_entry original( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 ));
-	timeAccessor.create( original );
-	auto te = timeAccessor.by_id(original.id);
+	times.create( original );
+	auto te = times.by_id( original.id);
 	ASSERT_EQ( test_task.id, te->owner_id) << "Check task id";
 	ASSERT_EQ(system_clock::from_time_t( 10 ), te->start) << "Check start";
 	ASSERT_EQ(system_clock::from_time_t( 100 ), te->stop) << "Check stop";
@@ -162,16 +161,16 @@ TEST(TimeAccessor, testGetByID)
 TEST(TimeAccessor, testGetByUUID)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	extended_task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	extended_task_accessor tasks( tempdb);
 
 	task test_task( "test" );
-	taskAccessor.create( test_task );
+	tasks.create( test_task );
 	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 ));
-	timeAccessor.create( original );
+	times.create( original );
 
-	auto te = timeAccessor.by_id(original.id);
+	auto te = times.by_id( original.id);
 	ASSERT_EQ( test_task.id, te->owner_id ) << "Check task id";
 	ASSERT_EQ(system_clock::from_time_t( 10 ), te->start) << "Check start";
 	ASSERT_EQ(system_clock::from_time_t( 100 ), te->stop) << "Check stop";
@@ -185,122 +184,122 @@ TEST(TimeAccessor, testGetByUUID)
 TEST(TimeAccessor, newItem)
 {
 	notification_manager notifier;
-	TempDB db(notifier);
-	time_accessor timeAccessor(db);
-	extended_task_accessor taskAccessor(db);
+	temp_db db(notifier);
+	time_accessor times( db);
+	extended_task_accessor tasks( db);
 
 	task test_task( "test" );
-	taskAccessor.create( test_task );
-	time_entry item1(
+	tasks.create( test_task );
+	time_entry item_1(
 			time_id(),
 			test_task.id,
 			system_clock::from_time_t( 100 ),
 			system_clock::from_time_t( 200 ),
-			STOPPED,
+			stopped,
 			system_clock::from_time_t( 200 ),
 			COMMENT);
 
-	timeAccessor.create(item1);
-	auto item2 = timeAccessor.by_id(item1.id);
+	times.create( item_1);
+	auto item_2 = times.by_id( item_1.id);
 
-	ASSERT_EQ( item1.id, item2->id) << "UUID: ";
-	ASSERT_EQ( item1.owner_id, item2->owner_id) << "Task_ID: ";
-	ASSERT_EQ(item1.start, item2->start) << "Start: ";
-	ASSERT_EQ(item1.stop, item2->stop) << "Stop: ";
-	ASSERT_EQ(item1.state, item2->state) << "Deleted: ";
-	ASSERT_EQ(item1.changed, item2->changed) << "Changed: ";
-	ASSERT_EQ(item1.comment, item2->comment) << "Comment: ";
+	ASSERT_EQ( item_1.id, item_2->id) << "UUID: ";
+	ASSERT_EQ( item_1.owner_id, item_2->owner_id) << "Task_ID: ";
+	ASSERT_EQ( item_1.start, item_2->start) << "Start: ";
+	ASSERT_EQ( item_1.stop, item_2->stop) << "Stop: ";
+	ASSERT_EQ( item_1.state, item_2->state) << "Deleted: ";
+	ASSERT_EQ( item_1.changed, item_2->changed) << "Changed: ";
+	ASSERT_EQ( item_1.comment, item_2->comment) << "Comment: ";
 
-	ASSERT_THROW(timeAccessor.create(item1), db_exception);
+	ASSERT_THROW( times.create( item_1), db_exception);
 
 }
 
 TEST(TimeAccessor, GetTotalTimeWithChildren)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	task_accessor tasks( tempdb);
 
 	task parent( "parent" );
-	taskAccessor.create( parent );
-	auto parentId = parent.id;
+	tasks.create( parent );
+	auto parent_id = parent.id;
 	task child( "test", parent.id );
-	taskAccessor.create( child );
-	auto taskId = child.id;
-	timeAccessor.create( time_entry( taskId, system_clock::from_time_t( 4000 ), system_clock::from_time_t( 5000 )) );
-	int parentTotalTime = timeAccessor.total_cumulative_time(parentId).count();
-	ASSERT_EQ(1000, parentTotalTime);
-	int childTotalTime = timeAccessor.total_cumulative_time(taskId).count();
-	ASSERT_EQ(1000, childTotalTime);
+	tasks.create( child );
+	auto task_id = child.id;
+	times.create( time_entry( task_id, system_clock::from_time_t( 4000 ), system_clock::from_time_t( 5000 )) );
+	int parent_total_time = times.total_cumulative_time( parent_id).count();
+	ASSERT_EQ( 1000, parent_total_time);
+	int child_total_time = times.total_cumulative_time( task_id).count();
+	ASSERT_EQ( 1000, child_total_time);
 }
 
 TEST(TimeAccessor, getTimesChangedSince)
 {
 	notification_manager notifier;
-	TempDB tempdb(notifier);
-	time_accessor timeAccessor(tempdb);
-	task_accessor taskAccessor(tempdb);
+	temp_db tempdb(notifier);
+	time_accessor times( tempdb);
+	task_accessor tasks( tempdb);
 
 	task test_task( "test" );
-	auto taskId = test_task.id;
-	taskAccessor.create( test_task );
+	auto task_id = test_task.id;
+	tasks.create( test_task );
 
-	time_entry original( taskId, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
-	timeAccessor.create( original );
+	time_entry original( task_id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	times.create( original );
 
-	auto item = timeAccessor.by_id( original.id );
-	vector<time_entry> result = timeAccessor.times_changed_since( system_clock::from_time_t(0) );
+	auto item = times.by_id( original.id );
+	vector<time_entry> result = times.times_changed_since( system_clock::from_time_t( 0) );
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor.times_changed_since(item->changed);
+	result = times.times_changed_since( item->changed);
 	ASSERT_EQ(1, result.size());
-	result = timeAccessor.times_changed_since(item->changed + 1s);
+	result = times.times_changed_since( item->changed + 1s);
 	ASSERT_EQ(0, result.size());
 }
 
 TEST(TimeAccessor, getActiveTasks)
 {
 	notification_manager notifier;
-	TempDB db(notifier);
-	time_accessor timeAccessor (db);
-	extended_task_accessor taskAccessor(db);
+	temp_db db(notifier);
+	time_accessor times ( db);
+	extended_task_accessor tasks( db);
 
 
 	task test_task( "test" );
-	auto taskId = test_task.id;
-	taskAccessor.create( test_task );
+	auto task_id = test_task.id;
+	tasks.create( test_task );
 	time_entry item(
 			time_id(),
-			taskId,
+			task_id,
 			system_clock::from_time_t( 100 ),
 			system_clock::from_time_t( 600 ),
-			STOPPED,
+			stopped,
 			system_clock::from_time_t( 200 ),
 			COMMENT);
 
-	timeAccessor.create(item);
+	times.create( item);
 
-	auto result = timeAccessor.active_tasks(system_clock::from_time_t(0), system_clock::from_time_t(50000));
+	auto result = times.active_tasks( system_clock::from_time_t( 0), system_clock::from_time_t( 50000));
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.active_tasks(system_clock::from_time_t(110), system_clock::from_time_t(500));
+	result = times.active_tasks( system_clock::from_time_t( 110), system_clock::from_time_t( 500));
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
 
-	result = timeAccessor.active_tasks(system_clock::from_time_t(90), system_clock::from_time_t(100));
+	result = times.active_tasks( system_clock::from_time_t( 90), system_clock::from_time_t( 100));
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.active_tasks(system_clock::from_time_t(600), system_clock::from_time_t(800));
+	result = times.active_tasks( system_clock::from_time_t( 600), system_clock::from_time_t( 800));
 	ASSERT_EQ(1, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.active_tasks(system_clock::from_time_t(0), system_clock::from_time_t(99));
+	result = times.active_tasks( system_clock::from_time_t( 0), system_clock::from_time_t( 99));
 	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
-	result = timeAccessor.active_tasks(system_clock::from_time_t(601), system_clock::from_time_t(8000));
+	result = times.active_tasks( system_clock::from_time_t( 601), system_clock::from_time_t( 8000));
 	ASSERT_EQ(0, result.size()) << "Number of tasks are wrong";
 
-	taskAccessor.remove(taskId);
-	result = timeAccessor.active_tasks(system_clock::from_time_t(110), system_clock::from_time_t(500));
+	tasks.remove( task_id);
+	result = times.active_tasks( system_clock::from_time_t( 110), system_clock::from_time_t( 500));
 	ASSERT_EQ(0, result.size()) << "Deleted task is shown";
 
 }

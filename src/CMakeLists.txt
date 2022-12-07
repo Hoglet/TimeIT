@@ -42,19 +42,6 @@ add_custom_target(dist
 		DEPENDS version
     )
 
-# make DEB & RPM package
-#--------------------
-set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
-SET(CPACK_GENERATOR "RPM")
-set(CPACK_RPM_PACKAGE_REQUIRES "libgtkmm-2.4-1v5, libsqlite3-0, libxss1, libnotify-bin, libjansson4, libcurl")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The unobtrusive time tracker.")
-set(CPACK_PACKAGE_DESCRIPTION "TimeIT is a time tracker somewhat similar to ktimetracker and gnotime written in C++ using gtkmm. It aims to be unobtrusive and simple to use.  It has Workspace tracking, Idle detection, hierarchical tasks and can show summaries over day/week/month")
-set(CPACK_PACKAGE_CONTACT "Kent Asplund hoglet@solit.se")
-set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
-INCLUDE(CPack)
-
-
-
 set(DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set(PROGRAMNAME_DATADIR "\"${DATADIR}/${PROJECT_NAME}\"")
 

@@ -14,22 +14,17 @@ using namespace std;
 
 //std::shared_ptr<Gtk::Main> GUIFactory::main;
 
-window_manager::window_manager(
-		time_manager& op_time_keeper,
-		database&    op_database,
-		Timer&       op_timer,
-		notification_manager&    publisher,
-		image_cache&      op_images)
+window_manager::window_manager( time_manager& op_time_keeper, database& op_database, timer_base& op_timer,
+								notification_manager& op_notifier, image_cache& op_images,
+								controller_interface& op_controller)
 		:
-		time_keeper( op_time_keeper),
-		db(op_database),
-		timer(op_timer),
-		notifier(publisher),
-		images( op_images)
-
-{
-
-}
+		time_keeper( op_time_keeper ),
+		db( op_database ),
+		timer( op_timer ),
+		notifier( op_notifier ),
+		images( op_images ),
+		controller( op_controller )
+{}
 
 void window_manager::quit()
 {
@@ -48,7 +43,7 @@ widget_ptr window_manager::get_widget( widget_type widget)
 	case MAIN_WINDOW:
 		if (main_window_instance == nullptr)
 		{
-			shared_ptr<main_window> window(new main_window(db, time_keeper, notifier, *this, images));
+			shared_ptr<main_window> window(new main_window( db, time_keeper, notifier, *this, images, controller));
 			window->signal_hide().connect(sigc::mem_fun(this, &window_manager::on_main_window_hide));
 			this->main_window_instance = window;
 
@@ -138,7 +133,7 @@ status_icon_widget& window_manager::get_status_icon()
 {
 	if (status_icon_instance == nullptr)
 	{
-		status_icon_instance =  (new status_icon_widget(time_keeper, db, notifier, images));
+		status_icon_instance =  (new status_icon_widget( time_keeper, db, notifier, images, controller));
 	}
 	return *status_icon_instance;
 }
@@ -161,4 +156,3 @@ void window_manager::on_dialog_response(Gtk::Dialog* dialog)
 }
 
 }
-

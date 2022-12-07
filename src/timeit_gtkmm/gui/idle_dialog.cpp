@@ -9,7 +9,6 @@
 #include <iostream>
 #include <string>
 #include <glibmm/i18n.h>
-#include "libtimeit/timer.h"
 #include <libtimeit/utils.h>
 #include <fmt/core.h>
 
@@ -20,7 +19,7 @@ using namespace::std;
 using namespace libtimeit;
 
 idle_dialog::idle_dialog(
-		Timer& timer,
+		timer_base& timer,
 		database& db,
 		time_manager& op_time_keeper)
 		:
@@ -128,7 +127,7 @@ void idle_dialog::action_continue(const time_id& id)
 	auto item = times.by_id( id);
 	if(item.has_value())
 	{
-		times.update( item->with( RUNNING).with_stop( system_clock::now()));
+		times.update( item->with( running ).with_stop( system_clock::now()));
 	}
 }
 

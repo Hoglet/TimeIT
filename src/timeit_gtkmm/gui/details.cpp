@@ -1,4 +1,5 @@
 #include "details.h"
+#include "main_window/submenu.h"
 #include <fmt/core.h>
 #include <vector>
 #include <libtimeit/utils.h>
@@ -6,6 +7,7 @@
 #include <optional>
 #include <libtimeit/db/default_values.h>
 #include <edit_time.h>
+#include <cxxabi.h>
 
 using namespace Gtk;
 using namespace std;
@@ -41,21 +43,36 @@ details::details(
 	set_headers_visible(false);
 	//Fill the popup menu:
 	{
-		Gtk::Menu::MenuList &menulist = menu_popup.items();
+		submenu l_menu("");
+		l_menu
+				.append( { _("_Edit"),            [&]{ this->on_menu_file_popup_edit();}   })
+				.append( { _("_Merge with next"), [&]{ this->on_menu_file_popup_merge();}  })
+				.append( { _("_Split"),           [&]{ this->on_menu_file_popup_split();}  })
+				.append( {  } )
+				.append( { _("_Remove"),          [&]{ this->on_menu_file_popup_remove();} });
 
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"), sigc::mem_fun(*this, &details::on_menu_file_popup_edit)));
+		context_menu = l_menu.create();
 
-		Gtk::Menu_Helpers::MenuElem merge_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Merge with next"), sigc::mem_fun(*this, &details::on_menu_file_popup_merge));
-		merge_menu_item = merge_menu_elem.get_child();
-		menulist.push_back(merge_menu_elem);
-
-		Gtk::Menu_Helpers::MenuElem split_menu_elem = Gtk::Menu_Helpers::MenuElem(_("_Split"), sigc::mem_fun(*this, &details::on_menu_file_popup_split));
-		split_menu_item = split_menu_elem.get_child();
-		menulist.push_back(split_menu_elem);
-
-		menulist.push_back(Gtk::Menu_Helpers::MenuElem(_("_Remove"), sigc::mem_fun(*this, &details::on_menu_file_popup_remove)));
+		for ( auto* item: context_menu->get_children() )
+		{
+			auto* menu_item = dynamic_cast<Gtk::MenuItem*>(item ) ;
+			if( menu_item != nullptr )
+			{
+				auto label = menu_item->get_label();
+				if( label == _("_Merge with next") )
+				{
+					merge_menu_item = menu_item;
+					menu_item->set_sensitive( false );
+				}
+				if( label == _("_Split") )
+				{
+					split_menu_item = menu_item;
+					menu_item->set_sensitive( false );
+				}
+			}
+		}
 	}
-	menu_popup.accelerate(*this);
+	context_menu->accelerate(*this);
 }
 
 
@@ -105,8 +122,8 @@ void details::on_menu_file_popup_remove()
 		if (optional_time_entry)
 		{
 			time_entry item = optional_time_entry.value();
-			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
-			auto idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
+			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
+			auto idle_gz = minutes( settings.get_int( "Gz", default_gz) );
 			auto minutes_to_lose = duration_cast<minutes>( item.stop - item.start);
 			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose.count());
 			std::string secondary_text;
@@ -132,7 +149,7 @@ void details::on_menu_file_popup_remove()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry could be currently running
-				if ( item.state == RUNNING )
+				if ( item.state == running )
 				{
 					// if running then keep running, starting over with zero length
 					times.update( item.with_start( item.stop));
@@ -170,8 +187,8 @@ void details::on_menu_file_popup_merge()
 		{
 			time_entry time_entry_0 = optional_time_entry_0.value();
 			time_entry time_entry_1 = optional_time_entry_1.value();
-			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
-			auto idle_gz = minutes(settings.get_int("Gz", DEFAULT_GZ));
+			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
+			auto idle_gz = minutes(settings.get_int( "Gz", default_gz));
 
 			auto minutes_to_gain = duration_cast<minutes>(time_entry_1.stop - time_entry_0.start);
 
@@ -229,7 +246,7 @@ bool offer_to_split( time_entry &item)
 {
 	auto start_time = item.start;
 	auto stop_time = item.stop;
-	auto seconds_to_split = start_time - stop_time;
+	auto seconds_to_split = stop_time - start_time ;
 	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
 	return across_days || seconds_to_split > 120s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
@@ -289,7 +306,7 @@ bool details::on_button_press_event(GdkEventButton *event)
 	if ((event->type == GDK_BUTTON_PRESS) && (event->button == 3))
 	{
 		set_visibility_of_context_menu();
-		menu_popup.popup(event->button, event->time);
+		context_menu->popup(event->button, event->time);
 	}
 	else if (event->type == GDK_2BUTTON_PRESS)
 	{
@@ -326,18 +343,21 @@ void details::set_visibility_of_context_menu()
 		}
 
 	}
-	else if ( selected_ids.size()==1 )
+	else
 	{
-		merge_menu_item->set_sensitive( false);
-		auto selected_id = selected_ids.front();
-		optional<time_entry> optional_time_entry = times.by_id( selected_id);
-		if ( optional_time_entry.has_value() && offer_to_split( optional_time_entry.value() ) )
+		merge_menu_item->set_sensitive( false );
+	}
+	if ( selected_ids.size() > 0 )
+	{
+		auto selected_id = selected_ids.front( );
+		optional<time_entry> optional_time_entry = times.by_id( selected_id );
+		if ( optional_time_entry.has_value( ) && offer_to_split( optional_time_entry.value( )))
 		{
-			split_menu_item->set_sensitive( true);
+			split_menu_item->set_sensitive( true );
 		}
 		else
 		{
-			split_menu_item->set_sensitive( false);
+			split_menu_item->set_sensitive( false );
 		}
 	}
 }
@@ -481,7 +501,7 @@ list<row_data> details::create_row_data( time_point<system_clock> start, time_po
 		data.start        = item.start;
 		prev_start        = data.start;
 		data.stop         = item.stop;
-		data.running      = item.state == RUNNING;
+		data.running      = item.state == running;
 		data.comment      = item.comment;
 
 		cumulative_time_for_day += duration_cast<seconds>(data.stop - data.start);

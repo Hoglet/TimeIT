@@ -3,13 +3,13 @@
 
 #include "notifier.h"
 #include <memory>
-#include <libtimeit/db/sqlite3.h>
+#include <libtimeit/db/sqlite.h>
 #include <libtimeit/db/query_result.h>
 
 
 namespace libtimeit
 {
-class SQLite3;
+class sqlite;
 using namespace std;
 
 class database
@@ -42,7 +42,7 @@ public:
 private:
 	int        db_version{0};
 	notification_manager&  notifier;
-	SQLite3    db;
+	sqlite    db;
 
 	void find_db_version();
 };
