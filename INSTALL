@@ -6,7 +6,7 @@ Dependencies
 In Ubunutu/Linux mint/Debian following externals needs to be installed:
 libxss-dev
 libsqlite3-dev
-gtkmm-2.4-dev
+gtkmm-3.0-dev
 libjansson-dev
 libcurl4-xxx-dev
 On other distributions they might have different names.

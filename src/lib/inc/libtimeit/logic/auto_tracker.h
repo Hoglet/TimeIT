@@ -18,7 +18,7 @@ public:
 	auto_tracker(
 			time_manager& /*time_keeper*/,
 			database&    /*db*/,
-			Timer&       /*timer*/
+			timer_base&       /*timer*/
 			);
 
 private:
@@ -33,7 +33,7 @@ private:
 
 	auto_track_accessor  auto_track;
 	task_accessor        tasks;
-	x11_workspace            workspace;
+	x_11_workspace            workspace;
 	bool                 old_user_is_active{false};
 };
 

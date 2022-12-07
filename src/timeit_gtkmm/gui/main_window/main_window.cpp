@@ -2,7 +2,6 @@
 #include "task_list.h"
 #include <gtkmm.h>
 #include <iostream>
-#include <libtimeit/utils.h>
 #include <libtimeit/os_abstraction.h>
 #include <glibmm/i18n.h>
 #include "summary.h"
@@ -218,7 +217,7 @@ void main_window::on_settings_changed(string name)
 
 void main_window::do_layout()
 {
-	if (settings.get_bool("CompactLayout", DEFAULT_COMPACT_LAYOUT))
+	if (settings.get_bool( "CompactLayout", default_compact_layout))
 	{
 		empty_containers();
 		default_layout();
@@ -349,7 +348,7 @@ void main_window::on_action_remove_task()
 {
 	auto selected_task_id = task_list.selected_id();
 
-	if( selected_task_id.has_value() == false )
+	if( false == selected_task_id.has_value( ))
 	{
 		return;
 	}

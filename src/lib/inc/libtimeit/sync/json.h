@@ -19,14 +19,14 @@ public:
 	~json();
 	json(json&&);
 	json(const json&);
-	json(json_t* op_object);
-	json(string  text);
-	json(int64_t number);
-	json(bool state);
-	json(seconds /*duration*/);
-	json(minutes /*duration*/);
-	json(time_point<system_clock> time_stamp);
-	json(vector<json>);
+	explicit json(json_t* op_object);
+	explicit json(string  text);
+	explicit json(int64_t number);
+	explicit json(bool state);
+	explicit json(seconds /*duration*/);
+	explicit json(minutes /*duration*/);
+	explicit json(time_point<system_clock> time_stamp);
+	explicit json(vector<json>);
 	json& operator=(json&&);
 	json& operator=(const json&) = delete;
 

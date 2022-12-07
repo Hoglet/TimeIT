@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef IDLE_DETECTOR_H_
-#define IDLE_DETECTOR_H_
+#ifndef X_11_IDLE_DETECTOR_H
+#define X_11_IDLE_DETECTOR_H
 
 
 #include <libtimeit/timer.h>
@@ -17,17 +17,17 @@
 namespace libtimeit
 {
 
-class X11_idle_detector : public timer_observer
+class x_11_idle_detector : public timer_observer
 {
 public:
 	static bool available();
-	X11_idle_detector(Timer &timer);
-	X11_idle_detector(const X11_idle_detector&) = delete;
-	X11_idle_detector(X11_idle_detector&&)      = delete;
-	X11_idle_detector& operator=(const X11_idle_detector&) = delete;
-	X11_idle_detector& operator=( X11_idle_detector&& ) = delete;
+	x_11_idle_detector( timer_base &timer);
+	x_11_idle_detector( const x_11_idle_detector&) = delete;
+	x_11_idle_detector( x_11_idle_detector&&)      = delete;
+	x_11_idle_detector& operator=( const x_11_idle_detector&) = delete;
+	x_11_idle_detector& operator=( x_11_idle_detector&& ) = delete;
 
-	~X11_idle_detector() override;
+	~x_11_idle_detector() override;
 	seconds time_idle();
 	bool idle();
 private:
@@ -40,4 +40,4 @@ private:
 };
 
 }
-#endif /* IDLE_DETECTOR_H_ */
+#endif /* X_11_IDLE_DETECTOR_H */

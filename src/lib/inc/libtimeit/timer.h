@@ -6,14 +6,14 @@
 namespace libtimeit
 {
 
-class Timer;
+class timer_base;
 
 using namespace std;
 
 class timer_observer
 {
 public:
-	timer_observer(Timer& publisher);
+	timer_observer( timer_base& publisher);
 	timer_observer(const timer_observer&) = delete;
 	timer_observer(const timer_observer&&) = delete;
 	timer_observer& operator=(const timer_observer&) = delete;
@@ -25,10 +25,10 @@ public:
 	virtual void on_signal_10_seconds();
 	//LCOV_EXCL_STOP
 private:
-	Timer& timer;
+	timer_base& timer;
 };
 
-class Timer
+class timer_base
 {
 	friend class timer_observer;
 public:

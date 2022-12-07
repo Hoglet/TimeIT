@@ -21,7 +21,6 @@
 
 #include <libtimeit.h>
 #include <libtimeit/logic/auto_tracker.h>
-#include <libtimeit/logic/time_keeper.h>
 #include <libtimeit/misc/application_lock.h>
 #include <libtimeit/misc/ipc_server.h>
 #include <libtimeit/misc/ipc_client.h>

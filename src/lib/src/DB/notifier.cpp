@@ -41,7 +41,7 @@ void notification_manager::send_message(notification_message message)
 {
 	switch(message.type)
 	{
-		case COMPLETE_UPDATE:
+		case complete_update:
 			this->broadcast(
 					[message](event_observer* observer)
 					{
@@ -49,7 +49,7 @@ void notification_manager::send_message(notification_message message)
 					}
 			);
 			break;
-		case SETTINGS_CHANGED:
+		case settings_changed:
 			this->broadcast(
 					[message](event_observer* observer)
 					{
@@ -57,7 +57,7 @@ void notification_manager::send_message(notification_message message)
 					}
 			);
 			break;
-		case SHOW_MAIN_WINDOW:
+		case show_main_window:
 			this->broadcast(
 					[message](event_observer* observer)
 					{
@@ -79,7 +79,7 @@ void notification_manager::is_enabled(bool op_enabled)
 	if (enabled && missed_notification)
 	{
 		missed_notification = false;
-		try_send_notification(COMPLETE_UPDATE, 0);
+		try_send_notification( complete_update, 0);
 	}
 }
 

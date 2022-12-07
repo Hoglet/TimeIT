@@ -1,6 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/scrnsaver.h>
-#include <libtimeit/logic/x11_idle_detector.h>
+#include <libtimeit/logic/x_11_idle_detector.h>
 #include <iostream>
 #include <libtimeit/utils.h>
 
@@ -11,7 +11,7 @@ XScreenSaverInfo* x_info = nullptr; // NOLINT(cppcoreguidelines-avoid-non-const-
 
 using namespace std;
 
-bool X11_idle_detector::available()
+bool x_11_idle_detector::available()
 {
 	int event_base = 0;
 	int error_base = 0;
@@ -20,7 +20,7 @@ bool X11_idle_detector::available()
 	return (XScreenSaverQueryExtension(dsp, &event_base, &error_base)>0);
 }
 
-X11_idle_detector::X11_idle_detector(Timer &timer) : timer_observer(timer)
+x_11_idle_detector::x_11_idle_detector( timer_base &timer) : timer_observer( timer)
 {
 	if (!available())
 	{
@@ -35,7 +35,7 @@ X11_idle_detector::X11_idle_detector(Timer &timer) : timer_observer(timer)
 	is_idle = false;
 }
 
-X11_idle_detector::~X11_idle_detector()
+x_11_idle_detector::~x_11_idle_detector()
 {
 	if (x_info != nullptr)
 	{
@@ -49,7 +49,7 @@ X11_idle_detector::~X11_idle_detector()
 
 
 
-void X11_idle_detector::poll_status()
+void x_11_idle_detector::poll_status()
 {
 	auto now = system_clock::now();
 	auto poll_time = now - last_poll;
@@ -75,13 +75,13 @@ void X11_idle_detector::poll_status()
 
 }
 
-bool X11_idle_detector::idle()
+bool x_11_idle_detector::idle()
 {
 	poll_status();
 	return is_idle;
 }
 
-seconds X11_idle_detector::time_idle()
+seconds x_11_idle_detector::time_idle()
 {
 	poll_status();
 	return idle_seconds;

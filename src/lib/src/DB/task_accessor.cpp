@@ -9,13 +9,13 @@ namespace libtimeit
 using namespace std;
 using namespace std::chrono;
 
-const string CREATE_TASK_V_6 = R"Query(
+const string create_task_v_6 = R"Query(
 				INSERT INTO
 					tasks (name,parent,changed,uuid, deleted,idle,quiet)
 				VALUES (?,?,?,?,?,?,?);
 				)Query";
 
-const string GET_TASK_QUERY = R"(
+const string get_task_query = R"(
 				SELECT
 					parent,
 					name,
@@ -32,7 +32,7 @@ const string GET_TASK_QUERY = R"(
 task_accessor::task_accessor(database& op_database )
 		:
 		db(op_database),
-		statement_get_by_id(db.prepare(GET_TASK_QUERY)),
+		statement_get_by_id(db.prepare( get_task_query)),
 		statement_get_task(db.prepare(R"(
 				SELECT
 					parent,
@@ -47,7 +47,7 @@ task_accessor::task_accessor(database& op_database )
 				WHERE
 					id=?)")),
 		statement_id_to_uuid(db.prepare("SELECT uuid FROM tasks WHERE id=?;")),
-		statement_new_task(db.prepare( CREATE_TASK_V_6 ))
+		statement_new_task(db.prepare( create_task_v_6 ))
 {
 }
 
@@ -414,4 +414,3 @@ void task_accessor::setup(database& db)
 }
 
 }
-

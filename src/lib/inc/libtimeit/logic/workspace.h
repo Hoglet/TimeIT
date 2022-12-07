@@ -23,10 +23,10 @@ struct workspace_layout
 			columns( op_columns)
 	{};
 };
-class x11_workspace
+class x_11_workspace
 {
 public:
-	x11_workspace();
+	x_11_workspace();
 
 	unsigned active();
 	string name(unsigned workspace_nr);

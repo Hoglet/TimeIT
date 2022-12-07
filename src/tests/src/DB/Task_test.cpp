@@ -10,18 +10,17 @@ TEST (Task, with)
 	task original("Apa", task_id(), system_clock::from_time_t(0), {}, false, 0min, false);
 	auto now = system_clock::now();
 
-	auto task1 = original.with_name("Test");
-	ASSERT_EQ("Test", task1.name);
+	auto task_1 = original.with_name( "Test");
+	ASSERT_EQ( "Test", task_1.name);
 
 	task parent("Parent");
-	auto task2 = original.with_parent(parent.id);
-	ASSERT_EQ( parent.id, task2.parent_id);
+	auto task_2 = original.with_parent( parent.id);
+	ASSERT_EQ( parent.id, task_2.parent_id);
 
-	auto task4 = original.with_deleted(true);
-	ASSERT_EQ(true, task4.deleted);
+	auto task_4 = original.with_deleted( true);
+	ASSERT_EQ( true, task_4.deleted);
 
-	ASSERT_TRUE(task4.last_changed - now >= 0s);
-	ASSERT_TRUE(task4.last_changed - now <  2s);
+	ASSERT_TRUE( task_4.last_changed - now >= 0s);
+	ASSERT_TRUE( task_4.last_changed - now < 2s);
 
 }
-

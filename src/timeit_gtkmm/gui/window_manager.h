@@ -32,7 +32,7 @@ using widget_ptr = std::shared_ptr<widget_interface>;
 class window_manager
 {
 public:
-	window_manager( time_manager& op_time_keeper, database& op_database, Timer& op_timer,
+	window_manager( time_manager& op_time_keeper, database& op_database, timer_base& op_timer,
 					notification_manager& op_notifier, image_cache& op_images,
 					controller_interface& op_controller );
 	virtual widget_ptr get_widget( widget_type widget);
@@ -61,11 +61,11 @@ private:
 
 	time_manager&                 time_keeper;
 	database&                     db;
-	Timer&                        timer;
+	timer_base&                        timer;
 	notification_manager&         notifier;
 	image_cache&                  images;
 	list<shared_ptr<Gtk::Dialog>> active_dialogs;
-	controller_interface&                   controller_;
+	controller_interface&         controller;
 };
 }
 #endif /* WINDOW_MANAGER_H */

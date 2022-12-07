@@ -23,7 +23,7 @@ enum idle_dialog_response{
 class idle_dialog : public Gtk::Dialog, public timer_observer, public widget_interface
 {
 public:
-	idle_dialog( Timer& timer, database& db, time_manager& op_time_keeper);
+	idle_dialog( timer_base& timer, database& db, time_manager& op_time_keeper);
 	void set_time_id(const time_id& id);
 	// IWidget interface
 	void show() override;

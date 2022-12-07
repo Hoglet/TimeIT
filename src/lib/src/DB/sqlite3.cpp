@@ -2,7 +2,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
-#include <libtimeit/db/sqlite3.h>
+#include <libtimeit/db/sqlite.h>
 #include <chrono>
 #include <algorithm>
 
@@ -11,22 +11,22 @@ namespace libtimeit
 
 using namespace std;
 
-SQLite3::SQLite3(string dbname)
+sqlite::sqlite( string dbname)
 {
 	init(dbname);
 }
-SQLite3::SQLite3(SQLite3&& other):
+sqlite::sqlite( sqlite&& other) noexcept:
 	db(std::move(other.db)),
 	in_transaction(other.in_transaction)
 {
 }
 
-SQLite3::~SQLite3()
+sqlite::~sqlite()
 {
 	sqlite3_close(db);
 }
 
-void SQLite3::init(string dbname)
+void sqlite::init( string dbname)
 {
 	in_transaction = false;
 	int rc = sqlite3_open(dbname.c_str(), &db);
@@ -38,12 +38,12 @@ void SQLite3::init(string dbname)
 	}
 }
 
-int64_t SQLite3::id_of_last_insert()
+int64_t sqlite::id_of_last_insert()
 {
 	return sqlite3_last_insert_rowid(db);
 }
 
-sql_statement SQLite3::prepare(const string& query)
+sql_statement sqlite::prepare( const string& query)
 {
 	sqlite3_stmt* stmt{nullptr};
 	int rc = sqlite3_prepare_v2(db, query.c_str(), (int)strlen(query.c_str()), &stmt, nullptr);
@@ -59,13 +59,13 @@ sql_statement SQLite3::prepare(const string& query)
 	return {stmt, *this};
 }
 
-query_result SQLite3::execute( const string& query)
+query_result sqlite::execute( const string& query)
 {
 	sql_statement statement = prepare(query);
 	return statement.execute();
 }
 
-void SQLite3::begin_transaction()
+void sqlite::begin_transaction()
 {
 	if (in_transaction)
 	{
@@ -76,7 +76,7 @@ void SQLite3::begin_transaction()
 	in_transaction = true;
 }
 
-void SQLite3::end_transaction()
+void sqlite::end_transaction()
 {
 	if (in_transaction )
 	{
@@ -88,7 +88,7 @@ void SQLite3::end_transaction()
 		throw db_exception("No transaction in progress");
 	}
 }
-void SQLite3::try_rollback()
+void sqlite::try_rollback()
 {
 	if (in_transaction)
 	{
@@ -97,12 +97,12 @@ void SQLite3::try_rollback()
 	}
 }
 
-string SQLite3::last_error_message()
+string sqlite::last_error_message()
 {
 	return sqlite3_errmsg(db);
 }
 
-sql_statement::sql_statement(sql_statement&& other):
+sql_statement::sql_statement(sql_statement&& other) noexcept:
 		db(other.db),
 		stmt(std::move(other.stmt)),
         number_of_columns(other.number_of_columns)
@@ -114,7 +114,7 @@ sql_statement::~sql_statement()
 	sqlite3_finalize(stmt);
 }
 
-sql_statement::sql_statement(sqlite3_stmt* op_stmt, SQLite3& op_db):
+sql_statement::sql_statement( sqlite3_stmt* op_stmt, sqlite& op_db):
 	db(op_db),
 	stmt(op_stmt),
 	number_of_columns(sqlite3_column_count(stmt))
@@ -216,4 +216,3 @@ vector<data_cell> sql_statement::get_row()
 }
 
 }
-

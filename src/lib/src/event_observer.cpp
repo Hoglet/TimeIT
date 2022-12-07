@@ -3,7 +3,6 @@
 //
 
 #include <libtimeit/db/notifier.h>
-#include <libtimeit/event_observer.h>
 
 namespace libtimeit
 {

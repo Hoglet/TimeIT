@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "TempDB.h"
+#include "temp_db.h"
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/time_accessor.h>
 #include <sstream>
@@ -11,10 +11,10 @@ using namespace std;
 namespace test
 {
 
-void createVersion4db(const char *dbname)
+void create_version_4_db( const char *dbname)
 {
 	unlink(dbname);
-	SQLite3 db(dbname);
+	sqlite db( dbname);
 
 	//Create necessary tables
 	db.execute(
@@ -49,16 +49,16 @@ void createVersion4db(const char *dbname)
 			" boolValue   BOOL,"
 			" stringValue VARCHAR) ");
 
-	const int expectedDBVersion = 4;
+	const int expected_db_version = 4;
 	stringstream statement;
-	statement << "INSERT INTO parameters (id, value) VALUES ( \"dbversion\"," << expectedDBVersion << " )";
+	statement << "INSERT INTO parameters (id, value) VALUES ( \"dbversion\"," << expected_db_version << " )";
 	db.execute(statement.str());
 	db.execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (1,'Test',0,0,1);");
 	db.execute("INSERT INTO tasks (id,name,parent,running,expanded) VALUES (2,'Sub task',1,1,0);");
 	db.execute("INSERT INTO times (id,taskID,start,stop,running) VALUES (1,2,10,100,0);");
 }
 
-void openAndCloseDB()
+void open_and_close_db()
 {
 	notification_manager notifier;
 	database db("/tmp/dbtest.db", notifier);
@@ -68,8 +68,8 @@ TEST( database, testCreation )
 {
 	//Testing creation
 	unlink("/tmp/dbtest.db");
-	openAndCloseDB();
-	openAndCloseDB();
+	open_and_close_db( );
+	open_and_close_db( );
 
 	unlink("/tmp/dbtest.db");
 
@@ -81,11 +81,11 @@ TEST( database, testCreation )
 TEST( database, testUpgrade )
 {
 	const char *dbname = "/tmp/dbtest.db";
-	createVersion4db(dbname);
+	create_version_4_db( dbname );
 	notification_manager notifier;
 	database db("/tmp/dbtest.db", notifier);
-	task_accessor taskAccessor(db);
-	ASSERT_EQ( 2, taskAccessor.changed_since().size()) << "Numbers of tasks in tasks";
+	task_accessor tasks( db);
+	ASSERT_EQ( 2, tasks.changed_since().size()) << "Numbers of tasks in tasks";
 
 /*
     auto task1 = taskAccessor.by_id(1);
@@ -96,10 +96,10 @@ TEST( database, testUpgrade )
 	ASSERT_EQ( string("Sub task"), task2->name) << "Task 2 name ";
 	ASSERT_EQ( 1, task2->parent_id) << "Task 2 parent ";
 */
-	time_accessor timeAccessor(db);
-	vector<time_entry> times = timeAccessor.times_changed_since();
-	ASSERT_EQ( 1, times.size()) << "Number of times ";
-	time_entry te = times.at( 0);
+	time_accessor times( db);
+	vector<time_entry> result = times.times_changed_since();
+	ASSERT_EQ( 1, result.size()) << "Number of times ";
+	time_entry te = result.at( 0);
 	ASSERT_EQ( system_clock::from_time_t( 10 ), te.start) << "Time start ";
 	ASSERT_EQ( system_clock::from_time_t( 100 ), te.stop) << "Time stop ";
 
@@ -109,12 +109,12 @@ TEST( database, testUpgrade )
 TEST( database, testDatacell )
 {
 	std::string data("Text");
-	data_cell dc1(data.c_str());
-	data_cell dc2(dc1);
+	data_cell dc_1( data.c_str());
+	data_cell dc_2( dc_1);
 
-	ASSERT_EQ( data, dc2.text());
-	ASSERT_THROW((void) dc2.integer(), db_exception);
-	ASSERT_THROW((void) dc2.boolean(), db_exception);
+	ASSERT_EQ( data, dc_2.text());
+	ASSERT_THROW((void) dc_2.integer(), db_exception);
+	ASSERT_THROW((void) dc_2.boolean(), db_exception);
 
 	data_cell dci(1);
 	ASSERT_EQ(1, dci.integer());
@@ -125,43 +125,43 @@ TEST( database, testDatacell )
 TEST( database, testSQLErrorManagement)
 {
 	const char *dbname = "/tmp/dbtest.db";
-	createVersion4db(dbname);
-	SQLite3 db(dbname);
-	string faultyStatement = "select * from tmies";
-	ASSERT_THROW(db.execute(faultyStatement), db_exception);
+	create_version_4_db( dbname );
+	sqlite db( dbname);
+	string faulty_statement = "select * from tmies";
+	ASSERT_THROW( db.execute( faulty_statement), db_exception);
 }
 
 TEST( database, testTransactions)
 {
 	notification_manager notifier;
-	TempDB db(notifier);
+	temp_db db(notifier);
 	db.begin_transaction();
-	task_accessor taskAccessor(db);
-	taskAccessor.create(task("Test"));
-	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after adding one";
+	task_accessor tasks( db);
+	tasks.create( task( "Test"));
+	ASSERT_EQ( 1, tasks.changed_since().size()) << "Checking number of tasks after adding one";
 	db.end_transaction();
-	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after commit";
+	ASSERT_EQ( 1, tasks.changed_since().size()) << "Checking number of tasks after commit";
 }
 
 TEST( database, testTransactions_rollback )
 {
 	notification_manager notifier;
-	TempDB db(notifier);
+	temp_db db(notifier);
 	db.begin_transaction();
-	task_accessor taskAccessor(db);
-	taskAccessor.create(task("Test"));
-	ASSERT_EQ( 1, taskAccessor.changed_since().size()) << "Checking number of tasks after adding one";
+	task_accessor tasks( db);
+	tasks.create( task( "Test"));
+	ASSERT_EQ( 1, tasks.changed_since().size()) << "Checking number of tasks after adding one";
 	db.try_rollback();
-	ASSERT_EQ( 0, taskAccessor.changed_since().size()) << "Checking number of tasks after rollback";
+	ASSERT_EQ( 0, tasks.changed_since().size()) << "Checking number of tasks after rollback";
 }
 
 TEST( database, testTransactionsSanity)
 {
 	notification_manager notifier;
-	TempDB db(notifier);
+	temp_db db(notifier);
 	db.begin_transaction();
 	ASSERT_THROW(db.begin_transaction(), db_exception);
 	ASSERT_THROW(db.end_transaction(), db_exception);
 }
 
-} /* namespace Test */
+} /* namespace test */

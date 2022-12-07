@@ -9,7 +9,7 @@ using namespace std;
 namespace libtimeit
 {
 
-static const string NEW_TIME_ENTRY_STATEMENT = R"Query(
+static const string new_time_entry_statement = R"Query(
 	INSERT INTO
 		times (uuid,taskID, start, stop, changed,deleted,running,state, comment)
 	VALUES (?,?,?,?,?,?,?,?,?))Query";
@@ -32,7 +32,7 @@ R"(
 		comment=?
 	WHERE
 		uuid=?)")),
-		statement_new_entry(db.prepare(NEW_TIME_ENTRY_STATEMENT))
+		statement_new_entry(db.prepare( new_time_entry_statement))
 {
 }
 
@@ -40,7 +40,7 @@ R"(
 
 void time_accessor::remove(const time_entry& item)
 {
-	update(item.with(DELETED));
+	update(item.with(deleted));
 }
 
 optional<time_entry> time_accessor::by_id( time_id id)
@@ -330,14 +330,14 @@ bool time_accessor::update(const time_entry& item )
 		auto running = false;
 		switch ( item.state )
 		{
-			case RUNNING:
+			case time_entry_state::running:
 				running = true;
 				break;
-			case DELETED:
+			case time_entry_state::deleted:
 				deleted = true;
 				break;
-			case STOPPED:
-			case PAUSED:
+			case stopped:
+			case paused:
 				break;
 		}
 		auto index{1};
@@ -427,14 +427,14 @@ void time_accessor::internal_create( const time_entry &item, sql_statement& stat
 	auto running = false;
 	switch ( item.state )
 	{
-		case RUNNING:
+		case time_entry_state::running:
 			running = true;
 			break;
-		case DELETED:
+		case time_entry_state::deleted:
 			deleted = true;
 			break;
-		case STOPPED:
-		case PAUSED:
+		case stopped:
+		case paused:
 			break;
 	}
 	auto index{1};
@@ -600,4 +600,3 @@ void time_accessor::setup(database& db)
 }
 
 }
-

@@ -1,6 +1,5 @@
 #include <iostream>
 #include <sstream>
-#include <utility>
 #include <libtimeit/exceptions/db_exception.h>
 
 namespace libtimeit
@@ -8,8 +7,8 @@ namespace libtimeit
 
 using namespace std;
 
-db_exception::db_exception( string op_message, int op_return_code):
-	message(move( op_message)),
+db_exception::db_exception( string_view op_message, int op_return_code):
+	message( op_message ),
 	return_code( op_return_code)
 {
 }

@@ -10,7 +10,7 @@
 #include <vector>
 #include "extended_task_accessor.h"
 #include "autotrack_accessor.h"
-#include "sqlite3.h"
+#include "sqlite.h"
 #include <memory>
 
 namespace libtimeit

@@ -6,9 +6,9 @@ namespace libtimeit
 
 enum message_type
 {
-	COMPLETE_UPDATE,
-	SETTINGS_CHANGED,
-	SHOW_MAIN_WINDOW
+	complete_update,
+	settings_changed,
+	show_main_window
 };
 
 }

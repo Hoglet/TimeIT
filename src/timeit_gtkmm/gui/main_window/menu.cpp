@@ -1,6 +1,3 @@
-
-
-#include <gtkmm/widget.h>
 #include <gtkmm/menubar.h>
 #include <gtkmm/builder.h>
 #include <giomm/menu.h>

@@ -54,13 +54,13 @@ json json::from_json_string(string text)
 
 	if(json_error_code(&error) != json_error_unknown)
 	{
-		constexpr const size_t SHOW_BEFORE = 80;
-		constexpr const size_t LENGTH_TO_SHOW  = SHOW_BEFORE + 80;
+		constexpr const size_t show_before = 80;
+		constexpr const size_t length_to_show  = show_before + 80;
 		cerr << "Error parsing string: "  << json_error_code(&error)  << ", "<< (const char*)error.text << "\n";
 		cerr << "On position: " << error.position << " (line: " << error.line << " , column: " << error.column << "\n";
 		cerr << "source: \n";
-		size_t pos_start= error.position - SHOW_BEFORE;
-		cerr << text.substr( pos_start, LENGTH_TO_SHOW)<< "\n\n";
+		size_t pos_start= error.position - show_before;
+		cerr << text.substr( pos_start, length_to_show) << "\n\n";
 	}
 
 	return return_value;
@@ -151,9 +151,9 @@ json json::by_name(string key) const
 	json_t *value  = json_object_get(object, key.c_str());
 	if (json_is_object(value))
 	{
-		return {value};
+		return json{value};
 	}
-	return {nullptr};
+	return json{nullptr};
 }
 
 json::json(vector<json> items) : object(json_array())

@@ -8,7 +8,7 @@ namespace gui
 using sigc::connection;
 using sigc::mem_fun;
 
-class gtk_timer : public libtimeit::Timer
+class gtk_timer : public libtimeit::timer_base
 {
 public:
 	gtk_timer();

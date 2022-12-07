@@ -7,7 +7,7 @@ namespace libtimeit
 {
 using namespace  std;
 //LCOV_EXCL_START
-x11_workspace::x11_workspace()
+x_11_workspace::x_11_workspace()
 {
 	try
 	{
@@ -21,7 +21,7 @@ x11_workspace::x11_workspace()
 
 
 
-workspace_layout x11_workspace::layout()
+workspace_layout x_11_workspace::layout()
 {
 	unsigned rows {1};
 	unsigned columns {1};
@@ -83,7 +83,7 @@ workspace_layout x11_workspace::layout()
 	return {number_of_workspaces, rows, columns};
 }
 
-unsigned x11_workspace::active()
+unsigned x_11_workspace::active()
 {
 	long active = 0;
 	auto layout = this->layout();
@@ -110,7 +110,7 @@ unsigned x11_workspace::active()
 	return (unsigned)max(active,0L);
 }
 
-string x11_workspace::name(unsigned workspace_nr)
+string x_11_workspace::name( unsigned workspace_nr)
 {
 	if (is_virtual)
 	{

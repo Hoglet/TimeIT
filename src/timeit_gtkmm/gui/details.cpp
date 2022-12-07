@@ -7,6 +7,7 @@
 #include <optional>
 #include <libtimeit/db/default_values.h>
 #include <edit_time.h>
+#include <cxxabi.h>
 
 using namespace Gtk;
 using namespace std;
@@ -52,10 +53,10 @@ details::details(
 
 		context_menu = l_menu.create();
 
-		for ( auto item: context_menu->get_children() )
+		for ( auto* item: context_menu->get_children() )
 		{
-			auto menu_item = dynamic_cast<Gtk::MenuItem*>(item ) ;
-			if( menu_item )
+			auto* menu_item = dynamic_cast<Gtk::MenuItem*>(item ) ;
+			if( menu_item != nullptr )
 			{
 				auto label = menu_item->get_label();
 				if( label == _("_Merge with next") )
@@ -121,8 +122,8 @@ void details::on_menu_file_popup_remove()
 		if (optional_time_entry)
 		{
 			time_entry item = optional_time_entry.value();
-			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
-			auto idle_gz = minutes( settings.get_int("Gz", DEFAULT_GZ) );
+			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
+			auto idle_gz = minutes( settings.get_int( "Gz", default_gz) );
 			auto minutes_to_lose = duration_cast<minutes>( item.stop - item.start);
 			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose.count());
 			std::string secondary_text;
@@ -148,7 +149,7 @@ void details::on_menu_file_popup_remove()
 			case (Gtk::RESPONSE_OK):
 			{
 				// coded considering time_entry could be currently running
-				if ( item.state == RUNNING )
+				if ( item.state == running )
 				{
 					// if running then keep running, starting over with zero length
 					times.update( item.with_start( item.stop));
@@ -186,8 +187,8 @@ void details::on_menu_file_popup_merge()
 		{
 			time_entry time_entry_0 = optional_time_entry_0.value();
 			time_entry time_entry_1 = optional_time_entry_1.value();
-			auto idle_gt = minutes(settings.get_int("Gt", DEFAULT_GT));
-			auto idle_gz = minutes(settings.get_int("Gz", DEFAULT_GZ));
+			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
+			auto idle_gz = minutes(settings.get_int( "Gz", default_gz));
 
 			auto minutes_to_gain = duration_cast<minutes>(time_entry_1.stop - time_entry_0.start);
 
@@ -500,7 +501,7 @@ list<row_data> details::create_row_data( time_point<system_clock> start, time_po
 		data.start        = item.start;
 		prev_start        = data.start;
 		data.stop         = item.stop;
-		data.running      = item.state == RUNNING;
+		data.running      = item.state == running;
 		data.comment      = item.comment;
 
 		cumulative_time_for_day += duration_cast<seconds>(data.stop - data.start);

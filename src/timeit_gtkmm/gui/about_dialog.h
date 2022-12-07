@@ -17,7 +17,7 @@ namespace gui
 class about_dialog : public Gtk::AboutDialog, public widget_interface
 {
 public:
-	about_dialog(image_cache& images);
+	explicit about_dialog(image_cache& images);
 
 	// IWidget interface
 	void show() override { Gtk::AboutDialog::show(); }

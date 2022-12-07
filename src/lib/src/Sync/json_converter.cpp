@@ -1,7 +1,6 @@
 
 #include <string>
 #include <libtimeit/sync/json_converter.h>
-#include <libtimeit/datatypes/task.h>
 #include <libtimeit/sync/json.h>
 #include <libtimeit/utils.h>
 
@@ -51,7 +50,7 @@ string to_json(const time_list& times)
 		item.set("task", json(static_cast<string>(time.owner_id)));
 		item.set("start", json(time.start));
 		item.set("stop", json(time.stop));
-		item.set( "deleted",json(time.state == DELETED));
+		item.set( "deleted",json(time.state == deleted));
 		item.set("changed",  json(time.changed));
 		item.set("state", json((int64_t)time.state));
 		item.set("comment", json(time.comment));
@@ -120,7 +119,7 @@ time_list to_times( const string &input)
 		auto   comment        = item.text("comment");
 		if(deleted)
 		{
-			state = {DELETED};
+			state = {time_entry_state::deleted};
 		}
 
 		auto id= uuid::from_string( uuid_string);

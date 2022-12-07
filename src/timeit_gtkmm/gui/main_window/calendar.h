@@ -11,11 +11,13 @@ namespace gui
 {
 public:
 	calendar_widget();
+	~calendar_widget() noexcept;
 private:
 	void mark_today();
 
 	int marked_day = 0;
-};
+	sigc::connection connection;
+ };
 
 }
 #endif /* CALENDAR_H */

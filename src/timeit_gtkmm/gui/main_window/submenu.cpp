@@ -66,9 +66,9 @@ std::unique_ptr<Gtk::Menu> submenu::create( )
 		</interface>)"	,
 		"menu_id", items_xml());
 
-	Glib::RefPtr<Gtk::Builder> m_refBuilder = Gtk::Builder::create();
-	m_refBuilder->add_from_string(xml);
-	Glib::RefPtr<Glib::Object> object = m_refBuilder->get_object("menu_id");
+	Glib::RefPtr<Gtk::Builder> ref_builder = Gtk::Builder::create();
+	ref_builder->add_from_string( xml);
+	Glib::RefPtr<Glib::Object> object = ref_builder->get_object( "menu_id");
 	Glib::RefPtr<Gio::Menu> gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 
 	auto result = std::make_unique<Gtk::Menu>(gmenu);

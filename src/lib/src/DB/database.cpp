@@ -12,7 +12,7 @@ namespace libtimeit
 {
 using namespace std;
 
-const int EXPECTED_DB_VERSION = 5;
+const int expected_db_version = 5;
 
 
 int database::current_db_version() const
@@ -59,7 +59,7 @@ database::database(
 
 
 
-		db_version = EXPECTED_DB_VERSION;
+		db_version = expected_db_version;
 		settings.set_int("db_version", db_version);
 		db.execute( "DROP TABLE IF EXISTS parameters;" );
 
@@ -130,7 +130,7 @@ void database::find_db_version()
 	}
 	else
 	{
-		db_version = EXPECTED_DB_VERSION;
+		db_version = expected_db_version;
 	}
 }
 

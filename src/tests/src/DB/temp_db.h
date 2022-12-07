@@ -5,8 +5,8 @@
  *      Author: hoglet
  */
 
-#ifndef TIMEIT_TEMPDB_H
-#define TIMEIT_TEMPDB_H
+#ifndef TEMP_DB_H
+#define TEMP_DB_H
 
 #include <libtimeit/db/database.h>
 #include <string>
@@ -16,10 +16,10 @@ namespace test
 using namespace std;
 using namespace libtimeit;
 
-class TempDB : public libtimeit::database
+class temp_db : public libtimeit::database
 {
 public:
-	TempDB(notification_manager &notifier);
+	temp_db(notification_manager &notifier);
 };
 
 }

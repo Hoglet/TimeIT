@@ -12,7 +12,7 @@ using namespace std;
 
 enum class event_type
 {
-	ERROR_MESSAGE
+	error_message
 	//INFO_MESSAGE
 };
 

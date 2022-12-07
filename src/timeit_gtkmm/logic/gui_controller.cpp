@@ -44,14 +44,14 @@ void gui_controller::start()
 {
 	windows.get_status_icon().show();
 	windows.get_status_icon().attach(this);
-	if (!settings.get_bool("StartMinimized", DEFAULT_START_MINIMIZED))
+	if (!settings.get_bool( "StartMinimized", default_start_minimized))
 	{
 		shared_ptr<main_window> window = static_pointer_cast<main_window>(windows.get_widget(MAIN_WINDOW));
 		action_observer* observer=this;
 		window->attach(observer);
 		window->show();
 	}
-	for( auto item: times.by_state( PAUSED))
+	for( auto item: times.by_state( paused ))
 	{
 		show_idle_dialog( item.id );
 	}
@@ -239,7 +239,7 @@ void gui_controller::on_idle_detected( const time_entry& te)
 {
 	on_idle_changed();
 
-	times.update(te.with(PAUSED));
+	times.update(te.with( paused ));
 	show_idle_dialog(te.id);
 }
 

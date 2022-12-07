@@ -3,7 +3,7 @@
 #include <libtimeit/misc/application_lock.h>
 #include <libtimeit/os_abstraction.h>
 
-namespace Test
+namespace test
 {
 using namespace libtimeit;
 
@@ -16,10 +16,10 @@ TEST( ApplicationLock, test)
 	application_lock lock(filename);
 	ASSERT_EQ( true, lock.lock_acquired()) << "Check that first lock succeded";
 
-	application_lock lock2("Not/existing/file");
-	ASSERT_EQ( false, lock2.lock_acquired()) << "Check that second lock failed";
+	application_lock lock_2( "Not/existing/file");
+	ASSERT_EQ( false, lock_2.lock_acquired()) << "Check that second lock failed";
 
 	unlink(filename);
 }
 
-} /* namespace Test */
+} /* namespace test */

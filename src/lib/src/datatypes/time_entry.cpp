@@ -36,7 +36,7 @@ time_entry::time_entry(
 				owner,
 				op_start,
 				op_stop,
-				STOPPED,
+				stopped,
 				system_clock::now(),
 				{})
 {

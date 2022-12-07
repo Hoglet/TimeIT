@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 
-namespace Test
+namespace test
 {
 using namespace std;
 using namespace libtimeit;
@@ -23,4 +23,4 @@ TEST( OSAbstraction, file_operations)
 }
 
 
-} /* namespace Test */
+} /* namespace test */

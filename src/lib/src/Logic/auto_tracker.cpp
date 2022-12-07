@@ -11,7 +11,7 @@ using namespace std;
 auto_tracker::auto_tracker(
 		time_manager &op_time_keeper,
 		database   &db,
-		Timer       &timer)
+		timer_base       &timer)
 		:
 		timer_observer(timer),
 		time_keeper( op_time_keeper),

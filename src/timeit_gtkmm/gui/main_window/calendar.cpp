@@ -12,12 +12,16 @@ calendar_widget::calendar_widget( )
 	signal_prev_month( ).connect( [ & ] { this->mark_today( ); } );
 	signal_next_year( ).connect( [ & ] { this->mark_today( ); } );
 	signal_prev_year( ).connect( [ & ] { this->mark_today( ); } );
-	Glib::signal_timeout( ).connect_seconds(
+	connection = Glib::signal_timeout( ).connect_seconds(
 			[ & ]( ) -> bool
 			{
 				this->mark_today( );
 				return true;
 			}, 300 );
+}
+calendar_widget::~calendar_widget( ) noexcept
+{
+	connection.disconnect();
 }
 
 void calendar_widget::mark_today()

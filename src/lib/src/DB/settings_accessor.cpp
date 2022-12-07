@@ -193,7 +193,7 @@ bool settings_accessor::set_string(string name, string value)
 
 void settings_accessor::setting_changed(string name)
 {
-	db.send_notification(SETTINGS_CHANGED, 0, name);
+	db.send_notification( settings_changed, 0, name);
 }
 
 void settings_accessor::create_table(database& db)

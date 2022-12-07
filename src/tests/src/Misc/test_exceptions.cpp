@@ -3,7 +3,7 @@
 #include <libtimeit/exceptions/db_exception.h>
 #include <libtimeit/exceptions/general_exception.h>
 
-namespace Test
+namespace test
 {
 
 using namespace libtimeit;
@@ -23,4 +23,4 @@ TEST( Exceptions, generalException)
 	ASSERT_EQ(expected, ge.what());
 }
 
-} /* namespace Test */
+} /* namespace test */
