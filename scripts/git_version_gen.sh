@@ -40,5 +40,5 @@ fi
 test "$VN" = "$VC" || {
 	echo "$VN" > $GVF
 	echo "writing $2"
-	echo "constexpr auto VERSION = \"$VN\";" > $2
+	echo "constexpr auto version = \"$VN\";" > $2
 }
