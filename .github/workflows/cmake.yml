@@ -18,7 +18,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: lukka/run-vcpkg@v10.6
+        with:
+          #
+          vcpkgDirectory: # optional, default is ${{ github.workspace }}/vcpkg
+          # Run the installation of package by running `vcpkg install` on the directory of the discovered 'vcpkg.json' file. Default is false.
+          runVcpkgInstall: # optional
+          # Specify a value to prepend to the cache key.
+          prependedCacheKey: # optional
+          # Specify a value to append to the cache key.
+          appendedCacheKey: # optional
+          # Specify the full SHA-1 hash of a Git commit (not a branch name, nor a tag!) that establishes which version of vcpkg needs to be used. When using vcpkg as a Git submodule, this input is *not* needed as implicitly specified by the submodule.
+          vcpkgGitCommitId: # optional
+          # Specify the URL Git repository to download vcpkg from. Defaults to https://github.com/microsoft/vcpkg.git
+          vcpkgGitURL: # optional, default is https://github.com/microsoft/vcpkg.git
+          # Avoid to update vcpkg (launching git) in the specified 'vcpkgDirectory'. This is useful when vcpkg is being checkout independently of the run-vcpkg action. Default is false.
+          doNotUpdateVcpkg: # optional
+          # Disable the automatic caching mechanism by setting it to true. Default is false.
+          doNotCache: # optional
+          # Specify the glob expression used to discover the vcpkg.json whose content's hash is added to the cache key. On Windows runners using `github.workspace` context to form the expression would not work as expected since it contains backslashes. Use instead `**/path/to/vcpkg.json` to match the desired `vcpkg.json` file.
+          vcpkgJsonGlob: # optional, default is **/vcpkg.json
+          # Specify an array of string containing the pattenrs to be ignored when searching for the vcpkg.json file. The default value ignores the pattern '**/vcpkg/**'
+          vcpkgJsonIgnores: # optional, default is ['**/vcpkg/**']
+          # Specify a path to store the built packages to be cached with the GitHub cache service. Default is '<vcpkgvcpkgDirectory>/bincache'.
+          binaryCachePath: # optional
+          # Specify the command line to run vcpkg with. This is only useful when the input 'runVcpkgInstall' is set to true.
+          runVcpkgFormatString: # optional, default is [`install`, `--recurse`, `--clean-after-build`, `--x-install-root`, `$[env.VCPKG_INSTALLED_DIR]`, `--triplet`, `$[env.VCPKG_DEFAULT_TRIPLET]`]
+          # Specify which shell to be used when launching commands. 'true' means the default shell is used. 'false' means no shell is used. It also can be an absolute path and arguments of the shell to spawn commands with.
+          useShell: # optional, default is true
+          # Specifies a semicolon separated list of regular expressions that are used to identify log file paths in the workflow output. A regular expression must have a single capturing group, that is a single pair of parenthesis such as 'See also (.+.log)'. When a match occurs, the content of the file is written into the workflow output for disclosing its content to the user. The default regular expressions are for CMake's and vcpkg's log files.
+          logCollectionRegExps: # optional, default is \s*"(.+CMakeOutput\.log)"\.\s*;\s*"(.+CMakeError\.log)"\.\s*;\s*(.+out\.log)\s*;\s+(.+err\.log)\s*;\s*(.+vcpkg.+\.log)\s*
+
+      - uses: actions/checkout@v3
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -34,4 +65,3 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
-
