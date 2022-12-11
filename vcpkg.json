@@ -3,6 +3,10 @@
   "version-string": "0.1.0-dev",
   "dependencies": [
     "glib",
-    "gettext"
+    "gettext",
+    {
+      "name": "gtkmm",
+      "version>=": "3.24.0"
+    }
   ]
 }
