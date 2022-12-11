@@ -1,12 +1,18 @@
 {
   "name": "timeit",
-  "version-string": "0.1.0-dev",
+  "version-string": "latest",
   "dependencies": [
     "glib",
     "gettext",
-    {
-      "name": "gtkmm",
-      "version>=": "3.24.0"
-    }
-  ]
+    "fmt",
+    "curl",
+    "sqlite3",
+    "jansson",
+    "gtest",
+    "libx11"
+  ],
+  "overrides": [
+    { "name": "gtkmm", "version": "3.22.2#5" }
+  ],
+  "builtin-baseline": "5d1f1884038e23e5c23afdcbacdde06d7769a85f"
 }
