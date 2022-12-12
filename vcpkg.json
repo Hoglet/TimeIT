@@ -11,8 +11,6 @@
     "gtest",
     "libx11"
   ],
-  "overrides": [
-    { "name": "gtkmm", "version": "3.22.2#5" }
-  ],
+  "overrides": [],
   "builtin-baseline": "5d1f1884038e23e5c23afdcbacdde06d7769a85f"
 }

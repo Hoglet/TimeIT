@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install libs
+        run: sudo apt-get install -y libgtkmm-3.0-dev libxss-dev
+
       - uses: actions/checkout@v2
         with:
           submodules: true
