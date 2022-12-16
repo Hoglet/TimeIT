@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Install libs
-        run: sudo apt-get install -y libgtkmm-3.0-dev libxss-dev
+        run: sudo apt-get install -y libgtkmm-3.0-dev libxss-dev  libsqlite3-dev gtkmm-3.0-dev libjansson-dev   libcurl4-openssl-dev libx11-dev
 
       - uses: actions/checkout@v2
         with:
@@ -39,16 +39,16 @@ jobs:
           version: latest
           platform: x64
 
-      - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v10
-        id: runvcpkg
-        with:
-          vcpkgJsonGlob: 'vcpkg.json'
+      #- name: Restore artifacts, or setup vcpkg for building artifacts
+      #  uses: lukka/run-vcpkg@v10
+      #  id: runvcpkg
+      #  with:
+      #    vcpkgJsonGlob: 'vcpkg.json'
 
       - name: Run CMake+vcpkg+Ninja+CTest to generate/build/test.
         uses: lukka/run-cmake@v10
         id: runcmake
         with:
-          configurePreset: 'ninja-multi-vcpkg'
-          buildPreset: 'ninja-multi-vcpkg-debug'
-          testPreset: 'ninja-multi-vcpkg-debug'
+          configurePreset: 'ninja-multi'
+          buildPreset: 'ninja-multi-debug'
+          testPreset: 'ninja-multi-debug'
