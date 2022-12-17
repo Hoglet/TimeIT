@@ -28,10 +28,8 @@ if( GTEST_FOUND )
   
 	target_link_libraries(
 			tests
-			GTest::gmock
-			GTest::gtest
-			GTest::gmock_main
-			GTest::gtest_main
+			${GTEST_LIBRARIES}
+			${GTEST_MAIN_LIBRARIES}
 			libtimeit
 			"${CMAKE_THREAD_LIBS_INIT}"
 			gcov
