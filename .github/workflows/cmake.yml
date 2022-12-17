@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Install libs
-        run: sudo apt-get install -y libgtkmm-3.0-dev libxss-dev  libsqlite3-dev gtkmm-3.0-dev libjansson-dev   libcurl4-openssl-dev libx11-dev
+        run: sudo apt-get install -y libgtkmm-3.0-dev libxss-dev  libsqlite3-dev gtkmm-3.0-dev libjansson-dev   libcurl4-openssl-dev libx11-dev gettext
 
       - uses: actions/checkout@v2
         with:
