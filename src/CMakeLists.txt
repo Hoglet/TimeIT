@@ -30,8 +30,8 @@ ENDIF()
 
 #  dependencies
 # ---------------
-find_package(Gettext          REQUIRED)
-find_package(fmt      CONFIG  REQUIRED)
+find_package(Gettext    REQUIRED)
+find_package(fmt        REQUIRED)
 
 
 # make dist target
