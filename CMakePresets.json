@@ -25,7 +25,6 @@
       "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
       "binaryDir": "${sourceDir}/builds/${presetName}",
       "generator": "Ninja Multi-Config"
-      }
     }
   ],
   "buildPresets": [
