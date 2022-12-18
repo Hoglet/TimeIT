@@ -1,0 +1,57 @@
+name: CMake
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install libs
+        run: sudo apt-get install -y
+          libgtkmm-3.0-dev
+          libxss-dev
+          libsqlite3-dev
+          gtkmm-3.0-dev
+          libjansson-dev
+          libcurl4-openssl-dev
+          libx11-dev
+          gettext
+          libfmt-dev
+          libnotify-dev
+          libgtest-dev
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - uses: lukka/get-cmake@latest
+
+      - name: Setup Ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          # ninja version to download. Default: 1.10.0
+          version: 1.10.0
+
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+
+      - name: Configure cmake
+        run: cmake --preset ninja-multi
+
+      - name: Build TimeIT
+        run: cmake --build --preset ninja-multi-release

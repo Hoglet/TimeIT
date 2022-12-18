@@ -24,7 +24,7 @@ about_dialog::about_dialog(image_cache& images)
 	set_skip_taskbar_hint(true);
 
 	set_name("TimeIT");
-	set_version( version);
+	set_version( version );
 
 	set_copyright("Kent Asplund");
 	//Tagline

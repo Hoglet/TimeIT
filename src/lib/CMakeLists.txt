@@ -3,10 +3,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake )
 
 find_package(GTest)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads          REQUIRED)
-find_package(CURL             REQUIRED)
-find_package(SQLite3          REQUIRED)
-find_package(Jansson          REQUIRED)
+find_package(Threads             REQUIRED)
+find_package(CURL                REQUIRED)
+find_package(SQLite3             REQUIRED)
+find_package(Jansson             REQUIRED)
 
 
 find_package(X11                    REQUIRED)
@@ -51,4 +51,3 @@ if(MSVC)
 else()
 	target_compile_options(libtimeit PRIVATE -Wall -Wextra -pedantic)
 endif()
-

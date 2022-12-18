@@ -85,3 +85,4 @@ debian/timeit
 /obj-x86_64-linux-gnu/
 /.idea/dataSources*
 /testdata/
+/builds/
