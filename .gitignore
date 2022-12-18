@@ -86,4 +86,3 @@ debian/timeit
 /.idea/dataSources*
 /testdata/
 /builds/
-/vcpkg_installed/
