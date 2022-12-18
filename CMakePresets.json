@@ -30,7 +30,7 @@
   "buildPresets": [
     {
       "name": "ninja-multi-debug",
-      "configurePreset": "ninja-multi-vcpkg",
+      "configurePreset": "ninja-multi",
       "displayName": "Build ninja-multi-debug",
       "description": "Build ninja-multi Debug configuration",
       "configuration": "Debug"
