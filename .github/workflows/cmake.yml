@@ -39,22 +39,8 @@ jobs:
           version: latest
           platform: x64
 
-      #- name: Restore artifacts, or setup vcpkg for building artifacts
-      #  uses: lukka/run-vcpkg@v10
-      #  id: runvcpkg
-      #  with:
-      #    vcpkgJsonGlob: 'vcpkg.json'
-
       - name: Configure cmake
         run: cmake --preset ninja-multi
 
-      - name: Build TimeitIT
+      - name: Build TimeIT
         run: cmake --build --preset ninja-multi-debug
-
-#      - name: Run CMake+Ninja+CTest to generate/build/test.
-#        uses: lukka/run-cmake@v10
-#        id: runcmake
-#        with:
-#          configurePreset: 'ninja-multi'
-#          buildPreset: 'ninja-multi-debug'
-#          testPreset: 'ninja-multi-debug'
