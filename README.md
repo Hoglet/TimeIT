@@ -29,6 +29,38 @@ Project homepage is on [GitHub pages](https://hoglet.github.io/TimeIT/)
 
 ## Build
 
+NOTE: Running the application without having installed it will fail as it can not load resources.
+
+### Prerequisites
+1. Install cmake and prefered compiler
+2. Install needed libaries:
+   
+Debian example:
+
+        $ sudo apt install -y   \
+               libgtkmm-3.0-dev \
+               libxss-dev       \
+               libsqlite3-dev   \
+               gtkmm-3.0-dev    \
+               libjansson-dev   \
+               libcurl4-openssl-dev \
+               libx11-dev       \
+               gettext          \
+               libfmt-dev       \
+               libnotify-dev    \
+               libgtest-dev  
+
+   
+### Generic
+Build:
+
+        $ cmake --preset ninja-multi
+        $ cmake --build --preset ninja-multi-release
+
+Install:
+
+        $ cmake --build --preset ninja-multi-release --target install
+
 ### Making a debian package:
         $ debian/rules clean  
         $ debian/rules build  
@@ -36,22 +68,7 @@ Project homepage is on [GitHub pages](https://hoglet.github.io/TimeIT/)
 deb file will be in parent directory.
 Install with gdebi ( or dpkg ).
 
-### Making a redhat package:
-        $ mkdir Release
-        $ cd Release  
-        $ cmake ..  
-        $ make package
-Install:
 
-        $ rpm -i timeit-<version>.rpm
-### Generic
-        $ mkdir Release
-        $ cd Release
-        $ cmake ..
-        $ make
-Install:
-
-        $ make install
 
 ## Working environments
 
