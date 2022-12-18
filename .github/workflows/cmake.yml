@@ -43,4 +43,4 @@ jobs:
         run: cmake --preset ninja-multi
 
       - name: Build TimeIT
-        run: cmake --build --preset ninja-multi-debug
+        run: cmake --build --preset ninja-multi-release
