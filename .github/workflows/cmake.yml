@@ -61,7 +61,7 @@ jobs:
         id: review
         with:
           config_file: '.clang-tidy'
-          clang_tidy_version: '16'
+          clang_tidy_version: '15'
       # If there are any comments, fail the check
       - if: steps.review.outputs.total_comments > 0
         run: exit 1
