@@ -1,5 +1,4 @@
 Checks: '
-  -*,
   mpi-*,
   bugprone-*,
   cert-err52-cpp,
