@@ -33,6 +33,7 @@ Checks: '
   cppcoreguidelines-*,
   openmp-use-default-none,
   portability-simd-intrinsics,
+  readability-identifier-naming,
   readability-*,
   -readability-redundant-preprocessor,
   -readability-named-parameter,
@@ -41,7 +42,6 @@ Checks: '
   -readability-identifier-length,
   -readability-duplicate-include,
   -readability-magic-numbers,
-  -readability-braces-around-statements,
   -readability-redundant-member-init,
   -readability-suspicious-call-argument,
   -readability-qualified-auto,
@@ -60,6 +60,10 @@ CheckOptions:
     value: 19
   - key: modernize-loop-convert.MinConfidence
     value: safe
+  - key: readability-identifier-naming.EnumCase
+    value: lower_case
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
   - key: readability-identifier-naming.VariableCase
     value: lower_case
   - key: readability-identifier-naming.ClassCase

@@ -55,3 +55,12 @@ jobs:
 
       - name: Build TimeIT
         run: cmake --build --preset ninja-multi-release
+
+      - name: Clang-tidy
+        uses: ZedThree/clang-tidy-review@v0.10.0
+        id: review
+        with:
+          config_file: '.clang-tidy'
+      # If there are any comments, fail the check
+      - if: steps.review.outputs.total_comments > 0
+        run: exit 1
