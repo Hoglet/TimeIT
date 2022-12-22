@@ -64,3 +64,7 @@ jobs:
       # If there are any comments, fail the check
       - if: steps.review.outputs.total_comments > 0
         run: exit 1
+
+      - name: Unit tests
+        id: unit_test
+        run: builds/ninja-multi/src/tests/Debug/tests
