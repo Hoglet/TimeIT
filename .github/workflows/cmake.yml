@@ -67,4 +67,4 @@ jobs:
 
       - name: Unit tests
         id: unit_test
-        run: builds/ninja-multi/src/tests/Debug/tests
+        run: builds/ninja-multi/src/tests/Release/tests
