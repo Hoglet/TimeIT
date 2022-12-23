@@ -54,7 +54,7 @@ jobs:
         run: cmake --preset ninja-multi
 
       - name: Build TimeIT
-        run: cmake --build --preset ninja-multi-release
+        run: cmake --build --preset ninja-multi-debug
 
       - name: Clang-tidy
         uses: ZedThree/clang-tidy-review@v0.10.0
@@ -67,4 +67,4 @@ jobs:
 
       - name: Unit tests
         id: unit_test
-        run: builds/ninja-multi/src/tests/Release/tests
+        run: builds/ninja-multi/src/tests/Debug/tests
