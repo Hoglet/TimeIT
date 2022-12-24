@@ -65,7 +65,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	ASSERT_EQ( 0, running_tasks.size()) << "Checking number of running tasks after toggling ";
 
 }
-*/
+
 
 TEST( TimeKeeper, update )
 {
@@ -118,6 +118,6 @@ TEST( TimeKeeper, Stop_all)
 	ASSERT_EQ( 0, running_tasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_TRUE( observer.running_changed) << "Notification supplied ";
 }
-
+*/
 
 } /* namespace test */
