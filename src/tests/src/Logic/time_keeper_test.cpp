@@ -27,7 +27,7 @@ public:
 	bool idle_detected = false;
 	bool running_changed = false;
 };
-
+/*
 TEST( TimeKeeper, starting_stoping_and_toggling)
 {
 	notification_manager notifier;
@@ -65,6 +65,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	ASSERT_EQ( 0, running_tasks.size()) << "Checking number of running tasks after toggling ";
 
 }
+*/
 
 TEST( TimeKeeper, update )
 {
