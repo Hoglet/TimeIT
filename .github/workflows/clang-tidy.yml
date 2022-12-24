@@ -1,4 +1,4 @@
-name: CMake
+name: Unit tests
 
 on:
   push:
@@ -36,25 +36,25 @@ jobs:
         with:
           submodules: true
 
-      - uses: lukka/get-cmake@latest
+      #- uses: lukka/get-cmake@latest
 
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
+      #- name: Setup Ninja
+      #  uses: ashutoshvarma/setup-ninja@master
+      #  with:
           # ninja version to download. Default: 1.10.0
-          version: 1.10.0
+      #    version: 1.10.0
 
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: latest
-          platform: x64
+      #- name: Set up GCC
+      #  uses: egor-tensin/setup-gcc@v1
+      #  with:
+      #    version: latest
+      #    platform: x64
 
-      - name: Configure cmake
-        run: cmake --preset ninja-multi
+      #- name: Configure cmake
+      #  run: cmake --preset ninja-multi
 
-      - name: Build TimeIT
-        run: cmake --build --preset ninja-multi-debug
+      #- name: Build TimeIT
+      #  run: cmake --build --preset ninja-multi-debug
 
       - name: Clang-tidy
         uses: ZedThree/clang-tidy-review@v0.10.0
@@ -64,7 +64,3 @@ jobs:
       # If there are any comments, fail the check
       - if: steps.review.outputs.total_comments > 0
         run: exit 1
-
-      - name: Unit tests
-        id: unit_test
-        run: builds/ninja-multi/src/tests/Debug/tests
