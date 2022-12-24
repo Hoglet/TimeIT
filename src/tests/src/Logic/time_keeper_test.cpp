@@ -33,8 +33,8 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	notification_manager notifier;
 	temp_db db(notifier);
 	timer_base timer;
-/*	time_manager time_keeper( db, timer, notifier);
-	task_accessor tasks(db);
+	time_manager time_keeper( db, timer, notifier);
+/*	task_accessor tasks(db);
 	time_accessor times(db);
 
 	task test_task(task("Test", {}));
