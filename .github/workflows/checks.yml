@@ -41,10 +41,8 @@ jobs:
           submodules: true
 
       - name: List Versions
-        shell: |
-          cmake --version
-          ninja --version
-          gcc --version
+        run: cmake --version; ninja --version; gcc --version
+        shell: bash
 
       - name: Configure cmake
         run: cmake --preset ninja-multi
