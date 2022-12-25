@@ -40,9 +40,17 @@ jobs:
         with:
           submodules: true
 
-      - name: List Versions
-        run: cmake --version; ninja --version; gcc --version
-        shell: bash
+      - name: Show build environment
+        run: |
+          set -x
+          pwd
+          id
+          env
+          cmake --version
+          ninja --version
+          gcc --version
+          git status
+          git log -1
 
       - name: Configure cmake
         run: cmake --preset ninja-multi
