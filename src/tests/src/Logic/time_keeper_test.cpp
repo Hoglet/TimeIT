@@ -34,7 +34,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	temp_db db(notifier);
 	timer_base timer;
 	time_manager time_keeper( db, timer, notifier);
-/*	task_accessor tasks(db);
+	task_accessor tasks(db);
 	time_accessor times(db);
 
 	task test_task(task("Test", {}));
@@ -63,9 +63,9 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 	time_keeper.toggle( test_task.id);
 	running_tasks = times.currently_running();
 	ASSERT_EQ( 0, running_tasks.size()) << "Checking number of running tasks after toggling ";
-*/
+
 }
-/*
+
 
 TEST( TimeKeeper, update )
 {
@@ -118,6 +118,6 @@ TEST( TimeKeeper, Stop_all)
 	ASSERT_EQ( 0, running_tasks.size()) << "Checking number of running tasks after starting ";
 	ASSERT_TRUE( observer.running_changed) << "Notification supplied ";
 }
-*/
+
 
 } /* namespace test */

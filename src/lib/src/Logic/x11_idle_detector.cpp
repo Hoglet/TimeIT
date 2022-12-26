@@ -28,7 +28,6 @@ x_11_idle_detector::x_11_idle_detector( timer_base &timer) : timer_observer( tim
 	if (!available())
 	{
 		cerr << "Unable to detect if user is idle. XScreenSaverQueryExtension not available\n";
-		throw runtime_error("X11 exception");
 	}
 	display = XOpenDisplay(nullptr);
 	x_info = XScreenSaverAllocInfo();
