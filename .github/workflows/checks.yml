@@ -82,24 +82,13 @@ jobs:
           libfmt-dev
           libnotify-dev
           libgtest-dev
+          cmake
+          ninja-build
+          gcc
 
       - uses: actions/checkout@v2
         with:
           submodules: true
-
-      - uses: lukka/get-cmake@latest
-
-      - name: Setup Ninja
-        uses: ashutoshvarma/setup-ninja@master
-        with:
-          # ninja version to download. Default: 1.10.0
-          version: 1.10.0
-
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: latest
-          platform: x64
 
       - name: Configure cmake
         run: cmake --preset ninja-multi
