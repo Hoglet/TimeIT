@@ -7,7 +7,7 @@
 #include "summary.h"
 #include "menu.h"
 #include "submenu.h"
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <glibmm.h>
 
 using namespace Gtk;
@@ -217,7 +217,7 @@ void main_window::on_settings_changed(string name)
 
 void main_window::do_layout()
 {
-	if (settings.get_bool( "CompactLayout", default_compact_layout))
+	if (settings.get_bool( "CompactLayout", defaults::compact_layout))
 	{
 		empty_containers();
 		default_layout();

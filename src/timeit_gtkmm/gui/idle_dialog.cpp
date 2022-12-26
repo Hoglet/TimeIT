@@ -78,8 +78,6 @@ void idle_dialog::show()
 	Gtk::Dialog::show();
 }
 
-static const int SECONDS_PER_MINUTE = 60;
-
 void idle_dialog::set_text()
 {
 	std::stringstream str;

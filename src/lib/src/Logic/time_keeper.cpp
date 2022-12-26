@@ -1,6 +1,6 @@
 #include <libtimeit/timer.h>
 #include <iostream>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include "libtimeit/logic/time_keeper.h"
 #include <libtimeit/utils.h>
 
@@ -38,11 +38,11 @@ void time_manager::on_settings_changed( string name)
 {
 	if ( name == "Gt")
 	{
-		default_idle_time = minutes(settings.get_int( "Gt", default_gt));
+		default_idle_time = minutes(settings.get_int( "Gt", defaults::g_time));
 	}
 	if ( name == "Gz")
 	{
-		idle_gz = minutes( settings.get_int( "Gz", default_gz) );
+		idle_gz = minutes( settings.get_int( "Gz", defaults::g_zero) );
 	}
 }
 

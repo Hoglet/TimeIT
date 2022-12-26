@@ -1,7 +1,7 @@
 #include "edit_task_dialog.h"
 #include "parent_chooser.h"
 #include <iostream>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <fmt/core.h>
 
 namespace gui
@@ -67,7 +67,7 @@ void edit_task_dialog::create_layout()
 	idle_time_entry.set_max_length(4);
 	idle_time_entry.set_range(1, MAX_IDLE_TIME);
 	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
-	idle_time = minutes(settings.get_int( "Gt", default_gt ));
+	idle_time = minutes(settings.get_int( "Gt", defaults::g_time ));
 	idle_time_entry.set_value( double(idle_time.count()) );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
 	idle_editing_row.pack_start( idle_time_entry, Gtk::PACK_SHRINK);
@@ -163,7 +163,7 @@ void edit_task_dialog::set_task_id(const task_id& op_id)
 		quiet = task_to_edit->quiet;
 		if(idle_time == 0min)
 		{
-			idle_time = minutes(settings.get_int( "Gt", default_gt));
+			idle_time = minutes(settings.get_int( "Gt", defaults::g_time));
 		}
 
 		idle_time_entry.set_value( double(idle_time.count()));
@@ -215,7 +215,7 @@ void edit_task_dialog::on_ok_button_clicked()
 		if (current_task.has_value())
 		{
 			auto new_idle_time = minutes(idle_time_entry.get_value_as_int());
-			auto default_idle_time = minutes(settings.get_int( "Gt", default_gt));
+			auto default_idle_time = minutes(settings.get_int( "Gt", defaults::g_time));
 			if(new_idle_time == default_idle_time)
 			{
 				new_idle_time = 0min;
