@@ -16,6 +16,9 @@ bool x_11_idle_detector::available()
 	int event_base = 0;
 	int error_base = 0;
 	auto* dsp = XOpenDisplay(nullptr);
+	if (!dsp) {
+		return false;
+	}
 
 	return (XScreenSaverQueryExtension(dsp, &event_base, &error_base)>0);
 }
@@ -64,6 +67,9 @@ void x_11_idle_detector::poll_status()
 		return;
 	}
 
+	if (!display) {
+		return;
+	}
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), x_info);
 	idle_seconds = duration_cast<seconds>(milliseconds(x_info->idle ));
 
