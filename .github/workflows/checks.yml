@@ -1,0 +1,106 @@
+name: Checks
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  unit-tests:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install libs
+        run: sudo apt-get install -y
+          libgtkmm-3.0-dev
+          libxss-dev
+          libsqlite3-dev
+          gtkmm-3.0-dev
+          libjansson-dev
+          libcurl4-openssl-dev
+          libx11-dev
+          gettext
+          libfmt-dev
+          libnotify-dev
+          libgtest-dev
+          cmake
+          ninja-build
+          gcc
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Show build environment
+        run: |
+          set -x
+          pwd
+          id
+          env
+          cmake --version
+          ninja --version
+          gcc --version
+          git status
+          git log -1
+
+      - name: Configure cmake
+        run: cmake --preset ninja-multi
+
+      - name: Build TimeIT
+        run: cmake --build --preset ninja-multi-debug
+
+      - name: Unit tests
+        id: unit_test
+        run: builds/ninja-multi/src/tests/Debug/tests
+
+  clang-tidy:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install libs
+        run: sudo apt-get install -y
+          libgtkmm-3.0-dev
+          libxss-dev
+          libsqlite3-dev
+          gtkmm-3.0-dev
+          libjansson-dev
+          libcurl4-openssl-dev
+          libx11-dev
+          gettext
+          libfmt-dev
+          libnotify-dev
+          libgtest-dev
+          cmake
+          ninja-build
+          gcc
+
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Configure cmake
+        run: cmake --preset ninja-multi
+
+      - name: Build TimeIT
+        run: cmake --build --preset ninja-multi-release
+
+      - name: Clang-tidy
+        uses: ZedThree/clang-tidy-review@v0.10.0
+        id: review
+        with:
+          config_file: '.clang-tidy'
+      # If there are any comments, fail the check
+      - if: steps.review.outputs.total_comments > 0
+        run: exit 1

@@ -16,6 +16,9 @@ bool x_11_idle_detector::available()
 	int event_base = 0;
 	int error_base = 0;
 	auto* dsp = XOpenDisplay(nullptr);
+	if (!dsp) {
+		return false;
+	}
 
 	return (XScreenSaverQueryExtension(dsp, &event_base, &error_base)>0);
 }
@@ -25,7 +28,6 @@ x_11_idle_detector::x_11_idle_detector( timer_base &timer) : timer_observer( tim
 	if (!available())
 	{
 		cerr << "Unable to detect if user is idle. XScreenSaverQueryExtension not available\n";
-		throw runtime_error("X11 exception");
 	}
 	display = XOpenDisplay(nullptr);
 	x_info = XScreenSaverAllocInfo();
@@ -64,6 +66,9 @@ void x_11_idle_detector::poll_status()
 		return;
 	}
 
+	if (!display) {
+		return;
+	}
 	XScreenSaverQueryInfo(display, XRootWindow(display, 0), x_info);
 	idle_seconds = duration_cast<seconds>(milliseconds(x_info->idle ));
 

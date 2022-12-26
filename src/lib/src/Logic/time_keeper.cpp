@@ -30,8 +30,8 @@ time_manager::time_manager(
 		idle_detector(timer)
 
 {
-	idle_gz = minutes( settings.get_int( "Gz", default_gz) );
-	default_idle_time = minutes(settings.get_int( "Gt", default_gt));
+/*	idle_gz = minutes( settings.get_int( "Gz", default_gz) );
+	default_idle_time = minutes(settings.get_int( "Gt", default_gt));*/
 }
 
 void time_manager::on_settings_changed( string name)

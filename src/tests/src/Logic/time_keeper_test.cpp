@@ -66,6 +66,7 @@ TEST( TimeKeeper, starting_stoping_and_toggling)
 
 }
 
+
 TEST( TimeKeeper, update )
 {
 	notification_manager notifier;
