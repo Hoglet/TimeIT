@@ -141,13 +141,12 @@ bool settings_accessor::set_bool(string name, bool value)
 	return true;
 }
 
-string settings_accessor::get_string(string name, string default_value)
+string settings_accessor::get_string(string_view name, string_view default_value)
 {
 	stringstream statement;
 	statement << "SELECT stringValue FROM settings ";
 	statement << " WHERE name = '" << name << "'";
 
-	string return_value = default_value;
 
 	query_result rows = db.execute( statement.str());
 	if (rows.empty())
@@ -157,12 +156,12 @@ string settings_accessor::get_string(string name, string default_value)
 	else
 	{
 		vector<data_cell> row = rows.at(0);
-		return_value = row[0].text();
+		return row[0].text();
 	}
-	return return_value;
+	return string(default_value);
 }
 
-bool settings_accessor::set_string(string name, string value)
+bool settings_accessor::set_string(string_view name, string_view value)
 {
 	stringstream statement;
 	statement << "SELECT stringValue FROM settings ";
@@ -191,7 +190,7 @@ bool settings_accessor::set_string(string name, string value)
 }
 
 
-void settings_accessor::setting_changed(string name)
+void settings_accessor::setting_changed(string_view name)
 {
 	db.send_notification( settings_changed, 0, name);
 }

@@ -83,13 +83,13 @@ void notification_manager::is_enabled(bool op_enabled)
 	}
 }
 
-void notification_manager::send_notification(message_type type, int64_t item_id, string name)
+void notification_manager::send_notification(message_type type, int64_t item_id, string_view name)
 {
-	notification_message message{type, item_id, name};
+	notification_message message{type, item_id, string(name)};
 	send_message(message);
 }
 
-void notification_manager::try_send_notification(message_type type, int64_t item_id, string name)
+void notification_manager::try_send_notification(message_type type, int64_t item_id, string_view name)
 {
 	if (enabled)
 	{
