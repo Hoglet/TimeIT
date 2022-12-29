@@ -70,7 +70,11 @@ Checks: '
   -cppcoreguidelines-explicit-virtual-functions,
   -modernize-use-override,
   -cert-msc50-cpp,
-  -modernize-use-emplace
+  -modernize-use-emplace,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-prefer-member-initializer,
+  -modernize-use-equals-default,
+  -google-explicit-constructor
   '
 
 CheckOptions:
