@@ -62,16 +62,21 @@ jobs:
         run: |
           git --no-pager diff -U0 HEAD^ | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yaml
 
-      - name: Process clang-tidy warnings
-        uses: asarium/clang-tidy-action@v1
-        id: review
-        with:
-          fixesFile: clang-fixes.yaml
-
       - name: Show fixes
         run: |
           cat clang-fixes.yaml
 
-      # If there are any comments, fail the check
-      #- if: steps.review.outputs.total_comments > 0
-      #  run: exit 1
+      - name: Run clang-tidy-pr-comments action
+        uses: platisd/clang-tidy-pr-comments@master
+        with:
+          # The GitHub token (or a personal access token)
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # The path to the clang-tidy fixes generated previously
+          clang_tidy_fixes: clang-fixes.yaml
+          # Optionally set to true if you want the Action to request
+          # changes in case warnings are found
+          request_changes: true
+          # Optionally set the number of comments per review
+          # to avoid GitHub API timeouts for heavily loaded
+          # pull requests
+          suggestions_per_comment: 10
