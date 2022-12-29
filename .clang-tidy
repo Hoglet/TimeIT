@@ -74,7 +74,8 @@ Checks: '
   -cppcoreguidelines-special-member-functions,
   -cppcoreguidelines-prefer-member-initializer,
   -modernize-use-equals-default,
-  -google-explicit-constructor
+  -google-explicit-constructor,
+  -cppcoreguidelines-virtual-class-destructor
   '
 
 CheckOptions:
