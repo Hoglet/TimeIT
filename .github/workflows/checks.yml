@@ -53,17 +53,21 @@ jobs:
         run: cmake --preset ninja-multi
 
       - name: Build TimeIT
-        run: cmake --build --preset ninja-multi-debug
+        run: cmake --build --preset ninja-multi-debug -DDISABLE_CLANG_TIDY=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Unit tests
         id: unit_test
         run: builds/ninja-multi/src/tests/Debug/tests
 
+      - name: Analyze with clang-tidy
+        run: |
+          git diff -U0 HEAD^ | clang-tidy-diff -p1 -path build -export-fixes clang-fixes.yml
+
       - name: Process clang-tidy warnings
         uses: asarium/clang-tidy-action@v1
         id: review
         with:
-          fixesFile: clang-tidy-fixes.yaml
+          fixesFile: clang-fixes.yaml
 
       # If there are any comments, fail the check
       #- if: steps.review.outputs.total_comments > 0

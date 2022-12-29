@@ -46,7 +46,7 @@ add_definitions( -DPROGRAMNAME_DATADIR=${PROGRAMNAME_DATADIR})
 
 # clang-tidy
 # -------------------
-if(CLANG_TIDY_EXE)
+if(CLANG_TIDY_EXE AND NOT DISABLE_CLANG_TIDY)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 endif()
 
