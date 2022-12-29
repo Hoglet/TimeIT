@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-git --no-pager diff --no-ext-diff  -U0 $(
+git --no-pager diff  -U0 $(
 git merge-base --fork-point $(git show-branch \
 | sed "s/].*//" \
 | grep "\*" \

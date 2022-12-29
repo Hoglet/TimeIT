@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Show build environment
         run: |
@@ -47,7 +47,7 @@ jobs:
           gcc --version
           git status
           git log -1
-          git diff HEAD^
+          git --no-pager diff -U0 HEAD^
 
       - name: Configure cmake
         run: cmake --preset ninja-multi -DDISABLE_CLANG_TIDY=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
@@ -61,7 +61,7 @@ jobs:
 
       - name: Analyze with clang-tidy
         run: |
-          scripts/git_diff_branch | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
+          git --no-pager diff -U0 HEAD^ | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
 
       - name: Process clang-tidy warnings
         uses: asarium/clang-tidy-action@v1
