@@ -5,7 +5,7 @@
 namespace gui
 {
 
-static const int YEAR_ZERO = 1900;
+static const int YEAR_ZERO = 1900; //tm_year is years since 1900
 
 
 timestamp_edit::timestamp_edit(string title)

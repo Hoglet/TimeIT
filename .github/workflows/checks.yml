@@ -1,8 +1,6 @@
 name: Checks
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
@@ -61,7 +59,7 @@ jobs:
 
       - name: Analyze with clang-tidy
         run: |
-          git diff origin/master | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
+          scripts/git_diff_branch | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
 
       - name: Process clang-tidy warnings
         uses: asarium/clang-tidy-action@v1
