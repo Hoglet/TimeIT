@@ -59,8 +59,6 @@ jobs:
         id: unit_test
         run: builds/ninja-multi/src/tests/Debug/tests
 
-
-
       - name: Analyze with clang-tidy
         run: |
           git --no-pager diff -U0  HEAD^ | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
@@ -70,6 +68,10 @@ jobs:
         id: review
         with:
           fixesFile: clang-fixes.yaml
+
+      - name: Show fixes
+        run: |
+          cat clang-fixes.yaml
 
       # If there are any comments, fail the check
       #- if: steps.review.outputs.total_comments > 0
