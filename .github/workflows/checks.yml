@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   unit-tests:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
@@ -85,6 +81,7 @@ jobs:
           cmake
           ninja-build
           gcc
+          clang-tidy
 
       - uses: actions/checkout@v2
         with:
@@ -96,11 +93,12 @@ jobs:
       - name: Build TimeIT
         run: cmake --build --preset ninja-multi-release
 
-      - name: Clang-tidy
-        uses: ZedThree/clang-tidy-review@v0.10.0
+      - name: Process clang-tidy warnings
+        uses: asarium/clang-tidy-action@v1
         id: review
         with:
-          config_file: '.clang-tidy'
+          fixesFile: clang-tidy-fixes.yaml
+
       # If there are any comments, fail the check
       - if: steps.review.outputs.total_comments > 0
         run: exit 1
