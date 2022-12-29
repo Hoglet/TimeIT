@@ -34,7 +34,6 @@ Checks: '
   openmp-use-default-none,
   portability-simd-intrinsics,
   readability-identifier-naming,
-  -readability-*,
   -readability-redundant-preprocessor,
   -readability-named-parameter,
   -readability-function-size,
