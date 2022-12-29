@@ -50,10 +50,10 @@ jobs:
           git log -1
 
       - name: Configure cmake
-        run: cmake --preset ninja-multi
+        run: cmake --preset ninja-multi -DDISABLE_CLANG_TIDY=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Build TimeIT
-        run: cmake --build --preset ninja-multi-debug -DDISABLE_CLANG_TIDY=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        run: cmake --build --preset ninja-multi-debug
 
       - name: Unit tests
         id: unit_test
