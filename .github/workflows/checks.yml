@@ -61,7 +61,7 @@ jobs:
 
       - name: Analyze with clang-tidy
         run: |
-          git --no-pager diff -U0  HEAD^ | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
+          scripts/git_diff_branch | clang-tidy-diff -p1 -path builds/ninja-multi -export-fixes clang-fixes.yml
 
       - name: Process clang-tidy warnings
         uses: asarium/clang-tidy-action@v1
