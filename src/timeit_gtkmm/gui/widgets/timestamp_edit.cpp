@@ -7,6 +7,7 @@ namespace gui
 
 static const int YEAR_ZERO = 1900;
 
+
 timestamp_edit::timestamp_edit(string title)
 {
 	set_label(title);
