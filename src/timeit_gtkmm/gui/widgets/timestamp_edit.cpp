@@ -5,8 +5,7 @@
 namespace gui
 {
 
-static const int YEAR_ZERO = 1900;
-
+static const int year_zero = 1900;
 
 timestamp_edit::timestamp_edit(string title)
 {
@@ -23,7 +22,7 @@ void timestamp_edit::set_values(time_point<system_clock> time_stamp)
 	hour.set_value(time_info.tm_hour);
 	minute.set_value(time_info.tm_min);
 
-	year.set_value(time_info.tm_year + YEAR_ZERO);
+	year.set_value(time_info.tm_year + year_zero);
 	month.set_value(time_info.tm_mon + 1);
 	day.set_value(time_info.tm_mday);
 }

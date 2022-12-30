@@ -6,10 +6,10 @@
 
 namespace gui
 {
-static const int BORDER_WIDTH            = 5;
-static const int PADDING                 = 3;
-static const int MAX_IDLE_TIME           = 500;
-static const int IDLE_TIME_PAGING_LENGTH = 10;
+static const auto border_width            = 5;
+static const auto padding                 = 3;
+static const auto max_idle_time           = 500;
+static const auto idle_time_paging_length = 10;
 
 using namespace libtimeit;
 using namespace std;
@@ -65,8 +65,8 @@ void edit_task_dialog::create_layout()
 	idle_label.set_tooltip_text(_("This is the time of inaction necessary to trigger the end of a time span"));
 	idle_time_entry.set_tooltip_text(_("This is the time of inaction necessary to trigger an end of a time span"));
 	idle_time_entry.set_max_length(4);
-	idle_time_entry.set_range(1, MAX_IDLE_TIME);
-	idle_time_entry.set_increments(1, IDLE_TIME_PAGING_LENGTH);
+	idle_time_entry.set_range( 1, max_idle_time);
+	idle_time_entry.set_increments( 1, idle_time_paging_length);
 	idle_time = minutes(settings.get_int( "Gt", defaults::g_time ));
 	idle_time_entry.set_value( double(idle_time.count()) );
 	idle_editing_row.pack_start( idle_label, Gtk::PACK_SHRINK);
@@ -88,12 +88,12 @@ void edit_task_dialog::create_layout()
 	get_action_area()->pack_start(ok_button);
 
 	get_vbox()->set_spacing(2);
-	get_vbox()->pack_start(parent_choosing_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
-	get_vbox()->pack_start(name_editing_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
-	get_vbox()->pack_start(idle_editing_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
-	get_vbox()->pack_start(quiet_row, Gtk::PACK_EXPAND_WIDGET, PADDING);
-	get_vbox()->pack_start(desktop_frame, Gtk::PACK_EXPAND_WIDGET, PADDING);
-	set_border_width(BORDER_WIDTH);
+	get_vbox()->pack_start( parent_choosing_row, Gtk::PACK_EXPAND_WIDGET, padding);
+	get_vbox()->pack_start( name_editing_row, Gtk::PACK_EXPAND_WIDGET, padding);
+	get_vbox()->pack_start( idle_editing_row, Gtk::PACK_EXPAND_WIDGET, padding);
+	get_vbox()->pack_start( quiet_row, Gtk::PACK_EXPAND_WIDGET, padding);
+	get_vbox()->pack_start( desktop_frame, Gtk::PACK_EXPAND_WIDGET, padding);
+	set_border_width( border_width);
 	set_position(Gtk::WIN_POS_CENTER_ON_PARENT);
 	//ToDo set_has_separator(false);
 

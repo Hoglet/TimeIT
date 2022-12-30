@@ -7,7 +7,7 @@ using namespace std;
 namespace gui
 {
 
-static const int COMPLETE_DAY = 86403;
+static const auto complete_day = 86403;
 
 
 details_dialog::details_dialog(
