@@ -24,8 +24,8 @@ class notification_manager
 {
 	friend class event_observer;
 public:
-	void             try_send_notification(message_type type, int64_t item_id, string name = "");
-	void             send_notification(message_type type, int64_t item_id, string name = "");
+	void             try_send_notification(message_type type, int64_t item_id, string_view name = "");
+	void             send_notification(message_type type, int64_t item_id, string_view name = "");
 	void             is_enabled(bool op_enabled);
 	void             send( event_type type, string headline, string message);
 	void             broadcast(function<void(event_observer*)>);

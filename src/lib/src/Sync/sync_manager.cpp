@@ -1,7 +1,7 @@
 #include <libtimeit/sync/sync_manager.h>
 
 #include <libtimeit/utils.h>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <sstream>
 #include <libintl.h>
 #include <fmt/core.h>
@@ -132,14 +132,14 @@ bool sync_manager::request_is_done()
 time_point<system_clock> sync_manager::get_next_sync(time_point<system_clock> reference_point )
 {
 
-	auto sync_interval = minutes(settings.get_int( "SyncInterval", default_sync_interval));
+	auto sync_interval = minutes(settings.get_int( "SyncInterval", defaults::sync_interval));
 	return reference_point + sync_interval;
 }
 
 bool sync_manager::is_active()
 {
-	string base_url = settings.get_string("URL", default_url);
-	string username = settings.get_string( "Username", default_user);
+	string base_url = settings.get_string("URL", defaults::url);
+	string username = settings.get_string( "Username", defaults::user);
 	return (base_url.length() > 0 && username.length() > 0);
 
 }
@@ -275,11 +275,11 @@ void sync_manager::sync_times_to_database()
 shared_ptr <async_http_response> sync_manager::request_tasks(time_point<system_clock> since_point_in_time )
 {
 	vector<task> changed_tasks = tasks.changed_since( since_point_in_time );
-	string base_url = settings.get_string("URL", default_url);
-	string username = settings.get_string( "Username", default_user);
-	string password = settings.get_string( "Password", default_password);
+	string base_url = settings.get_string("URL", defaults::url);
+	string username = settings.get_string( "Username", defaults::user);
+	string password = settings.get_string( "Password", defaults::password);
 	string url = base_url + "sync/tasks/" + username + "/" + std::to_string( system_clock::to_time_t(since_point_in_time) );
-	bool ignore_cert_error = settings.get_bool( "IgnoreCertErr", default_ignore_cert_err);
+	bool ignore_cert_error = settings.get_bool( "IgnoreCertErr", defaults::ignore_cert_err);
 	string json_string = to_json(changed_tasks, username);
 	return network.request(url, json_string, username, password, ignore_cert_error);
 }
@@ -288,11 +288,11 @@ shared_ptr <async_http_response> sync_manager::request_times( time_point<system_
 {
 	time_list changed_times = times.times_changed_since( since_point_in_time );
 	std::string json_string = to_json(changed_times);
-	string base_url = settings.get_string("URL", default_url);
-	string username = settings.get_string( "Username", default_user);
-	string password = settings.get_string( "Password", default_password);
+	string base_url = settings.get_string("URL", defaults::url);
+	string username = settings.get_string( "Username", defaults::user);
+	string password = settings.get_string( "Password", defaults::password);
 	string url = base_url + "sync/times/" + username + "/" + std::to_string( system_clock::to_time_t( since_point_in_time ));
-	bool ignore_cert_error = settings.get_bool( "IgnoreCertErr", default_ignore_cert_err);
+	bool ignore_cert_error = settings.get_bool( "IgnoreCertErr", defaults::ignore_cert_err);
 
 	return network.request(url, json_string, username, password, ignore_cert_error);
 }

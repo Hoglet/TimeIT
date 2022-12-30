@@ -12,7 +12,7 @@ namespace test
 using namespace libtimeit;
 using namespace std;
 
-const string COMMENT = "Just a comment";
+const string comment = "Just a comment";
 
 TEST(TimeAccessor, simpleTest)
 {
@@ -197,7 +197,7 @@ TEST(TimeAccessor, newItem)
 			system_clock::from_time_t( 200 ),
 			stopped,
 			system_clock::from_time_t( 200 ),
-			COMMENT);
+			comment);
 
 	times.create( item_1);
 	auto item_2 = times.by_id( item_1.id);
@@ -275,7 +275,7 @@ TEST(TimeAccessor, getActiveTasks)
 			system_clock::from_time_t( 600 ),
 			stopped,
 			system_clock::from_time_t( 200 ),
-			COMMENT);
+			comment);
 
 	times.create( item);
 

@@ -7,7 +7,7 @@
 #include "summary.h"
 #include "menu.h"
 #include "submenu.h"
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <glibmm.h>
 
 using namespace Gtk;
@@ -23,8 +23,8 @@ main_window::~main_window()
 	detach_from_all(this);
 }
 
-static const int DEFAULT_WINDOW_WIDTH = 550;
-static const int DEFAULT_WINDOW_HEIGHT = 550;
+static const auto default_window_width = 550;
+static const auto default_window_height = 550;
 
 main_window::main_window(
 		database&             db,
@@ -56,8 +56,8 @@ main_window::main_window(
 	show_all_children();
 	on_running_tasks_changed();
 
-	width = (int) settings.get_int("main_window_width", DEFAULT_WINDOW_WIDTH);
-	height = (int) settings.get_int("main_window_height", DEFAULT_WINDOW_HEIGHT);
+	width = (int) settings.get_int( "main_window_width", default_window_width);
+	height = (int) settings.get_int( "main_window_height", default_window_height);
 	set_default_size(width, height);
 
 	signal_check_resize().connect( [&]{ this->resized();}   );
@@ -217,7 +217,7 @@ void main_window::on_settings_changed(string name)
 
 void main_window::do_layout()
 {
-	if (settings.get_bool( "CompactLayout", default_compact_layout))
+	if (settings.get_bool( "CompactLayout", defaults::compact_layout))
 	{
 		empty_containers();
 		default_layout();
@@ -325,14 +325,14 @@ void main_window::on_show()
 	set_calendar();
 }
 
-static const int YEAR_ZERO = 1900;
+static const auto year_zero = 1900;
 
 void main_window::set_calendar()
 {
 	auto now = system_clock::now();
 	struct tm time_info = localtime( now );
 	auto month = (guint) time_info.tm_mon;
-	auto year = (guint) time_info.tm_year + YEAR_ZERO;
+	auto year = (guint) time_info.tm_year + year_zero;
 	auto day = (guint) time_info.tm_mday;
 	calendar.select_month(month, year);
 	calendar.select_day(day);

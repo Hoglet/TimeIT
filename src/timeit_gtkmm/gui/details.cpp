@@ -5,7 +5,7 @@
 #include <libtimeit/utils.h>
 #include <glibmm/i18n.h>
 #include <optional>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <edit_time.h>
 #include <cxxabi.h>
 
@@ -15,8 +15,6 @@ using namespace libtimeit;
 
 namespace gui
 {
-
-static const int SECONDS_PER_MINUTE = 60;
 
 details::details(
 		database&             db,
@@ -122,8 +120,8 @@ void details::on_menu_file_popup_remove()
 		if (optional_time_entry)
 		{
 			time_entry item = optional_time_entry.value();
-			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
-			auto idle_gz = minutes( settings.get_int( "Gz", default_gz) );
+			auto idle_gt = minutes(settings.get_int( "Gt", defaults::g_time));
+			auto idle_gz = minutes( settings.get_int( "Gz", defaults::g_zero) );
 			auto minutes_to_lose = duration_cast<minutes>( item.stop - item.start);
 			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose.count());
 			std::string secondary_text;
@@ -187,8 +185,8 @@ void details::on_menu_file_popup_merge()
 		{
 			time_entry time_entry_0 = optional_time_entry_0.value();
 			time_entry time_entry_1 = optional_time_entry_1.value();
-			auto idle_gt = minutes(settings.get_int( "Gt", default_gt));
-			auto idle_gz = minutes(settings.get_int( "Gz", default_gz));
+			auto idle_gt = minutes(settings.get_int( "Gt", defaults::g_time));
+			auto idle_gz = minutes(settings.get_int( "Gz", defaults::g_zero));
 
 			auto minutes_to_gain = duration_cast<minutes>(time_entry_1.stop - time_entry_0.start);
 

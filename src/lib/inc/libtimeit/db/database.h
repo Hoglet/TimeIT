@@ -30,7 +30,7 @@ public:
 	void end_transaction();
 
 	void enable_notifications(bool);
-	void send_notification( message_type type, int64_t id, string name = "");
+	void send_notification( message_type type, int64_t id, string_view name = "");
 
 	query_result        execute( const string& statement);
 	sql_statement           prepare(string statement);

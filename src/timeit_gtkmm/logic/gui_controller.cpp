@@ -6,7 +6,7 @@
 #include <libtimeit/os_abstraction.h>
 #include <iostream>
 #include <libtimeit/utils.h>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 #include <window_manager.h>
 #include <main_window/main_window.h>
 #include <edit_time.h>
@@ -44,7 +44,7 @@ void gui_controller::start()
 {
 	windows.get_status_icon().show();
 	windows.get_status_icon().attach(this);
-	if (!settings.get_bool( "StartMinimized", default_start_minimized))
+	if (!settings.get_bool( "StartMinimized", defaults::start_minimized))
 	{
 		shared_ptr<main_window> window = static_pointer_cast<main_window>(windows.get_widget(MAIN_WINDOW));
 		action_observer* observer=this;

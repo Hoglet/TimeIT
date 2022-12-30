@@ -8,7 +8,7 @@
 #include "preference_dialog.h"
 #include <glibmm/i18n.h>
 #include <iostream>
-#include <libtimeit/db/default_values.h>
+#include <libtimeit/db/defaults.h>
 
 namespace gui
 {
@@ -114,15 +114,15 @@ preference_dialog::preference_dialog(database &db) :
 
 void preference_dialog::set_values()
 {
-	old_compact_layout = settings.get_bool( "CompactLayout", default_compact_layout);
-	old_start_minimized = settings.get_bool( "StartMinimized", default_start_minimized);
-	old_gt = (unsigned)settings.get_int( "Gt", default_gt);
-	old_gz = (unsigned)settings.get_int( "Gz", default_gz);
-	old_url = settings.get_string("URL", default_url);
-	old_user = settings.get_string( "Username", default_user);
-	old_password = settings.get_string( "Password", default_password);
-	old_ignore_cert_err = settings.get_bool( "IgnoreCertErr", default_ignore_cert_err);
-	old_sync_interval = (int)settings.get_int( "SyncInterval", default_sync_interval);
+	old_compact_layout = settings.get_bool( "CompactLayout", defaults::compact_layout);
+	old_start_minimized = settings.get_bool( "StartMinimized", defaults::start_minimized);
+	old_gt = (unsigned)settings.get_int( "Gt", defaults::g_time);
+	old_gz = (unsigned)settings.get_int( "Gz", defaults::g_zero);
+	old_url = settings.get_string("URL", defaults::url);
+	old_user = settings.get_string( "Username", defaults::user);
+	old_password = settings.get_string( "Password", defaults::password);
+	old_ignore_cert_err = settings.get_bool( "IgnoreCertErr", defaults::ignore_cert_err);
+	old_sync_interval = (int)settings.get_int( "SyncInterval", defaults::sync_interval);
 	gz_entry.set_value(old_gz);
 	gt_entry.set_value(old_gt);
 	compact_layout_button.set_active(old_compact_layout);

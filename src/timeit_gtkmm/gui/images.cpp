@@ -7,7 +7,7 @@ using namespace Glib;
 using namespace Gdk;
 using namespace libtimeit;
 
-const map<image_identifier, string> IMAGE_FILE_NAMES{
+const map<image_identifier, string> image_file_names{
 		{image_identifier::STD_ICON,     "icon.svg"},
 		{image_identifier::RUNNING,      "running.svg"},
 		{image_identifier::RUNNING_IDLE, "running-idle.svg" },
@@ -42,7 +42,7 @@ image_pointer image_cache::by_id(image_identifier id)
 
 void image_cache::create_image(image_identifier id, int width, int height)
 {
-	auto file_name=IMAGE_FILE_NAMES.at( id);
+	auto file_name=image_file_names.at( id);
 	string icon_path = build_filename(image_path, file_name );
 	if( ! file_exists(icon_path) )
 	{

@@ -86,3 +86,4 @@ debian/timeit
 /.idea/dataSources*
 /testdata/
 /builds/
+/clang-fixes.yaml

@@ -154,7 +154,7 @@ void database::enable_notifications(bool state)
 }
 
 
-void database::send_notification( message_type type, int64_t id, string name)
+void database::send_notification( message_type type, int64_t id, string_view name)
 {
 	notifier.try_send_notification( type, id, name);
 }
