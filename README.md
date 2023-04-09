@@ -48,8 +48,7 @@ Debian example:
                gettext          \
                libfmt-dev       \
                libnotify-dev    \
-               libgtest-dev  
-
+               libgtest-dev
    
 ### Generic
 Build:

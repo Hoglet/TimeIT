@@ -1,4 +1,4 @@
-#include "libtimeit/logic/workspace.h"
+#include "libtimeit/logic/x11_workspace.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -7,7 +7,7 @@ namespace libtimeit
 {
 using namespace  std;
 //LCOV_EXCL_START
-x_11_workspace::x_11_workspace()
+x11_workspace::x11_workspace()
 {
 	try
 	{
@@ -19,9 +19,13 @@ x_11_workspace::x_11_workspace()
 	}
 }
 
+bool x11_workspace::available()
+{
+	return x_lib.is_open();
+}
 
 
-workspace_layout x_11_workspace::layout()
+workspace_layout x11_workspace::layout()
 {
 	unsigned rows {1};
 	unsigned columns {1};
@@ -83,7 +87,7 @@ workspace_layout x_11_workspace::layout()
 	return {number_of_workspaces, rows, columns};
 }
 
-unsigned x_11_workspace::active()
+unsigned x11_workspace::active()
 {
 	long active = 0;
 	auto layout = this->layout();
@@ -110,7 +114,7 @@ unsigned x_11_workspace::active()
 	return (unsigned)max(active,0L);
 }
 
-string x_11_workspace::name( unsigned workspace_nr)
+string x11_workspace::name( unsigned workspace_nr)
 {
 	if (is_virtual)
 	{

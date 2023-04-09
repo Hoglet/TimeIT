@@ -13,7 +13,7 @@ static const auto idle_time_paging_length = 10;
 
 using namespace libtimeit;
 using namespace std;
-edit_task_dialog::edit_task_dialog(database &db) :
+edit_task_dialog::edit_task_dialog(database &db):
 		parent_chooser(db),
 		auto_track_table(db),
 		tasks(db),
@@ -49,7 +49,7 @@ edit_task_dialog::edit_task_dialog(database &db) :
 
 void edit_task_dialog::create_layout()
 {
-	auto layout      = workspace.layout();
+	auto layout      = system.layout();
 	auto num_rows    = layout.rows;
 	auto num_columns = layout.columns;
 	auto number_of_workspaces = layout.number_of_workspaces;
@@ -103,7 +103,7 @@ void edit_task_dialog::create_layout()
 		{
 			if ((row * num_columns + column) < number_of_workspaces)
 			{
-				string button_text = workspace.name(row * num_columns + column);
+				string button_text = system.workspace_name(row * num_columns + column);
 				//auto button = make_shared<Gtk::CheckButton>(button_text);
 				auto button = make_shared<Gtk::CheckButton>(button_text);
 				button->set_mode(true);

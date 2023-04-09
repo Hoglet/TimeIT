@@ -22,6 +22,7 @@ public:
 	vector<string>  get_strings(const char *prop_name)             noexcept(false);
 	int             viewport_width();
 	int             viewport_height();
+	bool is_open( );
 private:
 	Display          *display;
 	Window            root_window;

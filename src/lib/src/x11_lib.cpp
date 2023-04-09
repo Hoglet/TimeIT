@@ -13,9 +13,17 @@ x_lib_accessor::x_lib_accessor() : display(XOpenDisplay(nullptr))
 	root_window = DefaultRootWindow(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-prefer-member-initializer,cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
+bool x_lib_accessor::is_open( )
+{
+	return display != nullptr;
+}
+
 x_lib_accessor::~x_lib_accessor()
 {
-	XCloseDisplay(display);
+	if(display != nullptr)
+	{
+		XCloseDisplay(display);
+	}
 }
 
 int x_lib_accessor::viewport_width()
@@ -107,5 +115,6 @@ vector<string> x_lib_accessor::get_strings(const char *name) noexcept(false)
 	}
 	return return_values;
 }
+
 //LCOV_EXCL_STOP
 }
