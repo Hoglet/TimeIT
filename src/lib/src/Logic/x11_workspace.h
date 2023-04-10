@@ -2,7 +2,7 @@
 #define X11_WORKSPACE_H
 #include <string>
 #include "libtimeit/x_lib_accessor.h"
-#include "workspace.h"
+#include "libtimeit/logic/workspace.h"
 
 namespace libtimeit
 {

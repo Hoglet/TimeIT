@@ -8,14 +8,12 @@
 #ifndef X11_IDLE_DETECTOR_H
 #define X11_IDLE_DETECTOR_H
 
-#include <X11/Xlib.h>
-#include <X11/extensions/scrnsaver.h>
-#include <libtimeit/timer.h>
+#include "libtimeit/timer.h"
 #include <ctime>
 #include <memory>
-#include <libtimeit/db/notifier.h>
+#include "libtimeit/db/notifier.h"
 
-#include "idle_detector.h"
+#include "libtimeit/logic/idle_detector.h"
 
 namespace libtimeit
 {

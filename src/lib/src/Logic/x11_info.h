@@ -1,5 +1,3 @@
-
-
 #ifndef X11_INFO_H
 #define X11_INFO_H
 

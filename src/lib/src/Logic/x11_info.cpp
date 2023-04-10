@@ -12,7 +12,10 @@ x11_info::x11_info()
 
 x11_info::~x11_info()
 {
-	XFree( x_info );
+	if( x_info != nullptr)
+	{
+		XFree( x_info );
+	}
 }
 
 x11_info::operator XScreenSaverInfo *() const

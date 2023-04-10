@@ -1,5 +1,4 @@
 #include <X11/Xlib.h>
-#include <exception>
 #include <stdexcept>
 #include "x11_display.h"
 
@@ -18,7 +17,10 @@ x11_display::x11_display( )
 
 x11_display::~x11_display( )
 {
-	XCloseDisplay( display );
+	if( display != nullptr )
+	{
+		XCloseDisplay( display );
+	}
 }
 
 x11_display::operator Display*( ) const

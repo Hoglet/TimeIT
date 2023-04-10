@@ -1,6 +1,6 @@
 #include "libtimeit/logic/system_info.h"
-#include "libtimeit/logic/x11_idle_detector.h"
-#include "libtimeit/logic/x11_workspace.h"
+#include "x11_idle_detector.h"
+#include "x11_workspace.h"
 
 namespace libtimeit
 {

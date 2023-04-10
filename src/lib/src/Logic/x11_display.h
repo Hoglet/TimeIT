@@ -1,7 +1,7 @@
-
-
 #ifndef X11_DISPLAY_H
 #define X11_DISPLAY_H
+
+#include <X11/Xlib.h>
 
 namespace libtimeit
 {
