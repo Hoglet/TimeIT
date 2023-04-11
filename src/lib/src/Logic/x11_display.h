@@ -10,7 +10,7 @@ class x11_display
 public:
 	x11_display();
 	~x11_display();
-	Display* get() const;
+	[[nodiscard]] Display* get() const;
 	operator Display *() const;
 private:
 	Display* display = nullptr;
