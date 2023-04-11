@@ -1,4 +1,4 @@
-#include "libtimeit/x_lib_accessor.h"
+#include "Logic/x_lib_accessor.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -8,9 +8,9 @@ namespace libtimeit
 
 
 //LCOV_EXCL_START
-x_lib_accessor::x_lib_accessor() : display(XOpenDisplay(nullptr))
+x_lib_accessor::x_lib_accessor()
 {
-	root_window = DefaultRootWindow(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-prefer-member-initializer,cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	root_window = DefaultRootWindow(display.get());
 }
 
 bool x_lib_accessor::is_open( )
@@ -20,21 +20,17 @@ bool x_lib_accessor::is_open( )
 
 x_lib_accessor::~x_lib_accessor()
 {
-	if(display != nullptr)
-	{
-		XCloseDisplay(display);
-	}
 }
 
 int x_lib_accessor::viewport_width()
 {
-	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	Screen *screen = DefaultScreenOfDisplay(display.get());
 	return screen->width;
 }
 
 int x_lib_accessor::viewport_height()
 {
-	Screen *screen = DefaultScreenOfDisplay(display); // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	Screen *screen = DefaultScreenOfDisplay(display.get());
 	return screen->height;
 }
 

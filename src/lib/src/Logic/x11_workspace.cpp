@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "x_lib_accessor.h"
+
 
 namespace libtimeit
 {
@@ -11,9 +13,10 @@ x11_workspace::x11_workspace()
 {
 	try
 	{
+		x_lib_accessor  x_lib;
 		x_lib.get_cardinal( "_NET_DESKTOP_LAYOUT", 1);
 	}
-	catch (const general_exception &e)
+	catch (const exception &e)
 	{
 		supports_layout = false;
 	}
@@ -21,7 +24,13 @@ x11_workspace::x11_workspace()
 
 bool x11_workspace::available()
 {
-	return x_lib.is_open();
+	try
+	{
+		x_lib_accessor x_lib;
+		return true;
+	}
+	catch (const exception &e){}
+	return false;
 }
 
 
@@ -32,6 +41,7 @@ workspace_layout x11_workspace::layout()
 	unsigned number_of_workspaces {1};
 	try
 	{
+		x_lib_accessor x_lib;
 		is_virtual = false;
 		auto desktop_width = x_lib.get_cardinal( "_NET_DESKTOP_GEOMETRY", 0);
 		auto desktop_height = x_lib.get_cardinal( "_NET_DESKTOP_GEOMETRY", 1);
@@ -80,7 +90,7 @@ workspace_layout x11_workspace::layout()
 			}
 		}
 	}
-	catch (const general_exception &e)
+	catch (const exception &e)
 	{
 		cerr << e.what();
 	}
@@ -90,26 +100,34 @@ workspace_layout x11_workspace::layout()
 unsigned x11_workspace::active()
 {
 	long active = 0;
-	auto layout = this->layout();
-	if ( layout.number_of_workspaces != x_lib.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0))
+	try
 	{
-		auto x = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 0);
-		auto y = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 1);
+		x_lib_accessor x_lib;
+		auto layout = this->layout();
+		if ( layout.number_of_workspaces != x_lib.get_cardinal( "_NET_NUMBER_OF_DESKTOPS", 0))
+		{
+			auto x = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 0);
+			auto y = x_lib.get_cardinal( "_NET_DESKTOP_VIEWPORT", 1);
 
-		auto current_column = x / viewport_width + 1;
-		auto current_row = y / viewport_height + 1;
-		active = current_column * current_row - 1;
+			auto current_column = x / viewport_width + 1;
+			auto current_row = y / viewport_height + 1;
+			active = current_column * current_row - 1;
+		}
+		else
+		{
+			try
+			{
+				active = x_lib.get_cardinal( "_NET_CURRENT_DESKTOP", 0);
+			}
+			catch (const exception &e)
+			{
+				cerr << e.what();
+			}
+		}
 	}
-	else
+	catch (const exception &e)
 	{
-		try
-		{
-			active = x_lib.get_cardinal( "_NET_CURRENT_DESKTOP", 0);
-		}
-		catch (const general_exception &e)
-		{
-			cerr << e.what();
-		}
+		cerr << e.what();
 	}
 	return (unsigned)max(active,0L);
 }
@@ -123,6 +141,7 @@ string x11_workspace::name( unsigned workspace_nr)
 
 	try
 	{
+		x_lib_accessor x_lib;
 		vector<string> names = x_lib.get_strings( "_NET_DESKTOP_NAMES");
 
 		if ((unsigned) names.size() > workspace_nr)
@@ -130,7 +149,7 @@ string x11_workspace::name( unsigned workspace_nr)
 			return names.at(workspace_nr);
 		}
 	}
-	catch (const general_exception &e)
+	catch (const exception &e)
 	{
 		cerr << e.what();
 	}

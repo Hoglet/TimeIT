@@ -17,10 +17,7 @@ x11_display::x11_display( )
 
 x11_display::~x11_display( )
 {
-	if( display != nullptr )
-	{
-		XCloseDisplay( display );
-	}
+	XCloseDisplay( display );
 }
 
 x11_display::operator Display*( ) const
@@ -28,4 +25,8 @@ x11_display::operator Display*( ) const
 	return display;
 }
 
+Display* x11_display::get( ) const
+{
+	return display;
+}
 } // libtimeit

@@ -1,7 +1,6 @@
 #ifndef X11_WORKSPACE_H
 #define X11_WORKSPACE_H
 #include <string>
-#include "libtimeit/x_lib_accessor.h"
 #include "libtimeit/logic/workspace.h"
 
 namespace libtimeit
@@ -28,8 +27,6 @@ private:
 
 	long  viewport_width  = 0;
 	long  viewport_height = 0;
-	x_lib_accessor  x_lib;
-
 };
 }
 #endif /* X11_WORKSPACE_H */

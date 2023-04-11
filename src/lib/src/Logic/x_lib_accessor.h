@@ -3,7 +3,9 @@
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
-#include <libtimeit/exceptions/general_exception.h>
+#include "libtimeit/exceptions/general_exception.h"
+#include "x11_display.h"
+
 namespace libtimeit
 {
 using namespace std;
@@ -24,7 +26,7 @@ public:
 	int             viewport_height();
 	bool is_open( );
 private:
-	Display          *display;
+	x11_display       display;
 	Window            root_window;
 };
 

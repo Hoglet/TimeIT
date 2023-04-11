@@ -73,7 +73,7 @@ TEST( TimeKeeper, update )
 	notification_manager notifier;
 	temp_db db(notifier);
 	timer_base timer;
-	time_manager    time_keeper( db, timer, notifier);
+	time_manager  time_keeper( db, timer, notifier);
 	task_accessor tasks(db);
 	time_accessor times(db);
 

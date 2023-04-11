@@ -14,7 +14,7 @@ public:
 	operator XScreenSaverInfo *() const;
 	XScreenSaverInfo *operator ->() const;
 private:
-	XScreenSaverInfo* x_info;
+	XScreenSaverInfo* x_info = nullptr;
 };
 
 } // libtimeit
