@@ -1,8 +1,10 @@
 #include "x11_idle_detector.h"
 #include <iostream>
-#include <libtimeit/utils.h>
+#include "libtimeit/utils.h"
 #include "x11_display.h"
 #include "x11_info.h"
+
+#if XSCREENSAVER_FOUND
 #include <X11/extensions/scrnsaver.h>
 
 namespace libtimeit
@@ -14,12 +16,14 @@ bool x11_idle_detector::available()
 {
 	int event_base = 0;
 	int error_base = 0;
+#if XSCREENSAVER_FOUND
 	try
 	{
 		x11_display display;
 		return (XScreenSaverQueryExtension(display, &event_base, &error_base)>0);
 	}
 	catch( exception& e)  {}
+#endif
 	return false;
 
 }
@@ -50,7 +54,7 @@ void x11_idle_detector::poll_status()
 		is_idle = true;
 		return;
 	}
-
+#if XSCREENSAVER_FOUND
 	try
 	{
 		x11_display display;
@@ -59,6 +63,7 @@ void x11_idle_detector::poll_status()
 		idle_seconds = duration_cast<seconds>( milliseconds( x_info->idle ));
 	}
 	catch (exception& e)
+#endif
 	{
 		return;
 	}
@@ -84,3 +89,4 @@ seconds x11_idle_detector::time_idle()
 }
 
 }
+#endif

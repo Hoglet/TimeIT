@@ -23,7 +23,7 @@ public:
 	seconds          time_idle( );
 	unsigned         current_workspace();
 	workspace_layout layout( );
-	string workspace_name( unsigned int i );
+	string           workspace_name( unsigned int i );
 private:
 	unique_ptr<idle_detector> idle_status;
 	unique_ptr<workspace>     workspace_info;

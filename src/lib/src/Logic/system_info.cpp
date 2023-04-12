@@ -1,6 +1,7 @@
 #include "libtimeit/logic/system_info.h"
-#include "x11_idle_detector.h"
-#include "x11_workspace.h"
+#include "x11/x11_idle_detector.h"
+#include "x11/x11_workspace.h"
+#include <list>
 
 namespace libtimeit
 {
@@ -19,7 +20,9 @@ system_info::system_info()
 	list<unique_ptr<idle_detector>> idle_detectors ;
 	list<unique_ptr<workspace>>     workspace_detectors ;
 
+#if XSCREENSAVER_FOUND
 	idle_detectors.emplace_back( make_unique<x11_idle_detector>() );
+#endif
 	//idle_detectors.emplace_back( make_unique<wayland_idle_detector>() );
 	//idle_detectors.emplace_back( make_unique<mac_idle_detector>() );
 	//idle_detectors.emplace_back( make_unique<win_idle_detector>() );

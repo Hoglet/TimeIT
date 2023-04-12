@@ -8,6 +8,7 @@
 #ifndef X11_IDLE_DETECTOR_H
 #define X11_IDLE_DETECTOR_H
 
+#if XSCREENSAVER_FOUND
 #include "libtimeit/timer.h"
 #include <ctime>
 #include <memory>
@@ -35,9 +36,10 @@ private:
 	seconds  idle_seconds = 0s;
 	time_point<system_clock>  last_poll { system_clock::from_time_t(0) };
 	time_point<system_clock>   last_activity;
-	seconds    idle_timeout{2000}; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	seconds    idle_timeout{2s};
 	bool     is_idle{false};
 };
 
 }
+#endif /* XSCREENSAVER_FOUND */
 #endif /* X11_IDLE_DETECTOR_H */
