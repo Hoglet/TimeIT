@@ -15,8 +15,8 @@ class x_lib_accessor
 public:
 	x_lib_accessor();
 	x_lib_accessor(const x_lib_accessor&) = delete;
-	x_lib_accessor(x_lib_accessor&&) = delete;
-	x_lib_accessor& operator=(x_lib_accessor&&) = delete;
+	x_lib_accessor(x_lib_accessor&&) = default;
+	x_lib_accessor& operator=(x_lib_accessor&&) = default;
 	x_lib_accessor& operator=(const x_lib_accessor&) = delete;
 
 	virtual ~x_lib_accessor();

@@ -13,6 +13,10 @@ class x11_info
 public:
 	x11_info();
 	~x11_info();
+	x11_info(const x11_info&) = delete;
+	x11_info& operator=(const x11_info&) = delete;
+
+	[[nodiscard]] XScreenSaverInfo* get() const;
 	operator XScreenSaverInfo *() const;
 	XScreenSaverInfo *operator ->() const;
 
