@@ -8,7 +8,7 @@
 #ifndef X11_IDLE_DETECTOR_H
 #define X11_IDLE_DETECTOR_H
 
-#if XSCREENSAVER_FOUND
+#if X11_FOUND
 #include "libtimeit/timer.h"
 #include <ctime>
 #include <memory>
@@ -41,5 +41,5 @@ private:
 };
 
 }
-#endif /* XSCREENSAVER_FOUND */
+#endif /* X11_FOUND */
 #endif /* X11_IDLE_DETECTOR_H */

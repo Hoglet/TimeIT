@@ -2,6 +2,7 @@
 #define X11_INFO_H
 
 #if XSCREENSAVER_FOUND
+#if X11_FOUND
 #include <X11/extensions/scrnsaver.h>
 
 
@@ -25,5 +26,6 @@ private:
 };
 
 } // libtimeit
+#endif //X11_FOUND
 #endif	//XSCREENSAVER_FOUND
 #endif //X11_INFO_H

@@ -1,9 +1,10 @@
+#if X11_FOUND
+
 #include "x11_workspace.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include "x_lib_accessor.h"
-
 
 namespace libtimeit
 {
@@ -158,3 +159,4 @@ string x11_workspace::name( unsigned workspace_nr)
 
 }
 //LCOV_EXCL_STOP
+#endif	// X11_FOUND

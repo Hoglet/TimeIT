@@ -1,3 +1,5 @@
+#if X11_FOUND
+
 #include <X11/Xlib.h>
 #include <stdexcept>
 #include "x11_display.h"
@@ -30,3 +32,4 @@ Display* x11_display::get( ) const
 	return display;
 }
 } // libtimeit
+#endif //X11_FOUND

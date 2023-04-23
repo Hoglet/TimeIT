@@ -1,7 +1,5 @@
-
-
-#include "x11_info.h"
 #if XSCREENSAVER_FOUND
+#include "x11_info.h"
 namespace libtimeit
 {
 
@@ -29,4 +27,4 @@ XScreenSaverInfo *x11_info::operator ->() const
 }
 
 } // libtimeit
-#endif
+#endif //XSCREENSAVER_FOUND

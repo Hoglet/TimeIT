@@ -3,6 +3,7 @@
 #include <string>
 #include "libtimeit/logic/workspace.h"
 
+#if X11_FOUND
 namespace libtimeit
 {
 
@@ -29,4 +30,5 @@ private:
 	long  viewport_height = 0;
 };
 }
+#endif //X11_FOUND
 #endif /* X11_WORKSPACE_H */

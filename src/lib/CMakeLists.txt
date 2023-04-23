@@ -12,8 +12,11 @@ find_package(Jansson             REQUIRED)
 find_package(X11                 REQUIRED)
 find_package(XScreensaver        REQUIRED)
 
-if( XSCREENSAVER_FOUND )
-	add_definitions(-DXSCREENSAVER_FOUND)
+if( X11_FOUND )
+	add_definitions(-DX11_FOUND)
+	if( XSCREENSAVER_FOUND )
+		add_definitions(-DXSCREENSAVER_FOUND)
+	endif()
 endif()
 
 if( GTEST_FOUND AND CMAKE_BUILD_TYPE STREQUAL "Debug")

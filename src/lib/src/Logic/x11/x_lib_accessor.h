@@ -1,10 +1,12 @@
 #ifndef X_LIB_ACCESSOR_H
 #define X_LIB_ACCESSOR_H
+#if X11_FOUND
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
 #include "libtimeit/exceptions/general_exception.h"
 #include "x11_display.h"
+
 
 namespace libtimeit
 {
@@ -29,7 +31,7 @@ private:
 	x11_display       display;
 	Window            root_window;
 };
+} // libtimeit
 
-}
-
+#endif //X11_FOUND
 #endif /* X_LIB_ACCESSOR_H */

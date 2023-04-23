@@ -1,3 +1,5 @@
+#if X11_FOUND
+
 #include "libtimeit/logic/system_info.h"
 #include "x11/x11_idle_detector.h"
 #include "x11/x11_workspace.h"
@@ -26,8 +28,9 @@ system_info::system_info()
 	//idle_detectors.emplace_back( make_unique<wayland_idle_detector>() );
 	//idle_detectors.emplace_back( make_unique<mac_idle_detector>() );
 	//idle_detectors.emplace_back( make_unique<win_idle_detector>() );
-
+#if X11_FOUND
 	workspace_detectors.emplace_back( make_unique<x11_workspace>() );
+#endif
 	//workspace_detectors.emplace_back( make_unique<wayland_workspace>() );
 	//workspace_detectors.emplace_back( make_unique<mac_workspace>() );
 	//workspace_detectors.emplace_back( make_unique<win_workspace>() );
@@ -69,3 +72,5 @@ unsigned system_info::current_workspace()
 
 
 } // libtimeit
+
+#endif

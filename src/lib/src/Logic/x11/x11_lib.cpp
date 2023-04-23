@@ -1,4 +1,6 @@
-#include "Logic/x11/x_lib_accessor.h"
+#if X11_FOUND
+
+#include "x_lib_accessor.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
@@ -114,3 +116,5 @@ vector<string> x_lib_accessor::get_strings(const char *name) noexcept(false)
 
 //LCOV_EXCL_STOP
 }
+
+#endif	// X11_FOUND

@@ -1,8 +1,7 @@
 #ifndef X11_DISPLAY_H
 #define X11_DISPLAY_H
-
+#if X11_FOUND
 #include <X11/Xlib.h>
-
 namespace libtimeit
 {
 class x11_display
@@ -21,5 +20,5 @@ private:
 
 } // libtimeit
 
-
+#endif //X11_FOUND
 #endif //X11_DISPLAY_H

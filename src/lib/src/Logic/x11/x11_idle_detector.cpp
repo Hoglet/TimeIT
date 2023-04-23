@@ -1,10 +1,11 @@
+#if X11_FOUND
+
 #include "x11_idle_detector.h"
 #include <iostream>
 #include "libtimeit/utils.h"
 #include "x11_display.h"
 #include "x11_info.h"
 
-#if XSCREENSAVER_FOUND
 #include <X11/extensions/scrnsaver.h>
 
 namespace libtimeit
@@ -89,4 +90,5 @@ seconds x11_idle_detector::time_idle()
 }
 
 }
-#endif
+
+#endif	//X11_FOUND
