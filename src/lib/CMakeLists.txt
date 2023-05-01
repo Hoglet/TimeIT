@@ -9,9 +9,15 @@ find_package(SQLite3             REQUIRED)
 find_package(Jansson             REQUIRED)
 
 
-find_package(X11                    REQUIRED)
-find_package(PkgConfig              REQUIRED)
-pkg_check_modules(XSCRNS xscrnsaver REQUIRED)
+find_package(X11                 REQUIRED)
+find_package(XScreensaver        REQUIRED)
+
+if( X11_FOUND )
+	add_definitions(-DX11_FOUND)
+	if( XSCREENSAVER_FOUND )
+		add_definitions(-DXSCREENSAVER_FOUND)
+	endif()
+endif()
 
 if( GTEST_FOUND AND CMAKE_BUILD_TYPE STREQUAL "Debug")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g -pg -O0 -coverage -fprofile-arcs -ftest-coverage ")
@@ -31,7 +37,7 @@ add_library( libtimeit STATIC
 
 target_link_libraries( libtimeit
 		${SQLite3_LIBRARIES}
-		${XSCRNS_LIBRARIES}
+		${XSCREENSAVER_LIBRARIES}
 		${X11_LIBRARIES}
 		${JANSSON_LIBRARIES}
 		${CURL_LIBRARIES}

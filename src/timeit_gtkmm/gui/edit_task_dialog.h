@@ -13,6 +13,7 @@
 #include <libtimeit/logic/workspace.h>
 #include <libtimeit/db/database.h>
 #include <glibmm/i18n.h>
+#include <libtimeit/logic/system_info.h>
 
 namespace gui
 {
@@ -77,7 +78,7 @@ private:
 	auto_track_accessor auto_track_table;
 	task_accessor       tasks;
 	settings_accessor   settings;
-	x_11_workspace       workspace;
+	system_info         system;
 
 	vector<shared_ptr<Gtk::CheckButton>> check_button;
 };

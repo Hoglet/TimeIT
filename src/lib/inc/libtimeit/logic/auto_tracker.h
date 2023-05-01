@@ -33,7 +33,7 @@ private:
 
 	auto_track_accessor  auto_track;
 	task_accessor        tasks;
-	x_11_workspace            workspace;
+	system_info          system;
 	bool                 old_user_is_active{false};
 };
 

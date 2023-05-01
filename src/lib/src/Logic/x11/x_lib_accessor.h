@@ -1,9 +1,13 @@
 #ifndef X_LIB_ACCESSOR_H
 #define X_LIB_ACCESSOR_H
+#if X11_FOUND
 #include <vector>
 #include <string>
 #include <X11/Xlib.h>
-#include <libtimeit/exceptions/general_exception.h>
+#include "libtimeit/exceptions/general_exception.h"
+#include "x11_display.h"
+
+
 namespace libtimeit
 {
 using namespace std;
@@ -13,8 +17,8 @@ class x_lib_accessor
 public:
 	x_lib_accessor();
 	x_lib_accessor(const x_lib_accessor&) = delete;
-	x_lib_accessor(x_lib_accessor&&) = delete;
-	x_lib_accessor& operator=(x_lib_accessor&&) = delete;
+	x_lib_accessor(x_lib_accessor&&) = default;
+	x_lib_accessor& operator=(x_lib_accessor&&) = default;
 	x_lib_accessor& operator=(const x_lib_accessor&) = delete;
 
 	virtual ~x_lib_accessor();
@@ -22,11 +26,12 @@ public:
 	vector<string>  get_strings(const char *prop_name)             noexcept(false);
 	int             viewport_width();
 	int             viewport_height();
+	bool is_open( );
 private:
-	Display          *display;
+	x11_display       display;
 	Window            root_window;
 };
+} // libtimeit
 
-}
-
+#endif //X11_FOUND
 #endif /* X_LIB_ACCESSOR_H */

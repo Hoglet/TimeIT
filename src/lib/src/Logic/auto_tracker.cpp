@@ -29,7 +29,7 @@ void auto_tracker::on_signal_1_second()
 
 void auto_tracker::check_for_changes()
 {
-	unsigned new_workspace = workspace.active();
+	unsigned new_workspace = system.current_workspace();
 	if (old_workspace != new_workspace)
 	{
 		do_task_switching(new_workspace);

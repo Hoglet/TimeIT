@@ -9,10 +9,10 @@ static const auto minute = 60;
 #include <libtimeit/datatypes/task.h>
 #include <libtimeit/timer.h>
 #include <libtimeit/db/database.h>
-#include <libtimeit/logic/x_11_idle_detector.h>
 #include <libtimeit/db/task_accessor.h>
 #include <libtimeit/db/settings_accessor.h>
 #include <libtimeit/db/time_accessor.h>
+#include "system_info.h"
 
 namespace libtimeit
 {
@@ -93,7 +93,7 @@ private:
 	task_accessor      tasks;
 	settings_accessor  settings;
 
-	x_11_idle_detector idle_detector;
+	system_info        system;
 	void update_running_entries();
 	void check_if_tasks_should_be_stopped();
 

@@ -1,7 +1,6 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 #include <string>
-#include "libtimeit/x_lib_accessor.h"
 
 namespace libtimeit
 {
@@ -13,6 +12,7 @@ struct workspace_layout
 	const unsigned  number_of_workspaces;
 	const unsigned  rows;
 	const unsigned  columns;
+
 	workspace_layout(
 			unsigned op_number_of_workspaces,
 			unsigned op_rows,
@@ -23,25 +23,15 @@ struct workspace_layout
 			columns( op_columns)
 	{};
 };
-class x_11_workspace
+class workspace
 {
 public:
-	x_11_workspace();
+	virtual bool available() { return false; }
 
-	unsigned active();
-	string name(unsigned workspace_nr);
+	virtual unsigned active() {return 0;};
+	virtual string name(unsigned /*workspace_nr*/) { return ""; };
 
-	workspace_layout layout();
-
-private:
-
-	bool supports_layout = true;
-	bool is_virtual{false};
-
-	long  viewport_width  = 0;
-	long  viewport_height = 0;
-	x_lib_accessor  x_lib;
-
+	virtual workspace_layout layout() { return {1,1,1};};
 };
 }
 #endif /* WORKSPACE_H */

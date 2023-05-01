@@ -26,12 +26,10 @@ time_manager::time_manager(
 		event_observer(notifier),
 		times(db ),
 		tasks(db ),
-		settings(db ),
-		idle_detector(timer)
-
+		settings(db )
 {
-/*	idle_gz = minutes( settings.get_int( "Gz", default_gz) );
-	default_idle_time = minutes(settings.get_int( "Gt", default_gt));*/
+	idle_gz = minutes( settings.get_int( "Gz", defaults::g_zero) );
+	default_idle_time = minutes(settings.get_int( "Gt", defaults::g_time));
 }
 
 void time_manager::on_settings_changed( string name)
@@ -154,7 +152,7 @@ void time_manager::stop_all()
 
 [[maybe_unused]] [[nodiscard]] bool   time_manager::is_idle()
 {
-	return idle_detector.time_idle() > 10s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return system.time_idle() > 10s;
 }
 
 void time_manager::notify_running_changed()
@@ -200,7 +198,7 @@ void time_manager::on_time_entry_changed( const time_entry& /*id*/)
 
 bool time_manager::user_is_active()
 {
-	return 	(idle_detector.time_idle() < 10s);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return 	(system.time_idle() < 10s);
 }
 
 void time_manager::update_running_entries()
