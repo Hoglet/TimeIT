@@ -305,7 +305,7 @@ void sync_manager::manage_network_problems()
 	{
 		std::stringstream text;
 		// {} is replaced with the URI on which the connection failed
-		text << fmt::format(_("Failed connection to {}:\n"), result.url.c_str());
+		text << fmt::format(fmt::runtime(_("Failed connection to {}:\n")), result.url.c_str());
 
 		text << _("HTTP error ") << result.http_code << " ";
 		if (result.http_code == http_unauthorized)

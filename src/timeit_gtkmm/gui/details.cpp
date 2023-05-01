@@ -128,7 +128,7 @@ void details::on_menu_file_popup_remove()
 			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0min)
 			{
 				secondary_text = fmt::format(
-						_("Removing will lose {} minutes.\n\nRemoving will be permanent."),
+						fmt::runtime(_("Removing will lose {} minutes.\n\nRemoving will be permanent.")),
 						minutes_string.c_str());
 			}
 			else
@@ -206,7 +206,7 @@ void details::on_menu_file_popup_merge()
 					minutes_to_gain < 0min)
 			{
 				secondary_text = fmt::format(
-						_("Merging will add {} minutes.\n\nMerging with the next row will be permanent."),
+						fmt::runtime(_("Merging will add {} minutes.\n\nMerging with the next row will be permanent.")),
 						minutes_string.c_str());
 			}
 			else

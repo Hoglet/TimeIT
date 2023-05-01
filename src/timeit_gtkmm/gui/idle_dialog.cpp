@@ -87,7 +87,7 @@ void idle_dialog::set_text()
 	std::string format_str = ngettext("No activity has been detected for {} minute. What should we do?",
 									  "No activity has been detected for {} minutes. What should we do?",
 									  minutes_idle.count());
-	str << fmt::format(format_str, minutes_idle.count());
+	str << fmt::format(fmt::runtime(format_str), minutes_idle.count());
 
 	if ( !task_string.empty() )
 	{

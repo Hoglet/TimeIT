@@ -29,7 +29,7 @@ bool export_to_csv( database& db , const string &filename, time_point<system_clo
 
 			auto date = date_string(day_pointer);
 
-			fmt::print( static_cast<FILE*>(output) , date );
+			fmt::print( static_cast<FILE*>(output) , fmt::runtime(date) );
 			for (auto item: items)
 			{
 				auto duration = times.duration_time( item.id, start, stop );
