@@ -198,7 +198,7 @@ void time_manager::on_time_entry_changed( const time_entry& /*id*/)
 
 bool time_manager::user_is_active()
 {
-	return 	(system.time_idle() < 10s);  // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+	return 	(system.time_idle() < 10s);
 }
 
 void time_manager::update_running_entries()
