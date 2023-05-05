@@ -17,7 +17,7 @@ public:
 	file( file && )      = delete;
 	~file();
 
-	explicit operator FILE*() const;
+	operator FILE*() const;
 
 	file & operator=( const file & ) = delete;
 	file & operator=( file && )      = delete;
