@@ -66,7 +66,7 @@ http_response http_request::put(
 		string password
 )
 {
-	curl_easy_setopt(curl, CURLOPT_PUT, 1L); // NOLINT
+	curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L); // NOLINT
 	receive_buffer.clear();
 	send_buffer = data;
 	cur_send_position = 0;

@@ -18,9 +18,9 @@ bool export_to_csv( database& db , const string &filename, time_point<system_clo
 		file output( filename, "w" );
 		for (auto item: items)
 		{
-			fmt::print( static_cast<FILE*>(output), ",{}", item.name);
+			fmt::print( output, ",{}", item.name);
 		}
-		fmt::print( static_cast<FILE*>(output) , "\n");
+		fmt::print( output , "\n");
 		auto day_pointer = report_start;
 		while ( day_pointer < report_end)
 		{
@@ -29,14 +29,14 @@ bool export_to_csv( database& db , const string &filename, time_point<system_clo
 
 			auto date = date_string(day_pointer);
 
-			fmt::print( static_cast<FILE*>(output) , fmt::runtime(date) );
+			fmt::print( output , fmt::runtime(date) );
 			for (auto item: items)
 			{
 				auto duration = times.duration_time( item.id, start, stop );
 				auto duration_str = hh_mm( seconds(duration) );
-				fmt::print( static_cast<FILE*>(output), ",{}", duration_str);
+				fmt::print( output, ",{}", duration_str);
 			}
-			fmt::print( static_cast<FILE*>(output), "\n");
+			fmt::print( output, "\n");
 			day_pointer += 24h;
 		}
 		return true;
