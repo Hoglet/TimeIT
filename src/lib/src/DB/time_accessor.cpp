@@ -1,5 +1,4 @@
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/utils.h>
@@ -65,7 +64,7 @@ optional<time_entry> time_accessor::by_id( time_id id)
 					time_id(possible_uuid.value()),
 					task_uuid.value(),
 					start,
-					stop,
+					duration_cast<seconds>(stop - start),
 					state,
 					changed,
 					comment);
@@ -270,7 +269,7 @@ time_list time_accessor::by_activity(
 							time_id(uuid.value()),
 							task_id( task_uuid.value()),
 							start,
-							stop,
+							duration_cast<seconds>(stop-start),
 							state,
 							changed,
 							comment));
@@ -307,7 +306,7 @@ time_list time_accessor::times_changed_since( time_point<system_clock> time_stam
 					id,
 					owner_id,
 					start,
-					stop,
+					duration_cast<seconds>(stop-start),
 					state,
 					changed,
 					comment
@@ -342,7 +341,7 @@ bool time_accessor::update(const time_entry& item )
 		}
 		auto index{1};
 		statement_update_time.bind_value(index++, system_clock::to_time_t( item.start ));
-		statement_update_time.bind_value(index++, system_clock::to_time_t( item.stop ));
+		statement_update_time.bind_value(index++, system_clock::to_time_t( item.start + item.duration));
 		statement_update_time.bind_value(index++, static_cast<int64_t>(running) );
 		statement_update_time.bind_value(index++, system_clock::to_time_t( item.changed ));
 		statement_update_time.bind_value(index++, static_cast<int64_t>(deleted) );
@@ -405,7 +404,7 @@ int64_t time_accessor::create(const time_entry& item)
 	internal_create(item, statement_new_entry, db);
 	int64_t id = db.id_of_last_insert();
 
-	if (item.start != item.stop)
+	if (item.duration > seconds(0))
 	{
 		db.broadcast(
 				[item](event_observer* observer)
@@ -442,7 +441,7 @@ void time_accessor::internal_create( const time_entry &item, sql_statement& stat
 	statement_new_entry.bind_value(index++, static_cast<string>(item.id));
 	statement_new_entry.bind_value(index++, owner_old_id);
 	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.start ));
-	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.stop ));
+	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.start + item.duration));
 	statement_new_entry.bind_value(index++, system_clock::to_time_t( item.changed ));
 	statement_new_entry.bind_value(index++, deleted);
 	statement_new_entry.bind_value(index++, running);
@@ -583,7 +582,7 @@ time_list time_accessor::by_state( time_entry_state state) const
 					time_id(*id),
 					owner_id,
 					start,
-					stop,
+					duration_cast<seconds>(stop-start),
 					item_state,
 					changed,
 					comment);

@@ -5,7 +5,6 @@
  *      Author: hoglet
  */
 
-#include <sstream>
 #include <iostream>
 #include <libtimeit/db/settings_accessor.h>
 #include <optional>

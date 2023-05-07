@@ -1,5 +1,4 @@
 #include <iostream>
-#include <sstream>
 
 #include <libtimeit/db/time_accessor.h>
 #include <libtimeit/db/task_accessor.h>

@@ -110,16 +110,16 @@ TEST( Json, simpleTimeTest )
 
 	if ( number_of_items == 1)
 	{
-		auto expected_start  = system_clock::from_time_t( 1363339855 );
-		auto expected_stop   = system_clock::from_time_t( 1363342626 );
-		auto expected_change = system_clock::from_time_t( 1376059170 );
+		auto expected_start    = system_clock::from_time_t( 1363339855 );
+		auto expected_duration = duration_cast<seconds>(system_clock::from_time_t( 1363342626 ) - expected_start);
+		auto expected_change   = system_clock::from_time_t( 1376059170 );
 		time_entry item = times.at( 0);
 		bool expected_state = stopped;
 		ASSERT_EQ( expected_uuid, static_cast<string>(item.id)) << "id: ";
 		ASSERT_EQ( expected_task_id, static_cast<string>(item.owner_id)) << "Task_ID: ";
 		ASSERT_EQ( expected_state, item.state) << "State: ";
 		ASSERT_EQ( expected_start, item.start) << "Start: ";
-		ASSERT_EQ( expected_stop, item.stop) << "Stop: ";
+		ASSERT_EQ( expected_duration, item.duration) << "Duration: ";
 		ASSERT_EQ( expected_change, item.changed) << "Expected change time: ";
 	}
 }
@@ -139,7 +139,7 @@ TEST( Json, simpleTimeTest2 )
 	if ( number_of_items == 1)
 	{
 		auto expected_start  = system_clock::from_time_t( 1363339855 );
-		auto expected_stop   = system_clock::from_time_t( 1363342626 );
+		auto expected_duration   = duration_cast<seconds>(system_clock::from_time_t( 1363342626 ) - expected_start);
 		auto expected_change = system_clock::from_time_t( 1376059170 );
 		time_entry item = times.at( 0);
 		auto expected_state = deleted;
@@ -147,7 +147,7 @@ TEST( Json, simpleTimeTest2 )
 		ASSERT_EQ( expected_task_id, static_cast<string>(item.owner_id)) << "Task_ID: ";
 		ASSERT_EQ( expected_state, item.state) << "State: ";
 		ASSERT_EQ( expected_start, item.start) << "Start: ";
-		ASSERT_EQ( expected_stop, item.stop) << "Stop: ";
+		ASSERT_EQ( expected_duration, item.duration) << "Duratrion: ";
 		ASSERT_EQ( expected_change, item.changed) << "Expected change time: ";
 	}
 }
@@ -179,7 +179,7 @@ TEST( Json, threeWayTimeTest )
 	ASSERT_EQ( item_1.id, item_2.id) << "id ";
 	ASSERT_EQ( item_1.owner_id, item_2.owner_id) << "Task_ID: ";
 	ASSERT_EQ( item_1.start, item_2.start) << "Start: ";
-	ASSERT_EQ( item_1.stop, item_2.stop) << "Stop: ";
+	ASSERT_EQ( item_1.duration, item_2.duration) << "Stop: ";
 	ASSERT_EQ( item_1.state, item_2.state) << "Deleted: ";
 	ASSERT_EQ( item_1.changed, item_2.changed) << "Change time: ";
 
@@ -210,7 +210,7 @@ TEST( Json, threeWayTimeTest2 )
 	ASSERT_EQ( item_1.id, item_2.id) << "id ";
 	ASSERT_EQ( item_1.owner_id, item_2.owner_id) << "Task_ID: ";
 	ASSERT_EQ( item_1.start, item_2.start) << "Start: ";
-	ASSERT_EQ( item_1.stop, item_2.stop) << "Stop: ";
+	ASSERT_EQ( item_1.duration, item_2.duration) << "Stop: ";
 	ASSERT_EQ( item_1.state, item_2.state) << "Deleted: ";
 	ASSERT_EQ( item_1.changed, item_2.changed) << "Change time: ";
 

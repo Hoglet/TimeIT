@@ -85,7 +85,7 @@ TEST( SyncManager, fullSyncEmptyClient )
 		ASSERT_STREQ( "010c012c-00b9-40f6-80dd-018e011d0191", static_cast<string>(item.id).c_str()) << "TimeEntry UUID";
 		ASSERT_STREQ( "00b3015e-00d6-418e-81c8-0125012d0172", static_cast<string>(item.owner_id).c_str()) << "TimeEntry taskUUD";
 		ASSERT_EQ( system_clock::from_time_t( 1363597429 ), item.start) << "TimeEntry start";
-		ASSERT_EQ( system_clock::from_time_t( 1363597541 ), item.stop) << "TimeEntry stop";
+		ASSERT_EQ( system_clock::from_time_t( 1363597541 )-system_clock::from_time_t( 1363597429 ) , item.duration) << "TimeEntry stop";
 		ASSERT_EQ( system_clock::from_time_t( 1376388171 ), item.changed) << "TimeEntry changed";
 		ASSERT_EQ( stopped, item.state) << "TimeEntry deleted";
 	}

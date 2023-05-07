@@ -21,8 +21,8 @@ TEST(ExtendedTaskAccessor, by_ID)
 	tasks.create( test_task_2);
 
 	time_accessor times( tempdb);
-	times.create( time_entry( parent.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )) );
-	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )) );
+	times.create( time_entry( parent.id, system_clock::from_time_t( 0 ),  1000s ) );
+	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), 1000s ) );
 
 	auto task_1 = tasks.by_id( parent.id);
 	ASSERT_EQ( "Test", task_1->name);
@@ -53,7 +53,7 @@ TEST(ExtendedTaskAccessor, by_parent_ID)
 
 	task test_task_2("Test2", test_task.id);
 	tasks.create( test_task_2);
-	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )) );
+	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), 1000s ) );
 
 	result = tasks.by_parent_id( {});
 	extended_task &task_1 = result.at( 0);
@@ -72,7 +72,7 @@ TEST(ExtendedTaskAccessor, testTotalTime)
 	tasks.create( test_task_2);
 
 	time_accessor times( tempdb);
-	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )));
+	times.create( time_entry( test_task_2.id, system_clock::from_time_t( 0 ), 1000s ));
 
 	auto task_1 = tasks.by_id( test_task_1.id);
 	ASSERT_EQ( 1000s, task_1->total_time);
@@ -106,7 +106,7 @@ TEST(ExtendedTaskAccessor, testTimeReporting)
 	task test_task( "test", parent_id);
 	tasks.create( test_task);
 	auto task_id = test_task.id;
-	times.create( time_entry( task_id, system_clock::from_time_t( 4000 ), system_clock::from_time_t( 5000 )) );
+	times.create( time_entry( task_id, system_clock::from_time_t( 4000 ), 1000s ) );
 
 	auto result_1 = tasks.by_parent_id( parent_id);
 	extended_task task_1 = result_1.at( 0);

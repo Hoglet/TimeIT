@@ -1,7 +1,6 @@
 #include "libtimeit/misc/exporters.h"
 #include <fmt/core.h>
 
-#include <cstdio>
 #include <libtimeit/utils.h>
 #include <libtimeit/misc/file.h>
 

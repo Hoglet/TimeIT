@@ -18,8 +18,10 @@ extended_task get_task()
 	task sub_task( "sub_task", task_id);
 	auto sub_task_id = sub_task.id;
 	tasks.create( sub_task );
-	times.create( time_entry( task_id, system_clock::from_time_t( 100 ), system_clock::from_time_t( 200 )) );
-	times.create( time_entry( sub_task_id, system_clock::from_time_t( 150 ), system_clock::from_time_t( 200 )) );
+	auto duration1 = system_clock::from_time_t( 200 ) - system_clock::from_time_t( 100 );
+	auto duration2 = system_clock::from_time_t( 200 ) - system_clock::from_time_t( 150 );
+	times.create( time_entry( task_id, system_clock::from_time_t( 100 ), duration_cast<seconds>(duration1)) );
+	times.create( time_entry( sub_task_id, system_clock::from_time_t( 150 ), duration_cast<seconds>(duration2)) );
 	return *tasks.by_id( task_id);
 }
 

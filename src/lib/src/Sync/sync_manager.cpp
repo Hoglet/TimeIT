@@ -236,7 +236,7 @@ void sync_manager::sync_times_to_database()
 		auto changed = item.changed;
 		bool deleted = item.state == time_entry_state::deleted;
 		auto   start = item.start;
-		auto    stop = item.stop;
+		auto    stop = item.start + item.duration;
 		bool running = false;
 		auto comment = item.comment;
 
@@ -256,14 +256,14 @@ void sync_manager::sync_times_to_database()
 			item_state = time_entry_state::deleted;
 		}
 
-		time_entry te( item.id, task_uuid, start, stop, item_state, changed, comment);
+		time_entry te( item.id, task_uuid, start, duration_cast<seconds>(stop-start), item_state, changed, comment);
 		if (original_item.has_value())
 		{
 			times.update(te);
 		}
 		else
 		{
-			if( te.state != time_entry_state::deleted && (te.stop - te.start) > 60s )
+			if( te.state != time_entry_state::deleted && te.duration > 60s )
 			{
 				times.create(te);
 			}

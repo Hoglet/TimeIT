@@ -49,7 +49,7 @@ string to_json(const time_list& times)
 		item.set("id", json( static_cast<string>(time.id)));
 		item.set("task", json(static_cast<string>(time.owner_id)));
 		item.set("start", json(time.start));
-		item.set("stop", json(time.stop));
+		item.set("stop", json(time.start + time.duration));
 		item.set( "deleted",json(time.state == deleted));
 		item.set("changed",  json(time.changed));
 		item.set("state", json((int64_t)time.state));
@@ -126,7 +126,7 @@ time_list to_times( const string &input)
 		auto owner= optional_task_id(task_id_string);
 		if( id.has_value() && owner.has_value())
 		{
-			time_entry time_item( time_id( id.value() ), *owner, start, stop, state, changed, comment);
+			time_entry time_item( time_id( id.value() ), *owner, start, duration_cast<seconds>(stop-start), state, changed, comment);
 			return_value.push_back(time_item);
 		}
 	}

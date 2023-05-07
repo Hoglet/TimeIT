@@ -43,10 +43,10 @@ task task::with_parent(const optional<task_id>& new_parent_id) const
 task::task( string op_name, optional<task_id> op_parent_id)
 	:
 		task(
-			std::move( op_name),
+			op_name,
 			task_id(),
 			system_clock::now(),
-			std::move( op_parent_id),
+			op_parent_id,
 			false,
 			0min,
 			false)

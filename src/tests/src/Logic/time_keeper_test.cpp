@@ -90,12 +90,12 @@ TEST( TimeKeeper, update )
 			now + 1000s );
 	auto te_id = entries.at( 0).id;
 	auto te = times.by_id( te_id);
-	times.update(te->with_start( system_clock::from_time_t( 0 )).with_stop( system_clock::from_time_t( 100 )));
+	times.update(te->with_start( system_clock::from_time_t( 0 )).with_duration( 100s ));
 
 	time_keeper.on_signal_10_seconds();
 
 	auto changed_item = times.by_id( te_id);
-	ASSERT_EQ(  100  , system_clock::to_time_t( changed_item->stop)) << "Stop should be 100 ";
+	ASSERT_EQ(  100s  ,  changed_item->duration ) << "Duration should be 100s";
 
 }
 

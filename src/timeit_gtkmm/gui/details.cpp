@@ -122,7 +122,7 @@ void details::on_menu_file_popup_remove()
 			time_entry item = optional_time_entry.value();
 			auto idle_gt = minutes(settings.get_int( "Gt", defaults::g_time));
 			auto idle_gz = minutes( settings.get_int( "Gz", defaults::g_zero) );
-			auto minutes_to_lose = duration_cast<minutes>( item.stop - item.start);
+			auto minutes_to_lose = duration_cast<minutes>(item.duration);
 			std::string minutes_string = fmt::format("<span color='red'>{}</span>", minutes_to_lose.count());
 			std::string secondary_text;
 			if (minutes_to_lose > idle_gt || minutes_to_lose > idle_gz || minutes_to_lose < 0min)
@@ -150,7 +150,7 @@ void details::on_menu_file_popup_remove()
 				if ( item.state == running )
 				{
 					// if running then keep running, starting over with zero length
-					times.update( item.with_start( item.stop));
+					times.update( item.with_start( system_clock::now() ).with_duration( 0s) );
 				}
 				else
 				{
@@ -188,7 +188,7 @@ void details::on_menu_file_popup_merge()
 			auto idle_gt = minutes(settings.get_int( "Gt", defaults::g_time));
 			auto idle_gz = minutes(settings.get_int( "Gz", defaults::g_zero));
 
-			auto minutes_to_gain = duration_cast<minutes>(time_entry_1.stop - time_entry_0.start);
+			auto minutes_to_gain = duration_cast<minutes>((time_entry_1.start + time_entry_1.duration) - time_entry_0.start);
 
 			std::string minutes_string;
 			if (minutes_to_gain >= 0min)
@@ -226,8 +226,9 @@ void details::on_menu_file_popup_merge()
 			{
 				// coded considering time_entry_1 could be currently running
 				auto new_start = time_entry_0.start;
+				auto new_duration = time_entry_1.duration + duration_cast<seconds>( time_entry_1.start - time_entry_0.start );
+				times.update(time_entry_1.with_start(new_start).with_duration(new_duration) );
 				times.remove(time_entry_0);
-				times.update(time_entry_1.with_start(new_start) );
 				populate( );
 				break;
 			}
@@ -243,7 +244,7 @@ void details::on_menu_file_popup_merge()
 bool offer_to_split( time_entry &item)
 {
 	auto start_time = item.start;
-	auto stop_time = item.stop;
+	auto stop_time = item.start+item.duration;
 	auto seconds_to_split = stop_time - start_time ;
 	bool across_days = is_on_different_days(start_time, stop_time);
 	// at least use sufficient margins to stay clear of leap seconds, 2 * 3 = 6 is a good minimum
@@ -260,7 +261,7 @@ void details::on_menu_file_popup_split()
 		{
 			time_entry item = optional_time_entry.value();
 			auto start = item.start;
-			auto stop  = item.stop;
+			auto stop  = item.start+item.duration;
 
 
 			// coded considering time_entry could be currently running
@@ -282,8 +283,8 @@ void details::on_menu_file_popup_split()
 					split_start_time = split_stop_time + 6s; // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
 				}
 
-				times.update( item.with_start( split_start_time).with_stop( stop) );
-				times.create( time_entry( item.owner_id, start, split_stop_time) );
+				times.update( item.with_start( split_start_time).with_duration( duration_cast<seconds>(stop - split_start_time)) );
+				times.create( time_entry( item.owner_id, start, duration_cast<seconds>(split_stop_time-start) ));
 				populate( create_row_data(start, stop) );
 			}
 			else
@@ -498,7 +499,7 @@ list<row_data> details::create_row_data( time_point<system_clock> start, time_po
 		data.prev_start   = prev_start;
 		data.start        = item.start;
 		prev_start        = data.start;
-		data.stop         = item.stop;
+		data.stop         = item.start + item.duration;
 		data.running      = item.state == running;
 		data.comment      = item.comment;
 

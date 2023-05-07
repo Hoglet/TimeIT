@@ -217,7 +217,7 @@ void gui_controller::on_add_time()
 	if (selected_task_id.has_value())
 	{
 		auto now = system_clock::now();
-		time_entry item( selected_task_id.value(), now, now);
+		time_entry item( selected_task_id.value(), now, 0s);
 		auto dialog = make_shared<gui::edit_time_dialog>( item, db);
 		windows.manage_lifespan(dialog);
 		dialog->show();

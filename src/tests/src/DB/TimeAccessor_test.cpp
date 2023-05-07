@@ -22,7 +22,7 @@ TEST(TimeAccessor, simpleTest)
 	task_accessor tasks( tempdb);
 	task test_task( "test" );
 	tasks.create( test_task);
-	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 )) );
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), 1000s ) );
 	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(1000, result.count());
 }
@@ -35,12 +35,12 @@ TEST(TimeAccessor, ChangeEndTime)
 	task test_task( "test" );
 	tasks.create( test_task );
 	time_accessor times( tempdb);
-	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 0 ), 1000s );
 	times.create( original );
 	auto te = times.by_id( original.id );
 	if (te)
 	{
-		times.update( te->with_stop( system_clock::from_time_t( 1300 )));
+		times.update( te->with_duration( 1300s ));
 	}
 	auto result = times.duration_time( test_task.id);
 	ASSERT_EQ(1300, result.count());
@@ -55,12 +55,12 @@ TEST(TimeAccessor, ChangeStartTime)
 	task test_task( "test" );
 	tasks.create( test_task );
 	time_accessor times( tempdb);
-	time_entry original( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	time_entry original( test_task.id, system_clock::from_time_t( 0 ),  1000s);
 	times.create( original );
 	auto te = times.by_id( original.id);
 	times.update( te->with_start( system_clock::from_time_t( 300 )));
 	auto result = times.duration_time( test_task.id);
-	ASSERT_EQ(700, result.count());
+	ASSERT_EQ(1000s, result);
 
 }
 
@@ -74,13 +74,13 @@ TEST(TimeAccessor, UpdateTime)
 	task test_task( "test" );
 	tasks.create( test_task );
 	time_accessor times( tempdb);
-	time_entry first( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	time_entry first( test_task.id, system_clock::from_time_t( 0 ), 1000s );
 	times.create( first );
 	observer.task_id_time = {};
 	auto original = times.by_id( first.id).value();
-	times.update( original.with_start( system_clock::from_time_t( 300 )).with_stop( system_clock::from_time_t( 700 )));
+	times.update( original.with_start( system_clock::from_time_t( 300 )).with_duration( 700s ));
 	auto result = times.duration_time( test_task.id);
-	ASSERT_EQ(400s, result );
+	ASSERT_EQ(700s, result );
 	ASSERT_TRUE( observer.task_id_time.has_value());
 	ASSERT_EQ(observer.task_id_time.value(), test_task.id );
 
@@ -94,9 +94,9 @@ TEST(TimeAccessor, RemoveTime)
 	task test_task("test");
 	tasks.create( test_task );
 	time_accessor times( tempdb);
-	time_entry te = time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	time_entry te = time_entry( test_task.id, system_clock::from_time_t( 0 ), 1000s );
 	times.create( te );
-	times.create( time_entry( test_task.id, system_clock::from_time_t( 2000 ), system_clock::from_time_t( 2300 )));
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 2000 ), 300s ));
 	times.remove( te );
 	auto result = times.duration_time( test_task.id );
 	ASSERT_EQ(300s, result);
@@ -111,7 +111,7 @@ TEST(TimeAccessor, GetLatestTasks)
 	task test_task( "test" );
 	tasks.create( test_task );
 	time_accessor times( tempdb);
-	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000)));
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 0 ), 1000s ));
 	auto result = times.latest_active_tasks( 10);
 	ASSERT_EQ(1, result.size());
 	ASSERT_EQ( test_task.id, result[0]);
@@ -129,7 +129,7 @@ TEST(TimeAccessor, GetDetailTimeList)
 
 	task test_task( "test" );
 	tasks.create( test_task );
-	times.create( time_entry( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 )) );
+	times.create( time_entry( test_task.id, system_clock::from_time_t( 10 ), 90s ) );
 	vector<time_entry> result = times.by_activity(
 			test_task.id,
 			system_clock::from_time_t( 0 ),
@@ -138,7 +138,7 @@ TEST(TimeAccessor, GetDetailTimeList)
 	ASSERT_EQ(1, result.size());
 	time_entry te = result[0];
 	ASSERT_EQ(system_clock::from_time_t( 10 ), te.start);
-	ASSERT_EQ(system_clock::from_time_t( 100 ), te.stop);
+	ASSERT_EQ( 90s, te.duration);
 }
 
 TEST(TimeAccessor, testGetByID)
@@ -149,12 +149,12 @@ TEST(TimeAccessor, testGetByID)
 	extended_task_accessor tasks( tempdb);
 	task test_task( "test" );
 	tasks.create( test_task );
-	time_entry original( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 ));
+	time_entry original( test_task.id, system_clock::from_time_t( 10 ), 90s );
 	times.create( original );
 	auto te = times.by_id( original.id);
 	ASSERT_EQ( test_task.id, te->owner_id) << "Check task id";
 	ASSERT_EQ(system_clock::from_time_t( 10 ), te->start) << "Check start";
-	ASSERT_EQ(system_clock::from_time_t( 100 ), te->stop) << "Check stop";
+	ASSERT_EQ( 90s , te->duration) << "Check duration";
 
 }
 
@@ -167,13 +167,13 @@ TEST(TimeAccessor, testGetByUUID)
 
 	task test_task( "test" );
 	tasks.create( test_task );
-	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 10 ), system_clock::from_time_t( 100 ));
+	time_entry original = time_entry( test_task.id, system_clock::from_time_t( 10 ), 90s);
 	times.create( original );
 
 	auto te = times.by_id( original.id);
 	ASSERT_EQ( test_task.id, te->owner_id ) << "Check task id";
 	ASSERT_EQ(system_clock::from_time_t( 10 ), te->start) << "Check start";
-	ASSERT_EQ(system_clock::from_time_t( 100 ), te->stop) << "Check stop";
+	ASSERT_EQ( 90s , te->duration) << "Check duration";
 	ASSERT_EQ( original.id, te->id) << "Check id";
 
 }
@@ -194,7 +194,7 @@ TEST(TimeAccessor, newItem)
 			time_id(),
 			test_task.id,
 			system_clock::from_time_t( 100 ),
-			system_clock::from_time_t( 200 ),
+			100s,
 			stopped,
 			system_clock::from_time_t( 200 ),
 			comment);
@@ -205,7 +205,7 @@ TEST(TimeAccessor, newItem)
 	ASSERT_EQ( item_1.id, item_2->id) << "UUID: ";
 	ASSERT_EQ( item_1.owner_id, item_2->owner_id) << "Task_ID: ";
 	ASSERT_EQ( item_1.start, item_2->start) << "Start: ";
-	ASSERT_EQ( item_1.stop, item_2->stop) << "Stop: ";
+	ASSERT_EQ( item_1.duration, item_2->duration) << "Stop: ";
 	ASSERT_EQ( item_1.state, item_2->state) << "Deleted: ";
 	ASSERT_EQ( item_1.changed, item_2->changed) << "Changed: ";
 	ASSERT_EQ( item_1.comment, item_2->comment) << "Comment: ";
@@ -227,7 +227,7 @@ TEST(TimeAccessor, GetTotalTimeWithChildren)
 	task child( "test", parent.id );
 	tasks.create( child );
 	auto task_id = child.id;
-	times.create( time_entry( task_id, system_clock::from_time_t( 4000 ), system_clock::from_time_t( 5000 )) );
+	times.create( time_entry( task_id, system_clock::from_time_t( 4000 ), 1000s ) );
 	int parent_total_time = times.total_cumulative_time( parent_id).count();
 	ASSERT_EQ( 1000, parent_total_time);
 	int child_total_time = times.total_cumulative_time( task_id).count();
@@ -245,7 +245,7 @@ TEST(TimeAccessor, getTimesChangedSince)
 	auto task_id = test_task.id;
 	tasks.create( test_task );
 
-	time_entry original( task_id, system_clock::from_time_t( 0 ), system_clock::from_time_t( 1000 ));
+	time_entry original( task_id, system_clock::from_time_t( 0 ), 1000s );
 	times.create( original );
 
 	auto item = times.by_id( original.id );
@@ -272,7 +272,7 @@ TEST(TimeAccessor, getActiveTasks)
 			time_id(),
 			task_id,
 			system_clock::from_time_t( 100 ),
-			system_clock::from_time_t( 600 ),
+			500s,
 			stopped,
 			system_clock::from_time_t( 200 ),
 			comment);

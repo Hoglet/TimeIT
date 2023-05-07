@@ -66,7 +66,7 @@ void time_manager::start( task_id id)
 	}
 
 	auto now = system_clock::now();
-	times.create( time_entry( id, now, now, running ) );
+	times.create( time_entry( id, now, 0s, running ) );
 	notify_running_changed();
 }
 
@@ -86,7 +86,7 @@ void time_manager::toggle( task_id id)
 
 void time_manager::stop_time( const time_entry& item)
 {
-	if( item.stop - item.start < idle_gz )
+	if( item.duration < idle_gz )
 	{
 		times.update( item.with ( deleted));
 	}
@@ -206,7 +206,7 @@ void time_manager::update_running_entries()
 	auto running = times.by_state( time_entry_state::running);
 	for (const auto& item: running)
 	{
-		auto updated_time_entry = item.with_stop( system_clock::now());
+		auto updated_time_entry = item.with_duration( duration_cast<seconds>(system_clock::now() - item.start));
 		times.update(updated_time_entry );
 	}
 
@@ -225,7 +225,7 @@ void time_manager::check_if_tasks_should_be_stopped()
 		{
 			idle_time = default_idle_time;
 		}
-		auto time_inactive = now - time_item.stop;
+		auto time_inactive = now - (time_item.start + time_item.duration);
 		if( time_inactive > duration_cast<seconds>(idle_time) )
 		{
 			times_to_stop.push_back( time_item );

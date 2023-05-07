@@ -54,14 +54,15 @@ idle_dialog::idle_dialog(
 
 void idle_dialog::set_time_id(const time_id& id)
 {
-	auto item = times.by_id( id);
-	if ( item.has_value() )
+	auto optional_item = times.by_id( id);
+	if ( optional_item.has_value() )
 	{
-		idle_start_time = item->stop;
-		auto idle_task = tasks.by_id( item->owner_id);
+		auto item = optional_item.value();
+		idle_start_time = item.start + item.duration;
+		auto idle_task = tasks.by_id( item.owner_id);
 		if(idle_task.has_value())
 		{
-			task_string = idle_task->name;
+			task_string = idle_task.value().name;
 			time_entry_id = id;
 		}
 	}
@@ -122,10 +123,12 @@ void idle_dialog::response_handler(int result)
 
 void idle_dialog::action_continue(const time_id& id)
 {
-	auto item = times.by_id( id);
-	if(item.has_value())
+	auto optional_item = times.by_id( id);
+	if(optional_item.has_value())
 	{
-		times.update( item->with( running ).with_stop( system_clock::now()));
+		auto item = optional_item.value();
+		auto duration = duration_cast<seconds>(system_clock::now( ) - item.start);
+		times.update( item.with( running ).with_duration( duration ));
 	}
 }
 

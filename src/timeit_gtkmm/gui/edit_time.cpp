@@ -88,11 +88,11 @@ void edit_time_dialog::on_response(int response_id)
 		auto existing_time_entry = times.by_id( item_under_edit.id);
 		if(existing_time_entry.has_value())
 		{
-			times.update( item_under_edit.with_start( start_time).with_stop( stop_time).with_comment( comment));
+			times.update( item_under_edit.with_start( start_time).with_duration( duration_cast<seconds>(stop_time-start_time) ).with_comment( comment));
 		}
 		else
 		{
-			times.create( item_under_edit.with_start( start_time).with_stop( stop_time).with_comment( comment));
+			times.create( item_under_edit.with_start( start_time).with_duration( duration_cast<seconds>(stop_time-start_time)).with_comment( comment));
 		}
 	}
 }
@@ -102,7 +102,7 @@ void edit_time_dialog::on_response(int response_id)
 void edit_time_dialog::set_values()
 {
 	start_timestamp_edit.set_values( item_under_edit.start);
-	stop_timestamp_edit.set_values( item_under_edit.stop);
+	stop_timestamp_edit.set_values( item_under_edit.start + item_under_edit.duration);
 
 	original_start = start_timestamp_edit.timestamp();
 	original_stop  = stop_timestamp_edit.timestamp();
@@ -133,4 +133,3 @@ void edit_time_dialog::on_change()
 }
 
 }
-

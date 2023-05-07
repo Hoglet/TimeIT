@@ -1,5 +1,4 @@
 #include <iostream>
-#include <sstream>
 #include <libtimeit/db/extended_task_accessor.h>
 #include <libtimeit/misc/contains.h>
 

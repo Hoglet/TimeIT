@@ -101,7 +101,7 @@ TEST( database, testUpgrade )
 	ASSERT_EQ( 1, result.size()) << "Number of times ";
 	time_entry te = result.at( 0);
 	ASSERT_EQ( system_clock::from_time_t( 10 ), te.start) << "Time start ";
-	ASSERT_EQ( system_clock::from_time_t( 100 ), te.stop) << "Time stop ";
+	ASSERT_EQ( 90s, te.duration) << "Duration ";
 
 	unlink("/tmp/dbtest.db");
 }

@@ -25,7 +25,7 @@ struct time_entry
 {
 	const time_id                  id;
 	const time_point<system_clock> start;
-	const time_point<system_clock> stop;
+	const seconds                  duration;
 	const time_entry_state         state;
 	const time_point<system_clock> changed;
 	const task_id                  owner_id;
@@ -35,35 +35,33 @@ struct time_entry
 	time_entry(
 			task_id                   owner,
 			time_point<system_clock>  op_start,
-			time_point<system_clock>  op_stop
+			seconds                   op_duration
 	);
+
 
 	time_entry(
 			task_id                  owner_id,
 			time_point<system_clock> op_start,
-			time_point<system_clock> op_stop,
+			seconds                  op_duration,
 			time_entry_state         op_state
 	);
-
-
 
 	time_entry(
 			time_id                  op_id,
 			task_id                  owner_id,
 			time_point<system_clock> op_start,
-			time_point<system_clock> op_stop,
+			seconds                  op_duration,
 			time_entry_state         op_state,
 			time_point<system_clock> op_changed,
 			string                   op_comment);
 
 
 	[[nodiscard]] time_entry with_start( time_point<system_clock>) const;
-	[[nodiscard]] time_entry with_stop( time_point<system_clock>) const;
+	[[nodiscard]] time_entry with_duration( seconds ) const;
 	[[nodiscard]] time_entry with( time_entry_state ) const;
 	[[nodiscard]] time_entry with_comment( string comment);
+	auto operator<=>(const time_entry&) const = default;
 };
-bool operator==( const time_entry &op_1, const time_entry &op_2);
-bool operator!=( const time_entry &op_1, const time_entry &op_2);
 
 using time_list    = vector<time_entry>;
 
